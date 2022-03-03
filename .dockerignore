@@ -1,0 +1,13 @@
+.dockerignore
+.env
+.git/
+.github
+.gitignore
+.kubernetes/
+dbt_modules/
+Dockerfile
+kustomization.yaml
+logs/
+profiles_template.yml
+README.md
+target/

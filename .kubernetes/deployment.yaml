@@ -1,0 +1,107 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dbt-rpc-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dbt-rpc-dev
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: dbt-rpc-dev
+    spec:
+      containers:
+        - name: dbt-rpc
+          image: gcr.io/PROJECT_ID/IMAGE_DBT:TAG
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: credentials-dev
+              mountPath: /credentials-dev/
+              readOnly: true
+            - name: credentials-prod
+              mountPath: /credentials-prod/
+              readOnly: true
+          command: 
+            - "dbt"
+            - "rpc"
+            - "--profiles-dir"
+            - "."
+            - "--profile"
+            - "default"
+            - "--target"
+            - "dev"
+            - "--host"
+            - "0.0.0.0"
+            - "--port"
+            - "8580"
+      volumes:
+        - name: credentials-dev
+          secret:
+            secretName: credentials-dev
+        - name: credentials-prod
+          secret:
+            secretName: credentials-prod
+      restartPolicy: Always
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dbt-rpc-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dbt-rpc-prod
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: dbt-rpc-prod
+    spec:
+      containers:
+        - name: dbt-rpc
+          image: gcr.io/PROJECT_ID/IMAGE_DBT:TAG
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: credentials-dev
+              mountPath: /credentials-dev/
+              readOnly: true
+            - name: credentials-prod
+              mountPath: /credentials-prod/
+              readOnly: true
+          command: 
+            - "dbt"
+            - "rpc"
+            - "--profiles-dir"
+            - "."
+            - "--profile"
+            - "default"
+            - "--target"
+            - "prod"
+            - "--host"
+            - "0.0.0.0"
+            - "--port"
+            - "8580"
+      volumes:
+        - name: credentials-dev
+          secret:
+            secretName: credentials-dev
+        - name: credentials-prod
+          secret:
+            secretName: credentials-prod
+      restartPolicy: Always
