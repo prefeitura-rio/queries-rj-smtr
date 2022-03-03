@@ -49,5 +49,5 @@ jobs:
       - name: Deploy
         run: |-
           ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE_DBT:TAG=$IMAGE_NAME:$GITHUB_SHA
-          ./kustomize build . | kubectl apply -n prefect -f -
+          ./kustomize build . | kubectl apply -n prefect-agent-rj-smtr -f -
           kubectl get services -n prefect-agent-rj-smtr
