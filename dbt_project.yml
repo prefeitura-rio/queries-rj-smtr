@@ -23,6 +23,19 @@ clean-targets: # directories to be removed by `dbt clean`
   - "target"
   - "dbt_modules"
 
+vars:
+  data_inclusao_agency: "2021-08-03"
+  data_inclusao_stop_times: "2021-08-03"
+  data_inclusao_linhas: "2021-08-03"
+  data_inclusao_routes: "2021-08-03"
+  data_inclusao_trips: "2021-08-03"
+  data_inclusao_shapes: "2021-08-24"
+  data_inclusao_stops: "2021-08-24"
+  data_inclusao_calendar: "2021-09-30"
+  data_inclusao_frota_determinada: "2021-09-30"
+  data_inclusao_stop_details: "2021-09-30"
+  data_inclusao_holidays: "2021-11-05"
+
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 
@@ -35,3 +48,6 @@ models:
     example:
       +materialized: view # Materialization type (view, table or incremental)
       +schema: example # Overrides the default schema (defaults to what is set on profiles.yml)
+    br_rj_riodejaneiro_sigmob:
+      +materialized: view
+      # +schema: defaults
