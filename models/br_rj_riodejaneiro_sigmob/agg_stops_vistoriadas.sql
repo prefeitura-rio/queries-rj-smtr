@@ -5,7 +5,7 @@ SELECT
     json_value(content, '$.AP') as AP,
     json_value(content, '$.RA') as RA,
     json_value(content, '$.Bairro') as Bairro
-FROM {{ stops }}
+FROM {{ ref('stops') }}
 where json_value(content, '$.PontoExistente') = 'SIM'
 and json_value(content, '$.idModalSmtr') = '22')
 select data_versao, AP, Bairro,

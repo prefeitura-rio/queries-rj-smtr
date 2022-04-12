@@ -6,4 +6,4 @@ SELECT
   JSON_VALUE(content, "$.stop_sequence") stop_sequence,
   JSON_VALUE(content, "$.shape_dist_traveled") shape_dist_traveled,
   DATE(data_versao) data_versao
-FROM {{ ('stop_times') }}
+FROM {{ ref('stop_times') }}

@@ -10,7 +10,7 @@ with
                      route_id,
                      DATE(data_versao) data_versao
               FROM {{ ref('trips_desaninhada') }} t
-              WHERE DATE(t.data_versao) between DATE({{ date_range_start }}) and DATE({{ date_range_end }})
+              WHERE DATE(t.data_versao) between DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) and CURRENT_DATE()
        ),
        linhas as (
               SELECT 
@@ -22,7 +22,7 @@ with
               INNER JOIN (
               SELECT *
               FROM {{ ref('routes_desaninhada') }}
-              WHERE DATE(data_versao) between DATE({{ date_range_start }}) and DATE({{ date_range_end }})
+              WHERE DATE(data_versao) between DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) and CURRENT_DATE()
               ) r
               on t.route_id = r.route_id and t.data_versao = r.data_versao
        ),
@@ -34,7 +34,7 @@ with
               SAFE_CAST(json_value(content, "$.shape_pt_sequence") as INT64) shape_pt_sequence,
               DATE(data_versao) AS data_versao,
               FROM {{ ref('shapes') }} s
-              WHERE DATE(data_versao) between DATE({{ date_range_start }}) and DATE({{ date_range_end }})
+              WHERE DATE(data_versao) between DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) and CURRENT_DATE()
        ),
        pts as (
               -- CONSTRUCT POINT GEOGRAPHIES 
@@ -42,7 +42,7 @@ with
               st_geogpoint(shape_pt_lon, shape_pt_lat) as ponto_shape,
               row_number() over (partition by data_versao, shape_id order by shape_pt_sequence DESC) rn
               FROM contents
-              ORDER BY data_versao, shape_id, shape_pt_sequence
+              -- ORDER BY data_versao, shape_id, shape_pt_sequence
        ),
        shapes as (
               -- BUILD LINESTRINGS OVER SHAPE POINTS
@@ -51,7 +51,7 @@ with
                      data_versao,
                      st_makeline(ARRAY_AGG(ponto_shape)) as shape
               FROM pts
-              GROUP BY data_versao, shape_id
+              GROUP BY 1,2
        ),
        boundary as (
               -- EXTRACT START AND END POINTS FROM SHAPES

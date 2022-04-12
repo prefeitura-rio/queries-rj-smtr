@@ -36,6 +36,19 @@ vars:
   data_inclusao_stop_details: "2021-09-30"
   data_inclusao_holidays: "2021-11-05"
 
+  agency: "rj-smtr.br_rj_riodejaneiro_sigmob.agency"
+  calendar: "rj-smtr.br_rj_riodejaneiro_sigmob.calendar"
+  frota_determinada: "rj-smtr.br_rj_riodejaneiro_sigmob.frota_determinada"
+  holidays: "rj-smtr.br_rj_riodejaneiro_sigmob.holidays"
+  linhas: "rj-smtr.br_rj_riodejaneiro_sigmob.linhas"
+  routes: "rj-smtr.br_rj_riodejaneiro_sigmob.routes"
+  shapes: "rj-smtr.br_rj_riodejaneiro_sigmob.shapes"
+  shapes_geom: "rj-smtr.br_rj_riodejaneiro_sigmob.shapes_geom"
+  stop_times: "rj-smtr.br_rj_riodejaneiro_sigmob.stop_times"
+  stop_details: "rj-smtr.br_rj_riodejaneiro_sigmob.stop_details"
+  stops: "rj-smtr.br_rj_riodejaneiro_sigmob.stops"
+  trips: "rj-smtr.br_rj_riodejaneiro_sigmob.trips"
+
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 
@@ -50,4 +63,4 @@ models:
       +schema: example # Overrides the default schema (defaults to what is set on profiles.yml)
     br_rj_riodejaneiro_sigmob:
       +materialized: view
-      # +schema: defaults
+      +schema: br_rj_riodejaneiro_sigmob
