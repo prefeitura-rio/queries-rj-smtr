@@ -35,6 +35,6 @@ models:
     columns: true
   rj_smtr:
     # Config indicated by + and applies to all files under models/example/
-    example:
+    projeto_subsidio_sppo:
       +materialized: view # Materialization type (view, table or incremental)
-      +schema: example # Overrides the default schema (defaults to what is set on profiles.yml)
+      +schema: projeto_subsidio_sppo # Overrides the default schema (defaults to what is set on profiles.yml)
