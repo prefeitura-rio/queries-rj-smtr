@@ -1,0 +1,15 @@
+partitioning:
+  column: "data"
+  type: ""
+  period: ""
+
+# Parâmetros de backfill
+backfill:
+  # Formato %Y-%m-%d %H:%M:%S
+  start_timestamp: "2021-03-01 00:00:00"
+  interval:
+    days: 35
+
+# Definição de taxa de atualização
+scheduling:
+  cron: "0 4 * * *"
