@@ -1,8 +1,17 @@
 {{ config(
        materialized='incremental',
-       unique_key=['shape_id', 'data_versao']
-       )
+       partition_by={
+              "field":"data_versao",
+              "data_type": "date",
+              "granularity":"day"
+       }
+)
 }}
+{% if is_incremental() and execute %}
+       {% set start_date = run_query('select max(data_versao) from rj-smtr-dev.br_rj_riodejaneiro_sigmob.shapes_geom').columns[0].values()[0] %}
+{% else %}
+       {% set start_date = "2021-08-24" %}
+{% endif %}
 with
        trips as (
               SELECT 
@@ -10,7 +19,7 @@ with
                      route_id,
                      DATE(data_versao) data_versao
               FROM {{ ref('trips_desaninhada') }} t
-              WHERE DATE(t.data_versao) between DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) and CURRENT_DATE()
+              WHERE DATE(data_versao) between DATE("{{start_date}}") and DATE_ADD(DATE("{{start_date}}"), INTERVAL 25 DAY)
        ),
        linhas as (
               SELECT 
@@ -22,27 +31,29 @@ with
               INNER JOIN (
               SELECT *
               FROM {{ ref('routes_desaninhada') }}
-              WHERE DATE(data_versao) between DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) and CURRENT_DATE()
+              WHERE DATE(data_versao) between DATE("{{start_date}}") and DATE_ADD(DATE("{{start_date}}"), INTERVAL 25 DAY)
               ) r
               on t.route_id = r.route_id and t.data_versao = r.data_versao
        ),
-       contents as (
-       -- EXTRACTS VALUES FROM JSON STRING FIELD 'content' 
-              SELECT shape_id,
-              SAFE_CAST(json_value(content, "$.shape_pt_lat") AS FLOAT64) shape_pt_lat,
-              SAFE_CAST(json_value(content, "$.shape_pt_lon") AS FLOAT64) shape_pt_lon,
-              SAFE_CAST(json_value(content, "$.shape_pt_sequence") as INT64) shape_pt_sequence,
-              DATE(data_versao) AS data_versao,
-              FROM {{ ref('shapes') }} s
-              WHERE DATE(data_versao) between DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) and CURRENT_DATE()
-       ),
        pts as (
-              -- CONSTRUCT POINT GEOGRAPHIES 
-              SELECT * except(shape_pt_lon, shape_pt_lat), 
-              st_geogpoint(shape_pt_lon, shape_pt_lat) as ponto_shape,
-              row_number() over (partition by data_versao, shape_id order by shape_pt_sequence DESC) rn
-              FROM contents
-              -- ORDER BY data_versao, shape_id, shape_pt_sequence
+       -- EXTRACTS VALUES FROM JSON STRING FIELD 'content' 
+              SELECT 
+                     *,
+                     max(shape_pt_sequence) over(
+                            partition by data_versao, shape_id
+                     ) final_pt_sequence
+              FROM (
+                     SELECT shape_id,
+                     ST_GEOGPOINT(
+                            SAFE_CAST(json_value(content, "$.shape_pt_lon") AS FLOAT64),
+                            SAFE_CAST(json_value(content, "$.shape_pt_lat") AS FLOAT64)
+                     ) ponto_shape,
+                     SAFE_CAST(json_value(content, "$.shape_pt_sequence") as INT64) shape_pt_sequence,
+                     DATE(data_versao) AS data_versao,
+                     FROM {{ ref('shapes') }} s
+                     WHERE DATE(data_versao) between DATE("{{start_date}}") and DATE_ADD(DATE("{{start_date}}"), INTERVAL 25 DAY)
+              )
+              ORDER BY data_versao, shape_id, shape_pt_sequence
        ),
        shapes as (
               -- BUILD LINESTRINGS OVER SHAPE POINTS
@@ -60,7 +71,7 @@ with
                      c2.ponto_shape end_pt,
                      c1.data_versao
               FROM (select * from pts where shape_pt_sequence = 1) c1
-              JOIN (select * from pts where rn = 1) c2
+              JOIN (select * from pts where shape_pt_sequence = final_pt_sequence) c2
               ON c1.shape_id = c2.shape_id and c1.data_versao = c2.data_versao
        ),
        merged as (
@@ -84,15 +95,8 @@ SELECT
        shape_distance, 
        start_pt, 
        end_pt,
-       m.data_versao
+       m.data_versao,
 FROM merged m 
 JOIN linhas l
 ON m.shape_id = l.trip_id
 AND m.data_versao = l.data_versao
-
-{% if is_incremental() %}
-
-  -- this filter will only be applied on an incremental run
-  where DATE(data_versao) > (select max(DATE(data_versao)) from {{ this }})
-
-{% endif %}
