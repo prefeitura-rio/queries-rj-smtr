@@ -22,5 +22,5 @@ TIPOS:
 SELECT 
 SAFE_CAST(service_id AS STRING) service_id,
 REPLACE(content,"None","") content,
-SAFE_CAST(data_versao AS STRING) data_versao
+SAFE_CAST(data_versao AS DATE) data_versao
 from rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.calendar as t

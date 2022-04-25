@@ -22,5 +22,5 @@ TIPOS:
 SELECT 
 SAFE_CAST(linha_id AS STRING) linha_id,
 REPLACE(content,"None","") content,
-SAFE_CAST(data_versao AS STRING) data_versao
+SAFE_CAST(data_versao AS DATE) data_versao
 from rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.linhas as t
