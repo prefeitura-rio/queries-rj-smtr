@@ -25,10 +25,20 @@ routes as (
   select
     *
   from {{ ref('routes_desaninhada') }}
+),
+ultimas_versoes as (
+  select
+    c.*,
+    row_number() over(
+      partition by c.data_versao, c.route_id, c.direction_id, c.variacao_itinerario
+      order by c.versao desc
+    ) rn
+  from contents c
+  join routes r
+  on c.route_id = r.route_id
+  and c.data_versao = r.data_versao
 )
 select 
-  c.*
-from contents c
-join routes r
-on c.route_id = r.route_id
-and c.data_versao = r.data_versao
+  * except(rn)
+from ultimas_versoes
+where rn=1

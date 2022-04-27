@@ -16,6 +16,7 @@ with
        trips as (
               SELECT 
                      trip_id,
+                     shape_id,
                      route_id,
                      DATE(data_versao) data_versao
               FROM {{ ref('trips_desaninhada') }} t
@@ -23,7 +24,9 @@ with
        ),
        linhas as (
               SELECT 
-                     trip_id, t.route_id, 
+                     trip_id, 
+                     shape_id,
+                     t.route_id, 
                      route_short_name linha, 
                      idModalSmtr id_modal_smtr,
                      t.data_versao,
@@ -33,7 +36,8 @@ with
               FROM {{ ref('routes_desaninhada') }}
               WHERE DATE(data_versao) between DATE("{{start_date}}") and DATE_ADD(DATE("{{start_date}}"), INTERVAL 25 DAY)
               ) r
-              on t.route_id = r.route_id and t.data_versao = r.data_versao
+              on t.route_id = r.route_id 
+              and t.data_versao = r.data_versao
        ),
        pts as (
        -- EXTRACTS VALUES FROM JSON STRING FIELD 'content' 
@@ -43,13 +47,14 @@ with
                             partition by data_versao, shape_id
                      ) final_pt_sequence
               FROM (
-                     SELECT shape_id,
-                     ST_GEOGPOINT(
-                            SAFE_CAST(json_value(content, "$.shape_pt_lon") AS FLOAT64),
-                            SAFE_CAST(json_value(content, "$.shape_pt_lat") AS FLOAT64)
-                     ) ponto_shape,
-                     SAFE_CAST(json_value(content, "$.shape_pt_sequence") as INT64) shape_pt_sequence,
-                     DATE(data_versao) AS data_versao,
+                     SELECT 
+                            shape_id,
+                            ST_GEOGPOINT(
+                                   SAFE_CAST(json_value(content, "$.shape_pt_lon") AS FLOAT64),
+                                   SAFE_CAST(json_value(content, "$.shape_pt_lat") AS FLOAT64)
+                            ) ponto_shape,
+                            SAFE_CAST(json_value(content, "$.shape_pt_sequence") as INT64) shape_pt_sequence,
+                            DATE(data_versao) AS data_versao,
                      FROM {{ ref('shapes') }} s
                      WHERE DATE(data_versao) between DATE("{{start_date}}") and DATE_ADD(DATE("{{start_date}}"), INTERVAL 25 DAY)
               )
@@ -66,7 +71,8 @@ with
        ),
        boundary as (
               -- EXTRACT START AND END POINTS FROM SHAPES
-              SELECT c1.shape_id,
+              SELECT 
+                     c1.shape_id,
                      c1.ponto_shape start_pt,
                      c2.ponto_shape end_pt,
                      c1.data_versao
@@ -76,18 +82,17 @@ with
        ),
        merged as (
               -- JOIN SHAPES AND BOUNDARY POINTS
-              SELECT s.shape_id, shape, 
+              SELECT 
+                     s.*,
+                     b.* except(data_versao, shape_id),
                      round(ST_LENGTH(shape),1) shape_distance,
-                     start_pt,
-                     end_pt,
-                     s.data_versao
               FROM shapes s
               JOIN boundary b
               ON s.shape_id = b.shape_id and s.data_versao = b.data_versao
        )
 SELECT 
        trip_id,
-       shape_id,
+       m.shape_id,
        route_id,
        id_modal_smtr,
        replace(linha, " ", "") as linha_gtfs, 
@@ -98,5 +103,6 @@ SELECT
        m.data_versao,
 FROM merged m 
 JOIN linhas l
-ON m.shape_id = l.trip_id
+ON m.shape_id = l.shape_id
 AND m.data_versao = l.data_versao
+-- mudar join para o route_id em todas as dependencias
