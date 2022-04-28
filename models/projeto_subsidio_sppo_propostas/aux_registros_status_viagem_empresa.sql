@@ -1,16 +1,7 @@
 
 
 -- 1. Seleciona sinais de GPS registrados no período
-{{
-    config(
-        materialized = 'table'
-    )
-}}
-{%if is_incremental() %}
-{% set run_date = run_query('select max(data) from rj-smtr-dev.projeto_subsidio_sppo_propostas.aux_registros_status_viagem').columns[0].values()[0] %}
-{% else %}
-{% set run_date = '2022-03-27' %}
-{% endif %}
+
 with gps as (
     select 
         g.* except(longitude, latitude),
