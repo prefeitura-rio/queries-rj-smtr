@@ -40,6 +40,7 @@ with desaninhada as (
     json_value(content, '$.Via') Via,
     json_value(content, '$.Vista') Vista,
     json_value(content, '$.Complemento') Complemento,
+    json_value(content,'$.OLD_routes_id') old_route_id
 from {{ ref('routes') }}
 ),
 ultimas_versoes as (
