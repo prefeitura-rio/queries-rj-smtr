@@ -36,7 +36,8 @@ select
     data,
     tipo_dia,
     id_veiculo,
-    v.servico,
+    v.servico as servico_informado,
+    v.servico as servico_realizado,
     shape_id,
     sentido,
     datetime_partida,
@@ -45,8 +46,11 @@ select
     tempo_viagem,
     distancia_teorica,
     distancia_aferida,
+    n_registros_shape,
+    n_registros,
     perc_conformidade_shape,
-    perc_conformidade_distancia
+    perc_conformidade_distancia,
+    '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
 from 
     viagem v
 left join 
