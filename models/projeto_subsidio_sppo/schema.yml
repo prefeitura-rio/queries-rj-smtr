@@ -1,0 +1,185 @@
+
+version: 2
+
+models:
+  - name: aux_registros_status_viagem
+    description: "Tabela auxiliar de classificação dos sinais de GPS
+    dentro uma viagem (início, fim, meio e fora)"
+    columns:
+      - name: id_veiculo
+        description: "Código identificador do veículo (número de ordem)"
+        tests:
+          - not_null
+      - name: timestamp_gps
+        description: "Timestamp de emissão do sinal de GPS"
+        tests:
+          - not_null
+      - name: data
+        description: "Data de emissão do sinal de GPS"
+        tests:
+          - not_null
+      - name: servico
+        description: "Serviço informado pelo GPS do veículo"
+        tests:
+          - not_null
+      - name: distancia
+        description: "Distância geodésica da última posição do GPS em
+        relação a posição atual"
+        tests:
+          - not_null
+      - name: shape_id
+        description: "Código identificador do shape (trajeto) planejado
+        do serviço"
+        tests:
+          - not_null
+      - name: shape_distance
+        description: "Distância total do shape"
+        tests:
+          - not_null
+      - name: shape_distance
+        description: "Distância total do shape"
+        tests:
+          - not_null
+      - name: flag_trajeto_correto
+        description: "Indica se a posição do GPS está no
+        shape do serviço informado ou não"
+        tests:
+          - not_null
+      - name: status_viagem
+        description: "Indica se a posição do GPS está no
+        início (start), meio (middle), fim (end) ou fora (out) do shape do serviço informado"
+        tests:
+          - not_null
+      - name: versao_modelo
+        description: "Versão da metodologia de cálculo da
+        respectiva linha na tabela."
+        tests:
+          - not_null
+  - name: aux_viagem_inicio_fim
+    description: "Tabela auxiliar de identificação de viagens por
+    inicio-fim do trajeto (shape)."
+    columns:
+      - name: data
+        description: "Data de emissão do sinal de GPS"
+        tests:
+          - not_null
+      - name: tipo_dia
+        description: "Dia da semana - categorias: Dia Útil, Sábado, Domingo"
+        tests:
+          - not_null
+      - name: id_veiculo
+        description: "Código identificador do veículo (número de ordem)"
+        tests:
+          - not_null
+      - name: servico
+        description: "Serviço informado pelo GPS do veículo"
+        tests:
+          - not_null
+      - name: shape_id
+        description: "Código identificador do shape (trajeto) planejado
+        do serviço"
+        tests:
+          - not_null
+      - name: sentido
+        description: "Sentido do trajeto identificado - categorias: I
+        (ida), V (volta), C (circular)"
+        tests:
+          - not_null
+      - name: ordem_viagem
+        description: "(auxiliar) Ordem de identificação da viagem"
+        tests:
+          - not_null
+      - name: datetime_partida
+        description: "Horário de início da viagem"
+        tests:
+          - not_null
+      - name: datetime_chegada
+        description: "Horário de fim da viagem"
+        tests:
+          - not_null
+      - name: tempo_viagem
+        description: "Tempo de duração da viagem"
+        tests:
+          - not_null
+      - name: versao_modelo
+        description: "Versão da metodologia de cálculo da
+        respectiva linha na tabela."
+        tests:
+          - not_null
+  - name: aux_viagem_conformidade
+    description: "Tabela auxiliar de cálculo da conformidade de viagens
+    identificadas para validação."
+    columns:
+      - name: data
+        description: "Data de emissão do sinal de GPS"
+        tests:
+          - not_null
+      - name: tipo_dia
+        description: "Dia da semana - categorias: Dia Útil, Sábado, Domingo"
+        tests:
+          - not_null
+      - name: id_veiculo
+        description: "Código identificador do veículo (número de ordem)"
+        tests:
+          - not_null
+      - name: servico
+        description: "Serviço informado pelo GPS do veículo"
+        tests:
+          - not_null
+      - name: shape_id
+        description: "Código identificador do shape (trajeto) planejado
+        do serviço"
+        tests:
+          - not_null
+      - name: sentido
+        description: "Sentido do trajeto identificado - categorias: I
+        (ida), V (volta), C (circular)"
+        tests:
+          - not_null
+      # - name: ordem_viagem
+      #   description: "(auxiliar) Ordem de identificação da viagem"
+      #   tests:
+      #     - not_null
+      - name: datetime_partida
+        description: "Horário de início da viagem"
+        tests:
+          - not_null
+      - name: datetime_chegada
+        description: "Horário de fim da viagem"
+        tests:
+          - not_null
+      - name: tempo_viagem
+        description: "Tempo de duração da viagem"
+        tests:
+          - not_null
+      - name: distancia_teorica
+        description: "Distância do shape (trajeto) planejado do serviço"
+        tests:
+          - not_null
+      - name: distancia_aferida
+        description: "Distância aferida da viagem (geodésia entre
+        posições consecutivas do sinal de GPS)"
+        tests:
+          - not_null
+      - name: n_registros_shape
+        description: "Contagem de sinais de GPS emitidos dentro  do shape (trajeto)."
+        tests:
+          - not_null
+      - name: n_registros
+        description: "Contagem de sinais de GPS emitidos ao longo da viagem."
+        tests:
+          - not_null
+      - name: perc_conformidade_shape
+        description: "Percentual de sinais emitidos dentro do shape (trajeto) ao
+        longo da viagem"
+        tests:
+          - not_null
+      - name: perc_conformidade_distancia
+        description: "Razão da distância aferida pela distância teórica x 100"
+        tests:
+          - not_null
+      - name: versao_modelo
+        description: "Versão da metodologia de cálculo da
+        respectiva linha na tabela."
+        tests:
+          - not_null
