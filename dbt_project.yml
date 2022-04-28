@@ -38,6 +38,8 @@ models:
     projeto_subsidio_sppo:
       +materialized: view # Materialization type (view, table or incremental)
       +schema: projeto_subsidio_sppo # Overrides the default schema (defaults to what is set on profiles.yml)
+    projeto_subsidio_sppo_propostas:
+      +materialized: view
 
 vars:
   # model version
@@ -48,6 +50,8 @@ vars:
   sigmob_routes: "`rj-smtr-dev.br_rj_riodejaneiro_sigmob.routes_desaninhada`"
   sppo_gps: "`rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo`"
   sppo_quadro_horario: "`rj-smtr-dev.projeto_subsidio_sppo_v2.quadro_horario_completo`"
+  linha_empresa: "rj-smtr-dev.projeto_subsidio_sppo_v2.aux_empresa_linha"
+  aux_shapes_empresa: "`rj-smtr-dev.projeto_subsidio_sppo_v2.aux_shapes_empresa`"
   # projeto_subsidio_sppo
   perc_conformidade_distancia_min: 80
   perc_conformidade_distancia_max: 120
