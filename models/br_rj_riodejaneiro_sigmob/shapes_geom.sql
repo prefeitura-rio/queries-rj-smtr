@@ -39,26 +39,27 @@ with
               on t.route_id = r.route_id 
               and t.data_versao = r.data_versao
        ),
-       pts as (
+       contents as (
        -- EXTRACTS VALUES FROM JSON STRING FIELD 'content' 
               SELECT 
-                     *,
+                     shape_id,
+                     ST_GEOGPOINT(
+                            SAFE_CAST(json_value(content, "$.shape_pt_lon") AS FLOAT64),
+                            SAFE_CAST(json_value(content, "$.shape_pt_lat") AS FLOAT64)
+                     ) ponto_shape,
+                     SAFE_CAST(json_value(content, "$.shape_pt_sequence") as INT64) shape_pt_sequence,
+                     DATE(data_versao) AS data_versao
+              FROM {{ ref('shapes') }} s
+              WHERE DATE(data_versao) between DATE("{{start_date}}") and DATE_ADD(DATE("{{start_date}}"), INTERVAL 10 DAY)
+       ),
+       pts as (
+              select 
+                     *, 
                      max(shape_pt_sequence) over(
                             partition by data_versao, shape_id
                      ) final_pt_sequence
-              FROM (
-                     SELECT 
-                            shape_id,
-                            ST_GEOGPOINT(
-                                   SAFE_CAST(json_value(content, "$.shape_pt_lon") AS FLOAT64),
-                                   SAFE_CAST(json_value(content, "$.shape_pt_lat") AS FLOAT64)
-                            ) ponto_shape,
-                            SAFE_CAST(json_value(content, "$.shape_pt_sequence") as INT64) shape_pt_sequence,
-                            DATE(data_versao) AS data_versao,
-                     FROM {{ ref('shapes') }} s
-                     WHERE DATE(data_versao) between DATE("{{start_date}}") and DATE_ADD(DATE("{{start_date}}"), INTERVAL 25 DAY)
-              )
-              ORDER BY data_versao, shape_id, shape_pt_sequence
+              from contents c
+              order by data_versao, shape_id, shape_pt_sequence
        ),
        shapes as (
               -- BUILD LINESTRINGS OVER SHAPE POINTS
@@ -89,20 +90,29 @@ with
               FROM shapes s
               JOIN boundary b
               ON s.shape_id = b.shape_id and s.data_versao = b.data_versao
+       ),
+       ids as (
+              SELECT 
+                     trip_id,
+                     m.shape_id,
+                     route_id,
+                     id_modal_smtr,
+                     replace(linha, " ", "") as linha_gtfs, 
+                     shape,
+                     shape_distance, 
+                     start_pt, 
+                     end_pt,
+                     m.data_versao,
+                     row_number() over(
+                            partition by data_versao, shape_id
+                     ) rn
+              FROM merged m 
+              JOIN linhas l
+              ON m.shape_id = l.shape_id
+              AND m.data_versao = l.data_versao
+              -- mudar join para o route_id em todas as dependencias
        )
-SELECT 
-       trip_id,
-       m.shape_id,
-       route_id,
-       id_modal_smtr,
-       replace(linha, " ", "") as linha_gtfs, 
-       shape,
-       shape_distance, 
-       start_pt, 
-       end_pt,
-       m.data_versao,
-FROM merged m 
-JOIN linhas l
-ON m.shape_id = l.shape_id
-AND m.data_versao = l.data_versao
--- mudar join para o route_id em todas as dependencias
+SELECT
+       * except(rn)
+FROM ids
+WHERE rn = 1
