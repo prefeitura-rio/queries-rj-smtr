@@ -36,10 +36,6 @@ models:
         description: "Distância total do shape"
         tests:
           - not_null
-      - name: shape_distance
-        description: "Distância total do shape"
-        tests:
-          - not_null
       - name: flag_trajeto_correto
         description: "Indica se a posição do GPS está no
         shape do serviço informado ou não"
