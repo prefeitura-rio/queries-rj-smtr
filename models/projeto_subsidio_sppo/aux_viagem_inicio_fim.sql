@@ -13,6 +13,8 @@ with aux_status as (
             rows between 1 preceding and current row) = 'middleend' ends
     from 
         {{ ref('aux_registros_status_viagem') }}
+    where 
+        shape_id is not null
     order by 
         shape_id, timestamp_gps
 ),
@@ -50,19 +52,21 @@ inicio_fim AS (
     from aux_inicio_fim
 ),
 -- 3. Filtra viagem de menor tempo identificada para cada
---    datetime_partida, shape_id, id_veiculo e servico
+--    datetime_partida, shape_id e id_veiculo
 aux_filtrada as (
     select 
         *,
         row_number() over (
-            partition by data, id_veiculo, servico, shape_id, datetime_partida
+            partition by data, id_veiculo, shape_id, datetime_partida
             order by tempo_viagem
         ) as rn
     from (
         select 
             data,
             id_veiculo,
-            servico,
+            id_empresa,
+            servico_informado,
+            servico_realizado,
             shape_id,
             datetime_partida,
             datetime_chegada,
@@ -93,11 +97,13 @@ select
         else 'Dia Útil'
     end tipo_dia,
     id_veiculo,
-    servico,
+    id_empresa,
+    servico_informado,
+    servico_realizado,
     shape_id,
     SUBSTR(shape_id, 11, 1) as sentido,
     row_number() over (
-            partition by id_veiculo, servico, shape_id
+            partition by id_veiculo, shape_id
             order by datetime_partida
     ) as ordem_viagem,
     datetime_partida,

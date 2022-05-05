@@ -26,32 +26,32 @@ viagem as (
     inner join 
         servico_circular c
     on 
-        v.servico = c.servico
+        v.servico_realizado = c.servico
     where 
         v.sentido = "I" or v.sentido = "V"
     order by 
-        id_veiculo, servico, datetime_partida
+        id_veiculo, servico_realizado, datetime_partida
 ),
 -- 3. Identifica ida/volta consecutiva e agrega como viagem circular
 aux_volta as (
     select 
         v.*,
         lead(datetime_partida) over (
-            partition by id_veiculo, servico order by id_veiculo, servico, datetime_partida, sentido) as datetime_partida_volta,
+            partition by id_veiculo, servico_realizado order by id_veiculo, servico_realizado, datetime_partida, sentido) as datetime_partida_volta,
         lead(datetime_chegada) over (
-            partition by id_veiculo, servico order by id_veiculo, servico, datetime_partida, sentido) as datetime_chegada_volta,
+            partition by id_veiculo, servico_realizado order by id_veiculo, servico_realizado, datetime_partida, sentido) as datetime_chegada_volta,
         lead(tempo_viagem) over (
-            partition by id_veiculo, servico order by id_veiculo, servico, datetime_partida, sentido) as tempo_viagem_volta,
+            partition by id_veiculo, servico_realizado order by id_veiculo, servico_realizado, datetime_partida, sentido) as tempo_viagem_volta,
         lead(distancia_teorica) over (
-            partition by id_veiculo, servico order by id_veiculo, servico, datetime_partida, sentido) as distancia_teorica_volta,
+            partition by id_veiculo, servico_realizado order by id_veiculo, servico_realizado, datetime_partida, sentido) as distancia_teorica_volta,
         lead(distancia_aferida) over (
-            partition by id_veiculo, servico order by id_veiculo, servico, datetime_partida, sentido) as distancia_aferida_volta,
+            partition by id_veiculo, servico_realizado order by id_veiculo, servico_realizado, datetime_partida, sentido) as distancia_aferida_volta,
         lead(n_registros_shape) over (
-            partition by id_veiculo, servico order by id_veiculo, servico, datetime_partida, sentido) as n_registros_shape_volta,
+            partition by id_veiculo, servico_realizado order by id_veiculo, servico_realizado, datetime_partida, sentido) as n_registros_shape_volta,
         lead(n_registros) over (
-            partition by id_veiculo, servico order by id_veiculo, servico, datetime_partida, sentido) as n_registros_volta,
+            partition by id_veiculo, servico_realizado order by id_veiculo, servico_realizado, datetime_partida, sentido) as n_registros_volta,
         lead(sentido) over (
-            partition by id_veiculo, servico order by id_veiculo, servico, datetime_partida, sentido) = "V" as flag_proximo_volta -- possui volta
+            partition by id_veiculo, servico_realizado order by id_veiculo, servico_realizado, datetime_partida, sentido) = "V" as flag_proximo_volta -- possui volta
     from 
         viagem v
 ),
@@ -60,7 +60,9 @@ viagem_circular as (
         v.data,
         v.tipo_dia,
         v.id_veiculo,
-        v.servico,
+        v.id_empresa,
+        v.servico_informado,
+        v.servico_realizado,
         CONCAT(SUBSTR(v.shape_id, 1, 10), "C", SUBSTR(v.shape_id, 12)) as shape_id,
         "C" as sentido,
         v.datetime_partida,
@@ -81,7 +83,7 @@ viagem_circular as (
     ) a
     on (
         v.id_veiculo = a.id_veiculo
-        and v.servico = a.servico
+        and v.servico_realizado = a.servico_realizado
         and v.datetime_partida = a.datetime_partida
     )
 ),
@@ -90,14 +92,14 @@ conformidade as (
     select 
         v.*,
         round(n_registros_shape/n_registros*100,2) perc_conformidade_shape,
-        round(100 * (distancia_aferida/distancia_teorica), 2) as perc_conformidade_distancia
+        round(100 * (distancia_aferida/distancia_teorica), 2) as perc_conformidade_distancia,
+        round(n_registros/tempo_viagem*100, 2) as perc_conformidade_registros
     from 
         viagem_circular v
 )
 -- 5. Filtra viagens circulares completas i.e. com percentual de conformidade válido
 select 
     *,
-    "Completa linha correta" as tipo_viagem,
     '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
 from conformidade
 where (
@@ -107,4 +109,8 @@ where (
 and (
     perc_conformidade_shape >= {{ var("perc_conformidade_shape_min") }}
     and perc_conformidade_shape <= {{ var("perc_conformidade_shape_max") }}
+)
+and (
+    perc_conformidade_registros >= {{ var("perc_conformidade_registros_min") }}
+    and perc_conformidade_registros <= {{ var("perc_conformidade_registros_max") }}
 )

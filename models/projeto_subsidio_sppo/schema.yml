@@ -4,35 +4,46 @@ version: 2
 models:
   - name: aux_registros_status_viagem
     description: "Tabela auxiliar de classificação dos sinais de GPS
-    dentro uma viagem (início, fim, meio e fora)"
+    como início, fim, meio ou fora do trajeto, para todos os trajetos
+    possíveis do veículo (i.e. todos os trajetos da empresa,
+    independente da linha informada no GPS)."
     columns:
-      - name: id_veiculo
-        description: "Código identificador do veículo (número de ordem)"
-        tests:
-          - not_null
-      - name: timestamp_gps
-        description: "Timestamp de emissão do sinal de GPS"
-        tests:
-          - not_null
       - name: data
         description: "Data de emissão do sinal de GPS"
         tests:
           - not_null
-      - name: servico
+      - name: id_veiculo
+        description: "Código identificador do veículo (número de ordem)"
+        tests:
+          - not_null
+      - name: id_empresa
+        description: "Código identificador da empresa que opera o veículo"
+        tests:
+          # - not_null
+      - name: timestamp_gps
+        description: "Timestamp de emissão do sinal de GPS"
+        tests:
+          - not_null
+      - name: servico_informado
         description: "Serviço informado pelo GPS do veículo"
+        tests:
+          - not_null
+      - name: servico_realizado
+        description: "Outro serviço da empresa que o veículo pode estar operando"
+        tests:
+          - not_null
+      - name: shape_id
+        description: "Código identificador do shape (trajeto) do serviço
+        realizado "
+        tests:
+          - not_null
+      - name: distancia_teorica
+        description: "Distância do shape (trajeto) planejado do serviço"
         tests:
           - not_null
       - name: distancia
         description: "Distância geodésica da última posição do GPS em
         relação a posição atual"
-        tests:
-          - not_null
-      - name: shape_id
-        description: "Código identificador do shape (trajeto) do serviço"
-        tests:
-          - not_null
-      - name: shape_distance
-        description: "Distância total do shape"
         tests:
           - not_null
       - name: flag_trajeto_correto
@@ -66,7 +77,7 @@ models:
         description: "Código identificador do veículo (número de ordem)"
         tests:
           - not_null
-      - name: servico
+      - name: servico_informado
         description: "Serviço informado pelo GPS do veículo"
         tests:
           - not_null

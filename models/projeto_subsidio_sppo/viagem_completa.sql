@@ -30,19 +30,24 @@ agency as (
 )
 select 
     concat(
-        id_veiculo, v.servico, format_timestamp("%Y%m%d%H%M%S", datetime_partida)
+        id_veiculo, v.servico_realizado, format_timestamp("%Y%m%d%H%M%S", datetime_partida)
     ) as id_viagem,
-    consorcio,
     data,
     tipo_dia,
+    consorcio,
+    id_empresa,
     id_veiculo,
-    v.servico as servico_informado,
-    v.servico as servico_realizado,
+    servico_informado,
+    servico_realizado,
     shape_id,
     sentido,
     datetime_partida,
     datetime_chegada,
-    tipo_viagem,
+    case 
+        when servico_realizado = servico_informado
+        then "Completa linha correta"
+        else "Completa linha incorreta"
+        end as tipo_viagem,
     tempo_viagem,
     distancia_teorica,
     distancia_aferida,
@@ -50,11 +55,12 @@ select
     n_registros,
     perc_conformidade_shape,
     perc_conformidade_distancia,
+    perc_conformidade_registros,
     '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
 from 
     viagem v
 left join 
     agency a
 on
-    v.servico = a.servico
+    v.servico_realizado = a.servico
     and v.data = a.data_versao
