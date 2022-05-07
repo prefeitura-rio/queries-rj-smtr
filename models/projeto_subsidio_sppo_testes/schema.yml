@@ -1,0 +1,353 @@
+
+version: 2
+
+models:
+  - name: aux_registros_status_trajeto
+    description: "Tabela auxiliar de classificação dos sinais de GPS
+    como início, fim, meio ou fora do trajeto, para todos os trajetos
+    possíveis do veículo (i.e. todos os trajetos da empresa,
+    independente da linha informada no GPS)."
+    columns:
+      - name: data
+        description: "Data de emissão do sinal de GPS"
+        tests:
+          - not_null
+      - name: id_veiculo
+        description: "Código identificador do veículo (número de ordem)"
+        tests:
+          - not_null
+      - name: id_empresa
+        description: "Código identificador da empresa que opera o veículo"
+        tests:
+          # - not_null
+      - name: timestamp_gps
+        description: "Timestamp de emissão do sinal de GPS"
+        tests:
+          - not_null
+      - name: servico_informado
+        description: "Serviço informado pelo GPS do veículo"
+        tests:
+          - not_null
+      - name: servico_realizado
+        description: "Outro serviço da empresa que o veículo pode estar operando"
+        tests:
+          - not_null
+      - name: shape_id
+        description: "Código identificador do shape (trajeto) do serviço
+        realizado "
+        tests:
+          - not_null
+      - name: distancia_teorica
+        description: "Distância do shape (trajeto) planejado do serviço"
+        tests:
+          - not_null
+      - name: distancia
+        description: "Distância geodésica da última posição do GPS em
+        relação a posição atual"
+        tests:
+          - not_null
+      - name: flag_trajeto_correto
+        description: "Indica se a posição do GPS está no
+        shape do serviço informado ou não"
+        tests:
+          - not_null
+      - name: status_viagem
+        description: "Indica se a posição do GPS está no
+        início (start), meio (middle), fim (end) ou fora (out) do shape do serviço informado"
+        tests:
+          - not_null
+      - name: versao_modelo
+        description: "Versão da metodologia de cálculo da
+        respectiva linha na tabela."
+        tests:
+          - not_null
+  - name: aux_viagem_inicio_fim
+    description: "Tabela auxiliar de identificação de viagens por
+    inicio-fim do trajeto (shape)."
+    columns:
+      - name: data
+        description: "Data de emissão do sinal de GPS"
+        tests:
+          - not_null
+      - name: tipo_dia
+        description: "Dia da semana - categorias: Dia Útil, Sábado, Domingo"
+        tests:
+          - not_null
+      - name: id_veiculo
+        description: "Código identificador do veículo (número de ordem)"
+        tests:
+          - not_null
+      - name: servico_informado
+        description: "Serviço informado pelo GPS do veículo"
+        tests:
+          - not_null
+      - name: shape_id
+        description: "Código identificador do shape (trajeto) do serviço"
+        tests:
+          - not_null
+      - name: sentido
+        description: "Sentido do trajeto identificado - categorias: I
+        (ida), V (volta), C (circular)"
+        tests:
+          - not_null
+      - name: id_viagem
+        description: "(auxiliar) Ordem de identificação da viagem"
+        tests:
+          - not_null
+      - name: datetime_partida
+        description: "Horário de início da viagem"
+        tests:
+          - not_null
+      - name: datetime_chegada
+        description: "Horário de fim da viagem"
+        tests:
+          - not_null
+      - name: tempo_viagem
+        description: "Tempo de duração da viagem"
+        tests:
+          - not_null
+      - name: versao_modelo
+        description: "Versão da metodologia de cálculo da
+        respectiva linha na tabela."
+        tests:
+          - not_null
+  - name: aux_viagem_conformidade
+    description: "Tabela auxiliar de cálculo da conformidade de viagens
+    identificadas para validação."
+    columns:
+      - name: data
+        description: "Data de emissão do sinal de GPS"
+        tests:
+          - not_null
+      - name: tipo_dia
+        description: "Dia da semana - categorias: Dia Útil, Sábado, Domingo"
+        tests:
+          - not_null
+      - name: id_veiculo
+        description: "Código identificador do veículo (número de ordem)"
+        tests:
+          - not_null
+      - name: servico
+        description: "Serviço informado pelo GPS do veículo"
+        tests:
+          - not_null
+      - name: shape_id
+        description: "Código identificador do shape (trajeto) do serviço"
+        tests:
+          - not_null
+      - name: sentido
+        description: "Sentido do trajeto identificado - categorias: I
+        (ida), V (volta), C (circular)"
+        tests:
+          - not_null
+      - name: datetime_partida
+        description: "Horário de início da viagem"
+        tests:
+          - not_null
+      - name: datetime_chegada
+        description: "Horário de fim da viagem"
+        tests:
+          - not_null
+      - name: tempo_viagem
+        description: "Tempo de duração da viagem"
+        tests:
+          - not_null
+      - name: distancia_teorica
+        description: "Distância do shape (trajeto) planejado do serviço"
+        tests:
+          - not_null
+      - name: distancia_aferida
+        description: "Distância aferida da viagem (geodésia entre
+        posições consecutivas do sinal de GPS)"
+        tests:
+          - not_null
+      - name: n_registros_shape
+        description: "Contagem de sinais de GPS emitidos dentro  do shape (trajeto)."
+        tests:
+          - not_null
+      - name: n_registros
+        description: "Contagem de sinais de GPS emitidos ao longo da viagem."
+        tests:
+          - not_null
+      - name: perc_conformidade_shape
+        description: "Percentual de sinais emitidos dentro do shape (trajeto) ao
+        longo da viagem"
+        tests:
+          - not_null
+      - name: perc_conformidade_distancia
+        description: "Razão da distância aferida pela distância teórica x 100"
+        tests:
+          - not_null
+      - name: versao_modelo
+        description: "Versão da metodologia de cálculo da
+        respectiva linha na tabela."
+        tests:
+          - not_null
+  # - name: viagem_completa
+  #   description: "Detalhes de todas as viagens completas identificadas."
+  #   columns:
+  #     - name: id_viagem
+  #       description: "Código identificador da viagem (id_veiculo +
+  #       servico + datetime_partida)" 
+  #     - name: consorcio
+  #       description: "Consórcio ao qual o serviço pertence"
+  #       tests:
+  #         - not_null
+  #     - name: data
+  #       description: "Data da viagem"
+  #       tests:
+  #         - not_null
+  #     - name: tipo_dia
+  #       description: "Dia da semana - categorias: Dia Útil, Sábado, Domingo"
+  #       tests:
+  #         - not_null
+  #     - name: id_veiculo
+  #       description: "Código identificador do veículo (número de ordem)"
+  #       tests:
+  #         - not_null
+  #     - name: servico_informado
+  #       description: "Serviço informado pelo GPS do veículo"
+  #       tests:
+  #         - not_null
+  #     - name: servico_realizado
+  #       description: "Serviço realizado pelo veículo (com base na
+  #       identificação do trajeto)"
+  #       tests:
+  #         - not_null
+  #     - name: shape_id
+  #       description: "Código identificador do shape (trajeto) do serviço
+  #       realizado"
+  #       tests:
+  #         - not_null
+  #     - name: sentido
+  #       description: "Sentido do trajeto identificado - categorias: I
+  #       (ida), V (volta), C (circular)"
+  #       tests:
+  #         - not_null
+  #     - name: datetime_partida
+  #       description: "Horário de início da viagem"
+  #       tests:
+  #         - not_null
+  #     - name: datetime_chegada
+  #       description: "Horário de fim da viagem"
+  #       tests:
+  #         - not_null
+  #     - name: tipo_viagem
+  #       description: "Tipo de viagem completa - categorias: Completa
+  #       linha correta, Completa linha incorreta"
+  #       tests:
+  #         - not_null
+  #     - name: tempo_viagem
+  #       description: "Tempo de duração da viagem"
+  #       tests:
+  #         - not_null
+  #         - not_negative
+  #     - name: distancia_teorica
+  #       description: "Distância do shape (trajeto) planejado do serviço"
+  #       tests:
+  #         - not_null
+  #         - not_negative
+  #     - name: distancia_aferida
+  #       description: "Distância aferida da viagem (geodésia entre
+  #       posições consecutivas do sinal de GPS)"
+  #       tests:
+  #         - not_null
+  #         - not_negative
+  #     - name: n_registros_shape
+  #       description: "Contagem de sinais de GPS emitidos dentro  do shape (trajeto)."
+  #       tests:
+  #         - not_null
+  #         - not_negative
+  #     - name: n_registros
+  #       description: "Contagem de sinais de GPS emitidos ao longo da viagem."
+  #       tests:
+  #         - not_null
+  #         - not_negative
+  #     - name: perc_conformidade_shape
+  #       description: "Percentual de sinais emitidos dentro do shape (trajeto) ao
+  #       longo da viagem"
+  #       tests:
+  #         - not_null
+  #         - not_negative
+  #     - name: perc_conformidade_distancia
+  #       description: "Razão da distância aferida pela distância teórica x 100"
+  #       tests:
+  #         - not_null
+  #         - not_negative
+  #     - name: versao_modelo
+  #       description: "Versão da metodologia de cálculo da
+  #       respectiva linha na tabela."
+  #       tests:
+  #         - not_null
+  # - name: sumario_viagem_completa
+    description: "Sumário de viagens completas identificadas e
+    quilometragem total considerada para o subsídio."
+    columns:
+      - name: consorcio
+        description: "Consórcio ao qual o serviço pertence"
+        tests:
+          - not_null
+      - name: data
+        description: "Data"
+        tests:
+          - not_null
+      - name: tipo_dia
+        description: "Dia da semana - categorias: Dia Útil, Sábado, Domingo"
+        tests:
+          - not_null
+      - name: servico
+        description: "Serviço planejado"
+        tests:
+          - not_null
+          - not_null
+      - name: sentido
+        description: "Sentido planejado - categorias: I
+        (ida), V (volta), C (circular)"
+        tests:
+          - not_null
+      - name: inicio_periodo
+        description: "Início do período de operação planejado"
+        tests:
+          - not_null
+      - name: fim_periodo
+        description: "Fim do período de operação planejado"
+        tests:
+          - not_null
+      - name: viagens_planejadas
+        description: "Viagens planejadas no período"
+        tests:
+          - not_null
+      - name: viagens_realizadas
+        description: "Viagens realizadas no período"
+        tests:
+          - not_null
+          - not_negative
+      - name: viagens_subsidio
+        description: "Viagens contabilizadas para o subsídio
+        - igual a realizadas com limite máximo igual a planejadas."
+        tests:
+          - not_null
+          - not_negative
+      - name: distancia_total_planejada
+        description: "Distância total planejada em KM (viagens planejadas x
+        distância do shape)."
+        tests:
+          - not_null
+          - not_negative
+      - name: distancia_total_subsidio
+        description: "Distância total contabilizada para o subsídio em KM (viagens suubsidio x
+        distância do shape)."
+        tests:
+          - not_null
+          - not_negative
+      - name: distancia_total_aferida
+        description: "Distância total aferida com GPS (soma da distância aferida
+        de todas as viagens realizadas)."
+        tests:
+          - not_null
+          - not_negative
+      - name: versao_modelo
+        description: "Versão da metodologia de cálculo da
+        respectiva linha na tabela."
+        tests:
+          - not_null
