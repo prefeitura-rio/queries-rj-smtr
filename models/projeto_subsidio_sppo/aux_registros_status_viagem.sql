@@ -1,67 +1,62 @@
-{% set start_date = "2022-03-27" %}
-
--- 1. Seleciona sinais de GPS registrados no período
-with gps as (
+-- 1. Classifica todos os registos pertencentes a cada viagem
+with aux_registros as (
     select 
-        g.* except(longitude, latitude),
-        substr(id_veiculo, 2, 3) as id_empresa,
-        ST_GEOGPOINT(longitude, latitude) posicao_veiculo_geo,
-        d.data_versao_efetiva_shapes data_versao
+        s.*,
+        datetime_partida,
+        datetime_chegada,
+        case 
+            when 
+                timestamp_gps = datetime_partida
+                or
+                timestamp_gps = datetime_chegada
+            then
+                id_viagem
+        end id_viagem
     from 
-        {{ var('sppo_gps') }} g
-    join 
-        {{ var('sigmob_data_versao') }} d
-    on 
-        g.data = d.data
-    where 
-        g.data between DATE_SUB(DATE("{{start_date}}"), INTERVAL 7 DAY) and DATE("{{start_date}}")
-),
--- 2. Seleciona shapes atualizados do período
-shapes as (
-    select 
-        *
-    from 
-        {{ ref('aux_shapes_empresa') }}
-    where 
-        data_versao between 
-            (select min(data_versao) from gps)
-            and (select max(data_versao) from gps)
-        and id_modal_smtr in ('22', '23', 'O')
-),
--- 3. Classifica a posição do veículo em todos os shapes possíveis de
---    serviços de uma mesma empresa
-status_viagem as (
-    select
-        data,
-        id_veiculo,
-        g.id_empresa,
-        timestamp_gps,
-        servico as servico_informado,
-        linha_gtfs as servico_realizado,
-        shape_id,
-        round(shape_distance/1000, 2) as distancia_teorica,
-        distancia,
-        flag_trajeto_correto,
-        case
-            when ST_DWITHIN(posicao_veiculo_geo, start_pt, 200)
-            then 'start'
-            when ST_DWITHIN(posicao_veiculo_geo, end_pt, 200)
-            then 'end'
-            when ST_DWITHIN(posicao_veiculo_geo, shape, 200)
-            then 'middle'
-        else 'out'
-        end status_viagem
-    from 
-        gps g
+        {{ ref("aux_registros_status_trajeto") }} s
     left join 
-        shapes s
+        {{ ref("aux_viagem_circular") }} v
     on 
-        g.data_versao = s.data_versao
-        and g.id_empresa = s.id_empresa
+        s.id_veiculo = v.id_veiculo
+        and (s.timestamp_gps = v.datetime_partida or s.timestamp_gps = v.datetime_chegada)
+        and s.servico_realizado = v.servico_realizado
+        and s.sentido = v.sentido
+),
+registros_viagem as (
+    select 
+        * except(id_viagem, versao_modelo),
+        case
+            when
+                id_viagem is not null
+            then 
+                id_viagem
+            when
+                (timestamp_gps >= LAST_VALUE(datetime_partida IGNORE NULLS) over (
+                        partition by id_veiculo, servico_realizado, sentido
+                        order by timestamp_gps
+                        rows between unbounded preceding and current row
+                    )
+                and
+                timestamp_gps <= LAST_VALUE(datetime_chegada IGNORE NULLS) over (
+                        partition by id_veiculo, servico_realizado, sentido
+                        order by timestamp_gps
+                        rows between unbounded preceding and current row
+                    )
+                )
+            then 
+                LAST_VALUE(id_viagem IGNORE NULLS) over (
+                        partition by id_veiculo, servico_realizado, sentido
+                        order by timestamp_gps
+                        rows between unbounded preceding and current row
+                    )
+        end id_viagem
+    from aux_registros
 )
+-- 2. Filtra apenas registros de viagens identificadas
 select 
     *,
     '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
 from 
-    status_viagem
-order by id_veiculo, timestamp_gps, shape_id
+    registros_viagem
+where 
+    id_viagem is not null

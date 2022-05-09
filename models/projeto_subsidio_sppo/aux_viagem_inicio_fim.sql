@@ -12,13 +12,13 @@ with aux_status as (
             order by id_veiculo, shape_id, timestamp_gps
             rows between 1 preceding and current row) = 'middleend' ends
     from 
-        {{ ref('aux_registros_status_viagem') }}
+        {{ ref('aux_registros_status_trajeto') }}
     where 
         shape_id is not null
     order by 
         shape_id, timestamp_gps
 ),
--- 2. Filtra início/fim e classifica datetime da partida/chegada da viagem
+-- 2. Classifica início-fim consecutivos como partida-chegada da viagem
 aux_inicio_fim AS (
     select 
         *,
@@ -42,6 +42,7 @@ aux_inicio_fim AS (
     where 
         starts = true OR ends = true
 ),
+-- 3. Junta partida-chegada da viagem na mesma linha
 inicio_fim AS (
     select 
         * except(datetime_chegada), 
@@ -51,64 +52,29 @@ inicio_fim AS (
         ) as datetime_chegada,
     from aux_inicio_fim
 ),
--- 3. Filtra viagem de menor tempo identificada para cada
---    datetime_partida, shape_id e id_veiculo
-aux_filtrada as (
-    select 
-        *,
-        row_number() over (
-            partition by data, id_veiculo, shape_id, datetime_partida
-            order by tempo_viagem
-        ) as rn
-    from (
-        select 
-            data,
-            id_veiculo,
-            id_empresa,
-            servico_informado,
-            servico_realizado,
-            shape_id,
-            datetime_partida,
-            datetime_chegada,
-            datetime_diff(datetime_chegada, datetime_partida, minute) as tempo_viagem,
-        from 
-            inicio_fim
-        where 
-            datetime_partida is not null
-    ) 
-),
-filtrada as (
-    select 
-        r.* except(rn),
+-- 4. Filtra colunas e cria campo identificador da viagem (id_viagem)
+viagem as (
+    select distinct
+        data,
+        tipo_dia,
+        consorcio,
+        id_veiculo,
+        id_empresa,
+        servico_informado, -- no momento da partida
+        servico_realizado,
+        shape_id,
+        sentido_shape,
+        sentido,
+        concat(id_veiculo, shape_id, FORMAT_DATETIME("%Y%d%m%H%M%S", datetime_partida)) as id_viagem,
+        datetime_partida,
+        datetime_chegada
     from 
-        aux_filtrada r
+        inicio_fim
     where 
-        rn = 1
-    order by 
-        datetime_partida
+        datetime_partida is not null
 )
--- 4. Adiciona colunas auxiliares
 select
-    data,
-    case
-        when extract(dayofweek from datetime_partida) = 1 then 'Domingo'
-        when extract(dayofweek from datetime_partida) = 7 then 'Sabado'
-        -- when data = data_feriado then 'Feriado'
-        else 'Dia Útil'
-    end tipo_dia,
-    id_veiculo,
-    id_empresa,
-    servico_informado,
-    servico_realizado,
-    shape_id,
-    SUBSTR(shape_id, 11, 1) as sentido,
-    row_number() over (
-            partition by id_veiculo, shape_id
-            order by datetime_partida
-    ) as ordem_viagem,
-    datetime_partida,
-    datetime_chegada,
-    tempo_viagem,
+    *,
     '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
 from 
-    filtrada
+    viagem

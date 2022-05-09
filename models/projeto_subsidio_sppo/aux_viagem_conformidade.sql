@@ -1,101 +1,84 @@
--- 1. Calcula a distância total percorrida por viagem
-with aux_registros as (
+-- 1. Adiciona período de operação da viagem
+with viagem_periodo as (
     select 
-        s.*,
-        datetime_partida,
-        datetime_chegada,
-        case 
-            when 
-                timestamp_gps = datetime_partida
-                or
-                timestamp_gps = datetime_chegada
-            then
-                ordem_viagem
-        end ordem_viagem
+        v.id_viagem,
+        p.start_time as inicio_periodo,
+        p.end_time as fim_periodo,
+        p.tempo_viagem as tempo_planejado,
+        p.viagens as viagens_planejadas
     from 
-        {{ ref("aux_registros_status_viagem") }} s
-    left join 
-        {{ ref("aux_viagem_inicio_fim") }} v
+        {{ ref("aux_viagem_circular") }} v
+    inner join 
+        {{ var("sppo_viagem_planejada") }} p
     on 
-        s.data = v.data
-        and s.id_veiculo = v.id_veiculo
-        and (s.timestamp_gps = v.datetime_partida or s.timestamp_gps = v.datetime_chegada)
-        and s.shape_id = v.shape_id
+        RTRIM(v.servico_realizado, " ") = RTRIM(p.servico, " ") -- ajusta tipo de servico entre tabelas (ex: 309 SN -> 309SN)
+        and v.tipo_dia = p.tipo_dia
+        and v.sentido = p.sentido
+    where (
+        ( -- 05:00:00 as 23:00:00
+            start_time < end_time 
+            and extract (time from datetime_partida) >= start_time 
+                and extract (time from datetime_partida) < end_time
+        ) or
+        ( -- 23:00:00 as 5:00:00
+            start_time > end_time 
+            and ((extract (time from datetime_partida) >= start_time) -- até 00h
+                or (extract (time from datetime_partida) < end_time) -- apos 00h
+            )
+        )
+    )
 ),
-registros as (
-    select 
-        * except(ordem_viagem),
-        case
-            when
-                ordem_viagem is not null
-            then 
-                ordem_viagem
-            when
-                (timestamp_gps >= LAST_VALUE(datetime_partida IGNORE NULLS) over (
-                        partition by id_veiculo, shape_id
-                        order by timestamp_gps
-                        rows between unbounded preceding and current row
-                    )
-                and
-                timestamp_gps <= LAST_VALUE(datetime_chegada IGNORE NULLS) over (
-                        partition by id_veiculo, shape_id
-                        order by timestamp_gps
-                        rows between  unbounded preceding and current row
-                    )
-                )
-            then 
-                LAST_VALUE(ordem_viagem IGNORE NULLS) over (
-                        partition by id_veiculo, shape_id
-                        order by timestamp_gps
-                        rows between unbounded preceding and current row
-                    )
-        end ordem_viagem
-    from aux_registros mt
+viagem as (
+    select
+        v.* except(versao_modelo),
+        p.* except(id_viagem)
+    from 
+        {{ ref("aux_viagem_circular") }} v
+    left join 
+        viagem_periodo p
+    on 
+        v.id_viagem = p.id_viagem
 ),
+-- 2. Calcula a distância total percorrida por viagem
 distancia as (
     select 
-        data,
-        id_veiculo,
-        id_empresa,
-        servico_informado,
-        servico_realizado,
-        shape_id,
-        ordem_viagem,
+        id_viagem,
         distancia_teorica,
         round(sum(distancia)/1000, 2) distancia_aferida,
-        count(case when flag_trajeto_correto is true then 1 end) n_registros_shape,
-        count(timestamp_gps) n_registros, 
+        sum(case when status_viagem = "middle" then 1 else 0 end) as n_registros_middle,
+        sum(case when status_viagem = "start" then 1 else 0 end) as n_registros_start,
+        sum(case when status_viagem = "end" then 1 else 0 end) as n_registros_end,
+        sum(case when status_viagem = "out" then 1 else 0 end) as n_registros_out,
+        count(timestamp_gps) as n_registros_total,
+        count(distinct timestamp_minuto_gps) as n_registros_minuto
     from 
-        registros 
-    where 
-        ordem_viagem is not null
+        {{ ref("aux_registros_status_viagem") }} 
     group by 
-        1,2,3,4,5,6,7,8
-    order by 
-        data, id_veiculo, shape_id, ordem_viagem
+        1,2
 ),
--- 2. Calcula os percentuais de conformidade da viagem
+-- 3. Calcula os percentuais de conformidade da viagem
 conformidade as (
     select 
-        v.* except(ordem_viagem, versao_modelo),
+        v.*,
         distancia_teorica,
         distancia_aferida,
-        n_registros_shape,
-        n_registros,
-        round(n_registros_shape/n_registros*100,2) as perc_conformidade_shape,
-        round(100 * (d.distancia_aferida/d.distancia_teorica), 2) as perc_conformidade_distancia,
-        round(n_registros/tempo_viagem*100, 2) as perc_conformidade_registros
+        n_registros_middle,
+        n_registros_start,
+        n_registros_end,
+        n_registros_out,
+        n_registros_total,
+        n_registros_minuto,
+        n_registros_middle + n_registros_start + n_registros_end as n_registros_shape,
+        round(100 * (n_registros_middle + n_registros_start + n_registros_end)/n_registros_total,2) as perc_conformidade_shape,
+        round(100 * d.distancia_aferida/d.distancia_teorica, 2) as perc_conformidade_distancia,
+        round(100 * n_registros_minuto/tempo_viagem, 2) as perc_conformidade_registros,
+        round(100 * tempo_viagem/tempo_planejado, 2) as perc_conformidade_tempo
     from 
-        {{ ref("aux_viagem_inicio_fim") }} v
+        viagem v -- {{ ref("aux_viagem_circular") }} v
     inner join 
         distancia d
     on
-        v.data = d.data
-        and v.id_veiculo = d.id_veiculo
-        and v.shape_id = d.shape_id
-        and v.ordem_viagem = d.ordem_viagem
-    order by
-        data, id_veiculo, shape_id, datetime_partida
+        v.id_viagem = d.id_viagem
 )
 select 
     c.*,
