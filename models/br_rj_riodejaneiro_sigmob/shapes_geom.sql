@@ -20,7 +20,7 @@ with
                      route_id,
                      DATE(data_versao) data_versao
               FROM {{ ref('trips_desaninhada') }} t
-              WHERE DATE(data_versao) between DATE("{{start_date}}") and DATE_ADD(DATE("{{start_date}}"), INTERVAL 25 DAY)
+              WHERE DATE(data_versao) between DATE("{{start_date}}") and DATE_ADD(DATE("{{start_date}}"), INTERVAL 15 DAY)
        ),
        linhas as (
               SELECT 
@@ -34,7 +34,7 @@ with
               INNER JOIN (
               SELECT *
               FROM {{ ref('routes_desaninhada') }}
-              WHERE DATE(data_versao) between DATE("{{start_date}}") and DATE_ADD(DATE("{{start_date}}"), INTERVAL 25 DAY)
+              WHERE DATE(data_versao) between DATE("{{start_date}}") and DATE_ADD(DATE("{{start_date}}"), INTERVAL 15 DAY)
               ) r
               on t.route_id = r.route_id 
               and t.data_versao = r.data_versao
@@ -50,7 +50,7 @@ with
                      SAFE_CAST(json_value(content, "$.shape_pt_sequence") as INT64) shape_pt_sequence,
                      DATE(data_versao) AS data_versao
               FROM {{ ref('shapes') }} s
-              WHERE DATE(data_versao) between DATE("{{start_date}}") and DATE_ADD(DATE("{{start_date}}"), INTERVAL 10 DAY)
+              WHERE DATE(data_versao) between DATE("{{start_date}}") and DATE_ADD(DATE("{{start_date}}"), INTERVAL 15 DAY)
        ),
        pts as (
               select 
@@ -104,7 +104,7 @@ with
                      end_pt,
                      m.data_versao,
                      row_number() over(
-                            partition by data_versao, shape_id
+                            partition by m.data_versao, m.shape_id
                      ) rn
               FROM merged m 
               JOIN linhas l

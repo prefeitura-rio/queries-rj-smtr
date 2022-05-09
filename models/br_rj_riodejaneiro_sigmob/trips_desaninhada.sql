@@ -1,12 +1,3 @@
-{{config(
-  materialized='incremental',
-  partition_by={
-    'field':'data_versao',
-    'data_type':'date',
-    'granularity':'day'
-  }
-  )
-}}
 with contents as (
   select
     trip_id,
@@ -51,6 +42,4 @@ select
   * except(rn)
 from ultimas_versoes
 where rn=1
-{% if is_incremental() %}
-where data_versao > (select max(data_versao) from {{ this }})
-{% endif %}
+

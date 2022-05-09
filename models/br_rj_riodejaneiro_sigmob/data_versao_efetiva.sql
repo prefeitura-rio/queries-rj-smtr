@@ -16,7 +16,7 @@ SELECT
 FROM UNNEST(GENERATE_DATE_ARRAY(DATE('2021-01-01'), CURRENT_DATE())) data
 LEFT JOIN (
     SELECT DISTINCT data_versao
-    FROM {{ var("agency") }}
+    FROM {{ ref("agency") }}
     )
 ON data = DATE(data_versao)
 ),
@@ -30,7 +30,7 @@ SELECT
 FROM UNNEST(GENERATE_DATE_ARRAY(DATE('2021-01-01'), CURRENT_DATE())) data
 LEFT JOIN (
     SELECT DISTINCT data_versao
-    FROM {{ var("calendar") }}
+    FROM {{ ref("calendar") }}
     )
 ON data = DATE(data_versao)
 ),
@@ -44,7 +44,7 @@ SELECT
 FROM UNNEST(GENERATE_DATE_ARRAY(DATE('2021-01-01'), CURRENT_DATE())) data
 LEFT JOIN (
     SELECT DISTINCT data_versao
-    FROM {{ var("frota_determinada") }}
+    FROM {{ ref("frota_determinada") }}
     )
 ON DATE(data) = DATE(data_versao)
 ),
@@ -58,7 +58,7 @@ SELECT
 FROM UNNEST(GENERATE_DATE_ARRAY(DATE('2021-01-01'), CURRENT_DATE())) data
 LEFT JOIN (
     SELECT DISTINCT data_versao
-    FROM {{ var("holidays") }}
+    FROM {{ ref("holidays") }}
     )
 ON data = DATE(data_versao)
 ),
@@ -72,7 +72,7 @@ linhas as (
 FROM UNNEST(GENERATE_DATE_ARRAY(DATE('2021-01-01'), CURRENT_DATE())) data
 LEFT JOIN (
     SELECT DISTINCT data_versao
-    FROM {{ var("linhas") }}
+    FROM {{ ref("linhas") }}
     )
 ON data = DATE(data_versao)
 ),
@@ -86,7 +86,7 @@ SELECT
 FROM UNNEST(GENERATE_DATE_ARRAY(DATE('2021-01-01'), CURRENT_DATE())) data
 LEFT JOIN (
     SELECT DISTINCT data_versao
-    FROM {{ var("routes") }}
+    FROM {{ ref("routes") }}
     )
 ON data = data_versao
 ),
@@ -100,7 +100,7 @@ SELECT
 FROM UNNEST(GENERATE_DATE_ARRAY(DATE('2021-01-01'), CURRENT_DATE())) data
 LEFT JOIN (
     SELECT DISTINCT data_versao
-    FROM {{ var("shapes_geom") }}
+    FROM {{ ref("shapes_geom") }}
     )
 ON data = DATE(data_versao)
 ),
@@ -114,7 +114,7 @@ SELECT
 FROM UNNEST(GENERATE_DATE_ARRAY(DATE('2021-01-01'), CURRENT_DATE())) data
 LEFT JOIN (
     SELECT DISTINCT data_versao
-    FROM {{ var("stop_details") }}
+    FROM {{ ref("stop_details") }}
     )
 ON data = DATE(data_versao)
 ),
@@ -128,7 +128,7 @@ SELECT
 FROM UNNEST(GENERATE_DATE_ARRAY(DATE('2021-01-01'), CURRENT_DATE())) data
 LEFT JOIN (
     SELECT DISTINCT data_versao
-    FROM {{ var("stop_times") }}
+    FROM {{ ref("stop_times") }}
     )
 ON data = DATE(data_versao)
 ),
@@ -142,7 +142,7 @@ SELECT
 FROM UNNEST(GENERATE_DATE_ARRAY(DATE('2021-01-01'), CURRENT_DATE())) data
 LEFT JOIN (
     SELECT DISTINCT data_versao
-    FROM {{ var("stops") }}
+    FROM {{ ref("stops") }}
     )
 ON data = DATE(data_versao)
 ),
@@ -156,7 +156,7 @@ SELECT
 FROM UNNEST(GENERATE_DATE_ARRAY(DATE('2021-01-01'), CURRENT_DATE())) data
 LEFT JOIN (
     SELECT DISTINCT data_versao
-    FROM {{ var("trips") }}
+    FROM {{ ref("trips") }}
     )
 ON data = DATE(data_versao)
 ),
