@@ -162,7 +162,7 @@ ON data = DATE(data_versao)
 ),
 joined as (
     select
-    s.data,
+    DATE_ADD(s.data, INTERVAL 1 DAY) data,
     a.data_versao_efetiva as data_versao_efetiva_agency,
     c.data_versao_efetiva as data_versao_efetiva_calendar,
     f.data_versao_efetiva as data_versao_efetiva_frota_determinada,

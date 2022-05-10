@@ -23,4 +23,4 @@ SELECT
 SAFE_CAST(stop_id AS STRING) stop_id,
 REPLACE(content, "None", '') content,
 SAFE_CAST(data_versao AS DATE) data_versao
-from rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.stops as t
+from {{var("stops")}} as t

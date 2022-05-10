@@ -23,4 +23,4 @@ SELECT
 SAFE_CAST(agency_id AS STRING) agency_id,
 REPLACE(content,"None","") content,
 SAFE_CAST(data_versao AS DATE) data_versao
-from rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.agency as t
+from {{var('agency')}} as t

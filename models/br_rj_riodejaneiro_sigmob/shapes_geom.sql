@@ -116,3 +116,6 @@ SELECT
        * except(rn)
 FROM ids
 WHERE rn = 1
+{% if is_incremental %}
+AND data_versao > DATE("{{start_date}}")
+{% endif %}
