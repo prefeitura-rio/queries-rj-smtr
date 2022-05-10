@@ -51,4 +51,7 @@ jobs:
           ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE_DBT:TAG=$IMAGE_NAME:$GITHUB_SHA
           ./kustomize build . | kubectl apply -n prefect-agent-rj-smtr -f -
           ./kustomize build . | kubectl apply -n prefect-agent-rj-smtr-dev -f -
-          kubectl get services -n prefect-agent-rj-smtr
+          kubectl rollout status -w -n prefect-agent-rj-smtr deployment/dbt-rpc-dev
+          kubectl rollout status -w -n prefect-agent-rj-smtr deployment/dbt-rpc-prod
+          kubectl rollout status -w -n prefect-agent-rj-smtr-dev deployment/dbt-rpc-dev
+          kubectl rollout status -w -n prefect-agent-rj-smtr-dev deployment/dbt-rpc-prod
