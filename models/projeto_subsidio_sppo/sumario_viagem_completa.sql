@@ -1,30 +1,55 @@
+with sumario_viagem as (
+    select
+        data,
+        tipo_dia,
+        servico_realizado as servico,
+        sentido,
+        inicio_periodo,
+        fim_periodo,
+        count(id_viagem) as viagens_realizadas,
+        sum(distancia_aferida) as distancia_total_aferida,
+        max(distancia_shape) as distancia_shape
+    from 
+        {{ ref("viagem_completa") }}
+    group by
+        1,2,3,4,5,6
+)
+-- 2. Calcula viagens e distancia total por servico e período
 select 
-    consorcio,
-    data, 
-    tipo_dia,
-    servico_realizado as servico,
-    sentido,
-    inicio_periodo, 
-    fim_periodo,
-    viagens_planejadas,
-    count(sentido) as viagens_realizadas,
+    p.consorcio,
+    p.data,
+    p.tipo_dia,
+    p.servico,
+    p.sentido,
+    p.start_time as inicio_periodo,
+    p.end_time as fim_periodo,
+    viagens as viagens_planejadas,
+    ifnull(viagens_realizadas, 0) as viagens_realizadas,
     case 
-        when viagens_planejadas >= count(sentido)
-        then count(sentido)
-        else viagens_planejadas
+        when viagens >= ifnull(viagens_realizadas, 0)
+        then ifnull(viagens_realizadas, 0)
+        else viagens
     end as viagens_subsidio,
-    round(max(distancia_teorica)*viagens_planejadas, 2) as distancia_total_planejada,
+    ifnull(distancia_shape, 0) * viagens as distancia_total_planejada,
     case 
-        when viagens_planejadas >= count(sentido)
-        then round(max(distancia_teorica)*count(sentido), 2)
-        else round(max(distancia_teorica)*viagens_planejadas, 2)
+        when viagens >= viagens_realizadas
+        then ifnull(distancia_shape, 0) * viagens_realizadas
+        else ifnull(distancia_shape, 0) * viagens
     end as distancia_total_subsidio,
-    round(sum(distancia_aferida), 2) as distancia_total_aferida,
+    ifnull(distancia_total_aferida, 0) as distancia_total_aferida,
     '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
-from 
-    {{ ref("viagem_completa") }}
-where 
-    viagens_planejadas is not null
-    and tipo_viagem = "Completa linha correta"
-group by 
-    1,2,3,4,5,6,7,8
+from (
+    select
+        *
+    from
+        {{ ref("viagem_planejada") }}
+) p
+left join
+    sumario_viagem v
+on
+    v.servico = p.servico -- ajusta tipo de servico entre tabelas (ex: 309 SN -> 309SN)
+    and v.tipo_dia = p.tipo_dia
+    and v.sentido = p.sentido
+    and v.data = p.data
+    and v.inicio_periodo = p.start_time
+    and v.fim_periodo = p.end_time

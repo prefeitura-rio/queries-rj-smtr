@@ -3,8 +3,8 @@ version: 2
 
 models:
   - name: aux_shapes_empresa
-    description: "Tabela base de informações de trajetos (shapes) com identificador
-    da empresa e consórcio operante"
+    description: "Tabela base de informações de trajetos (shapes)
+    de servicos operados por cada empresa cadastrada"
     columns:
       - name: shape_id
         description: "Código identificador do shape (trajeto)"
@@ -14,11 +14,6 @@ models:
         description: "Código identificador da empresa operante do shape"
         tests:
           - not_null
-      - name: id_shape_empresa_data
-        description: "Código identificador único do shape (trajeto), empresa e data"
-        tests:
-          - not_null
-          - unique
       - name: shape
         description: "Linestring dos pontos gelocalizados do trajeto"
         tests:
@@ -36,7 +31,7 @@ models:
         tests:
           - not_null
       - name: sentido_shape
-        description: "Sentido do shape (codificado no shape_id)"
+        description: "Sentido do shape (codificado no shape_id - categorias: I (ida), V (volta), C (circular)"
         tests:
           - not_null
           - accepted_values:
@@ -46,8 +41,22 @@ models:
         respectiva linha na tabela."
         tests:
           - not_null
-      - name: shape_distance
+      - name: distancia_shape
         description: "Distância total do trajeto (shape)"
+        tests:
+          - not_null
+      - name: tipo_dia
+        description: "Dia da semana - categorias: Dia Útil, Sabado, Domingo"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["Dia Útil", "Sabado", "Domingo"]
+      - name: servico
+        description: "Serviço correspondente ao shape (ex: 309SN)"
+        tests:
+          - not_null
+      - name: linha
+        description: "Linha correspondente ao shape (ex: 309)"
         tests:
           - not_null
   - name: aux_registros_status_trajeto
@@ -100,7 +109,7 @@ models:
         realizado "
         tests:
           - not_null
-      - name: distancia_teorica
+      - name: distancia_shape
         description: "Distância do shape (trajeto) planejado do serviço"
         tests:
           - not_null
@@ -120,6 +129,19 @@ models:
         respectiva linha na tabela."
         tests:
           - not_null
+      - name: sentido_shape
+        description: "Sentido do shape (codificado no shape_id - categorias: I (ida), V (volta), C (circular)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["I", "V", "C"]
+      - name: sentido
+        description: "Sentido do trajeto identificado - categorias: I
+        (ida), V (volta), C (circular)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["I", "V", "C"]
   - name: aux_viagem_inicio_fim
     description: "Tabela auxiliar de identificação de viagens por
     inicio-fim do trajeto (shape)."
@@ -156,7 +178,7 @@ models:
         tests:
           - not_null
       - name: sentido_shape
-        description: "Sentido do shape (codificado no shape_id)"
+        description: "Sentido do shape (codificado no shape_id - categorias: I (ida), V (volta), C (circular)"
         tests:
           - not_null
           - accepted_values:
@@ -223,7 +245,7 @@ models:
         tests:
           - not_null
       - name: sentido_shape
-        description: "Sentido do shape (codificado no shape_id)"
+        description: "Sentido do shape (codificado no shape_id - categorias: I (ida), V (volta), C (circular)"
         tests:
           - not_null
           - accepted_values:
@@ -249,8 +271,169 @@ models:
         description: "Horário de fim da viagem"
         tests:
           - not_null
-      - name: tempo_viagem
-        description: "Tempo da viagem (em minutos)"
+      - name: versao_modelo
+        description: "Versão da metodologia de cálculo da
+        respectiva linha na tabela."
+        tests:
+          - not_null
+  - name: aux_registros_status_viagem
+    description: "Tabela auxiliar de classificação dos sinais de GPS
+    por viagem."
+    columns:
+      - name: data
+        description: "Data de emissão do sinal de GPS"
+        tests:
+          - not_null
+      - name: tipo_dia
+        description: "Dia da semana - categorias: Dia Útil, Sabado, Domingo"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["Dia Útil", "Sabado", "Domingo"]
+      - name: id_veiculo
+        description: "Código identificador do veículo (número de ordem)"
+        tests:
+          - not_null
+      - name: id_empresa
+        description: "Código identificador da empresa que opera o veículo"
+        tests:
+          - not_null
+      - name: timestamp_gps
+        description: "Timestamp de emissão do sinal de GPS"
+        tests:
+          - not_null
+      - name: timestamp_minuto_gps
+        description: "Timestamp de emissão do sinal de GPS truncado em
+        minutos (para fins de comparação com minutos da viagem)"
+        tests:
+          - not_null
+      - name: posicao_veiculo_geo
+        description: "Geolocalização do veículo segundo o sinal de GPS"
+        tests:
+          - not_null
+      - name: servico_informado
+        description: "Serviço informado pelo GPS do veículo"
+        tests:
+          - not_null
+      - name: servico_realizado
+        description: "Outro serviço da empresa que o veículo pode estar operando"
+        tests:
+          - not_null
+      - name: shape_id
+        description: "Código identificador do shape (trajeto) do serviço
+        realizado "
+        tests:
+          - not_null
+      - name: distancia_shape
+        description: "Distância do shape (trajeto) planejado do serviço"
+        tests:
+          - not_null
+      - name: distancia
+        description: "Distância geodésica da última posição do GPS em
+        relação a posição atual"
+        tests:
+          - not_null
+          - not_negative
+      - name: status_viagem
+        description: "Indica se a posição do GPS está no
+        início (start), meio (middle), fim (end) ou fora (out) do shape do serviço informado"
+        tests:
+          - not_null
+      - name: versao_modelo
+        description: "Versão da metodologia de cálculo da
+        respectiva linha na tabela."
+        tests:
+          - not_null
+      - name: sentido_shape
+        description: "Sentido do shape (codificado no shape_id - categorias: I (ida), V (volta), C (circular)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["I", "V", "C"]
+      - name: sentido
+        description: "Sentido do trajeto identificado - categorias: I
+        (ida), V (volta), C (circular)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["I", "V", "C"]
+      - name: id_viagem
+        description: "Código identificador da viagem (id_veiculo +
+        servico + datetime_partida)" 
+        tests:
+          - not_null
+          - unique
+      - name: datetime_partida
+        description: "Horário de início da viagem"
+        tests:
+          - not_null
+      - name: datetime_chegada
+        description: "Horário de fim da viagem"
+        tests:
+          - not_null
+      - name: versao_modelo
+        description: "Versão da metodologia de cálculo da
+        respectiva linha na tabela."
+        tests:
+          - not_null
+  - name: aux_viagem_distancia
+    description: "Tabela auxiliar de cálculo da distancia e total de
+    registdroso GPS das viagens."
+    columns:
+      - name: data
+        description: "Data de início da viagem"
+        tests:
+          - not_null
+      - name: id_viagem
+        description: "Código identificador da viagem (id_veiculo +
+        servico + datetime_partida)" 
+        tests:
+          - not_null
+          - unique
+        tests:
+          - not_null
+          - unique
+      - name: distancia_shape
+        description: "Distância do shape (trajeto) planejado do serviço"
+        tests:
+          - not_null
+          - greater_than_zero
+      - name: distancia_aferida
+        description: "Distância aferida da viagem (geodésia entre
+        posições consecutivas do sinal de GPS)"
+        tests:
+          - not_null
+          - greater_than_zero
+      - name: n_registros_middle
+        description: "Contagem de sinais de GPS emitidos no meio do
+      trajeto."
+        tests:
+          - not_null
+          - greater_than_zero
+      - name: n_registros_start
+        description: "Contagem de sinais de GPS emitidos no ponto de
+       de início do trajeto."
+        tests:
+          - not_null
+          - greater_than_zero
+      - name: n_registros_end
+        description: "Contagem de sinais de GPS emitidos no ponto final
+        do trajeto."
+        tests:
+          - not_null
+          - greater_than_zero
+      - name: n_registros_out
+        description: "Contagem de sinais de GPS emitidos fora do trajeto."
+        tests:
+          - not_null
+          - not_negative
+      - name: n_registros_total
+        description: "Contagem de sinais de GPS emitidos no tempo da viagem."
+        tests:
+          - not_null
+          - greater_than_zero
+      - name: n_registros_minuto
+        description: "Contagem de minutos do trajeto com pelo menos 1 sinal de GPS emitido."
         tests:
           - not_null
           - greater_than_zero
@@ -295,7 +478,7 @@ models:
         tests:
           - not_null
       - name: sentido_shape
-        description: "Sentido do shape (codificado no shape_id)"
+        description: "Sentido do shape (codificado no shape_id - categorias: I (ida), V (volta), C (circular)"
         tests:
           - not_null
           - accepted_values:
@@ -329,7 +512,7 @@ models:
         tests:
           - not_null
           - greater_than_zero
-      - name: distancia_teorica
+      - name: distancia_shape
         description: "Distância do shape (trajeto) planejado do serviço"
         tests:
           - not_null
@@ -363,6 +546,11 @@ models:
         tests:
           - not_null
           - not_negative
+      - name: n_registros_shape
+        description: "Contagem total de sinais de GPS emitidos dentro do trajeto."
+        tests:
+          - not_null
+          - not_negative
       - name: n_registros_total
         description: "Contagem de sinais de GPS emitidos no tempo da viagem."
         tests:
@@ -381,6 +569,11 @@ models:
           - greater_than_zero
       - name: perc_conformidade_distancia
         description: "Razão da distância aferida pela distância teórica x 100"
+        tests:
+          - not_null
+          - greater_than_zero
+      - name: perc_conformidade_registros
+        description: "Percentual de minutos da viagem com registro de sinal de GPS"
         tests:
           - not_null
           - greater_than_zero
@@ -408,10 +601,6 @@ models:
           - not_null
       - name: id_empresa
         description: "Código identificador da empresa que opera o veículo"
-        tests:
-          # - not_null
-      - name: consorcio
-        description: "Consórcio que opera o serviço"
         tests:
           # - not_null
       - name: servico_informado
@@ -478,7 +667,7 @@ models:
         tests:
           - not_null
           - greater_than_zero
-      - name: distancia_teorica
+      - name: distancia_shape
         description: "Distância do shape (trajeto) planejado do serviço"
         tests:
           - not_null

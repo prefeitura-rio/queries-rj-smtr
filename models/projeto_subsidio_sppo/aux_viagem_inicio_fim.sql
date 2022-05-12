@@ -1,4 +1,3 @@
-
 -- 1. Cria colunas identificadoras de início (starts) e fim (ends) de viagens
 with aux_status as (
     select 
@@ -13,10 +12,6 @@ with aux_status as (
             rows between 1 preceding and current row) = 'middleend' ends
     from 
         {{ ref('aux_registros_status_trajeto') }}
-    where 
-        shape_id is not null
-    order by 
-        shape_id, timestamp_gps
 ),
 -- 2. Classifica início-fim consecutivos como partida-chegada da viagem
 aux_inicio_fim AS (
@@ -51,30 +46,24 @@ inicio_fim AS (
             order by id_veiculo, shape_id, timestamp_gps
         ) as datetime_chegada,
     from aux_inicio_fim
-),
--- 4. Filtra colunas e cria campo identificador da viagem (id_viagem)
-viagem as (
-    select distinct
-        data,
-        tipo_dia,
-        consorcio,
-        id_veiculo,
-        id_empresa,
-        servico_informado, -- no momento da partida
-        servico_realizado,
-        shape_id,
-        sentido_shape,
-        sentido,
-        concat(id_veiculo, shape_id, FORMAT_DATETIME("%Y%d%m%H%M%S", datetime_partida)) as id_viagem,
-        datetime_partida,
-        datetime_chegada
-    from 
-        inicio_fim
-    where 
-        datetime_partida is not null
 )
-select
-    *,
+-- 4. Filtra colunas e cria campo identificador da viagem (id_viagem)
+select distinct
+    concat(id_veiculo, "-", servico_realizado ,"-", sentido, "-", FORMAT_DATETIME("%Y%m%d%H%M%S", datetime_partida)) as id_viagem,
+    data,
+    tipo_dia,
+    id_empresa,
+    id_veiculo,
+    servico_informado, -- no momento da partida
+    servico_realizado,
+    shape_id,
+    sentido_shape,
+    distancia_shape,
+    sentido,
+    datetime_partida,
+    datetime_chegada,
     '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
 from 
-    viagem
+    inicio_fim
+where 
+    datetime_partida is not null

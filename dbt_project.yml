@@ -40,18 +40,21 @@ models:
       +schema: projeto_subsidio_sppo # Overrides the default schema (defaults to what is set on profiles.yml)
 
 vars:
-  # model version
-  projeto_subsidio_sppo_version: "projeto_subsidio_sppo_v1.0.0"
-  # general tables (please keep on alphabetical order)
-  linha_empresa: "rj-smtr-dev.projeto_subsidio_sppo.aux_empresa_linha"
+
+  # General tables (please keep on alphabetical order)
+  gps_sppo: "`rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo`"
   sigmob_data_versao: "`rj-smtr-dev.br_rj_riodejaneiro_sigmob.data_versao_efetiva`"
   sigmob_routes: "`rj-smtr-dev.br_rj_riodejaneiro_sigmob.routes_desaninhada`"
   sigmob_shapes: "`rj-smtr-dev.br_rj_riodejaneiro_sigmob.shapes_geom`"
-  sppo_gps: "`rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo`"
-  sppo_viagem_planejada: "`rj-smtr-dev.projeto_subsidio_sppo.aux_viagem_planejada_revisada`"
-  # projeto_subsidio_sppo
-  start_date: "2022-04-01"
-  perc_conformidade_distancia_min: 80
-  perc_conformidade_distancia_max: 120
-  perc_conformidade_shape_min: 80
-  perc_conformidade_registros_min: 80
+  
+  # Dataset: projeto_subsidio_sppo
+  # => Model version
+  projeto_subsidio_sppo_version: "projeto_subsidio_sppo_v1.0.0"
+  # => Parameters
+  run_date: "2022-05-01"
+  start_date: "2022-04-01" # data de início para considerar sigmob
+  perc_conformidade_distancia_min: 70
+  perc_conformidade_shape_min: 70
+  perc_conformidade_registros_min: 50
+  aux_empresa_linha: "rj-smtr-dev.projeto_subsidio_sppo.aux_empresa_linha"
+  aux_viagem_planejada: "`rj-smtr-dev.projeto_subsidio_sppo.aux_viagem_planejada`"

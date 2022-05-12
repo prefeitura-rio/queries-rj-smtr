@@ -1,30 +1,18 @@
-{{ config(
-       materialized='incremental',
-       partition_by={
-              "field":"data",
-              "data_type": "date",
-              "granularity":"day"
-       }
-)
-}}
-
--- 1. Identifica e junta viagens de ida seguidas de volta circulares
+-- 1. Identifica viagens de ida seguidas de volta circulares
 with viagem_circular as (
     select 
-        * except(
-            datetime_chegada, 
-            datetime_chegada_volta
-        ),
-        datetime_chegada_volta as datetime_chegada
+        t.*
     from (
         select 
             *,
             lead(datetime_partida) over (
-                partition by id_veiculo, servico_realizado order by id_veiculo, servico_realizado, datetime_partida, sentido) as datetime_partida_volta,
+                partition by id_veiculo, servico_realizado order by id_veiculo, servico_realizado, datetime_partida, sentido_shape) as datetime_partida_volta,
             lead(datetime_chegada) over (
-                partition by id_veiculo, servico_realizado order by id_veiculo, servico_realizado, datetime_partida, sentido) as datetime_chegada_volta,
-            lead(sentido) over (
-                partition by id_veiculo, servico_realizado order by id_veiculo, servico_realizado, datetime_partida, sentido) = "V" as flag_proximo_volta -- possui volta
+                partition by id_veiculo, servico_realizado order by id_veiculo, servico_realizado, datetime_partida, sentido_shape) as datetime_chegada_volta,
+            lead(shape_id) over (
+                partition by id_veiculo, servico_realizado order by id_veiculo, servico_realizado, datetime_partida, sentido_shape) as shape_id_volta,
+            lead(sentido_shape) over (
+                partition by id_veiculo, servico_realizado order by id_veiculo, servico_realizado, datetime_partida, sentido_shape) = "V" as flag_proximo_volta -- possui volta
         from 
             {{ ref("aux_viagem_inicio_fim") }} v
         where
@@ -32,56 +20,33 @@ with viagem_circular as (
     ) t
     where
         flag_proximo_volta = TRUE
-        and sentido = "I"
-),
--- 2. Junta viagens circulares a não circulares, e calcula tempo de viagem
-viagem as (
-    select 
-        *,
-        datetime_diff(datetime_chegada, datetime_partida, minute) + 1 as tempo_viagem
-    from (
-        select 
-            *
-        from (
-            select 
-                data,
-                tipo_dia,
-                consorcio,
-                id_veiculo,
-                id_empresa,
-                servico_informado,
-                servico_realizado,
-                shape_id,
-                sentido,
-                id_viagem,
-                datetime_partida,
-                datetime_chegada
-            from 
-                viagem_circular
-        ) 
-        union all (
-            select 
-                data,
-                tipo_dia,
-                consorcio,
-                id_veiculo,
-                id_empresa,
-                servico_informado,
-                servico_realizado,
-                shape_id,
-                sentido,
-                id_viagem,
-                datetime_partida,
-                datetime_chegada
-            from 
-                {{ ref("aux_viagem_inicio_fim") }} v
-            where
-                sentido != "C"
-        )
-    ) t
+        and sentido_shape = "I"
+        and datetime_chegada <= datetime_partida_volta
 )
-select 
-    *,
-    '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
-from 
-    viagem
+-- 2. Ajusta id_viagem de ida e volta para serem o mesmo (id_viagem da ida)
+select distinct
+    * 
+from (
+    select
+        case
+            when (
+                v.sentido_shape = "I"
+                and v.datetime_partida = c.datetime_partida
+            ) then c.id_viagem
+            when (
+                v.sentido_shape = "V"
+                and v.datetime_chegada = c.datetime_chegada_volta
+            ) then c.id_viagem
+        end as id_viagem,
+        v.* except(id_viagem)
+    from 
+        {{ ref("aux_viagem_inicio_fim") }} v
+    inner join 
+        viagem_circular c
+    on
+        c.id_veiculo = v.id_veiculo
+        and c.servico_realizado = v.servico_realizado
+        and c.sentido = v.sentido
+) v
+where
+    id_viagem is not null
