@@ -2,18 +2,18 @@
 version: 2
 
 models:
-  - name: aux_shapes_empresa
-    description: "Tabela base de informações de trajetos (shapes)
-    de servicos operados por cada empresa cadastrada"
+  - name: aux_shapes_filtrada
+    description: "Tabela auxiliar de informações de trajetos (shapes)
+    filtrada para os servicos planejados"
     columns:
       - name: shape_id
         description: "Código identificador do shape (trajeto)"
         tests:
           - not_null
-      - name: id_empresa
-        description: "Código identificador da empresa operante do shape"
-        tests:
-          - not_null
+      # - name: id_empresa
+      #   description: "Código identificador da empresa operante do shape"
+      #   tests:
+      #     - not_null
       - name: shape
         description: "Linestring dos pontos gelocalizados do trajeto"
         tests:
@@ -41,7 +41,7 @@ models:
         respectiva linha na tabela."
         tests:
           - not_null
-      - name: distancia_shape
+      - name: distancia_planejada
         description: "Distância total do trajeto (shape)"
         tests:
           - not_null
@@ -109,7 +109,7 @@ models:
         realizado "
         tests:
           - not_null
-      - name: distancia_shape
+      - name: distancia_planejada
         description: "Distância do shape (trajeto) planejado do serviço"
         tests:
           - not_null
@@ -210,8 +210,8 @@ models:
         tests:
           - not_null
   - name: aux_viagem_circular
-    description: "Tabela auxiliar de agregação ida/volta de viagens
-    circulares e cálcul do tempo de viagem."
+    description: "Tabela auxiliar de validação ida+volta como circular e criação de id_viagem
+    único para viagens circulares."
     columns:
       - name: data
         description: "Data de emissão do sinal de GPS"
@@ -324,7 +324,7 @@ models:
         realizado "
         tests:
           - not_null
-      - name: distancia_shape
+      - name: distancia_planejada
         description: "Distância do shape (trajeto) planejado do serviço"
         tests:
           - not_null
@@ -378,12 +378,8 @@ models:
           - not_null
   - name: aux_viagem_distancia
     description: "Tabela auxiliar de cálculo da distancia e total de
-    registdroso GPS das viagens."
+    registros do GPS das viagens."
     columns:
-      - name: data
-        description: "Data de início da viagem"
-        tests:
-          - not_null
       - name: id_viagem
         description: "Código identificador da viagem (id_veiculo +
         servico + datetime_partida)" 
@@ -393,7 +389,7 @@ models:
         tests:
           - not_null
           - unique
-      - name: distancia_shape
+      - name: distancia_planejada
         description: "Distância do shape (trajeto) planejado do serviço"
         tests:
           - not_null
@@ -512,7 +508,7 @@ models:
         tests:
           - not_null
           - greater_than_zero
-      - name: distancia_shape
+      - name: distancia_planejada
         description: "Distância do shape (trajeto) planejado do serviço"
         tests:
           - not_null
@@ -667,7 +663,7 @@ models:
         tests:
           - not_null
           - greater_than_zero
-      - name: distancia_shape
+      - name: distancia_planejada
         description: "Distância do shape (trajeto) planejado do serviço"
         tests:
           - not_null

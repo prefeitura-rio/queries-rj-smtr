@@ -1,33 +1,12 @@
--- TODO: Passar para sumario_viagem_completa
-{{ config(
-       materialized='incremental',
-       partition_by={
-              "field":"data",
-              "data_type": "date",
-              "granularity":"day"
-       }
-)
-}}
-
--- 1. Ajusta servico e adiciona coluna de linha
-with viagem_planejada as (
-    select 
-        * except(servico),
-        REGEXP_REPLACE(servico, " ", "") as servico,
-        REGEXP_REPLACE(servico, "(S|A|N|V|P|R|E|D|B|C|F|G| )", "") as linha
-    from 
-        {{ var("aux_viagem_planejada") }}
-),
--- 2. Cruza informação de consórcio e replica viagens planejadas para os
---    dias avaliados no período
-data_efetiva as (
+-- 1. Recupera informações de consórcios para datas
+with data_efetiva as (
     select distinct
         data,
         data_versao_efetiva_agency
     from 
         {{ var('sigmob_data_versao') }}
     where
-        data between date_sub(date("{{ var("run_date") }}"), interval 1 month) and date_sub("{{ var("run_date") }}", interval 1 day)
+        data between date_sub(date("{{ var("run_date") }}"), interval 8 day) and date("{{ var("run_date") }}")
 ),
 agency as (
     select
@@ -47,13 +26,40 @@ agency as (
     where 
         idModalSmtr in ("22", "O")
 )
+-- 2. Junta infos de distancia planejada dos shapes
+distancia as (
+    select
+        data,
+        tipo_dia,
+        servico,
+        distancia_planejada
+    from
+        {{ ref("aux_shapes_filtrada") }} v
+    where
+        (sentido = "I" or sentido = "V")
+        or (sentido = "C" and sentido_shape = "I")
+)
+-- 2. Junta consórcios e distancia shape aos servicos planejados
 select 
     a.data,
     a.consorcio,
     v.*
 from 
-    viagem_planejada v
-left join 
-    agency a
+     {{ var("aux_viagem_planejada") }} v
+left join (
+    select
+        d.data,
+        a.consorcio,
+        d.servico,
+        d.distancia_planejada
+    from
+        distancia d
+    left join
+        agency a
+    on
+        d.servico = a.servico
+        and d.data = a.data
+        and d.tipo_dia = a.tipo_dia
+) a
 on v.servico = a.servico
 and v.tipo_dia = a.tipo_dia

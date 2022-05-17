@@ -8,7 +8,7 @@ with sumario_viagem as (
         fim_periodo,
         count(id_viagem) as viagens_realizadas,
         sum(distancia_aferida) as distancia_total_aferida,
-        max(distancia_shape) as distancia_shape
+        max(distancia_planejada) as distancia_planejada
     from 
         {{ ref("viagem_completa") }}
     group by
@@ -30,11 +30,11 @@ select
         then ifnull(viagens_realizadas, 0)
         else viagens
     end as viagens_subsidio,
-    ifnull(distancia_shape, 0) * viagens as distancia_total_planejada,
+    ifnull(distancia_planejada, 0) * viagens as distancia_total_planejada,
     case 
         when viagens >= viagens_realizadas
-        then ifnull(distancia_shape, 0) * viagens_realizadas
-        else ifnull(distancia_shape, 0) * viagens
+        then ifnull(distancia_planejada, 0) * viagens_realizadas
+        else ifnull(distancia_planejada, 0) * viagens
     end as distancia_total_subsidio,
     ifnull(distancia_total_aferida, 0) as distancia_total_aferida,
     '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
@@ -47,7 +47,7 @@ from (
 left join
     sumario_viagem v
 on
-    v.servico = p.servico -- ajusta tipo de servico entre tabelas (ex: 309 SN -> 309SN)
+    v.servico = p.servico
     and v.tipo_dia = p.tipo_dia
     and v.sentido = p.sentido
     and v.data = p.data

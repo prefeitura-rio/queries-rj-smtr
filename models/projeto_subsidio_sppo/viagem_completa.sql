@@ -55,7 +55,7 @@ select distinct
         end as tipo_viagem,
     tempo_viagem,
     tempo_planejado,
-    distancia_shape,
+    distancia_planejada,
     distancia_aferida,
     n_registros_shape,
     n_registros_total,

@@ -58,7 +58,7 @@ select distinct
     servico_realizado,
     shape_id,
     sentido_shape,
-    distancia_shape,
+    distancia_planejada,
     sentido,
     datetime_partida,
     datetime_chegada,

@@ -8,22 +8,7 @@
 )
 }}
 
--- 1. Reune viagens circulares (ida e volta) e não circulares
-with viagem as (
-    select
-        *
-    from 
-        {{ ref("aux_viagem_circular") }} v
-    union all (
-        select
-            *
-        from
-            {{ ref("aux_viagem_inicio_fim") }} v
-        where 
-            sentido = "I" or sentido = "V"
-    )
-),
--- 2. Identifica registros iniciais e finais de cada viagem na tabela de GPS
+-- 1. Identifica registros iniciais e finais de cada viagem na tabela de GPS
 aux_registros as (
     select 
         s.*,
@@ -38,7 +23,7 @@ aux_registros as (
     from 
         {{ ref("aux_registros_status_trajeto") }} s
     left join 
-        viagem v
+        {{ ref("aux_viagem_circular") }} v
     on 
         s.id_veiculo = v.id_veiculo
         and (s.timestamp_gps = v.datetime_partida or s.timestamp_gps = v.datetime_chegada)
@@ -77,7 +62,7 @@ registros_viagem as (
         * except(id_viagem, versao_modelo)
     from aux_registros
 )
--- 2. Filtra apenas registros de viagens identificadas
+-- 3. Filtra apenas registros de viagens identificadas
 select 
     *,
     '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo

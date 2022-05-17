@@ -12,23 +12,10 @@ with distancia as (
     from 
         {{ ref("aux_registros_status_viagem") }}
     group by 1
-),
-viagem as (
-    select distinct
-        id_viagem,
-        servico_realizado,
-        data
-    from 
-        {{ ref("aux_viagem_inicio_fim") }}
 )
 select distinct
     v.*,
-    d.* except(id_viagem),
     n_registros_middle + n_registros_start + n_registros_end as n_registros_shape,
     '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
 from 
     viagem v
-inner join 
-    distancia d
-on
-    v.id_viagem = d.id_viagem

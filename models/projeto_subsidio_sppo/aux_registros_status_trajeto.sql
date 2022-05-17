@@ -11,7 +11,7 @@ with gps as (
         end as tipo_dia
     from 
         {{ var('gps_sppo') }} g
-    where g.data between date_sub(date("{{ var("run_date") }}"), interval 1 month) and date_sub("{{ var("run_date") }}", interval 1 day)
+    where g.data between date_sub(date("{{ var("run_date") }}"), interval 8 day) and date("{{ var("run_date") }}")
 ),
 -- 2. Classifica a posição do veículo em todos os shapes possíveis de
 --    serviços de uma mesma empresa
@@ -29,7 +29,7 @@ status_viagem as (
         s.shape_id,
         s.sentido_shape,
         s.sentido,
-        s.distancia_shape,
+        s.distancia_planejada,
         ifnull(g.distancia,0) as distancia,
         case
             when ST_DWITHIN(g.posicao_veiculo_geo, start_pt, 100)
@@ -43,7 +43,7 @@ status_viagem as (
     from 
         gps g
     inner join 
-        {{ ref('aux_shapes_empresa') }} s
+        {{ ref('aux_shapes_filtrada') }} s
     on 
         g.data = s.data
         -- and g.id_empresa = s.id_empresa
