@@ -70,8 +70,8 @@ models:
       - name: shape_id
         description: Identificador único para uma linestring associada à um itinerário
         tests:
-          - relationships:
-              to: ref("shapes_geom")
+          - contained:
+              in: ref("shapes_geom")
               field: shape_id
   - name: shapes_geom
     description: tabela com as linestrings de cada itinarário consolidadas a partir da captura ponto a ponto
@@ -84,6 +84,6 @@ models:
           - unique_relation:
               partition_column: data_versao
               relation_field: trip_id
-          - relationships:
-              to: ref('trips_desaninhada')
+          - contained:
+              in: ref('trips_desaninhada')
               field: shape_id
