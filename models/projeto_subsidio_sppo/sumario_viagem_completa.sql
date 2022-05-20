@@ -39,7 +39,7 @@ select
     ifnull(distancia_total_aferida, 0) as distancia_total_aferida,
     '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
 from (
-    select
+    select distinct
         *
     from
         {{ ref("viagem_planejada") }}
