@@ -10,7 +10,7 @@ with shapes as (
         linha_gtfs
     from {{ var('sigmob_shapes') }} s
     where
-        data_versao between date_sub(date("{{ var("run_date") }}"), interval 1 month) and date("{{ var("run_date") }}")
+        data between date_sub(date("{{ var("run_date") }}"), interval 1 month) and date("{{ var("run_date") }}")
         and id_modal_smtr in ('22','O')
 ),
 -- 2. Adiciona data efetiva dos shapes - garante a última versão
@@ -26,7 +26,7 @@ shapes_efetiva as (
         from 
             {{ var('sigmob_data_versao') }}
         where
-            data between date_sub(date("{{ var("run_date") }}"), interval 8 day) and date("{{ var("run_date") }}")
+            data between date_sub(date("{{ var("run_date") }}"), interval 2 month) and date("{{ var("run_date") }}")
     ) e
     left join
         shapes s

@@ -6,7 +6,7 @@ with data_efetiva as (
     from 
         {{ var('sigmob_data_versao') }}
     where
-        data between date_sub(date("{{ var("run_date") }}"), interval 8 day) and date("{{ var("run_date") }}")
+        data between date_sub(date("{{ var("run_date") }}"), interval 1 month) and date("{{ var("run_date") }}")
 ),
 agency as (
     select
