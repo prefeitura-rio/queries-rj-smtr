@@ -9,8 +9,10 @@ with distancia as (
         sum(case when status_viagem = "out" then 1 else 0 end) as n_registros_out,
         count(timestamp_gps) as n_registros_total,
         count(distinct timestamp_minuto_gps) as n_registros_minuto
-    from 
-        {{ ref("aux_registros_status_viagem") }}
+    from (
+        select distinct * except(posicao_veiculo_geo)
+        from {{ ref("aux_registros_status_viagem") }}
+    )
     group by 1
 )
 select distinct

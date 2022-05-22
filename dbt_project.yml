@@ -51,9 +51,10 @@ vars:
   # => Model version
   projeto_subsidio_sppo_version: "projeto_subsidio_sppo_v1.0.0"
   # => Parameters
-  run_date: "2022-04-04"
-  perc_conformidade_distancia_min: 70
-  perc_conformidade_shape_min: 70
-  perc_conformidade_registros_min: 50
-  # aux_empresa_linha: "rj-smtr-dev.projeto_subsidio_sppo.aux_empresa_linha"
-  aux_viagem_planejada: "`rj-smtr-dev.projeto_subsidio_sppo_sandbox.aux_viagem_planejada`"
+  run_date: "2022-06-01"
+  buffer: 500 # distância em metros para buffer
+  perc_conformidade_distancia_min: 0
+  perc_conformidade_shape_min: 0
+  perc_conformidade_registros_min: 0
+  aux_empresa_linha: "rj-smtr-dev.projeto_subsidio_sppo.aux_empresa_linha"
+  aux_viagem_planejada: "`rj-smtr-dev.projeto_subsidio_sppo.aux_viagem_planejada`"
