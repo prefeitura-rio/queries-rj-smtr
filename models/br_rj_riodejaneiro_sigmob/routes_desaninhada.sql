@@ -47,7 +47,7 @@ ultimas_versoes as (
     select
         *
     from desaninhada
-    where DATE(fimVigencia) >= CURRENT_DATE() or fimVIgencia is null
+    where DATE(fimVigencia) >= DATE(data_versao) or fimVigencia is null
     order by route_id, fimVigencia
 )
 select 

@@ -104,7 +104,7 @@ with
                      end_pt,
                      m.data_versao,
                      row_number() over(
-                            partition by m.data_versao, m.shape_id
+                            partition by m.data_versao, m.shape_id, m.trip_id
                      ) rn
               FROM merged m 
               JOIN linhas l
