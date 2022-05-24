@@ -23,4 +23,4 @@ SELECT
 SAFE_CAST(service_id AS STRING) service_id,
 REPLACE(content,"None","") content,
 SAFE_CAST(data_versao AS DATE) data_versao
-from {{var("calendar")}} as t
+from {{var("calendar_staging")}} as t

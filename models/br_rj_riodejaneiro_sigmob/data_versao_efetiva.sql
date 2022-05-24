@@ -10,7 +10,7 @@ agency as (
 SELECT 
     data,
     data_versao as data_versao_original, 
-    CASE WHEN data < DATE("{{var("data_inclusao_agency")}}") THEN DATE("{{var("data_inclusao_agency")}}") ELSE
+    CASE WHEN data <= DATE("{{var("data_inclusao_agency")}}") THEN DATE("{{var("data_inclusao_agency")}}") ELSE
         LAST_VALUE(DATE(data_versao) IGNORE NULLS) OVER (ORDER BY data ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) 
     END AS data_versao_efetiva
 FROM UNNEST(GENERATE_DATE_ARRAY(DATE('2021-01-01'), CURRENT_DATE())) data
@@ -66,7 +66,7 @@ linhas as (
     SELECT 
     data,
     DATE(data_versao) as data_versao_original, 
-    CASE WHEN data < DATE("{{var("data_inclusao_linhas")}}") THEN DATE("{{var("data_inclusao_linhas")}}") ELSE
+    CASE WHEN data <= DATE("{{var("data_inclusao_linhas")}}") THEN DATE("{{var("data_inclusao_linhas")}}") ELSE
         LAST_VALUE(DATE(data_versao) IGNORE NULLS) OVER (ORDER BY data ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) 
     END AS data_versao_efetiva
 FROM UNNEST(GENERATE_DATE_ARRAY(DATE('2021-01-01'), CURRENT_DATE())) data
@@ -80,7 +80,7 @@ routes as (
 SELECT 
     data,
     DATE(data_versao) as data_versao_original, 
-    CASE WHEN data < DATE("{{var("data_inclusao_routes")}}") THEN DATE("{{var("data_inclusao_routes")}}") ELSE
+    CASE WHEN data <= DATE("{{var("data_inclusao_routes")}}") THEN DATE("{{var("data_inclusao_routes")}}") ELSE
         LAST_VALUE(DATE(data_versao) IGNORE NULLS) OVER (ORDER BY data ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) 
     END AS data_versao_efetiva
 FROM UNNEST(GENERATE_DATE_ARRAY(DATE('2021-01-01'), CURRENT_DATE())) data
@@ -94,7 +94,7 @@ shapes as (
 SELECT 
     data,
     data_versao as data_versao_original, 
-   CASE WHEN data < DATE("{{var("data_inclusao_shapes")}}") THEN DATE("{{var("data_inclusao_shapes")}}") ELSE
+    CASE WHEN data <= DATE("{{var("data_inclusao_shapes")}}") THEN DATE("{{var("data_inclusao_shapes")}}") ELSE
         LAST_VALUE(DATE(data_versao) IGNORE NULLS) OVER (ORDER BY data ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) 
     END AS data_versao_efetiva
 FROM UNNEST(GENERATE_DATE_ARRAY(DATE('2021-01-01'), CURRENT_DATE())) data
@@ -122,7 +122,7 @@ stop_times as (
 SELECT 
     data,
     data_versao as data_versao_original, 
-    CASE WHEN data < DATE("{{var("data_inclusao_stop_times")}}") THEN DATE("{{var("data_inclusao_stop_times")}}") ELSE
+    CASE WHEN data <= DATE("{{var("data_inclusao_stop_times")}}") THEN DATE("{{var("data_inclusao_stop_times")}}") ELSE
         LAST_VALUE(DATE(data_versao) IGNORE NULLS) OVER (ORDER BY data ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) 
     END AS data_versao_efetiva
 FROM UNNEST(GENERATE_DATE_ARRAY(DATE('2021-01-01'), CURRENT_DATE())) data
@@ -136,7 +136,7 @@ stops as (
 SELECT 
     data,
     data_versao as data_versao_original, 
-    CASE WHEN data < DATE("{{var("data_inclusao_stops")}}") THEN DATE("{{var("data_inclusao_stops")}}") ELSE
+    CASE WHEN data <= DATE("{{var("data_inclusao_stops")}}") THEN DATE("{{var("data_inclusao_stops")}}") ELSE
         LAST_VALUE(DATE(data_versao) IGNORE NULLS) OVER (ORDER BY data ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) 
     END AS data_versao_efetiva
 FROM UNNEST(GENERATE_DATE_ARRAY(DATE('2021-01-01'), CURRENT_DATE())) data
@@ -150,7 +150,7 @@ trips as (
 SELECT 
     data,
     data_versao as data_versao_original, 
-    CASE WHEN data < DATE("{{var("data_inclusao_trips")}}") THEN DATE("{{var("data_inclusao_trips")}}") ELSE
+    CASE WHEN data <= DATE("{{var("data_inclusao_trips")}}") THEN DATE("{{var("data_inclusao_trips")}}") ELSE
         LAST_VALUE(DATE(data_versao) IGNORE NULLS) OVER (ORDER BY data ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) 
     END AS data_versao_efetiva
 FROM UNNEST(GENERATE_DATE_ARRAY(DATE('2021-01-01'), CURRENT_DATE())) data

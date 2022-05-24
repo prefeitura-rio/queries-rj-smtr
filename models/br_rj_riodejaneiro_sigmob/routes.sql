@@ -23,4 +23,4 @@ SELECT
 SAFE_CAST(route_id AS STRING) route_id,
 REPLACE(content, "None", '') content,
 SAFE_CAST(data_versao AS DATE) data_versao
-from {{var("routes")}} as t
+from {{var("routes_staging")}} as t

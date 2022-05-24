@@ -23,4 +23,4 @@ SELECT
 SAFE_CAST(agency_id AS STRING) agency_id,
 REPLACE(content,"None","") content,
 SAFE_CAST(data_versao AS DATE) data_versao
-from {{var('agency')}} as t
+from {{var('agency_staging')}} as t

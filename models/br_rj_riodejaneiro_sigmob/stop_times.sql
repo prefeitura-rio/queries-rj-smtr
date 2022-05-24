@@ -23,4 +23,4 @@ SELECT
 SAFE_CAST(stop_id AS STRING) stop_id,
 REPLACE(content,"None","") content,
 SAFE_CAST(data_versao AS DATE) data_versao
-from {{var("stop_times")}} as t
+from {{var("stop_times_staging")}} as t

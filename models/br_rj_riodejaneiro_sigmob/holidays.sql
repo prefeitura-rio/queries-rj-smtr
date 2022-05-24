@@ -23,4 +23,4 @@ SELECT
 DATE(SAFE_CAST(Data AS DATETIME)) data,
 REPLACE(content,"None","") content,
 SAFE_CAST(data_versao AS DATE) data_versao
-from {{var("holidays")}} as t
+from {{var("holidays_staging")}} as t

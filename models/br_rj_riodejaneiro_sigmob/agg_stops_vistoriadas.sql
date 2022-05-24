@@ -12,7 +12,7 @@ SELECT
     json_value(content, '$.Bairro') as Bairro
 FROM {{ ref('stops') }}
 where json_value(content, '$.PontoExistente') = 'SIM'
-and json_value(content, '$.idModalSmtr') = '22')
+and json_value(content, '$.idModalSmtr') in ('22', 'O'))
 select data_versao, AP, Bairro,
     sum(case when flag_vistoriada then 1 else 0 end) n_vistoridas,
     count(*) n_pontos
