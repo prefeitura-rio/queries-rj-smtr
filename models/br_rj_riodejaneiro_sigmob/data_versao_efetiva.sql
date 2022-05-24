@@ -200,5 +200,5 @@ select *
 from joined 
 {% if is_incremental() %}
     {%set max_date_partition = run_query("select max(DATE(data)) from " ~ this).columns[0].values()[0]%}
-    where DATE(data) > ({{max_date_partition}})
+    where DATE(data) > ("{{max_date_partition}}")
 {% endif %}
