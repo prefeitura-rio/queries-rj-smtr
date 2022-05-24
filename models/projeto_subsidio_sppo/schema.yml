@@ -10,10 +10,6 @@ models:
         description: "Código identificador do shape (trajeto)"
         tests:
           - not_null
-      # - name: id_empresa
-      #   description: "Código identificador da empresa operante do shape"
-      #   tests:
-      #     - not_null
       - name: shape
         description: "Linestring dos pontos gelocalizados do trajeto"
         tests:
@@ -57,6 +53,83 @@ models:
           - not_null
       - name: linha
         description: "Linha correspondente ao shape (ex: 309)"
+        tests:
+          - not_null
+  - name: viagem_planejada
+    description: "Tabela histórica com detalhes das viagens planejadas a cada dia"
+    columns:
+      - name: consorcio
+        description: "Consórcio ao qual o serviço pertence"
+        tests:
+          - not_null
+      - name: data
+        description: "Data"
+        tests:
+          - not_null
+      - name: data_shape
+        description: "Data do shape"
+        tests:
+          - not_null
+      - name: tipo_dia
+        description: "Dia da semana - categorias: Dia Útil, Sábado, Domingo"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["I", "V", "C"]
+      - name: servico
+        description: "Serviço planejado"
+        tests:
+          - not_null
+      - name: sentido
+        description: "Sentido planejado - categorias: I
+        (ida), V (volta), C (circular)"
+        tests:
+          - not_null
+      - name: inicio_periodo
+        description: "Início do período de operação planejado"
+        tests:
+          - not_null
+      - name: fim_periodo
+        description: "Fim do período de operação planejado"
+        tests:
+          - not_null
+      - name: intervalo
+        description: "Intervalo de saída planejado"
+        tests:
+          - not_null
+      - name: viagens
+        description: "Viagens planejadas"
+        tests:
+          - not_null
+      - name: tempo_viagem
+        description: "Tempo planejado de uma viagem"
+        tests:
+          - not_null
+          - greater_than_zero
+      - name: variacao_itinerario
+        description: "Variação dee itinerário da viagem - categorias:
+        DD, DU, SS, RT, RM, DA, SA"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["DD", "DU", "SS", "RT", "RM", "DA", "SA"]
+      - name: sentido_shape
+        description: "Sentido do shape (codificado no shape_id - categorias: I (ida), V (volta), C (circular)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["I", "V", "C"]
+      - name: shape_id
+        description: "Código identificador do shape (trajeto) do serviço
+        realizado "
+        tests:
+          - not_null
+      - name: shape
+        description: "Linestring dos pontos gelocalizados do trajeto"
+        tests:
+          - not_null
+      - name: distancia_planejada
+        description: "Distância do shape (trajeto) planejado"
         tests:
           - not_null
   - name: aux_registros_status_trajeto
@@ -110,7 +183,7 @@ models:
         tests:
           - not_null
       - name: distancia_planejada
-        description: "Distância do shape (trajeto) planejado do serviço"
+        description: "Distância do shape (trajeto) planejado"
         tests:
           - not_null
       - name: distancia
@@ -325,7 +398,7 @@ models:
         tests:
           - not_null
       - name: distancia_planejada
-        description: "Distância do shape (trajeto) planejado do serviço"
+        description: "Distância do shape (trajeto) planejado"
         tests:
           - not_null
       - name: distancia
@@ -390,7 +463,7 @@ models:
           - not_null
           - unique
       - name: distancia_planejada
-        description: "Distância do shape (trajeto) planejado do serviço"
+        description: "Distância do shape (trajeto) planejado"
         tests:
           - not_null
           - greater_than_zero
@@ -509,7 +582,7 @@ models:
           - not_null
           - greater_than_zero
       - name: distancia_planejada
-        description: "Distância do shape (trajeto) planejado do serviço"
+        description: "Distância do shape (trajeto) planejado"
         tests:
           - not_null
           - greater_than_zero
@@ -664,7 +737,7 @@ models:
           - not_null
           - greater_than_zero
       - name: distancia_planejada
-        description: "Distância do shape (trajeto) planejado do serviço"
+        description: "Distância do shape (trajeto) planejado"
         tests:
           - not_null
           - greater_than_zero

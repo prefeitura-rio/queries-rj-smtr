@@ -9,7 +9,7 @@
 }}
 
 -- 1. Identifica registros iniciais e finais de cada viagem na tabela de GPS
-aux_registros as (
+with aux_registros as (
     select 
         s.*,
         datetime_partida,

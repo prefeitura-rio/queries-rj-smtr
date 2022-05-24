@@ -1,7 +1,24 @@
--- 1. Filtra tabela de shapes até o mês anterior para limitar processamento
-with shapes as (
+-- 1. Define a data e tipo dia do período avaliado (D-3, D-2)
+with data_efetiva as (
+    select distinct
+        data,
+        data_versao_efetiva_shapes,
+        case
+            when extract(dayofweek from data) = 1 then 'Domingo'
+            when extract(dayofweek from data) = 7 then 'Sabado'
+            else 'Dia Útil'
+        end as tipo_dia
+    from 
+        {{ var('sigmob_data_versao') }} a
+    where
+        data between date_sub("{{ var("run_date") }}", interval 3 day)
+            and date_sub("{{ var("run_date") }}", interval 2 day)
+),
+-- 2. Filtra tabela de shapes para limitar processamento (até 14 dias antes de D-3)
+shapes as (
     select
         data_versao,
+        trip_id,
         shape_id,
         shape,
         s.shape_distance/1000 as distancia_planejada,
@@ -10,69 +27,50 @@ with shapes as (
         linha_gtfs
     from {{ var('sigmob_shapes') }} s
     where
-        data between date_sub(date("{{ var("run_date") }}"), interval 1 month) and date("{{ var("run_date") }}")
+        data_versao between date_sub(date("{{ var("run_date") }}"), interval 17 day) and date("{{ var("run_date") }}")
         and id_modal_smtr in ('22','O')
 ),
--- 2. Adiciona data efetiva dos shapes - garante a última versão
+-- 3. Adiciona data efetiva dos shapes - garante a última versão
 --    caso haja falha de captura no dia
 shapes_efetiva as (
     select 
         e.data,
-        s.* except(data_versao)
-    from (
-        select 
-            data,
-            data_versao_efetiva_shapes
-        from 
-            {{ var('sigmob_data_versao') }}
-        where
-            data between date_sub(date("{{ var("run_date") }}"), interval 2 month) and date("{{ var("run_date") }}")
-    ) e
+        e.tipo_dia,
+        SUBSTR(shape_id, 12, 2) as variacao_itinerario,
+        linha_gtfs as servico,  -- ex: 309SN
+        SUBSTR(shape_id, 11, 1) as sentido_shape,
+        s.data_versao as data_shape,
+        s.* except(data_versao, linha_gtfs)
+    from 
+        data_efetiva e
     left join
         shapes s
     on
         s.data_versao = e.data_versao_efetiva_shapes
 ),
--- 3. Cria coluna de serviço e linha padrões com base na linha_gtfs,
---    adiciona classificacao de tipo dia
-shapes_servico as (
-    select
-        * except(linha_gtfs),
-        case
-            -- TODO: ver ordem de prioridade com RM, RT, SA, DA
-            when SUBSTR(shape_id, 12, 2) = "DD" then "Domingo"
-            when SUBSTR(shape_id, 12, 2) = "SS" then "Sabado"
-            when SUBSTR(shape_id, 12, 2) = "DU" then "Dia Útil"
-        end as tipo_dia,
-        REGEXP_REPLACE(linha_gtfs, " ", "") as servico, -- 309 SN -> 309SN
-        -- REGEXP_REPLACE(linha_gtfs, "(S|A|N|V|P|R|E|D|B|C|F|G| )", "") as linha, -- 309SN -> 309
-        SUBSTR(shape_id, 11, 1) as sentido_shape
-    from
-        shapes_data
-    where 
-        tipo_dia is not null
-)
 -- 4. Filtra shapes de servicos circulares planejados (recupera
 --    sentido dos shapes separados em ida/volta)
-with shape_circular as (
+shape_circular as (
     select distinct
         s.shape_id,
         c.sentido
     from 
-        shapes_servico s
+        shapes_efetiva s
     inner join (
         select 
-            tipo_dia,
+            variacao_itinerario,
             servico,
             sentido
         from 
-            {{ var("aux_viagem_planejada") }}
+            {{ ref("aux_viagem_planejada") }}
         where
             sentido = "C"
+             -- TODO: remover filtro após mudança no quadro planejado
+            and variacao_itinerario in ("DU", "SS", "DD")
     ) c
-    on 
+    on
         s.servico = c.servico
-        and s.tipo_dia = c.tipo_dia
+        and s.variacao_itinerario = c.variacao_itinerario
 ),
 -- 5. Filtra shapes de servicos não circulares planejados
 shape_nao_circular as (
@@ -80,21 +78,23 @@ shape_nao_circular as (
         s.shape_id,
         c.sentido
     from 
-        shapes_servico
+        shapes_efetiva s
     inner join (
         select 
-            tipo_dia,
+            variacao_itinerario,
             servico,
             sentido
         from 
-            {{ var("aux_viagem_planejada") }}
+            {{ ref("aux_viagem_planejada") }}
         where 
             sentido = "I" or sentido = "V"
+            -- TODO: remover filtro após mudança no quadro planejado
+            and variacao_itinerario in ("DU", "SS", "DD")
     ) c
     on 
         s.servico = c.servico
         and s.sentido_shape = c.sentido
-        and s.tipo_dia = c.tipo_dia
+        and s.variacao_itinerario = c.variacao_itinerario
 ),
 -- 6. Junta infos de shapes circulares e não ciculares
 shape_sentido as (
@@ -113,18 +113,18 @@ shape_sentido as (
 --    ida (usaremos apenas a ida como padrão, juntando nela as demais infos da volta
 --    consecutiva)
 select
-    e.*,
+    e.* except(distancia_planejada),
     s.sentido,
     case when
         sentido = "C" and sentido_shape = "I"
         then distancia_planejada + lead(distancia_planejada) over (
-                partition by data, servico, tipo_dia 
-                order by data, servico, tipo_dia, sentido_shape)
+                partition by data, servico, variacao_itinerario 
+                order by data, servico, variacao_itinerario, sentido_shape)
         else distancia_planejada
-    end  as distancia_planejada
+    end as distancia_planejada,
     '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
 from 
-    shapes_servico e
+    shapes_efetiva e
 inner join 
     shape_sentido s
 on 
