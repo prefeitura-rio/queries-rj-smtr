@@ -16,8 +16,8 @@ with distancia as (
     group by 1
 )
 select distinct
-    v.*,
+    d.*,
     n_registros_middle + n_registros_start + n_registros_end as n_registros_shape,
     '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
 from 
-    viagem v
+    distancia d

@@ -11,8 +11,8 @@ with data_efetiva as (
     from 
         {{ var('sigmob_data_versao') }} a
     where
-        data between date_sub("{{ var("run_date") }}", interval 3 day)
-            and date_sub("{{ var("run_date") }}", interval 2 day)
+        data between date_sub("{{ var("run_date") }}", interval 2 day)
+            and date_sub("{{ var("run_date") }}", interval 1 day)
 ),
 -- 2. Filtra tabela de shapes para limitar processamento (até 14 dias antes de D-3)
 shapes as (

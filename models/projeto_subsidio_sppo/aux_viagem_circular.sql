@@ -1,4 +1,7 @@
--- 1. Identifica viagens de ida seguidas de volta circulares
+-- 1. Identifica viagens circulares de ida que possuem volta
+--    consecutiva. Em seguida, filtra apenas essas viagens de ida,
+--    adicionadas as informações de
+--    datetime_partida_volta e datetime_chegada_volta
 with ida_volta_circular as (
     select 
         t.*
@@ -22,10 +25,13 @@ with ida_volta_circular as (
         flag_proximo_volta = TRUE
         and sentido_shape = "I"
         and datetime_chegada <= datetime_partida_volta
-)
--- 2. Ajusta id_viagem de ida e volta para serem o mesmopaa viagens
---    circulares (por padrão, id_viagem com shape de ida)
-circular as (
+),
+-- 2. Reclassifica as viagens circulares identificadas: quando é
+--    identificada ida e volta consecutivas, mantém o id_viagem da ida e
+--    troca o id_viagem da volta pelo da ida (para contabilizar distancia
+--    total da viagem). Caso não tenha ida e volta consecutivas,
+--    descarta as viagens identificadas.
+viagem_circular as (
     select distinct
         * 
     from (
@@ -44,7 +50,7 @@ circular as (
         from 
             {{ ref("aux_viagem_inicio_fim") }} v
         inner join 
-            viagem_circular c
+            ida_volta_circular c
         on
             c.id_veiculo = v.id_veiculo
             and c.servico_realizado = v.servico_realizado
@@ -53,11 +59,11 @@ circular as (
     where
         id_viagem is not null
 )
--- 3. Junta viagens circulares tratadas às não circulares já identificadas
+-- 3. Junta viagens circulares tratadas às viagens não circulares já identificadas
 select
     *
 from 
-    circular v
+    viagem_circular v
 union all (
     select
         *

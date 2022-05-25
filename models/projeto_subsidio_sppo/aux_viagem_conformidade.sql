@@ -35,8 +35,7 @@ with viagem as (
                 (select 
                     v.* except(datetime_chegada),
                     lead(datetime_chegada) over (
-                        partition by id_veiculo, servico_realizado 
-                        order by id_veiculo, servico_realizado, datetime_partida, sentido_shape) 
+                        partition by id_viagem order by sentido_shape)
                     as datetime_chegada,
                 from 
                     {{ ref("aux_viagem_circular") }} v
@@ -56,9 +55,8 @@ select distinct
     round(100 * n_registros_minuto/tempo_viagem, 2) as perc_conformidade_registros,
     '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
 from 
-    viagem v -- {{ ref("aux_viagem_circular") }} v
+    viagem v
 inner join 
     {{ ref("aux_viagem_distancia") }} d
 on
     v.id_viagem = d.id_viagem
-    -- and v.data = d.data

@@ -11,8 +11,8 @@ with gps as (
         end as tipo_dia
     from 
         {{ var('gps_sppo') }} g
-    where data between date_sub("{{ var("run_date") }}", interval 3 day)
-        and date_sub("{{ var("run_date") }}", interval 2 day)
+    where data between date_sub("{{ var("run_date") }}", interval 2 day)
+        and date_sub("{{ var("run_date") }}", interval 1 day)
 ),
 -- 2. Classifica a posição do veículo em todos os shapes possíveis de
 --    serviços de uma mesma empresa
