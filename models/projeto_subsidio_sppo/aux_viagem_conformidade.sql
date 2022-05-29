@@ -18,8 +18,9 @@ with viagem as (
             *
         from (
             select
-                * except(sentido_shape, datetime_chegada),
+                * except(sentido_shape, datetime_chegada, distancia_planejada),
                 datetime_chegada,
+                distancia_planejada,
             from 
                 {{ ref("aux_viagem_circular") }} v
             where 
@@ -27,16 +28,16 @@ with viagem as (
         )
         union all (
             select 
-                * except(
-                    sentido_shape, 
-                    datetime_chegada),
-                datetime_chegada,
+                * except(sentido_shape)
             from 
                 (select 
-                    v.* except(datetime_chegada),
+                    v.* except(datetime_chegada, distancia_planejada),
                     lead(datetime_chegada) over (
                         partition by id_viagem order by sentido_shape)
                     as datetime_chegada,
+                    distancia_planejada + lead(distancia_planejada) over (
+                        partition by id_viagem order by sentido_shape)
+                    as distancia_planejada,
                 from 
                     {{ ref("aux_viagem_circular") }} v
                 where 
