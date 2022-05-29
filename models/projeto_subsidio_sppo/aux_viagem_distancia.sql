@@ -2,7 +2,7 @@
 with distancia as (
     select distinct
         id_viagem,
-        sum(distancia)/1000 distancia_aferida,
+        round(sum(distancia)/1000, 3) distancia_aferida,
         sum(case when status_viagem = "middle" then 1 else 0 end) as n_registros_middle,
         sum(case when status_viagem = "start" then 1 else 0 end) as n_registros_start,
         sum(case when status_viagem = "end" then 1 else 0 end) as n_registros_end,

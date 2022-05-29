@@ -11,8 +11,8 @@ with data_efetiva as (
     from 
         {{ var('sigmob_data_versao') }} a
     where
-        data between date_sub("{{ var("run_date") }}", interval 2 day)
-            and date_sub("{{ var("run_date") }}", interval 1 day)
+        data between date_sub(date("{{ var("run_date") }}"), interval 2 day)
+            and date_sub(date("{{ var("run_date") }}"), interval 1 day)
 ),
 -- 2. Filtra tabela de shapes para limitar processamento (até 14 dias antes de D-3)
 shapes as (
@@ -21,7 +21,7 @@ shapes as (
         trip_id,
         shape_id,
         shape,
-        s.shape_distance/1000 as distancia_planejada,
+        round(s.shape_distance/1000, 3) as distancia_planejada,
         start_pt,
         end_pt,
         linha_gtfs
@@ -65,7 +65,7 @@ shape_circular as (
             {{ ref("aux_viagem_planejada") }}
         where
             sentido = "C"
-             -- TODO: remover filtro após mudança no quadro planejado
+             -- TODO: remover filtro após trip_id no quadro planejado
             and variacao_itinerario in ("DU", "SS", "DD")
     ) c
     on
@@ -88,7 +88,7 @@ shape_nao_circular as (
             {{ ref("aux_viagem_planejada") }}
         where 
             sentido = "I" or sentido = "V"
-            -- TODO: remover filtro após mudança no quadro planejado
+            -- TODO: remover filtro após trip_id no quadro planejado
             and variacao_itinerario in ("DU", "SS", "DD")
     ) c
     on 
@@ -113,15 +113,8 @@ shape_sentido as (
 --    ida (usaremos apenas a ida como padrão, juntando nela as demais infos da volta
 --    consecutiva)
 select
-    e.* except(distancia_planejada),
+    e.*,
     s.sentido,
-    case when
-        sentido = "C" and sentido_shape = "I"
-        then distancia_planejada + lead(distancia_planejada) over (
-                partition by data, servico, variacao_itinerario 
-                order by data, servico, variacao_itinerario, sentido_shape)
-        else distancia_planejada
-    end as distancia_planejada,
     '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
 from 
     shapes_efetiva e
