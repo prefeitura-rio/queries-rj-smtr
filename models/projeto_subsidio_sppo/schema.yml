@@ -51,8 +51,15 @@ models:
         description: "Serviço correspondente ao shape (ex: 309SN)"
         tests:
           - not_null
-      - name: linha
-        description: "Linha correspondente ao shape (ex: 309)"
+      - name: variacao_itinerario
+        description: "Variação dee itinerário da viagem - categorias:
+        DD, DU, SS, RT, RM, DA, SA"
+      - name: data_shape
+        description: "Data do shape capturado no SIGMOB (00h)"
+        tests:
+          - not_null
+      - name: trip_id
+        description: "Código identificador do itinerário (trip)"
         tests:
           - not_null
   - name: viagem_planejada
@@ -65,9 +72,9 @@ models:
       - name: data
         description: "Data"
         tests:
-          - not_null
+          - not_nullx
       - name: data_shape
-        description: "Data do shape"
+        description: "Data do shape capturado no SIGMOB (00h)"
         tests:
           - not_null
       - name: tipo_dia
@@ -282,6 +289,10 @@ models:
         respectiva linha na tabela."
         tests:
           - not_null
+      - name: distancia_planejada
+        description: "Distância do shape (trajeto) planejado"
+        tests:
+          - not_null
   - name: aux_viagem_circular
     description: "Tabela auxiliar de validação ida+volta como circular e criação de id_viagem
     único para viagens circulares."
@@ -347,6 +358,10 @@ models:
       - name: versao_modelo
         description: "Versão da metodologia de cálculo da
         respectiva linha na tabela."
+        tests:
+          - not_null
+      - name: distancia_planejada
+        description: "Distância do shape (trajeto) planejado"
         tests:
           - not_null
   - name: aux_registros_status_viagem
@@ -511,6 +526,11 @@ models:
         respectiva linha na tabela."
         tests:
           - not_null
+      - name: n_registros_shape
+        description: "Contagem total de sinais de GPS emitidos dentro do trajeto."
+        tests:
+          - not_null
+          - not_negative
   - name: aux_viagem_conformidade
     description: "Tabela auxiliar de cálculo da conformidade de viagens
     identificadas para validação."
@@ -654,6 +674,10 @@ models:
   - name: viagem_completa
     description: "Detalhes de todas as viagens completas identificadas."
     columns:
+      - name: consorcio
+        description: "Consórcio ao qual o serviço pertence"
+        tests:
+          - not_null
       - name: data
         description: "Data de emissão do sinal de GPS"
         tests:
