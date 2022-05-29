@@ -1,14 +1,14 @@
 with sumario_viagem as (
     select
         data,
+        -- TODO: mudar servico & tipo dia => trip_id com mudança do quadro planejado
         tipo_dia,
         servico_realizado as servico,
         sentido,
         inicio_periodo,
         fim_periodo,
         count(id_viagem) as viagens_realizadas,
-        sum(distancia_aferida) as distancia_total_aferida,
-        max(distancia_planejada) as distancia_planejada
+        sum(distancia_aferida) as distancia_total_aferida
     from 
         {{ ref("viagem_completa") }}
     group by
@@ -21,8 +21,8 @@ select
     p.tipo_dia,
     p.servico,
     p.sentido,
-    p.start_time as inicio_periodo,
-    p.end_time as fim_periodo,
+    p.inicio_periodo,
+    p.fim_periodo,
     viagens as viagens_planejadas,
     ifnull(viagens_realizadas, 0) as viagens_realizadas,
     case 
@@ -47,9 +47,10 @@ from (
 left join
     sumario_viagem v
 on
+    -- TODO: mudar servico & tipo dia => trip_id com mudança do quadro planejado
     v.servico = p.servico
     and v.tipo_dia = p.tipo_dia
     and v.sentido = p.sentido
     and v.data = p.data
-    and v.inicio_periodo = p.start_time
-    and v.fim_periodo = p.end_time
+    and v.inicio_periodo = p.inicio_periodo
+    and v.fim_periodo = p.fim_periodo

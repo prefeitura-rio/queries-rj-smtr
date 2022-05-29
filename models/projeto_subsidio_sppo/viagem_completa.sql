@@ -6,35 +6,38 @@
 -- 1. Identifica viagens que estão dentro do quadro planejado
 with viagem_periodo as (
     select distinct
+        p.consorcio,
         v.*,
-        p.start_time as inicio_periodo,
-        p.end_time as fim_periodo,
+        p.inicio_periodo,
+        p.fim_periodo,
         p.tempo_viagem as tempo_planejado
     from 
         {{ ref("viagem_planejada") }} p
     left join 
         {{ ref("aux_viagem_conformidade") }} v        
     on 
-        v.servico_realizado = p.servico -- ajusta tipo de servico entre tabelas (ex: 309 SN -> 309SN)
+        -- TODO: mudar servico & tipo dia => trip_id com mudança do quadro planejado
+        v.servico_realizado = p.servico
         and v.tipo_dia = p.tipo_dia
         and v.sentido = p.sentido
         and v.data = p.data
     where (
         ( -- 05:00:00 as 23:00:00
-            start_time < time_sub(end_time, interval intervalo minute) 
-            and extract (time from datetime_partida) >= start_time 
-                and extract (time from datetime_partida) < time_sub(end_time, interval intervalo minute)
+            inicio_periodo < time_sub(fim_periodo, interval p.intervalo minute) 
+            and extract (time from datetime_partida) >= inicio_periodo 
+                and extract (time from datetime_partida) < time_sub(fim_periodo, interval p.intervalo minute)
         ) or
         ( -- 23:00:00 as 5:00:00
-            start_time > time_sub(end_time, interval intervalo minute)
-            and ((extract (time from datetime_partida) >= start_time) -- até 00h
-                or (extract (time from datetime_partida) < time_sub(end_time, interval intervalo minute)) -- apos 00h
+            inicio_periodo > time_sub(fim_periodo, interval intervalo minute)
+            and ((extract (time from datetime_partida) >= inicio_periodo) -- até 00h
+                or (extract (time from datetime_partida) < time_sub(fim_periodo, interval p.intervalo minute)) -- apos 00h
             )
         )
     )
 )
 -- 2. Seleciona viagens completas de acordo com a conformidade
 select distinct
+    consorcio,
     data,
     tipo_dia,
     id_empresa,
@@ -66,7 +69,7 @@ select distinct
     round(100 * tempo_viagem/tempo_planejado, 2) as perc_conformidade_tempo,
     '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
 from 
-    viagem_periodo v -- {{ ref("aux_viagem_conformidade") }} v
+    viagem_periodo v
 where (
     perc_conformidade_distancia >= {{ var("perc_conformidade_distancia_min") }}
     )
