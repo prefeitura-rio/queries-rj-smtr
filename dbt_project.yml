@@ -24,6 +24,7 @@ clean-targets: # directories to be removed by `dbt clean`
   - "dbt_modules"
 
 vars:
+  ### SIGMOB
   data_inclusao_agency: "2021-08-03"
   data_inclusao_stop_times: "2021-08-03"
   data_inclusao_linhas: "2021-08-03"
@@ -48,6 +49,28 @@ vars:
   stop_details_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.stop_details"
   stops_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.stops"
   trips_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.trips"
+
+  ### BRT
+  # Parametros de intersecção do ônibus com rota
+  ## Tamanho do buffer da rota
+  tamanho_buffer_metros: 100 # flag_trajeto_correto
+  ## Intervalo máximo que um veículo pode ficar fora da rota para ser considerado
+  ## dentro da rota. Afeta a flag flag_trajeto_correto_hist
+  intervalo_max_desvio_segundos: 600 # flag_trajeto_correto
+  ## Tamanho da janela de tempo (em segundos) para cálculo da média móvel de velocidade do veículo
+  janela_movel_velocidade: 600 # aux_registros_velocidade
+  ## velocidade máxima média que o veículo pode atingir para evitar outliers provenientes de túneis
+  velocidade_maxima: 60
+  ## Velocidade mínima para que o carro seja considerado em movimento em aux_registros_velocidade
+  velocidade_limiar_parado: 3
+  ## Distância mínima para que o veículo seja identificado parado em um terminal ou garagem em aux_registros_parada
+  distancia_limiar_parada: 250
+
+  # dependências de views/tabelas
+  brt_registros: rj-smtr-staging.br_rj_riodejaneiro_brt_gps_staging.registros
+  limites_caixa: "rj-smtr.br_rj_riodejaneiro_geo.limites_geograficos_caixa" # registros_filtrada
+  terminais: "rj-smtr.br_rj_riodejaneiro_transporte.estacoes_e_terminais_brt" # aux_registros_parada
+  polygon_garagem: "rj-smtr.br_rj_riodejaneiro_geo.garagens_polygon" # aux_registros_parada
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
