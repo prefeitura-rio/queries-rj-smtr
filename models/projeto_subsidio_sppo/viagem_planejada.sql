@@ -32,7 +32,7 @@ planejada as (
     from 
         data_efetiva e
     left join
-        {{ ref("aux_viagem_planejada") }} v
+        {{ ref("aux_viagem_planejada_tratada") }} v
     on
         e.tipo_dia = v.tipo_dia
 ),

@@ -1,4 +1,4 @@
--- 1. Define a data e tipo dia do período avaliado (D-3, D-2)
+-- 1. Define a data e tipo dia do período avaliado (D-2, D-1)
 with data_efetiva as (
     select distinct
         data,
@@ -62,7 +62,7 @@ shape_circular as (
             servico,
             sentido
         from 
-            {{ ref("aux_viagem_planejada") }}
+            {{ ref("aux_viagem_planejada_tratada") }}
         where
             sentido = "C"
              -- TODO: remover filtro após trip_id no quadro planejado
@@ -85,7 +85,7 @@ shape_nao_circular as (
             servico,
             sentido
         from 
-            {{ ref("aux_viagem_planejada") }}
+            {{ ref("aux_viagem_planejada_tratada") }}
         where 
             sentido = "I" or sentido = "V"
             -- TODO: remover filtro após trip_id no quadro planejado
