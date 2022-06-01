@@ -1,3 +1,9 @@
+{{
+  config(
+    materialized='ephemeral'
+  )
+}}
+
 /*
 Descrição:
 Identifica veículos parados em terminais ou garagens conhecidas.
@@ -45,13 +51,15 @@ WITH
         posicao_veiculo_geo
       FROM  
         {{ ref('sppo_aux_registros_filtrada') }}
-      {%set max_date = run_query('SELECT MAX(data) FROM' ~ {{this}}).columns[0].values()[0]%}
-      /* last_run_date configurada pra 1h antes da run, variações na periodicidade de materialização devem ser mudadas aqui*/
-      {%set last_run_timestamp = (datetime.now() - timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%S") %}
+      {% if execute %}
+      -- {%set max_date = run_query('SELECT MAX(data) FROM' ~ this ~ ')').columns[0].values()[0]%}
+      -- /* last_run_date configurada pra 1h antes da run, variações na periodicidade de materialização devem ser mudadas aqui*/
+      -- {%set last_run_timestamp = (datetime.now() - timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%S") %}
       WHERE
         data >= "{{max_date}}"
         AND timestamp_gps >= "{{last_run_timestamp}}"
-        AND DATETIME_DIFF(timestamp_captura, timestamp_gps, MINUTE) BETWEEN 0 AND 1
+        -- AND DATETIME_DIFF(timestamp_captura, timestamp_gps, MINUTE) BETWEEN 0 AND 1
+      -- {% endif %}
   ) r
     on 1=1
   )

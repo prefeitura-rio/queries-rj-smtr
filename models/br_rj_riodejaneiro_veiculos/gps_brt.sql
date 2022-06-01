@@ -1,3 +1,13 @@
+{{
+    config(
+        materialized='incremental',
+        partition_by={
+            'field': 'data',
+            'data_type': 'date',
+            'granularity': 'day'
+        }
+    )
+}}
 /*
 Descrição:
 Junção dos passos de tratamento, junta as informações extras que definimos a partir dos registros
@@ -23,7 +33,7 @@ WITH
         servico,
         latitude,
         longitude,
-    FROM {{ brt_registros_filtrada }}
+    FROM {{ ref('brt_aux_registros_filtrada') }}
     WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
     AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
     ),
@@ -31,7 +41,7 @@ WITH
     -- 2. velocidades
     SELECT
         id_veiculo, timestamp_gps, servico, velocidade, distancia, flag_em_movimento
-    FROM {{ brt_velocidade }} 
+    FROM {{ ref('brt_aux_registros_velocidade') }} 
     WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
     AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
     ),
@@ -39,7 +49,7 @@ WITH
     -- 3. paradas
     SELECT 
         id_veiculo, timestamp_gps, servico, tipo_parada,
-    FROM {{ brt_parada }}
+    FROM {{ ref('brt_aux_registros_parada') }}
     WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
     AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
     ),
@@ -53,7 +63,7 @@ WITH
         flag_linha_existe_sigmob,
         flag_trajeto_correto, 
         flag_trajeto_correto_hist
-    FROM {{ brt_flag_trajeto_correto }}
+    FROM {{ ref('brt_aux_registros_flag_trajeto_correto') }}
     WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
     AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
     )

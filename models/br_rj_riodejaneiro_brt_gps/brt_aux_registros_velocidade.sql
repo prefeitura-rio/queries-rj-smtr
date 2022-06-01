@@ -1,3 +1,8 @@
+{{
+    config(
+        materialized='incremental'
+    )
+}}
 /*
 Descrição:
 Estimativa das velocidades dos veículos nos últimos 10 minutos contados a partir da timestamp_gps atual.
@@ -44,7 +49,7 @@ with
                 )),
             0
         ) * 3.6 velocidade 
-    FROM  {{ ref('aux_registros_filtrada') }}
+    FROM  {{ ref('brt_aux_registros_filtrada') }}
     WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
     AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
     ),

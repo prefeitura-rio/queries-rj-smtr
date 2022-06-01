@@ -1,3 +1,8 @@
+{{
+  config(
+    materialized='incremental'
+  )
+}}
 /*
 Descrição:
 Calcula se o veículo está dentro do trajeto correto dado o traçado (shape) cadastrado no SIGMOB em relação à linha que está sendo
@@ -19,7 +24,7 @@ WITH
   registros AS (
     SELECT id_veiculo, servico as linha, latitude, longitude, data, posicao_veiculo_geo, timestamp_gps
     FROM
-      {{ ref('aux_registros_filtrada') }} r
+      {{ ref('brt_aux_registros_filtrada') }} r
     WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
     AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
   ),

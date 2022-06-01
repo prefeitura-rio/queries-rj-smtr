@@ -1,3 +1,13 @@
+{{
+  config(
+    materialized='incremental',
+    partition_by={
+      'field':"data",
+      'data_type':'date',
+      'granularity': 'day'
+    }
+  )
+}}
 /*
 Descrição:
 Junção dos passos de tratamento, junta as informações extras que definimos a partir dos registros
@@ -24,26 +34,26 @@ WITH
       latitude,
       longitude,
 
-    FROM {{ sppo_registros_filtrada }}
-    WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
-    AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
+    FROM {{ ref('sppo_aux_registros_filtrada') }}
+    -- WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
+    -- AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
   ),
   velocidades AS (
     -- 2. velocidades
     SELECT
       id_veiculo, timestamp_gps, linha, velocidade, distancia, flag_em_movimento
     FROM
-      {{ sppo_velocidade }} 
-    WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
-    AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
+      {{ ref('sppo_aux_registros_velocidade') }} 
+    -- WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
+    -- AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
   ),
   paradas as (
     -- 3. paradas
     SELECT 
       id_veiculo, timestamp_gps, linha, tipo_parada,
-    FROM {{ sppo_parada }}
-    WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
-    AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
+    FROM {{ ref('sppo_aux_registros_parada') }}
+    -- WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
+    -- AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
   ),
   flags AS (
     -- 4. flag_trajeto_correto
@@ -56,9 +66,9 @@ WITH
       flag_trajeto_correto, 
       flag_trajeto_correto_hist
     FROM
-      {{ sppo_flag_trajeto_correto }}
-    WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
-    AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
+      {{ ref('sppo_aux_registros_flag_trajeto_correto') }}
+    -- WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
+    -- AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
   )
 -- 5. Junção final
 SELECT
@@ -102,7 +112,7 @@ SELECT
   r.velocidade velocidade_instantanea,
   v.velocidade velocidade_estimada_10_min,
   v.distancia,
-  STRUCT({{ maestro_sha }} AS versao_maestro, {{ maestro_bq_sha }} AS versao_maestro_bq) versao
+  -- STRUCT({{ maestro_sha }} AS versao_maestro, {{ maestro_bq_sha }} AS versao_maestro_bq) versao
 FROM
   registros r
 

@@ -74,6 +74,8 @@ vars:
 
   ### SPPO
   sppo_id_modal_smtr: ["'22'", "'23'", "'O'"]
+  linhas_sppo: "rj-smtr.br_rj_riodejaneiro_transporte.linhas_sppo" # registros_agg_data_hora_consorcio
+
   # dependencias de views/tabelas
   sppo_terminais: "rj-smtr.br_rj_riodejaneiro_transporte.terminais_onibus_coordenadas" # aux_registros_parada
 

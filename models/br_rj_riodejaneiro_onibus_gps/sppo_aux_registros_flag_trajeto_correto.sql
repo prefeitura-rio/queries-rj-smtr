@@ -27,8 +27,9 @@ WITH
     FROM
       {{ ref('sppo_aux_registros_filtrada') }} r 
     WHERE
-      data between DATE({{ date_range_start }}) and DATE({{ date_range_end }})
-      and timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
+        data >= "{{max_date}}"
+    AND 
+        timestamp_gps >= "{{last_run_timestamp}}"
   ),
   intersec AS (
     SELECT

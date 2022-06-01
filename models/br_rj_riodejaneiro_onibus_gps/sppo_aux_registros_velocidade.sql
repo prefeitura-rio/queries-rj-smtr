@@ -1,3 +1,8 @@
+{{
+    config(
+        materialized='ephemeral'
+    )
+}}
 /*
 Descrição:
 Estimativa das velocidades dos veículos nos últimos 10 minutos contados a partir da timestamp_gps atual.
@@ -46,9 +51,9 @@ with
         ) * 3.6 velocidade 
     FROM  {{ ref("sppo_aux_registros_filtrada") }}
     WHERE
-        data between DATE({{ date_range_start }}) and DATE({{ date_range_end }})
-    AND
-        timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
+        data >= "{{max_date}}"
+    AND 
+        timestamp_gps >= "{{last_run_timestamp}}"
     ),
     medias as (
         select 

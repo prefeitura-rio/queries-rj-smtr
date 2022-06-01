@@ -1,3 +1,8 @@
+{{
+  config(
+    materialized='incremental'
+  )
+}}
 /*
 Descrição:
 Identifica veículos parados em terminais ou garagens conhecidas.
@@ -39,7 +44,7 @@ WITH
     JOIN (
       SELECT *
       FROM
-        {{ registros_filtrada }}
+        {{ ref('brt_aux_registros_filtrada') }}
       WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
       AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
         ) r

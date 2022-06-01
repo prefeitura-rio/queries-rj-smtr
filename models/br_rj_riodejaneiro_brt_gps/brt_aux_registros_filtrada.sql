@@ -20,7 +20,7 @@ gps AS (
     *,
     ST_GEOGPOINT(longitude, latitude) posicao_veiculo_geo
   FROM
-    {{ ref('registros_desaninhada') }}
+    {{ ref('brt_registros_desaninhada') }}
   WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
     AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
     AND DATETIME_DIFF(timestamp_captura, timestamp_gps, MINUTE) BETWEEN 0 AND 1

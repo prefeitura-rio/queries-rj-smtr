@@ -1,9 +1,0 @@
-# Definição de taxa de atualização
-scheduling:
-  cron: "*/5 * * * *"
-# Parâmetros de backfill
-backfill:
-  # Formato %Y-%m-%d %H:%M:%S
-  start_timestamp: "2021-11-24 00:00:00"
-  interval:
-    days: 30
