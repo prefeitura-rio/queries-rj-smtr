@@ -16,12 +16,12 @@ WITH
     -- 1. Selecionamos terminais, criando uma geometria de ponto para cada.
     select
       ST_GEOGPOINT(longitude, latitude) ponto_parada, nome_terminal nome_parada, 'terminal' tipo_parada
-    from {{ terminais }}
+    from {{ var('sppo_terminais') }}
   ),
   garagem_polygon AS (
     -- 1. Selecionamos o polígono das garagens.
     SELECT  ST_GEOGFROMTEXT(WKT,make_valid => true) AS poly
-    FROM {{ polygon_garagem }}
+    FROM {{ var('polygon_garagem') }}
   ),
   distancia AS (
     --2. Calculamos as distâncias e definimos nrow
@@ -44,12 +44,15 @@ WITH
         linha, 
         posicao_veiculo_geo
       FROM  
-        {{ registros_filtrada }}
+        {{ ref('sppo_aux_registros_filtrada') }}
+      {%set max_date = run_query('SELECT MAX(data) FROM' ~ {{this}}).columns[0].values()[0]%}
+      /* last_run_date configurada pra 1h antes da run, variações na periodicidade de materialização devem ser mudadas aqui*/
+      {%set last_run_timestamp = (datetime.now() - timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%S") %}
       WHERE
-        data between DATE({{ date_range_start }}) and DATE({{ date_range_end }})
-      AND
-        timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
-      ) r
+        data >= "{{max_date}}"
+        AND timestamp_gps >= "{{last_run_timestamp}}"
+        AND DATETIME_DIFF(timestamp_captura, timestamp_gps, MINUTE) BETWEEN 0 AND 1
+  ) r
     on 1=1
   )
 SELECT
@@ -62,7 +65,7 @@ SELECT
   null (para os veículos mais distantes de uma parada que o limiar definido)
   */
   case
-    when distancia_parada < {{ distancia_limiar_parada }} then tipo_parada
+    when distancia_parada < {{ var('distancia_limiar_parada') }} then tipo_parada
     when not ST_INTERSECTS(posicao_veiculo_geo, (SELECT  poly FROM garagem_polygon)) then 'garagem'
     else null
   end tipo_parada,

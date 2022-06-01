@@ -16,7 +16,7 @@ WITH
     -- 1. Selecionamos terminais, criando uma geometria de ponto para cada.
     select
       ST_GEOGPOINT(longitude, latitude) ponto_parada, nome_estacao nome_parada, 'terminal' tipo_parada
-    from {{ var('terminais') }}
+    from {{ var('brt_terminais') }}
   ),
   garagem_polygon AS (
     -- 1. Selecionamos o polígono das garagens.

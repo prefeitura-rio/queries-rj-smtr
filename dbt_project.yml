@@ -69,8 +69,13 @@ vars:
   # dependências de views/tabelas
   brt_registros: rj-smtr-staging.br_rj_riodejaneiro_brt_gps_staging.registros
   limites_caixa: "rj-smtr.br_rj_riodejaneiro_geo.limites_geograficos_caixa" # registros_filtrada
-  terminais: "rj-smtr.br_rj_riodejaneiro_transporte.estacoes_e_terminais_brt" # aux_registros_parada
+  brt_terminais: "rj-smtr.br_rj_riodejaneiro_transporte.estacoes_e_terminais_brt" # aux_registros_parada
   polygon_garagem: "rj-smtr.br_rj_riodejaneiro_geo.garagens_polygon" # aux_registros_parada
+
+  ### SPPO
+  sppo_id_modal_smtr: ["'22'", "'23'", "'O'"]
+  # dependencias de views/tabelas
+  sppo_terminais: "rj-smtr.br_rj_riodejaneiro_transporte.terminais_onibus_coordenadas" # aux_registros_parada
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
@@ -90,3 +95,12 @@ models:
     br_rj_riodejaneiro_sigmob:
       +materialized: view
       +schema: br_rj_riodejaneiro_sigmob
+    br_rj_riodejaneiro_onibus_gps:
+      +materialized: view
+      +schema: br_rj_riodejaneiro_onibus_gps
+    br_rj_riodejaneiro_brt_gps:
+      +materialized: view
+      +schema: br_rj_riodejaneiro_brt_gps
+    br_rj_riodejaneiro_veiculos:
+      +materialized: view
+      +schema: br_rj_riodejaneiro_veiculos

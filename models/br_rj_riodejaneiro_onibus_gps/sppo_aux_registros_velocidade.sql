@@ -44,7 +44,7 @@ with
                 )),
             0
         ) * 3.6 velocidade 
-    FROM  {{ registros_filtrada }}
+    FROM  {{ ref("sppo_aux_registros_filtrada") }}
     WHERE
         data between DATE({{ date_range_start }}) and DATE({{ date_range_end }})
     AND
@@ -61,7 +61,7 @@ with
         AVG(velocidade) OVER (
             PARTITION BY id_veiculo, linha
             ORDER BY unix_seconds(timestamp(timestamp_gps))
-            RANGE BETWEEN {{ janela_movel_velocidade }} PRECEDING AND CURRENT ROW
+            RANGE BETWEEN {{ var('janela_movel_velocidade') }} PRECEDING AND CURRENT ROW
         ) velocidade_media # velocidade com média móvel
     from t_velocidade
     )
@@ -72,14 +72,14 @@ SELECT
     linha, 
     distancia,
     ROUND(
-        CASE WHEN velocidade_media > {{ velocidade_maxima }}
-            THEN {{ velocidade_maxima }}
+        CASE WHEN velocidade_media > {{ var('velocidade_maxima') }}
+            THEN {{ var('velocidade_maxima') }}
             ELSE velocidade_media 
         END, 
         1) as velocidade,
     -- 2. Determinação do estado de movimento do veículo.
     case
-        when velocidade_media < {{ velocidade_limiar_parado }} then false
+        when velocidade_media < {{ var('velocidade_limiar_parado') }} then false
         else true
     end flag_em_movimento,
     STRUCT({{ maestro_sha }} AS versao_maestro, {{ maestro_bq_sha }} AS versao_maestro_bq) versao

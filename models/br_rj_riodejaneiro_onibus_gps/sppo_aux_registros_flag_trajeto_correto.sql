@@ -1,3 +1,9 @@
+{{
+  config(
+    materialized='ephemeral'
+  )
+}}
+
 /*
 Descrição:
 Calcula se o veículo está dentro do trajeto correto dado o traçado (shape) cadastrado no SIGMOB em relação à linha que está sendo
@@ -19,7 +25,7 @@ WITH
   registros AS (
     SELECT id_veiculo, linha, latitude, longitude, data, posicao_veiculo_geo, timestamp_gps
     FROM
-      {{ registros_filtrada }} r 
+      {{ ref('sppo_aux_registros_filtrada') }} r 
     WHERE
       data between DATE({{ date_range_start }}) and DATE({{ date_range_end }})
       and timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
@@ -32,16 +38,16 @@ WITH
       s.route_id,
       -- 1. Buffer e intersecções
       CASE
-        WHEN st_dwithin(shape, posicao_veiculo_geo, {{ tamanho_buffer_metros }}) THEN TRUE
+        WHEN st_dwithin(shape, posicao_veiculo_geo, {{ var('tamanho_buffer_metros') }}) THEN TRUE
         ELSE FALSE
       END AS flag_trajeto_correto,
       -- 2. Histórico de intersecções nos últimos 10 minutos a partir da timestamp_gps atual
       CASE
         WHEN 
-          COUNT(CASE WHEN st_dwithin(shape, posicao_veiculo_geo, {{ tamanho_buffer_metros }}) THEN 1 END) 
+          COUNT(CASE WHEN st_dwithin(shape, posicao_veiculo_geo, {{ var('tamanho_buffer_metros') }}) THEN 1 END) 
           OVER (PARTITION BY id_veiculo 
                 ORDER BY UNIX_SECONDS(TIMESTAMP(timestamp_gps)) 
-                RANGE BETWEEN {{ intervalo_max_desvio_segundos }} PRECEDING AND CURRENT ROW) >= 1 
+                RANGE BETWEEN {{ var('intervalo_max_desvio_segundos') }} PRECEDING AND CURRENT ROW) >= 1 
           THEN True
         ELSE False
       END AS flag_trajeto_correto_hist,
@@ -53,13 +59,13 @@ WITH
         t1.*,
         t2.data_versao_efetiva_shapes as data_versao_efetiva
       FROM registros t1
-      JOIN  {{ data_versao_efetiva }} t2
+      JOIN  {{ ref('data_versao_efetiva') }} t2
       ON t1.data = t2.data
     ) r
     LEFT JOIN (
       SELECT * 
-      FROM {{ shapes }} 
-      WHERE id_modal_smtr in ({{ id_modal_smtr|join(', ') }})
+      FROM {{ ref('shapes_geom') }} 
+      WHERE id_modal_smtr in ({{ var('sppo_id_modal_smtr')|join(', ') }})
     ) s
     ON
       r.linha = s.linha_gtfs
@@ -78,10 +84,10 @@ WITH
       LOGICAL_OR(flag_trajeto_correto) AS flag_trajeto_correto,
       LOGICAL_OR(flag_trajeto_correto_hist) AS flag_trajeto_correto_hist,
       LOGICAL_OR(flag_linha_existe_sigmob) AS flag_linha_existe_sigmob,
-      STRUCT({{ maestro_sha }} AS versao_maestro, 
-            {{ maestro_bq_sha }} AS versao_maestro_bq,
-            data_versao AS data_versao_sigmob
-            ) versao
+      -- STRUCT({{ maestro_sha }} AS versao_maestro, 
+      --       {{ maestro_bq_sha }} AS versao_maestro_bq,
+      --       data_versao AS data_versao_sigmob
+      --       ) versao
     FROM
       intersec i
     GROUP BY

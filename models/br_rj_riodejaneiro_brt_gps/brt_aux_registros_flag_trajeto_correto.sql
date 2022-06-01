@@ -75,10 +75,10 @@ WITH
       LOGICAL_OR(flag_trajeto_correto) AS flag_trajeto_correto,
       LOGICAL_OR(flag_trajeto_correto_hist) AS flag_trajeto_correto_hist,
       LOGICAL_OR(flag_linha_existe_sigmob) AS flag_linha_existe_sigmob,
-      STRUCT({{ maestro_sha }} AS versao_maestro, 
-            {{ maestro_bq_sha }} AS versao_maestro_bq,
-            data_versao AS data_versao_sigmob
-            ) versao
+      -- STRUCT({{ maestro_sha }} AS versao_maestro, 
+      --       {{ maestro_bq_sha }} AS versao_maestro_bq,
+      --       data_versao AS data_versao_sigmob
+      --       ) versao
     FROM
       intersec i
     GROUP BY
