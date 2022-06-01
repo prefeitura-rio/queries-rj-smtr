@@ -58,7 +58,8 @@ models:
       - name: trip_id
         description: Identificador único para um itinerário
         tests:
-          - not_null
+          - not_null:
+              partition_column: data_versao
           - unique_by_date:
               date_column_name: data_versao
           - unique_relation:
@@ -73,17 +74,24 @@ models:
           - contained:
               in: ref("shapes_geom")
               field: shape_id
+              partition_column: data_versao
   - name: shapes_geom
     description: tabela com as linestrings de cada itinarário consolidadas a partir da captura ponto a ponto
     columns:
       - name: shape_id
         tests:
-          - not_null
+          - not_null:
+              partition_column: data_versao
           - unique_by_date:
               date_column_name: data_versao
-          - unique_relation:
-              partition_column: data_versao
-              relation_field: trip_id
           - contained:
               in: ref('trips_desaninhada')
               field: shape_id
+              partition_column: data_versao
+      - name: trip_id
+        tests:
+          - not_null:
+              partition_column: data_versao
+          - unique_relation:
+              partition_column: data_versao
+              relation_field: shape_id

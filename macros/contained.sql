@@ -1,14 +1,22 @@
-{% test contained(model, column_name, in, field) %}
+{% test contained(model, column_name, in, field, partition_column) %}
+{%set query = ("SELECT MAX(" ~ partition_column ~ ") FROM " ~ model ~ ) %}
+{%set max_partition_date = run_query({{query}}).columns[0].values()[0] %}
 select * 
 from (
     SELECT DISTINCT
         {{ column_name }} contained,
         _contains
-    FROM {{model}}
+    FROM (
+        SELECT DISTINCT
+            {{column_name}}
+        FROM {{model}}
+        WHERE {{partition_column}} = "{{max_partition_date}}"
+    )
     LEFT JOIN (
         SELECT DISTINCT
             {{ field }} _contains
         FROM {{ in }}
+        WHERE {{partition_column}} = "{{max_partition_date}}"
     )
     ON {{column_name }} = _contains
 )
