@@ -60,8 +60,9 @@ models:
         tests:
           - not_null:
               partition_column: data_versao
-          - unique_by_date:
-              date_column_name: data_versao
+          - unique_by:
+              partition_column: data_versao
+              unique_keys: [data_versao]
           - unique_relation:
               partition_column: data_versao
               relation_field: route_id
@@ -82,8 +83,9 @@ models:
         tests:
           - not_null:
               partition_column: data_versao
-          - unique_by_date:
-              date_column_name: data_versao
+          - unique_by:
+              partition_column: "data_versao"
+              unique_keys: ["data_versao", "trip_id"]
           - contained:
               in: ref('trips_desaninhada')
               field: shape_id
