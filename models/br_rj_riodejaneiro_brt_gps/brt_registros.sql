@@ -5,4 +5,4 @@ SAFE_CAST(DATETIME(TIMESTAMP_TRUNC(TIMESTAMP(timestamp_captura), SECOND), "Ameri
 REPLACE(content,"None","") content,
 data,
 hora
-from {{var('registros_staging')}} as t
+from {{var('brt_registros_staging')}} as t

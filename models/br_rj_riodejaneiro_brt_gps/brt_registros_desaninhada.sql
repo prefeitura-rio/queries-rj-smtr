@@ -9,4 +9,4 @@ SAFE_CAST(json_value(content,"$.longitude") AS FLOAT64) longitude,
 json_value(content,"$.servico") servico,
 json_value(content,"$.sentido") sentido,
 SAFE_CAST(json_value(content,"$.velocidade") AS INT64) velocidade,
-from {{ var('brt_registros') }} as t
+from {{ ref('brt_registros') }} as t

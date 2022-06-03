@@ -35,25 +35,19 @@ WITH
       longitude,
 
     FROM {{ ref('sppo_aux_registros_filtrada') }}
-    -- WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
-    -- AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
   ),
   velocidades AS (
     -- 2. velocidades
     SELECT
       id_veiculo, timestamp_gps, linha, velocidade, distancia, flag_em_movimento
     FROM
-      {{ ref('sppo_aux_registros_velocidade') }} 
-    -- WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
-    -- AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
+      {{ ref('sppo_aux_registros_velocidade') }}
   ),
   paradas as (
     -- 3. paradas
     SELECT 
       id_veiculo, timestamp_gps, linha, tipo_parada,
     FROM {{ ref('sppo_aux_registros_parada') }}
-    -- WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
-    -- AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
   ),
   flags AS (
     -- 4. flag_trajeto_correto
@@ -67,8 +61,6 @@ WITH
       flag_trajeto_correto_hist
     FROM
       {{ ref('sppo_aux_registros_flag_trajeto_correto') }}
-    -- WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
-    -- AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
   )
 -- 5. Junção final
 SELECT

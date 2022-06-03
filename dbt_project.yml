@@ -24,6 +24,9 @@ clean-targets: # directories to be removed by `dbt clean`
   - "dbt_modules"
 
 vars:
+  date_range_start: "2022-01-01T00:00:00"
+  date_range_end: "2022-01-01T01:00:00"
+
   ### SIGMOB
   data_inclusao_agency: "2021-08-03"
   data_inclusao_stop_times: "2021-08-03"
@@ -67,18 +70,17 @@ vars:
   distancia_limiar_parada: 250
 
   # dependências de views/tabelas
-  brt_registros: rj-smtr-staging.br_rj_riodejaneiro_brt_gps_staging.registros
+  brt_registros_staging: rj-smtr-staging.br_rj_riodejaneiro_brt_gps_staging.registros
   limites_caixa: "rj-smtr.br_rj_riodejaneiro_geo.limites_geograficos_caixa" # registros_filtrada
   brt_terminais: "rj-smtr.br_rj_riodejaneiro_transporte.estacoes_e_terminais_brt" # aux_registros_parada
   polygon_garagem: "rj-smtr.br_rj_riodejaneiro_geo.garagens_polygon" # aux_registros_parada
 
   ### SPPO
   sppo_id_modal_smtr: ["'22'", "'23'", "'O'"]
-  linhas_sppo: "rj-smtr.br_rj_riodejaneiro_transporte.linhas_sppo" # registros_agg_data_hora_consorcio
-
   # dependencias de views/tabelas
   sppo_terminais: "rj-smtr.br_rj_riodejaneiro_transporte.terminais_onibus_coordenadas" # aux_registros_parada
-
+  sppo_registros_staging: rj-smtr-staging.br_rj_riodejaneiro_onibus_gps_staging.registros
+  linhas_sppo: "rj-smtr.br_rj_riodejaneiro_transporte.linhas_sppo" # registros_agg_data_hora_consorcio
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 

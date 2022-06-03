@@ -21,9 +21,12 @@ gps AS (
     ST_GEOGPOINT(longitude, latitude) posicao_veiculo_geo
   FROM
     {{ ref('brt_registros_desaninhada') }}
-  WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
-    AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
+  {%if is_incremental()%}
+  WHERE
+    data between DATE({{var('date_range_start')}}) and DATE({{var('date_range_end')}})
+    AND timestamp_gps > "{{var('date_range_start')}}" and "{{var('date_range_end')}}"
     AND DATETIME_DIFF(timestamp_captura, timestamp_gps, MINUTE) BETWEEN 0 AND 1
+  {% endif %}
     ),
 filtrada AS (
   /* 2. Filtra registros que estão fora de uma caixa que contém a área do

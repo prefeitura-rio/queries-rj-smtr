@@ -45,9 +45,12 @@ WITH
       SELECT *
       FROM
         {{ ref('brt_aux_registros_filtrada') }}
-      WHERE data BETWEEN DATE({{ date_range_start }}) AND DATE({{ date_range_end }})
-      AND timestamp_gps > {{ date_range_start }} and timestamp_gps <= {{ date_range_end }}
-        ) r
+    {%if is_incremental()%}
+    WHERE
+    data between DATE({{var('date_range_start')}}) and DATE({{var('date_range_end')}})
+    AND timestamp_gps > "{{var('date_range_start')}}" and "{{var('date_range_end')}}"
+    {% endif %}
+    ) r
     on 1=1
   )
 SELECT

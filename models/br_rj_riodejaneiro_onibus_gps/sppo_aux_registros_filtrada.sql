@@ -30,14 +30,11 @@ gps AS (
     *,
     ST_GEOGPOINT(longitude, latitude) posicao_veiculo_geo
   FROM
-    {{ var('sppo_registros') }}
+    {{ ref('sppo_registros') }}
   {%if is_incremental()%}
-  {%set max_date = run_query('SELECT MAX(data) FROM' ~ this ).columns[0].values()[0]%}
-  /* last_run_date configurada pra 1h antes da run, variações na periodicidade de materialização devem ser mudadas aqui*/
-  {%set last_run_timestamp = (datetime.now() - timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%S") %}
   WHERE
-    data >= "{{max_date}}"
-    AND timestamp_gps >= "{{last_run_timestamp}}"
+    data between DATE({{var('date_range_start')}}) and DATE({{var('date_range_end')}})
+    AND timestamp_gps > "{{var('date_range_start')}}" and "{{var('date_range_end')}}"
     AND DATETIME_DIFF(timestamp_captura, timestamp_gps, MINUTE) BETWEEN 0 AND 1
   {% endif %}
 ),

@@ -26,10 +26,12 @@ WITH
     SELECT id_veiculo, linha, latitude, longitude, data, posicao_veiculo_geo, timestamp_gps
     FROM
       {{ ref('sppo_aux_registros_filtrada') }} r 
+    {%if is_incremental()%}
     WHERE
-        data >= "{{max_date}}"
-    AND 
-        timestamp_gps >= "{{last_run_timestamp}}"
+      data between DATE({{var('date_range_start')}}) and DATE({{var('date_range_end')}})
+    AND timestamp_gps > "{{var('date_range_start')}}" and "{{var('date_range_end')}}"
+    AND DATETIME_DIFF(timestamp_captura, timestamp_gps, MINUTE) BETWEEN 0 AND 1
+    {% endif %}
   ),
   intersec AS (
     SELECT
@@ -67,6 +69,10 @@ WITH
       SELECT * 
       FROM {{ ref('shapes_geom') }} 
       WHERE id_modal_smtr in ({{ var('sppo_id_modal_smtr')|join(', ') }})
+      {% if is_incremental %}
+      AND data_versao between DATE({{var('date_range_start')}}) and DATE({{var('date_range_end')}})
+      {% endif %}
+      AND data_versao between 
     ) s
     ON
       r.linha = s.linha_gtfs

@@ -50,10 +50,12 @@ with
             0
         ) * 3.6 velocidade 
     FROM  {{ ref("sppo_aux_registros_filtrada") }}
-    WHERE
-        data >= "{{max_date}}"
-    AND 
-        timestamp_gps >= "{{last_run_timestamp}}"
+        {%if is_incremental()%}
+        WHERE
+            data between DATE({{var('date_range_start')}}) and DATE({{var('date_range_end')}})
+        AND timestamp_gps > "{{var('date_range_start')}}" and "{{var('date_range_end')}}"
+        AND DATETIME_DIFF(timestamp_captura, timestamp_gps, MINUTE) BETWEEN 0 AND 1
+        {% endif %}
     ),
     medias as (
         select 
