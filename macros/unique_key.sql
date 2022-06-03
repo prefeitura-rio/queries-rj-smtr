@@ -1,11 +1,11 @@
-{% test unique_by(model, column_name, partition_column, unique_keys) %}
+{% test unique_key(model, column_name, partition_column, combined_keys) %}
 SELECT 
     *
 FROM (
     SELECT
         {{ column_name }},
         {{ partition_column }},
-        ROW_NUMBER() over (partition by {{column_name}}, {{unique_keys|join(',')}}) rn
+        ROW_NUMBER() over (partition by {{(column_name~","~combined_keys|join(',')) if combined_keys != "" else column_name}}) rn
     FROM
         {{ model }}
     WHERE
