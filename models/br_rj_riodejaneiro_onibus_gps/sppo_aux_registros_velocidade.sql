@@ -89,5 +89,5 @@ SELECT
         when velocidade_media < {{ var('velocidade_limiar_parado') }} then false
         else true
     end flag_em_movimento,
-    STRUCT({{ maestro_sha }} AS versao_maestro, {{ maestro_bq_sha }} AS versao_maestro_bq) versao
+    -- STRUCT({{ maestro_sha }} AS versao_maestro, {{ maestro_bq_sha }} AS versao_maestro_bq) versao
 FROM medias
