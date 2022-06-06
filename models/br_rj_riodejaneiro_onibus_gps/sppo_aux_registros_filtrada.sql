@@ -31,12 +31,12 @@ gps AS (
     ST_GEOGPOINT(longitude, latitude) posicao_veiculo_geo
   FROM
     {{ ref('sppo_registros') }}
-  {%if is_incremental()%}
+  {% if is_incremental() -%}
   WHERE
     data between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
-    AND timestamp_gps > "{{var('date_range_start')}}" and "{{var('date_range_end')}}"
+    AND timestamp_gps > "{{var('date_range_start')}}" and timestamp_gps <="{{var('date_range_end')}}"
     AND DATETIME_DIFF(timestamp_captura, timestamp_gps, MINUTE) BETWEEN 0 AND 1
-  {% endif %}
+  {%- endif -%}
 ),
 filtrada AS (
   /*1,2, e 3. Muda o nome de variáveis para o padrão do projeto.*/

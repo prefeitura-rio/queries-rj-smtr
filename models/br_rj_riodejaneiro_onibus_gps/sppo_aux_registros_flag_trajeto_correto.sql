@@ -26,12 +26,12 @@ WITH
     SELECT id_veiculo, linha, latitude, longitude, data, posicao_veiculo_geo, timestamp_gps
     FROM
       {{ ref('sppo_aux_registros_filtrada') }} r 
-    {%if is_incremental()%}
+    {% if not flags.FULL_REFRESH -%}
     WHERE
       data between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
-    AND timestamp_gps > "{{var('date_range_start')}}" and "{{var('date_range_end')}}"
+    AND timestamp_gps > "{{var('date_range_start')}}" and timestamp_gps <="{{var('date_range_end')}}"
     AND DATETIME_DIFF(timestamp_captura, timestamp_gps, MINUTE) BETWEEN 0 AND 1
-    {% endif %}
+    {%- endif -%}
   ),
   intersec AS (
     SELECT
@@ -69,7 +69,7 @@ WITH
       SELECT * 
       FROM {{ ref('shapes_geom') }} 
       WHERE id_modal_smtr in ({{ var('sppo_id_modal_smtr')|join(', ') }})
-      {% if is_incremental %}
+      {% if not flags.FULL_REFRESH  %}
       AND data_versao between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
       {% endif %}
     ) s
@@ -90,12 +90,7 @@ WITH
       LOGICAL_OR(flag_trajeto_correto) AS flag_trajeto_correto,
       LOGICAL_OR(flag_trajeto_correto_hist) AS flag_trajeto_correto_hist,
       LOGICAL_OR(flag_linha_existe_sigmob) AS flag_linha_existe_sigmob,
-      -- STRUCT({{ maestro_sha }} AS versao_maestro, 
-      --       {{ maestro_bq_sha }} AS versao_maestro_bq,
-      --       data_versao AS data_versao_sigmob
-      --       ) versao
-    FROM
-      intersec i
+    FROM intersec i
     GROUP BY
       id_veiculo,
       linha,

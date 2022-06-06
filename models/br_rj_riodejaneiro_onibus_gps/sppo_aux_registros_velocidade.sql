@@ -50,12 +50,12 @@ with
             0
         ) * 3.6 velocidade 
     FROM  {{ ref("sppo_aux_registros_filtrada") }}
-        {%if is_incremental()%}
-        WHERE
-            data between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
-        AND timestamp_gps > "{{var('date_range_start')}}" and "{{var('date_range_end')}}"
-        AND DATETIME_DIFF(timestamp_captura, timestamp_gps, MINUTE) BETWEEN 0 AND 1
-        {% endif %}
+    {%if not flags.FULL_REFRESH -%}
+    WHERE
+        data between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
+    AND timestamp_gps > "{{var('date_range_start')}}" and timestamp_gps <="{{var('date_range_end')}}"
+    AND DATETIME_DIFF(timestamp_captura, timestamp_gps, MINUTE) BETWEEN 0 AND 1
+    {%- endif -%}
     ),
     medias as (
         select 
@@ -89,5 +89,4 @@ SELECT
         when velocidade_media < {{ var('velocidade_limiar_parado') }} then false
         else true
     end flag_em_movimento,
-    -- STRUCT({{ maestro_sha }} AS versao_maestro, {{ maestro_bq_sha }} AS versao_maestro_bq) versao
 FROM medias

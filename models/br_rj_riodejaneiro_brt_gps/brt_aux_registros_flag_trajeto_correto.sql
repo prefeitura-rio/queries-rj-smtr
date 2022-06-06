@@ -25,11 +25,11 @@ WITH
     SELECT id_veiculo, servico as linha, latitude, longitude, data, posicao_veiculo_geo, timestamp_gps
     FROM
       {{ ref('brt_aux_registros_filtrada') }} r
-    {%if is_incremental()%}
+    {% if not flags.FULL_REFRESH -%}
     WHERE
     data between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
     AND timestamp_gps > "{{var('date_range_start')}}" and "{{var('date_range_end')}}"
-    {% endif %}
+    {%- endif %}
   ),
   intersec AS (
     SELECT
@@ -65,7 +65,7 @@ WITH
       SELECT * 
       FROM {{ ref('shapes_geom') }} 
       WHERE id_modal_smtr in ({{ id_modal_smtr|join(', ') }})
-      {% if is_incremental() %}
+      {% if not flags.FULL_REFRESH -%}
       AND data_versao between DATE({{var('date_range_start')}}) and DATE({{var('date_range_end')}})
       {% endif %}
     ) s

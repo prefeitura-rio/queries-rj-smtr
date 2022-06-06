@@ -35,6 +35,12 @@ WITH
       longitude,
 
     FROM {{ ref('sppo_aux_registros_filtrada') }}
+    {% if is_incremental() -%}
+    WHERE
+    data between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
+    AND timestamp_gps > "{{var('date_range_start')}}" and timestamp_gps <="{{var('date_range_end')}}"
+    AND DATETIME_DIFF(timestamp_captura, timestamp_gps, MINUTE) BETWEEN 0 AND 1
+    {%- endif -%}
   ),
   velocidades AS (
     -- 2. velocidades
@@ -104,7 +110,6 @@ SELECT
   r.velocidade velocidade_instantanea,
   v.velocidade velocidade_estimada_10_min,
   v.distancia,
-  -- STRUCT({{ maestro_sha }} AS versao_maestro, {{ maestro_bq_sha }} AS versao_maestro_bq) versao
 FROM
   registros r
 
