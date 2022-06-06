@@ -14,7 +14,7 @@ with viagem_periodo as (
     from 
         {{ ref("viagem_planejada") }} p
     left join 
-        {{ ref("aux_viagem_conformidade") }} v        
+        {{ ref("viagem_conformidade") }} v        
     on 
         -- TODO: mudar servico & tipo dia => trip_id com mudança do quadro planejado
         v.servico_realizado = p.servico

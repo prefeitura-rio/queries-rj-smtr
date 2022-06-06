@@ -72,7 +72,7 @@ models:
       - name: data
         description: "Data"
         tests:
-          - not_nullx
+          - not_null
       - name: data_shape
         description: "Data do shape capturado no SIGMOB (00h)"
         tests:
@@ -364,7 +364,7 @@ models:
         description: "Distância do shape (trajeto) planejado"
         tests:
           - not_null
-  - name: aux_registros_status_viagem
+  - name: registros_status_viagem
     description: "Tabela auxiliar de classificação dos sinais de GPS
     por viagem."
     columns:
@@ -531,7 +531,7 @@ models:
         tests:
           - not_null
           - not_negative
-  - name: aux_viagem_conformidade
+  - name: viagem_conformidade
     description: "Tabela auxiliar de cálculo da conformidade de viagens
     identificadas para validação."
     columns:
@@ -818,7 +818,7 @@ models:
         respectiva linha na tabela."
         tests:
           - not_null
-  - name: sumario_viagem_completa
+  - name: sumario_subsidio_dia_periodo
     description: "Sumário de viagens completas identificadas na linha correta e
     quilometragem total considerada para o subsídio."
     columns:

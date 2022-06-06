@@ -11,7 +11,7 @@ with distancia as (
         count(distinct timestamp_minuto_gps) as n_registros_minuto
     from (
         select distinct * except(posicao_veiculo_geo)
-        from {{ ref("aux_registros_status_viagem") }}
+        from {{ ref("registros_status_viagem") }}
     )
     group by 1
 )
