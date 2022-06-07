@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: sppo_aux_registros_filtrada
+    materialized_as: aux_registros_filtrada
