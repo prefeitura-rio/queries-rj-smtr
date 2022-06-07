@@ -8,7 +8,7 @@
 )
 }}
 {% if is_incremental() and execute %}
-       {% set start_date = run_query('select max(data_versao) from rj-smtr-dev.br_rj_riodejaneiro_sigmob.shapes_geom').columns[0].values()[0] %}
+       {% set start_date = run_query('select max(data_versao) from rj-smtr.br_rj_riodejaneiro_sigmob.shapes_geom').columns[0].values()[0] %}
 {% else %}
        {% set start_date = "2021-08-24" %}
 {% endif %}
