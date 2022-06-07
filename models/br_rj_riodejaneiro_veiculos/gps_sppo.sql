@@ -75,7 +75,7 @@ SELECT
   date(r.timestamp_gps) data,
   extract(time from r.timestamp_gps) hora, 
   r.id_veiculo,
-  r.linha servico,
+  replace(r.linha, " ", "") as servico,
   r.latitude,
   r.longitude,
   CASE 
