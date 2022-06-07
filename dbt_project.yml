@@ -37,7 +37,7 @@ models:
     # Config indicated by + and applies to all files under models/example/
     projeto_subsidio_sppo:
       +materialized: view # Materialization type (view, table or incremental)
-      +schema: projeto_subsidio_sppo_teste # Overrides the default schema (defaults to what is set on profiles.yml)
+      +schema: projeto_subsidio_sppo # Overrides the default schema (defaults to what is set on profiles.yml)
 
 vars:
 
@@ -53,7 +53,9 @@ vars:
   # => Parameters
   run_date: "2022-05-20"
   buffer: 500 # distância em metros para buffer
-  perc_conformidade_distancia_min: 0
-  perc_conformidade_shape_min: 0
-  perc_conformidade_registros_min: 0
-  aux_viagem_planejada: "`rj-smtr-dev.projeto_subsidio_sppo.aux_viagem_planejada`"
+  perc_conformidade_distancia_min: 80
+  perc_conformidade_shape_min: 80
+  perc_conformidade_registros_min: 60
+  perc_distancia_total_subsidio: 80
+  quadro_horario_dia_util: "`rj-smtr-dev.projeto_subsidio_sppo.quadro_horario_dia_util`"
+  valor_subsidio: "`rj-smtr-dev.projeto_subsidio_sppo.valor_subsidio`"
