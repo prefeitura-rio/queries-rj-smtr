@@ -107,7 +107,7 @@ SELECT
     r.velocidade velocidade_instantanea,
     v.velocidade velocidade_estimada_10_min,
     v.distancia,
-    STRUCT({{ maestro_sha }} AS versao_maestro, {{ maestro_bq_sha }} AS versao_maestro_bq) versao
+    {{ var("version") }} as versao
 FROM
     registros r
 

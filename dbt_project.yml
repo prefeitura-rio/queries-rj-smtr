@@ -28,6 +28,9 @@ vars:
   date_range_start: "2022-01-01T00:00:00"
   date_range_end: "2022-01-01T01:00:00"
 
+  ### Version default variable (replaced on deploy) ###
+  version: ""
+
   ### GPS ###
   brt_terminais: "rj-smtr.br_rj_riodejaneiro_transporte.estacoes_e_terminais_brt" # aux_registros_parada
   brt_registros_staging: rj-smtr-staging.br_rj_riodejaneiro_brt_gps_staging.registros

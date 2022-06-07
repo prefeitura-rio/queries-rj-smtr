@@ -54,8 +54,7 @@ filtrada AS (
   )
 SELECT
   * except(rn),
-  -- STRUCT({{ maestro_sha }} AS versao_maestro,
-  --   {{ maestro_bq_sha }} AS versao_maestro_bq) versao
+  {{ var("version") }} as versao
 FROM
   filtrada
 WHERE
