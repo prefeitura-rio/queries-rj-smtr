@@ -6,7 +6,7 @@ default:
       method: service-account
       project: rj-smtr-dev
       dataset: dbt
-      location: southamerica-east1
+      location: US
       threads: 2
       keyfile: /credentials-dev/dev.json
     prod:
@@ -14,6 +14,6 @@ default:
       method: service-account
       project: rj-smtr
       dataset: dbt
-      location: southamerica-east1
+      location: US
       threads: 2
       keyfile: /credentials-prod/prod.json
