@@ -57,16 +57,12 @@ shape_circular as (
     from 
         shapes_efetiva s
     inner join (
-        select 
-            variacao_itinerario,
-            servico,
-            sentido
+        select
+            *
         from 
-            {{ ref("aux_viagem_planejada_tratada") }}
+            {{ var("quadro_horario_dia_util") }}
         where
             sentido = "C"
-             -- TODO: remover filtro após trip_id no quadro planejado
-            and variacao_itinerario in ("DU", "SS", "DD")
     ) c
     on
         s.servico = c.servico
@@ -81,20 +77,14 @@ shape_nao_circular as (
         shapes_efetiva s
     inner join (
         select 
-            variacao_itinerario,
-            servico,
-            sentido
+            *
         from 
-            {{ ref("aux_viagem_planejada_tratada") }}
+            {{ var("quadro_horario_dia_util") }}
         where 
             sentido = "I" or sentido = "V"
-            -- TODO: remover filtro após trip_id no quadro planejado
-            and variacao_itinerario in ("DU", "SS", "DD")
     ) c
     on 
-        s.servico = c.servico
-        and s.sentido_shape = c.sentido
-        and s.variacao_itinerario = c.variacao_itinerario
+        s.trip_id = c.trip_id
 ),
 -- 6. Junta infos de shapes circulares e não ciculares
 shape_sentido as (

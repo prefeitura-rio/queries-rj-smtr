@@ -28,11 +28,11 @@ planejada as (
         e.*,
         start_time as inicio_periodo,
         end_time as fim_periodo,
-        v.* except(tipo_dia, start_time, end_time)
+        v.* except(tipo_dia, frota_nec, tempo_ciclo, start_time, end_time)
     from 
         data_efetiva e
     left join
-        {{ ref("aux_viagem_planejada_tratada") }} v
+        {{ var("quadro_horario_dia_util") }} v
     on
         e.tipo_dia = v.tipo_dia
 ),
@@ -61,7 +61,7 @@ distancia as (
         variacao_itinerario,
         data_shape,
         shape_id,
-        distancia_planejada
+        round(distancia_planejada, 3) as distancia_planejada,   
     from (
         select
             * except(distancia_planejada),
@@ -91,7 +91,3 @@ on p.data = d.data
 and p.servico = d.servico
 and p.sentido = d.sentido
 and p.variacao_itinerario = d.variacao_itinerario
--- {% if is_incremental() %}
---     {% set max_partition = run_query("SELECT gr FROM (SELECT IF(max(data) > CURRENT_DATE('America/Sao_Paulo'), CURRENT_DATE('America/Sao_Paulo'), max(data)) as gr FROM " ~ this ~ ")").columns[0].values()[0] %}
---     where p.data > DATE("{{max_partition}}")
--- {% endif %}

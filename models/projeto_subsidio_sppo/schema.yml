@@ -139,6 +139,10 @@ models:
         description: "Distância do shape (trajeto) planejado"
         tests:
           - not_null
+      - name: trip_id
+        description: "Código identificador do itinerário (trip)"
+        tests:
+          - not_null
   - name: aux_registros_status_trajeto
     description: "Tabela auxiliar de classificação dos sinais de GPS
     como início, fim, meio ou fora do trajeto, para todos os trajetos
