@@ -3,7 +3,7 @@
         materialized='incremental',
         unique_key='data',
         partition_by={
-            "field":"data_versao",
+            "field":"data",
             "data_type": "date",
             "granularity":"day"
         }
