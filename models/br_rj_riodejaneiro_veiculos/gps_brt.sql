@@ -107,7 +107,7 @@ SELECT
     r.velocidade velocidade_instantanea,
     v.velocidade velocidade_estimada_10_min,
     v.distancia,
-    {{ var("version") }} as versao
+    "{{ var("version") }}" as versao
 FROM
     registros r
 
