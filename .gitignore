@@ -2,3 +2,5 @@ dbt-env/
 target/
 dbt_modules/
 logs/
+dbt-env/
+.DS_Store

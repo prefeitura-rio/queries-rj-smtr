@@ -63,7 +63,7 @@ filtrada AS (
   )
 SELECT
   * except(rn),
-  {{ var("version") }} as versao
+  "{{ var("version") }}" as versao
 FROM
   filtrada
 WHERE
