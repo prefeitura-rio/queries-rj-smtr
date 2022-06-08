@@ -9,7 +9,7 @@ with data_efetiva as (
             else 'Dia Útil'
         end as tipo_dia
     from 
-        {{ var('sigmob_data_versao') }} a
+        {{ ref('data_versao_efetiva') }} a
     where
         data between date_sub(date("{{ var("run_date") }}"), interval 2 day)
             and date_sub(date("{{ var("run_date") }}"), interval 1 day)
@@ -25,7 +25,7 @@ shapes as (
         start_pt,
         end_pt,
         linha_gtfs
-    from {{ var('sigmob_shapes') }} s
+    from {{ var('shapes_geom') }} s
     where
         data_versao between date_sub(date("{{ var("run_date") }}"), interval 17 day) and date("{{ var("run_date") }}")
         and id_modal_smtr in ('22','O')

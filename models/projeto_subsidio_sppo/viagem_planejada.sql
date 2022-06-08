@@ -19,7 +19,7 @@ with data_efetiva as (
             else 'Dia Útil'
         end as tipo_dia
     from 
-        {{ var('sigmob_data_versao') }} a
+        {{ ref('data_versao_efetiva') }} a
     where
         data = date_sub(date("{{ var("run_date") }}"), interval 2 day)
 ),
@@ -44,7 +44,7 @@ planejada_agency as (
     from 
         planejada p
     left join
-        {{ var("sigmob_routes") }} a
+        {{ ref("routes_desaninhada") }} a
     on
         a.data_versao = p.data_versao_efetiva_agency
         and p.servico = REPLACE(a.route_short_name, " ", "")
@@ -79,11 +79,13 @@ distancia as (
         (sentido = "I" or sentido = "V")
         or (sentido = "C" and sentido_shape = "I")
 )
--- 2. Junta consórcios e distancia shape aos servicos planejados
+-- 2. Junta consórcios e distancia shape aos servicos planejados,
+--    padroniza servico como variação+linha (semelhante ao gps)
 select 
-    p.*,
+    p.* except(servico),
+    concat(REGEXP_EXTRACT(servico, r'[A-Z]+'), REGEXP_EXTRACT(servico, r'[0-9]+')) as servico,
     d.* except(data, servico, sentido, variacao_itinerario)
-from 
+from
     planejada_agency p
 left join 
     distancia d

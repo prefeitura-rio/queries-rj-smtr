@@ -10,7 +10,7 @@ with gps as (
             else 'Dia Útil'
         end as tipo_dia
     from 
-        {{ var('gps_sppo') }} g
+        {{ ref('gps_sppo') }} g
     where (
         data between date_sub(date("{{ var("run_date") }}"), interval 2 day)
         and date_sub(date("{{ var("run_date") }}"), interval 1 day)
