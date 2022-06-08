@@ -64,7 +64,7 @@ WITH
     LEFT JOIN (
       SELECT * 
       FROM {{ ref('shapes_geom') }} 
-      WHERE id_modal_smtr in ({{ id_modal_smtr|join(', ') }})
+      WHERE id_modal_smtr in ({{ var('brt_id_modal_smtr')|join(', ') }})
       {% if not flags.FULL_REFRESH -%}
       AND data_versao between DATE({{var('date_range_start')}}) and DATE({{var('date_range_end')}})
       {% endif %}
