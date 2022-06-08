@@ -1,3 +1,13 @@
+{{ 
+  config(
+      materialized='incremental',
+      partition_by={
+            "field":"data",
+            "data_type": "date",
+            "granularity":"day"
+      }
+  )
+}}
 /*
 - Descrição:
 Filtragem e tratamento básico de registros de gps.
