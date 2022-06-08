@@ -41,6 +41,11 @@ vars:
   sppo_registros_staging: rj-smtr-staging.br_rj_riodejaneiro_onibus_gps_staging.registros
   
   # Parametros de intersecção do ônibus com rota
+   ## Tamanho do buffer da rota
+  tamanho_buffer_metros: 500 # flag_trajeto_correto
+  ## Intervalo máximo que um veículo pode ficar fora da rota para ser considerado
+  ## dentro da rota. Afeta a flag flag_trajeto_correto_hist
+  intervalo_max_desvio_segundos: 600 # flag_trajeto_correto
   ## Tamanho da janela de tempo (em segundos) para cálculo da média móvel de velocidade do veículo
   janela_movel_velocidade: 600 # aux_registros_velocidade
   ## Velocidade máxima média que o veículo pode atingir para evitar outliers provenientes de túneis
