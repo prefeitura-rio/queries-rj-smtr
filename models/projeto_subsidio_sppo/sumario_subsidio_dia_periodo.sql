@@ -60,5 +60,5 @@ select
     round(viagens_planejadas * distancia_planejada, 3) as distancia_total_planejada,
     round(viagens_subsidio * distancia_planejada, 3) as distancia_total_subsidio,
     round(viagens_realizadas * distancia_planejada, 3) as distancia_total_aferida,
-    '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
+    '{{ var("version") }}' as versao_modelo
 from viagem_subsidio

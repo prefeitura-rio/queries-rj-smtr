@@ -67,7 +67,7 @@ select distinct
     perc_conformidade_distancia,
     perc_conformidade_registros,
     round(100 * tempo_viagem/tempo_planejado, 2) as perc_conformidade_tempo,
-    '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
+    '{{ var("version") }}' as versao_modelo
 from 
     viagem_periodo v
 where (

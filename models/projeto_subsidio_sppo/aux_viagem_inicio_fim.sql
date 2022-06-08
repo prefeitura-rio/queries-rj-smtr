@@ -62,7 +62,7 @@ select distinct
     sentido,
     datetime_partida,
     datetime_chegada,
-    '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
+    '{{ var("version") }}' as versao_modelo
 from 
     inicio_fim
 where 

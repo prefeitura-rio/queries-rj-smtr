@@ -54,7 +54,7 @@ select distinct
     round(100 * n_registros_shape/n_registros_total,2) as perc_conformidade_shape,
     round(100 * d.distancia_aferida/v.distancia_planejada, 2) as perc_conformidade_distancia,
     round(100 * n_registros_minuto/tempo_viagem, 2) as perc_conformidade_registros,
-    '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
+    '{{ var("version") }}' as versao_modelo
 from 
     viagem v
 inner join 

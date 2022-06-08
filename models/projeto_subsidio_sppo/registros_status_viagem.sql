@@ -65,7 +65,7 @@ registros_viagem as (
 -- 3. Filtra apenas registros de viagens identificadas
 select 
     *,
-    '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
+    '{{ var("version") }}' as versao_modelo
 from 
     registros_viagem
 where

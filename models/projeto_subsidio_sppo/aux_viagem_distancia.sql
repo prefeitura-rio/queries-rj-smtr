@@ -18,6 +18,6 @@ with distancia as (
 select distinct
     d.*,
     n_registros_middle + n_registros_start + n_registros_end as n_registros_shape,
-    '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
+    '{{ var("version") }}' as versao_modelo
 from 
     distancia d

@@ -58,6 +58,6 @@ status_viagem as (
 )
 select 
     *,
-    '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
+    '{{ var("version") }}' as versao_modelo
 from 
     status_viagem

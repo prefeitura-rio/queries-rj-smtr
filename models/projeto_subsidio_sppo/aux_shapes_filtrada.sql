@@ -25,7 +25,7 @@ shapes as (
         start_pt,
         end_pt,
         linha_gtfs
-    from {{ var('shapes_geom') }} s
+    from {{ ref('shapes_geom') }} s
     where
         data_versao between date_sub(date("{{ var("run_date") }}"), interval 17 day) and date("{{ var("run_date") }}")
         and id_modal_smtr in ('22','O')
@@ -105,7 +105,7 @@ shape_sentido as (
 select
     e.*,
     s.sentido,
-    '{{ var("projeto_subsidio_sppo_version") }}' as versao_modelo
+    '{{ var("version") }}' as versao_modelo
 from 
     shapes_efetiva e
 inner join 
