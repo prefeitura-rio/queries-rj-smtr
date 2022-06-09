@@ -28,7 +28,7 @@ WITH
     {% if not flags.FULL_REFRESH -%}
     WHERE
     data between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
-    AND timestamp_gps > "{{var('date_range_start')}}" and "{{var('date_range_end')}}"
+    AND timestamp_gps > "{{var('date_range_start')}}" and timestamp_gps <="{{var('date_range_end')}}"
     {%- endif %}
   ),
   intersec AS (
@@ -66,7 +66,7 @@ WITH
       FROM {{ ref('shapes_geom') }} 
       WHERE id_modal_smtr in ({{ var('brt_id_modal_smtr')|join(', ') }})
       {% if not flags.FULL_REFRESH -%}
-      AND data_versao between DATE({{var('date_range_start')}}) and DATE({{var('date_range_end')}})
+      AND data_versao between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
       {% endif %}
     ) s
     ON

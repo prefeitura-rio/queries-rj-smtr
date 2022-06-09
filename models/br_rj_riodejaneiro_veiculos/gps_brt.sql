@@ -36,9 +36,9 @@ WITH
     FROM {{ ref('brt_aux_registros_filtrada') }}
     {% if is_incremental() -%}
     WHERE
-    data between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
-    AND timestamp_gps > "{{var('date_range_start')}}" and timestamp_gps <="{{var('date_range_end')}}"
-    AND DATETIME_DIFF(timestamp_captura, timestamp_gps, MINUTE) BETWEEN 0 AND 1
+      data between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
+      AND timestamp_gps > "{{var('date_range_start')}}" and timestamp_gps <="{{var('date_range_end')}}"
+      AND DATETIME_DIFF(timestamp_captura, timestamp_gps, MINUTE) BETWEEN 0 AND 1
     {%- endif -%}
     ),
     velocidades AS (
@@ -130,4 +130,10 @@ JOIN
 ON  
     r.id_veiculo = p.id_veiculo
     AND  r.timestamp_gps = p.timestamp_gps
-    AND r.servico = p.servico 
+    AND r.servico = p.servico
+{% if is_incremental() -%}
+  WHERE
+  date(r.timestamp_gps) between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
+  AND r.timestamp_gps > "{{var('date_range_start')}}" and r.timestamp_gps <="{{var('date_range_end')}}"
+  AND DATETIME_DIFF(r.timestamp_captura, r.timestamp_gps, MINUTE) BETWEEN 0 AND 1
+{%- endif -%}
