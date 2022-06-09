@@ -53,7 +53,7 @@ with
     {% if not flags.FULL_REFRESH -%}
     WHERE
     data between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
-    AND timestamp_gps > "{{var('date_range_start')}}" and "{{var('date_range_end')}}"
+    AND timestamp_gps > "{{var('date_range_start')}}" and timestamp_gps <="{{var('date_range_end')}}"
     {% endif %}
     ),
     medias as (
