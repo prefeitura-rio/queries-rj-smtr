@@ -68,7 +68,7 @@ WITH
     -- 5. Agregação com LOGICAL_OR para evitar duplicação de registros
     SELECT
       id_veiculo,
-      linha,
+      linha as servico,
       linha_gtfs,
       route_id,
       data,
