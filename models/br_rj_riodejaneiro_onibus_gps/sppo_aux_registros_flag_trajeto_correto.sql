@@ -23,7 +23,14 @@ possíveis para a linha informada.
 */
 WITH
   registros AS (
-    SELECT id_veiculo, linha, latitude, longitude, data, posicao_veiculo_geo, timestamp_gps
+    SELECT 
+      id_veiculo, 
+      linha, 
+      latitude, 
+      longitude, 
+      data, 
+      posicao_veiculo_geo, 
+      timestamp_gps
     FROM
       {{ ref('sppo_aux_registros_filtrada') }} r 
     {% if not flags.FULL_REFRESH -%}
@@ -57,28 +64,16 @@ WITH
       -- 3. Identificação de cadastro da linha no SIGMOB
       CASE WHEN s.linha_gtfs IS NULL THEN False ELSE True END AS flag_linha_existe_sigmob,
     -- 4. Join com data_versao_efetiva para definição de quais shapes serão considerados no cálculo das flags
-    FROM (
-      SELECT 
-        t1.*,
-        t2.data_versao_efetiva_shapes as data_versao_efetiva
-      FROM registros t1
-      JOIN  {{ ref('data_versao_efetiva') }} t2
-      ON t1.data = t2.data
-    ) r
+    FROM registros r
     LEFT JOIN (
       SELECT * 
-      FROM {{ ref('shapes_geom') }} 
+      FROM `rj-smtr.br_rj_riodejaneiro_sigmob.shapes_geom`
       WHERE id_modal_smtr in ({{ var('sppo_id_modal_smtr')|join(', ') }})
-      {% if not flags.FULL_REFRESH  %}
-      AND data_versao between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
-      {% endif %}
+      AND data_versao = "{{ var('versao_fixa_sigmob')}}"
     ) s
     ON
       r.linha = s.linha_gtfs
-    AND
-      r.data_versao_efetiva = s.data_versao
-  ),
-  flags as  (
+  )
     -- 5. Agregação com LOGICAL_OR para evitar duplicação de registros
     SELECT
       id_veiculo,
@@ -99,47 +94,4 @@ WITH
       data,
       data_versao,
       timestamp_gps
-  ),
-  counts as (
-  select 
-      id_veiculo,
-      timestamp_gps,
-      linha,
-      (case when flag_trajeto_correto is true then 3 else 0 end + 
-      case when flag_trajeto_correto_hist is true then 2 else 0 end + 
-      case when flag_linha_existe_sigmob is true then 1 else 0 end) most_true, 
-      count(linha) over (partition by id_veiculo, timestamp_gps) ct,
-      row_number() over (partition by id_veiculo, timestamp_gps) rn
-  from flags
-  ),
-  provavel as (
-    select 
-        id_veiculo,
-        timestamp_gps,
-        linha,
-        CASE
-          WHEN ct>1
-          THEN    
-              CASE 
-              WHEN most_true = max(most_true) over(partition by id_veiculo, timestamp_gps order by rn) 
-              AND lead(most_true) over(partition by id_veiculo, timestamp_gps order by rn) < max(most_true) over(
-                    partition by id_veiculo, timestamp_gps order by rn)
-              THEN linha 
-              WHEN most_true = lead(most_true) over(partition by id_veiculo, timestamp_gps order by rn)
-              THEN linha
-              ELSE lead(linha) over(partition by id_veiculo, timestamp_gps order by rn) end
-          WHEN ct = 1
-          THEN linha
-        END AS linha_provavel
-    FROM counts
-  )
-SELECT
-  f.*
-FROM
-  flags f
-JOIN
-  provavel P
-ON
-  f.id_veiculo = p.id_veiculo
-  AND f.timestamp_gps = p.timestamp_gps
-  AND f.linha = p.linha_provavel
+  
