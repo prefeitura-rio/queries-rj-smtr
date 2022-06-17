@@ -12,7 +12,7 @@
 with data_efetiva as (
     select distinct
         data,
-        data_versao_efetiva_agency,
+        date("{{ var("subsidio_sigmob_date")}}") as data_versao_efetiva_agency,
         case
             when extract(dayofweek from data) = 1 then 'Domingo'
             when extract(dayofweek from data) = 7 then 'Sabado'
@@ -28,7 +28,7 @@ planejada as (
         e.*,
         start_time as inicio_periodo,
         end_time as fim_periodo,
-        v.* except(tipo_dia, frota_nec, tempo_ciclo, start_time, end_time)
+        v.* except(tipo_dia, start_time, end_time)
     from 
         data_efetiva e
     left join
@@ -47,7 +47,7 @@ planejada_agency as (
         {{ ref("routes_desaninhada") }} a
     on
         a.data_versao = p.data_versao_efetiva_agency
-        and p.servico = REPLACE(a.route_short_name, " ", "")
+        and and p.servico = a.servico
     where 
         a.idModalSmtr in ("22", "O")
 ),
@@ -82,8 +82,7 @@ distancia as (
 -- 2. Junta consórcios e distancia shape aos servicos planejados,
 --    padroniza servico como variação+linha (semelhante ao gps)
 select 
-    p.* except(servico),
-    concat(REGEXP_EXTRACT(servico, r'[A-Z]+'), REGEXP_EXTRACT(servico, r'[0-9]+')) as servico,
+    p.*,
     d.* except(data, servico, sentido, variacao_itinerario)
 from
     planejada_agency p

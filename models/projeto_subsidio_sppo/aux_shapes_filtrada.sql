@@ -2,7 +2,7 @@
 with data_efetiva as (
     select distinct
         data,
-        data_versao_efetiva_shapes,
+        date("{{ var("subsidio_sigmob_date")}}") as data_versao_efetiva_shapes,
         case
             when extract(dayofweek from data) = 1 then 'Domingo'
             when extract(dayofweek from data) = 7 then 'Sabado'
@@ -18,16 +18,16 @@ with data_efetiva as (
 shapes as (
     select
         data_versao,
+        servico,
         trip_id,
         shape_id,
         shape,
         round(s.shape_distance/1000, 3) as distancia_planejada,
         start_pt,
-        end_pt,
-        linha_gtfs
+        end_pt
     from {{ ref('shapes_geom') }} s
     where
-        data_versao between date_sub(date("{{ var("run_date") }}"), interval 17 day) and date("{{ var("run_date") }}")
+        data_versao = date("{{ var("subsidio_sigmob_date")}}")
         and id_modal_smtr in ('22','O')
 ),
 -- 3. Adiciona data efetiva dos shapes - garante a última versão
@@ -37,10 +37,9 @@ shapes_efetiva as (
         e.data,
         e.tipo_dia,
         SUBSTR(shape_id, 12, 2) as variacao_itinerario,
-        linha_gtfs as servico,  -- ex: 309SN
         SUBSTR(shape_id, 11, 1) as sentido_shape,
         s.data_versao as data_shape,
-        s.* except(data_versao, linha_gtfs)
+        s.* except(data_versao)
     from 
         data_efetiva e
     left join
