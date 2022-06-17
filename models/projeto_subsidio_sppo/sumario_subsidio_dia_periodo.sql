@@ -2,16 +2,13 @@
 with viagem as (
     select
         data,
-        -- TODO: mudar servico & tipo dia => trip_id com mudança do quadro planejado
-        tipo_dia,
-        servico_realizado as servico,
-        sentido,
-        inicio_periodo,
+        servico_informado,
+        shape_id,
         count(id_viagem) as viagens_realizadas
     from 
         {{ ref("viagem_completa") }}
     group by
-        1,2,3,4,5
+        1,2,3
 ),
 -- 2. Junta informações de viagens planejadas às realizadas
 planejado as (
@@ -20,6 +17,7 @@ planejado as (
         p.data,
         p.tipo_dia,
         p.servico,
+        p.vista,
         p.sentido,
         p.inicio_periodo,
         p.fim_periodo,
@@ -36,22 +34,20 @@ planejado as (
     left join
         viagem v
     on
-        -- TODO: mudar servico & tipo dia => trip_id com mudança do quadro planejado
-        v.servico = p.servico
-        and v.tipo_dia = p.tipo_dia
-        and v.sentido = p.sentido
+        v.shape_id = p.shape_id
+        and v.servico_informado = p.servico
         and v.data = p.data
-        and v.inicio_periodo = p.inicio_periodo
 ),
 -- 3. Limita máximo de viagens do subsídio = total planejado 
 viagem_subsidio as (
     select
         *,
-        case 
-            when viagens_realizadas > viagens_planejadas
-            then viagens_planejadas
-            else viagens_realizadas
-        end as viagens_subsidio
+        viagens_realizadas as viagens_subsidio
+        -- case 
+        --     when viagens_realizadas > viagens_planejadas
+        --     then viagens_planejadas
+        --     else viagens_realizadas
+        -- end as viagens_subsidio
     from planejado
 )
 -- 4 . Adiciona informações de distância total

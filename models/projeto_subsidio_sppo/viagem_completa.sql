@@ -3,37 +3,45 @@
 -- - "Completa linha correta" => circular, nao_circular OK
 -- - "Completa linha incorreta" => X não entra ainda
 
--- 1. Identifica viagens que estão dentro do quadro planejado
+-- 1. Identifica viagens que estão dentro do quadro planejado (por
+--    enquanto, consideramos o dia todo).
 with viagem_periodo as (
     select distinct
         p.consorcio,
+        p.vista,
         v.*,
-        p.inicio_periodo,
-        p.fim_periodo,
-        p.tempo_viagem as tempo_planejado
-    from 
-        {{ ref("viagem_planejada") }} p
+        time("2022-06-01 00:00:00") as inicio_periodo,
+        time("2022-06-01 23:59:59") as fim_periodo,
+        0 as tempo_planejado
+    from (
+        select distinct
+            consorcio,
+            vista,
+            data,
+            shape_id,
+            servico
+        from
+            {{ ref("viagem_planejada") }}
+    ) p
     left join 
-        {{ ref("viagem_conformidade") }} v        
+        {{ ref("viagem_conformidade") }} v 
     on 
-        -- TODO: mudar servico & tipo dia => trip_id com mudança do quadro planejado
-        v.servico_realizado = p.servico
-        and v.tipo_dia = p.tipo_dia
-        and v.sentido = p.sentido
+        v.shape_id = p.shape_id
+        and v.servico_informado = p.servico
         and v.data = p.data
-    where (
-        ( -- 05:00:00 as 23:00:00
-            inicio_periodo < time_sub(fim_periodo, interval p.intervalo minute) 
-            and extract (time from datetime_partida) >= inicio_periodo 
-                and extract (time from datetime_partida) < time_sub(fim_periodo, interval p.intervalo minute)
-        ) or
-        ( -- 23:00:00 as 5:00:00
-            inicio_periodo > time_sub(fim_periodo, interval intervalo minute)
-            and ((extract (time from datetime_partida) >= inicio_periodo) -- até 00h
-                or (extract (time from datetime_partida) < time_sub(fim_periodo, interval p.intervalo minute)) -- apos 00h
-            )
-        )
-    )
+    -- where (
+    --     ( -- 05:00:00 as 23:00:00
+    --         inicio_periodo < time_sub(fim_periodo, interval p.intervalo minute) 
+    --         and extract (time from datetime_partida) >= inicio_periodo 
+    --             and extract (time from datetime_partida) < time_sub(fim_periodo, interval p.intervalo minute)
+    --     ) or
+    --     ( -- 23:00:00 as 5:00:00
+    --         inicio_periodo > time_sub(fim_periodo, interval intervalo minute)
+    --         and ((extract (time from datetime_partida) >= inicio_periodo) -- até 00h
+    --             or (extract (time from datetime_partida) < time_sub(fim_periodo, interval p.intervalo minute)) -- apos 00h
+    --         )
+    --     )
+    -- )
 )
 -- 2. Seleciona viagens completas de acordo com a conformidade
 select distinct
@@ -45,6 +53,7 @@ select distinct
     id_viagem,
     servico_informado,
     servico_realizado,
+    vista,
     shape_id,
     sentido,
     datetime_partida,
@@ -66,15 +75,16 @@ select distinct
     perc_conformidade_shape,
     perc_conformidade_distancia,
     perc_conformidade_registros,
-    round(100 * tempo_viagem/tempo_planejado, 2) as perc_conformidade_tempo,
+    0 as perc_conformidade_tempo,
+    -- round(100 * tempo_viagem/tempo_planejado, 2) as perc_conformidade_tempo,
     '{{ var("version") }}' as versao_modelo
 from 
     viagem_periodo v
 where (
-    perc_conformidade_distancia >= {{ var("perc_conformidade_distancia_min") }}
-    )
-and (
     perc_conformidade_shape >= {{ var("perc_conformidade_shape_min") }}
+)
+and (
+    perc_conformidade_distancia >= {{ var("perc_conformidade_distancia_min") }}
 )
 and (
     perc_conformidade_registros >= {{ var("perc_conformidade_registros_min") }}
