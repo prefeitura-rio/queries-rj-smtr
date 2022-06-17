@@ -39,7 +39,7 @@ WITH
       nome_parada, 
       tipo_parada,
       ROUND(ST_DISTANCE(posicao_veiculo_geo, ponto_parada), 1) distancia_parada,
-      ROW_NUMBER() OVER (PARTITION BY timestamp_gps, id_veiculo ORDER BY ST_DISTANCE(posicao_veiculo_geo, ponto_parada)) nrow
+      ROW_NUMBER() OVER (PARTITION BY timestamp_gps, id_veiculo, servico ORDER BY ST_DISTANCE(posicao_veiculo_geo, ponto_parada)) nrow
     FROM terminais p
     JOIN (
       SELECT *
@@ -48,7 +48,7 @@ WITH
       {% if not flags.FULL_REFRESH -%}
       WHERE
       data between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
-      AND timestamp_gps > "{{var('date_range_start')}}" and "{{var('date_range_end')}}"
+      AND timestamp_gps > "{{var('date_range_start')}}" and timestamp_gps <="{{var('date_range_end')}}"
       {% endif %}
     ) r
     on 1=1
