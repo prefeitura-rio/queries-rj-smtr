@@ -15,7 +15,8 @@ with viagem as (
         datetime_diff(datetime_chegada, datetime_partida, minute) + 1 as tempo_viagem
     from (
         select 
-            *
+            * except(shape_id),
+            shape_id,
         from (
             select
                 * except(sentido_shape, datetime_chegada, distancia_planejada),
@@ -28,7 +29,8 @@ with viagem as (
         )
         union all (
             select 
-                * except(sentido_shape)
+                * except(sentido_shape, shape_id),
+                concat(SUBSTR(shape_id, 1, 10), "C", SUBSTR(shape_id, 12, length(shape_id))) as shape_id,
             from 
                 (select 
                     v.* except(datetime_chegada, distancia_planejada),
