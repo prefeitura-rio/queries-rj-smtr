@@ -1,3 +1,13 @@
+{{ config(
+       materialized='incremental',
+       partition_by={
+              "field":"data",
+              "data_type": "date",
+              "granularity":"day"
+       }
+)
+}}
+
 -- 1. Identifica registros iniciais e finais de cada viagem na tabela de GPS
 with aux_registros as (
     select 
