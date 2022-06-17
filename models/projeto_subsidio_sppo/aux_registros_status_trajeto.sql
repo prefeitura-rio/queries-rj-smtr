@@ -10,7 +10,7 @@ with gps as (
             else 'Dia Útil'
         end as tipo_dia
     from 
-        {{ ref('gps_sppo') }} g
+        `rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo` g -- {{ ref('gps_sppo') }} g
     where (
         data between date_sub(date("{{ var("run_date") }}"), interval 2 day)
         and date_sub(date("{{ var("run_date") }}"), interval 1 day)
@@ -37,6 +37,8 @@ status_viagem as (
         s.shape_id,
         s.sentido_shape,
         s.sentido,
+        s.start_pt,
+        s.end_pt,
         s.distancia_planejada,
         ifnull(g.distancia,0) as distancia,
         case

@@ -40,11 +40,16 @@ aux_inicio_fim AS (
 -- 3. Junta partida-chegada da viagem na mesma linha
 inicio_fim AS (
     select 
-        * except(datetime_chegada), 
+        * except(datetime_chegada, posicao_veiculo_geo),
+        posicao_veiculo_geo as posicao_partida,
         lead(datetime_chegada) over(
             partition by id_veiculo, shape_id 
             order by id_veiculo, shape_id, timestamp_gps
         ) as datetime_chegada,
+        lead(posicao_veiculo_geo) over(
+            partition by id_veiculo, shape_id 
+            order by id_veiculo, shape_id, timestamp_gps
+        ) as posicao_chegada,
     from aux_inicio_fim
 )
 -- 4. Filtra colunas e cria campo identificador da viagem (id_viagem)
@@ -58,6 +63,7 @@ select distinct
     servico_realizado,
     shape_id,
     sentido_shape,
+    round((st_distance(start_pt, posicao_partida) + st_distance(end_pt, posicao_chegada))/1000, 3) as distancia_inicio_fim,
     distancia_planejada,
     sentido,
     datetime_partida,
