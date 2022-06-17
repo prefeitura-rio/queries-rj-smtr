@@ -38,21 +38,30 @@ distancia as (
         shape_id,
         round(distancia_planejada, 3) as distancia_planejada,   
     from (
-        select
-            * except(distancia_planejada),
-            case when
-                sentido = "C" and sentido_shape = "I"
-                then distancia_planejada + lead(distancia_planejada) over (
-                        partition by data, servico, tipo_dia --, variacao_itinerario
-                        order by data, servico, sentido_shape)
-                else distancia_planejada
-            end as distancia_planejada
-        from
-            {{ ref("aux_shapes_filtrada") }} v
-    )
+        select 
+            *
+        from (
+            select
+                * except(distancia_planejada, shape_id),
+                case 
+                    when sentido = "C"
+                    then concat(SUBSTR(shape_id, 1, 10), "C", SUBSTR(shape_id, 12, length(shape_id)))
+                    else shape_id
+                end as shape_id,
+                case
+                    when sentido = "C"
+                    then distancia_planejada + lead(distancia_planejada) over (
+                            partition by data, servico, tipo_dia --, variacao_itinerario
+                            order by data, servico, sentido_shape)
+                    else distancia_planejada
+                end as distancia_planejada
+            from
+                {{ ref("aux_shapes_filtrada") }} v
+        )
     where
         (sentido = "I" or sentido = "V")
         or (sentido = "C" and sentido_shape = "I")
+    )
 )
 -- 2. Junta consórcios e distancia shape aos servicos planejados
 select 
