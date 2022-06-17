@@ -1,7 +1,5 @@
 -- 1. Identifica viagens circulares de ida que possuem volta
---    consecutiva. Em seguida, filtra apenas essas viagens de ida,
---    adicionadas as informações de
---    datetime_partida_volta e datetime_chegada_volta
+--    consecutiva. Junta numa única linha a datetime_partida (ida) + datetime_chegada_volta
 with ida_volta_circular as (
     select 
         t.*
@@ -26,11 +24,8 @@ with ida_volta_circular as (
         and sentido_shape = "I"
         and datetime_chegada <= datetime_partida_volta
 ),
--- 2. Reclassifica as viagens circulares identificadas: quando é
---    identificada ida e volta consecutivas, mantém o id_viagem da ida e
---    troca o id_viagem da volta pelo da ida (para contabilizar distancia
---    total da viagem). Caso não tenha ida e volta consecutivas,
---    descarta as viagens identificadas.
+-- 2. Filtra apenas viagens circulares de ida e volta consecutivas
+--    (mantem ida e volta separadas, mas com o mesmo id)
 viagem_circular as (
     select distinct
         * 
