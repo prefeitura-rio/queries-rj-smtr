@@ -63,7 +63,7 @@ vars:
 
   ### SIGMOB ###
   # data_versao fixada para operações que envolvem o uso do SIGMOB
-  versao_fixa_sigmob: '2022-06-10'
+  versao_fixa_sigmob: '2022-06-16'
 
   data_inclusao_agency: "2021-08-03"
   data_inclusao_stop_times: "2021-08-03"
@@ -91,14 +91,13 @@ vars:
   trips_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.trips"
   
   ### Subsídio SPPO (Ônibus) ###
-  run_date: "2022-06-11"
-  subsidio_sigmob_date: "2022-06-10"
+  run_date: "2022-06-03"
   buffer: 500 # distância em metros para buffer
   perc_conformidade_distancia_min: 80
   perc_conformidade_shape_min: 80
   perc_conformidade_registros_min: 60
   perc_distancia_total_subsidio: 80
-  quadro_horario_dia_util: "`rj-smtr-dev.projeto_subsidio_sppo.quadro_horario_dia_util`"
+  quadro_horario: "`rj-smtr-dev.projeto_subsidio_sppo.quadro_horario`"
   valor_subsidio: "`rj-smtr-dev.projeto_subsidio_sppo.valor_subsidio`"
   
 
