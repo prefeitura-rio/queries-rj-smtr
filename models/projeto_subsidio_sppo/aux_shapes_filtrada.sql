@@ -1,51 +1,46 @@
 -- 1. Define a data e tipo dia do período avaliado (D-2, D-1)
 with data_efetiva as (
-    select distinct
-        data,
-        date("{{ var("subsidio_sigmob_date")}}") as data_versao_efetiva_shapes,
-        case
-            when extract(dayofweek from data) = 1 then 'Domingo'
-            when extract(dayofweek from data) = 7 then 'Sabado'
-            else 'Dia Útil'
-        end as tipo_dia
-    from 
-        {{ ref('data_versao_efetiva') }} a
+    select 
+        *
+    from {{ ref("subsidio_data_versao_efetiva") }}
     where
         data between date_sub(date("{{ var("run_date") }}"), interval 2 day)
             and date_sub(date("{{ var("run_date") }}"), interval 1 day)
 ),
--- 2. Filtra tabela de shapes para limitar processamento (até 14 dias antes de D-3)
+-- 2. Puxa versao fixa de shapes do sigmob
 shapes as (
     select
         data_versao,
-        servico,
+        trip_short_name as servico,
         trip_id,
         shape_id,
+        -- SUBSTR(shape_id, 12, 2) as variacao_itinerario,
+        SUBSTR(shape_id, 11, 1) as sentido_shape,
         shape,
         round(s.shape_distance/1000, 3) as distancia_planejada,
         start_pt,
         end_pt
-    from {{ ref('shapes_geom') }} s
+    from {{ ref('subsidio_shapes_geom') }} s
     where
-        data_versao = date("{{ var("subsidio_sigmob_date")}}")
-        and id_modal_smtr in ('22','O')
+        data_versao in (
+            select 
+                distinct data_versao_sigmob
+            from 
+                data_efetiva)
+    --     and id_modal_smtr in ('22','O')
 ),
--- 3. Adiciona data efetiva dos shapes - garante a última versão
---    caso haja falha de captura no dia
+-- 3. Adiciona data atual dos shapes
 shapes_efetiva as (
     select 
         e.data,
         e.tipo_dia,
-        SUBSTR(shape_id, 12, 2) as variacao_itinerario,
-        SUBSTR(shape_id, 11, 1) as sentido_shape,
-        s.data_versao as data_shape,
-        s.* except(data_versao)
+        s.*
     from 
         data_efetiva e
     left join
         shapes s
     on
-        s.data_versao = e.data_versao_efetiva_shapes
+        s.data_versao = e.data_versao_sigmob
 ),
 -- 4. Filtra shapes de servicos circulares planejados (recupera
 --    sentido dos shapes separados em ida/volta)
@@ -59,13 +54,14 @@ shape_circular as (
         select
             *
         from 
-            {{ var("quadro_horario_dia_util") }}
+            {{ var("quadro_horario") }}
         where
             sentido = "C"
     ) c
     on
         s.servico = c.servico
-        and s.variacao_itinerario = c.variacao_itinerario
+        and s.tipo_dia = c.tipo_dia
+        -- and s.variacao_itinerario = c.variacao_itinerario
 ),
 -- 5. Filtra shapes de servicos não circulares planejados
 shape_nao_circular as (
@@ -78,7 +74,7 @@ shape_nao_circular as (
         select 
             *
         from 
-            {{ var("quadro_horario_dia_util") }}
+            {{ var("quadro_horario") }}
         where 
             sentido = "I" or sentido = "V"
     ) c
@@ -98,9 +94,6 @@ shape_sentido as (
             shape_nao_circular
     )
 )
--- 7. Adiciona distância total planejada da viagem circular no shape de
---    ida (usaremos apenas a ida como padrão, juntando nela as demais infos da volta
---    consecutiva)
 select
     e.*,
     s.sentido,

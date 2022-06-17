@@ -10,56 +10,31 @@
 
 -- 1. Define a data e tipo dia do período avaliado
 with data_efetiva as (
-    select distinct
-        data,
-        date("{{ var("subsidio_sigmob_date")}}") as data_versao_efetiva_agency,
-        case
-            when extract(dayofweek from data) = 1 then 'Domingo'
-            when extract(dayofweek from data) = 7 then 'Sabado'
-            else 'Dia Útil'
-        end as tipo_dia
-    from 
-        {{ ref('data_versao_efetiva') }} a
+    select data, tipo_dia
+    from {{ ref("subsidio_data_versao_efetiva") }}
     where
         data = date_sub(date("{{ var("run_date") }}"), interval 2 day)
 ),
 planejada as (
     select
         e.*,
-        start_time as inicio_periodo,
-        end_time as fim_periodo,
-        v.* except(tipo_dia, start_time, end_time)
+        v.* except(tipo_dia)
     from 
         data_efetiva e
     left join
-        {{ var("quadro_horario_dia_util") }} v
+        {{ var("quadro_horario") }} v
     on
         e.tipo_dia = v.tipo_dia
-),
--- 2. Adiciona informação de consórcios dos serviços planejados
-planejada_agency as (
-    select
-        a.agency_name as consorcio, 
-        p.* except(data_versao_efetiva_agency),
-    from 
-        planejada p
-    left join
-        {{ ref("routes_desaninhada") }} a
-    on
-        a.data_versao = p.data_versao_efetiva_agency
-        and and p.servico = a.servico
-    where 
-        a.idModalSmtr in ("22", "O")
 ),
 -- 3. Adiciona informações do trajeto (shape) - ajusta distancia
 --    planejada total de viagens circulares (ida+volta)
 distancia as (
     select
         data,
+        tipo_dia,
         servico,
         sentido,
-        variacao_itinerario,
-        data_shape,
+        data_versao as data_shape,
         shape_id,
         round(distancia_planejada, 3) as distancia_planejada,   
     from (
@@ -68,8 +43,8 @@ distancia as (
             case when
                 sentido = "C" and sentido_shape = "I"
                 then distancia_planejada + lead(distancia_planejada) over (
-                        partition by data, servico, variacao_itinerario 
-                        order by data, servico, variacao_itinerario, sentido_shape)
+                        partition by data, servico, tipo_dia --, variacao_itinerario
+                        order by data, servico, sentido_shape)
                 else distancia_planejada
             end as distancia_planejada
         from
@@ -79,16 +54,15 @@ distancia as (
         (sentido = "I" or sentido = "V")
         or (sentido = "C" and sentido_shape = "I")
 )
--- 2. Junta consórcios e distancia shape aos servicos planejados,
---    padroniza servico como variação+linha (semelhante ao gps)
+-- 2. Junta consórcios e distancia shape aos servicos planejados
 select 
     p.*,
-    d.* except(data, servico, sentido, variacao_itinerario)
+    d.* except(data, servico, sentido, tipo_dia)
 from
-    planejada_agency p
+    planejada p
 left join 
     distancia d
 on p.data = d.data
 and p.servico = d.servico
 and p.sentido = d.sentido
-and p.variacao_itinerario = d.variacao_itinerario
+and p.tipo_dia = d.tipo_dia
