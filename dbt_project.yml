@@ -62,6 +62,9 @@ vars:
   brt_id_modal_smtr: ["'20'", "'B'"]
 
   ### SIGMOB ###
+  # data_versao fixada para operações que envolvem o uso do SIGMOB
+  versao_fixa_sigmob: '2022-06-10'
+
   data_inclusao_agency: "2021-08-03"
   data_inclusao_stop_times: "2021-08-03"
   data_inclusao_linhas: "2021-08-03"
