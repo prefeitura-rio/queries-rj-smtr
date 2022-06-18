@@ -1,8 +1,3 @@
--- Todas as viagens classificadas
--- tipo_viagem: 
--- - "Completa linha correta" => circular, nao_circular OK
--- - "Completa linha incorreta" => X não entra ainda
-
 -- 1. Identifica viagens que estão dentro do quadro planejado (por
 --    enquanto, consideramos o dia todo).
 with viagem_periodo as (
@@ -23,8 +18,9 @@ with viagem_periodo as (
         from
             {{ ref("viagem_planejada") }}
     ) p
-    left join 
-        {{ ref("viagem_conformidade") }} v 
+    inner join (
+        select distinct * from {{ ref("viagem_conformidade") }} 
+    ) v 
     on 
         v.shape_id = p.shape_id
         and v.servico_informado = p.servico
