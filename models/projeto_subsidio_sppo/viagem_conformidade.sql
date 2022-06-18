@@ -19,7 +19,7 @@ with viagem as (
             shape_id,
         from (
             select
-                * except(sentido_shape, datetime_chegada, distancia_planejada),
+                * except(sentido_shape, datetime_chegada, distancia_planejada, distancia_inicio_fim),
                 datetime_chegada,
                 distancia_planejada,
             from 
@@ -29,7 +29,7 @@ with viagem as (
         )
         union all (
             select 
-                * except(sentido_shape, shape_id),
+                * except(sentido_shape, shape_id, distancia_inicio_fim),
                 concat(SUBSTR(shape_id, 1, 10), "C", SUBSTR(shape_id, 12, length(shape_id))) as shape_id,
             from 
                 (select 
