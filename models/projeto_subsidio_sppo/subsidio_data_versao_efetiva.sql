@@ -1,4 +1,4 @@
--- TODO: parametrizar
+-- ATUALIZADA A CADA 15 DIAS
 select 
   data,
   case
