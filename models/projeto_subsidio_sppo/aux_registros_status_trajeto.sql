@@ -36,6 +36,9 @@ status_viagem as (
         s.servico as servico_realizado,
         s.shape_id,
         s.sentido_shape,
+        s.shape_id_planejado,
+        s.trip_id,
+        s.trip_id_planejado,
         s.sentido,
         s.start_pt,
         s.end_pt,
@@ -52,8 +55,15 @@ status_viagem as (
         end status_viagem
     from 
         gps g
-    inner join
-        {{ ref('aux_shapes_filtrada') }} s
+    inner join (
+        select 
+            *
+        from
+            {{ ref('viagem_planejada') }}
+        where
+        data between date_sub(date("{{ var("run_date") }}"), interval 2 day)
+            and date_sub(date("{{ var("run_date") }}"), interval 1 day)
+    ) s
     on 
         g.data = s.data
         and g.servico = s.servico

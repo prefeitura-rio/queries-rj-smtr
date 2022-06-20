@@ -2,40 +2,40 @@
 with viagem as (
     select
         data,
-        servico_informado,
-        shape_id,
+        trip_id,
         count(id_viagem) as viagens_realizadas
     from 
         {{ ref("viagem_completa") }}
     group by
-        1,2,3
+        1,2
 ),
 -- 2. Junta informações de viagens planejadas às realizadas
 planejado as (
-    select 
-        p.consorcio,
-        p.data,
-        p.tipo_dia,
-        p.servico,
-        p.vista,
-        p.sentido,
-        p.inicio_periodo,
-        p.fim_periodo,
-        p.viagens as viagens_planejadas,
-        ifnull(v.viagens_realizadas, 0) as viagens_realizadas,
-        ifnull(p.distancia_planejada, 0) as distancia_planejada
+    select distinct
+        p.*,
+        ifnull(v.viagens_realizadas, 0) as viagens_realizadas
     from (
-        select distinct
-            *
+        select
+            consorcio,
+            data,
+            tipo_dia,
+            trip_id_planejado as trip_id,
+            servico,
+            vista,
+            sentido,
+            inicio_periodo,
+            fim_periodo,
+            sum(ifnull(distancia_planejada, 0)) as distancia_planejada,
+            max(viagens) as viagens_planejadas
         from
             {{ ref("viagem_planejada") }}
         where data_shape is not null
+        group by 1,2,3,4,5,6,7,8,9
     ) p
     left join
         viagem v
     on
-        v.shape_id = p.shape_id
-        and v.servico_informado = p.servico
+        v.trip_id = p.trip_id
         and v.data = p.data
 ),
 -- 3. Limita máximo de viagens do subsídio = total planejado 

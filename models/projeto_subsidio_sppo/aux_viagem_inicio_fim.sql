@@ -61,10 +61,13 @@ select distinct
     id_veiculo,
     servico_informado, -- no momento da partida
     servico_realizado,
+    trip_id,
     shape_id,
     sentido_shape,
     round((st_distance(start_pt, posicao_partida) + st_distance(end_pt, posicao_chegada))/1000, 3) as distancia_inicio_fim,
     distancia_planejada,
+    shape_id_planejado,
+    trip_id_planejado,
     sentido,
     datetime_partida,
     datetime_chegada,

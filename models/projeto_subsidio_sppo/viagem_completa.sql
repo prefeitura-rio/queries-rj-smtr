@@ -13,7 +13,7 @@ with viagem_periodo as (
             consorcio,
             vista,
             data,
-            shape_id,
+            trip_id_planejado as trip_id,
             servico
         from
             {{ ref("viagem_planejada") }}
@@ -22,8 +22,7 @@ with viagem_periodo as (
         select distinct * from {{ ref("viagem_conformidade") }} 
     ) v 
     on 
-        v.shape_id = p.shape_id
-        and v.servico_informado = p.servico
+        v.trip_id = p.trip_id
         and v.data = p.data
     -- where (
     --     ( -- 05:00:00 as 23:00:00
@@ -50,6 +49,7 @@ select distinct
     servico_informado,
     servico_realizado,
     vista,
+    trip_id,
     shape_id,
     sentido,
     datetime_partida,

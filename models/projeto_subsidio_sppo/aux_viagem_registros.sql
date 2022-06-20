@@ -2,7 +2,9 @@
 --    shape. Adiciona distância do 1o/último sinal de gps ao início/final do
 --    shape. Isso é necessário pois o 1o/ultimo sinal é contabilizado
 --    apenas quando o veiculo sai/chega dentro do raio de 500m ao redor
---    do ponto inicial/final.
+--    do ponto inicial/final. Contabiliza também o número de registros
+--    em cada tapa da viagem (inicio, meio, fim, fora), total de
+--    registros de gps e total de minutos da viagem com registros de gps.
 with distancia as (
     select 
         *,
@@ -10,7 +12,7 @@ with distancia as (
     from (
         select distinct
             id_viagem,
-            sentido_shape,
+            trip_id,
             max(distancia_inicio_fim) as distancia_inicio_fim,
             round(sum(distancia)/1000 + max(distancia_inicio_fim), 3) as distancia_aferida,
             sum(case when status_viagem = "middle" then 1 else 0 end) as n_registros_middle,
@@ -31,7 +33,7 @@ with distancia as (
     )
 )
 -- 2. Calcula distancia total por viagem - junta distancias corrigidas
---    de ida e volta de viagens circulares.
+--    de ida e volta de viagens circulares. 
 select
     id_viagem,
     sum(distancia_aferida) as distancia_aferida,

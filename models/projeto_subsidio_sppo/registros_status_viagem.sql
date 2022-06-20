@@ -21,6 +21,7 @@ with registros_viagem as (
     left join (
     select 
         id_veiculo,
+        trip_id,
         servico_realizado,
         sentido_shape,
         id_viagem,
@@ -32,8 +33,7 @@ with registros_viagem as (
     ) v
     on 
     s.id_veiculo = v.id_veiculo
-    and s.servico_realizado = v.servico_realizado
-    and s.sentido_shape = v.sentido_shape
+    and s.trip_id = v.trip_id
     and s.timestamp_gps between v.datetime_partida and v.datetime_chegada
 )
 -- 2. Filtra apenas registros de viagens identificadas
