@@ -1,77 +1,56 @@
-{{ config(
-       materialized = 'incremental',
-       partition_by = {
-              "field": "data",
-              "data_type": "date",
-              "granularity": "day"
-       }
-)
-}}
+-- ATUALIZADA A CADA 15 DIAS
 
--- 1. Define a data e tipo dia do período avaliado
+-- 1. Define datas do período planejado
 with data_efetiva as (
-    select data, tipo_dia
+    select 
+        data,
+        tipo_dia,
+        data_versao_sigmob
     from {{ ref("subsidio_data_versao_efetiva") }}
-    where
-        data = date_sub(date("{{ var("run_date") }}"), interval 2 day)
+    where data_versao_sigmob is not null
 ),
+-- 2. Puxa dados de shapes usando a versão fixa do sigmob. Reconstrói
+--    trip_id e shape_id de viagens circulares para cruzar com o quadro
+--    horário planejado (os shapes/trips circulares são separados em
+--    ida/volta no sigmob). Ajusta distância do shape para km.
+shapes as (
+    select
+        d.* except(data_versao_sigmob),
+        data_versao as data_shape,
+        trip_id,
+        trip_id_planejado,
+        shape_id,
+        shape_id_planejado,
+        shape,
+        sentido_shape,
+        round(s.shape_distance/1000, 3) as distancia_planejada,
+        start_pt,
+        end_pt
+    from 
+        data_efetiva d
+    left join
+        {{ ref('subsidio_shapes_geom') }} s
+    on s.data_versao = d.data_versao_sigmob
+),
+-- 3. Puxa dados de viagens planejadas no quadro horário
 planejada as (
     select
-        e.*,
-        v.* except(tipo_dia)
+        e.* except(data_versao_sigmob),
+        p.* except(tipo_dia)
     from 
         data_efetiva e
     left join
-        {{ var("quadro_horario") }} v
+        {{ var("quadro_horario") }} p
     on
-        e.tipo_dia = v.tipo_dia
-),
--- 3. Adiciona informações do trajeto (shape) - ajusta distancia
---    planejada total de viagens circulares (ida+volta)
-distancia as (
-    select
-        data,
-        tipo_dia,
-        servico,
-        sentido,
-        data_versao as data_shape,
-        shape_id,
-        round(distancia_planejada, 3) as distancia_planejada,   
-    from (
-        select 
-            *
-        from (
-            select
-                * except(distancia_planejada, shape_id),
-                case 
-                    when sentido = "C"
-                    then concat(SUBSTR(shape_id, 1, 10), "C", SUBSTR(shape_id, 12, length(shape_id)))
-                    else shape_id
-                end as shape_id,
-                case
-                    when sentido = "C"
-                    then distancia_planejada + lead(distancia_planejada) over (
-                            partition by data, servico, tipo_dia --, variacao_itinerario
-                            order by data, servico, sentido_shape)
-                    else distancia_planejada
-                end as distancia_planejada
-            from
-                {{ ref("aux_shapes_filtrada") }} v
-        )
-    where
-        (sentido = "I" or sentido = "V")
-        or (sentido = "C" and sentido_shape = "I")
-    )
+        e.tipo_dia = p.tipo_dia
 )
--- 2. Junta consórcios e distancia shape aos servicos planejados
+-- 4. Junta shapes aos servicos planejados no quadro horário
 select 
-    p.*,
-    d.* except(data, servico, sentido, tipo_dia)
+    p.* except(trip_id),
+    d.* except(data, tipo_dia)
 from
     planejada p
-left join 
-    distancia d
-on p.data = d.data
-and p.servico = d.servico
-and p.sentido = d.sentido
-and p.tipo_dia = d.tipo_dia
+left join
+    shapes d
+on p.trip_id = d.trip_id_planejado
+and p.data = d.data
