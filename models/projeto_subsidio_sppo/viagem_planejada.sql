@@ -5,9 +5,9 @@ with data_efetiva as (
     select 
         data,
         tipo_dia,
-        data_versao_sigmob
+        data_versao_shapes
     from {{ ref("subsidio_data_versao_efetiva") }}
-    where data_versao_sigmob is not null
+    where data_versao_shapes is not null
 ),
 -- 2. Puxa dados de shapes usando a versão fixa do sigmob. Reconstrói
 --    trip_id e shape_id de viagens circulares para cruzar com o quadro
@@ -15,7 +15,7 @@ with data_efetiva as (
 --    ida/volta no sigmob). Ajusta distância do shape para km.
 shapes as (
     select
-        d.* except(data_versao_sigmob),
+        d.* except(data_versao_shapes),
         data_versao as data_shape,
         trip_id,
         trip_id_planejado,
@@ -30,12 +30,12 @@ shapes as (
         data_efetiva d
     left join
         {{ ref('subsidio_shapes_geom') }} s
-    on s.data_versao = d.data_versao_sigmob
+    on s.data_versao = d.data_versao_shapes
 ),
 -- 3. Puxa dados de viagens planejadas no quadro horário
 planejada as (
     select
-        e.* except(data_versao_sigmob),
+        e.* except(data_versao_shapes),
         p.* except(tipo_dia)
     from 
         data_efetiva e

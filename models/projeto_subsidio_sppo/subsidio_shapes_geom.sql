@@ -19,8 +19,6 @@ with trips as (
         trip_short_name,
         sentido
     FROM {{ ref("subsidio_trips_desaninhada") }}
-    -- TODO: remover quando consertar o shape
-    where shape_id not in ("O0410AAA0AIDU01", "O0410AAA0AVDU01")
 ),
 contents as (
 -- EXTRACTS VALUES FROM JSON STRING FIELD 'content' 
@@ -33,11 +31,9 @@ contents as (
         SAFE_CAST(json_value(content, "$.shape_pt_sequence") as INT64) shape_pt_sequence,
         DATE(data_versao) AS data_versao
     FROM 
-        `rj-smtr.br_rj_riodejaneiro_sigmob.shapes` -- {{ ref("shapes") }} s
+        `rj-smtr-dev.br_rj_riodejaneiro_sigmob.shapes` -- {{ ref("shapes") }} s
     WHERE 
-        DATE(data_versao) = "{{var('versao_fixa_sigmob')}}"
-        -- TODO: remover quando consertar o shape
-        and shape_id not in ("O0410AAA0AIDU01", "O0410AAA0AVDU01")
+        DATE(data_versao) = "2022-06-20"
 ),
 pts as (
     select
