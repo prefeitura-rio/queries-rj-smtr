@@ -1,56 +1,131 @@
--- ATUALIZADA A CADA 15 DIAS
+{{ config(
+    materialized='incremental',
+        partition_by={
+        "field":"data",
+        "data_type": "date",
+        "granularity":"day"
+    }
+)
+}}
 
 -- 1. Define datas do período planejado
 with data_efetiva as (
     select 
         data,
         tipo_dia,
-        data_versao_shapes
+        data_versao_shapes,
+        data_versao_trips,
+        data_versao_frequencies
     from {{ ref("subsidio_data_versao_efetiva") }}
-    where data_versao_shapes is not null
 ),
--- 2. Puxa dados de shapes usando a versão fixa do sigmob. Reconstrói
---    trip_id e shape_id de viagens circulares para cruzar com o quadro
---    horário planejado (os shapes/trips circulares são separados em
---    ida/volta no sigmob). Ajusta distância do shape para km.
+-- 2. Puxa dados de distancia quadro no quadro horário
+quadro as (
+    select
+        e.data,
+        e.tipo_dia,
+        p.* except(tipo_dia, data_versao, horario_inicio, horario_fim),
+        horario_inicio as inicio_periodo,
+        horario_fim as fim_periodo
+    from 
+        data_efetiva e
+    inner join
+        {{ var("quadro_horario") }} p
+    on
+        e.data_versao_frequencies = p.data_versao
+    and
+        e.tipo_dia = p.tipo_dia 
+),
+-- 3. Trata informação de trips: adiciona ao sentido da trip o sentido
+--    planejado (os shapes/trips circulares são separados em
+--    ida/volta no sigmob)
+trips as (
+    select
+        e.data,
+        t.*
+    from
+        {{ ref('subsidio_trips_desaninhada') }} t
+    inner join 
+        data_efetiva e
+    on 
+        t.data_versao = e.data_versao_trips
+),
+quadro_trips as (
+    select
+        *
+    from (
+        select distinct
+            * except(trip_id),
+            trip_id as trip_id_planejado,
+            trip_id
+        from
+            quadro
+        where sentido = "I" or sentido = "V"
+    )
+    union all (
+        select
+            * except(trip_id),
+            trip_id as trip_id_planejado,
+            concat(SUBSTR(trip_id, 1, 10), "I", SUBSTR(trip_id, 12, length(trip_id))) as trip_id,
+        from
+            quadro
+        where sentido = "C"
+    )
+    union all (
+        select
+            * except(trip_id),
+            trip_id as trip_id_planejado,
+            concat(SUBSTR(trip_id, 1, 10), "V", SUBSTR(trip_id, 12, length(trip_id))) as trip_id,
+        from
+            quadro
+        where sentido = "C"
+    )
+),
+quadro_tratada as (
+    select
+        q.*,
+        t.shape_id,
+        case 
+            when sentido = "C"
+            then concat(SUBSTR(shape_id, 1, 10), "C", SUBSTR(shape_id, 12, length(shape_id))) 
+            else shape_id
+        end as shape_id_planejado, -- TODO: adicionar no sigmob
+    from
+        quadro_trips q
+    left join 
+        trips t
+    on 
+        t.data = q.data
+    and
+        t.trip_id = q.trip_id
+),
+-- 4. Trata informações de shapes: junta trips e shapes para resgatar o sentido
+--    planejado (os shapes/trips circulares são separados em
+--    ida/volta no sigmob)
 shapes as (
     select
-        d.* except(data_versao_shapes),
+        e.data,
         data_versao as data_shape,
-        trip_id,
-        trip_id_planejado,
         shape_id,
-        shape_id_planejado,
         shape,
-        sentido_shape,
-        round(s.shape_distance/1000, 3) as distancia_planejada,
+        SUBSTR(shape_id, 11, 1) as sentido_shape,
         start_pt,
         end_pt
     from 
-        data_efetiva d
-    left join
-        {{ ref('subsidio_shapes_geom') }} s
-    on s.data_versao = d.data_versao_shapes
-),
--- 3. Puxa dados de viagens planejadas no quadro horário
-planejada as (
-    select
-        e.* except(data_versao_shapes),
-        p.* except(tipo_dia)
-    from 
         data_efetiva e
-    left join
-        {{ var("quadro_horario") }} p
-    on
-        e.tipo_dia = p.tipo_dia
+    inner join
+        {{ ref('subsidio_shapes_geom') }} s
+    on 
+        s.data_versao = e.data_versao_shapes
 )
--- 4. Junta shapes aos servicos planejados no quadro horário
+-- 5. Junta shapes e trips aos servicos planejados no quadro horário
 select 
-    p.* except(trip_id),
-    d.* except(data, tipo_dia)
+    p.*,
+    s.* except(data, shape_id)
 from
-    planejada p
-left join
-    shapes d
-on p.trip_id = d.trip_id_planejado
-and p.data = d.data
+    quadro_tratada p
+inner join
+    shapes s
+on 
+    p.shape_id = s.shape_id
+and
+    p.data = s.data
