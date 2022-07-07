@@ -2,66 +2,6 @@
 version: 2
 
 models:
-  - name: aux_shapes_filtrada
-    description: "Tabela auxiliar de informações de trajetos (shapes)
-    filtrada para os servicos planejados"
-    columns:
-      - name: shape_id
-        description: "Código identificador do shape (trajeto)"
-        tests:
-          - not_null
-      - name: shape
-        description: "Linestring dos pontos gelocalizados do trajeto"
-        tests:
-          - not_null
-      - name: start_pt
-        description: "Geolocalização do ponto de início do trajeto"
-        tests:
-          - not_null
-      - name: end_pt
-        description: "Geolocalização do ponto final do trajeto"
-        tests:
-          - not_null
-      - name: data
-        description: "Data"
-        tests:
-          - not_null
-      - name: sentido_shape
-        description: "Sentido do shape (codificado no shape_id - categorias: I (ida), V (volta), C (circular)"
-        tests:
-          - not_null
-          - accepted_values:
-              values: ["I", "V", "C"]
-      - name: versao_modelo
-        description: "Versão da metodologia de cálculo da
-        respectiva linha na tabela."
-        tests:
-          - not_null
-      - name: distancia_planejada
-        description: "Distância total do trajeto (shape)"
-        tests:
-          - not_null
-      - name: tipo_dia
-        description: "Dia da semana - categorias: Dia Útil, Sabado, Domingo"
-        tests:
-          - not_null
-          - accepted_values:
-              values: ["Dia Útil", "Sabado", "Domingo"]
-      - name: servico
-        description: "Serviço correspondente ao shape (ex: 309SN)"
-        tests:
-          - not_null
-      - name: variacao_itinerario
-        description: "Variação dee itinerário da viagem - categorias:
-        DD, DU, SS, RT, RM, DA, SA"
-      - name: data_shape
-        description: "Data do shape capturado no SIGMOB (00h)"
-        tests:
-          - not_null
-      - name: trip_id
-        description: "Código identificador do itinerário (trip)"
-        tests:
-          - not_null
   - name: viagem_planejada
     description: "Tabela histórica com detalhes das viagens planejadas a cada dia"
     columns:
@@ -104,15 +44,15 @@ models:
         description: "Intervalo de saída planejado"
         tests:
           - not_null
-      - name: viagens
-        description: "Viagens planejadas"
-        tests:
-          - not_null
-      - name: tempo_viagem
-        description: "Tempo planejado de uma viagem"
-        tests:
-          - not_null
-          - greater_than_zero
+      # - name: viagens
+      #   description: "Viagens planejadas"
+      #   tests:
+      #     - not_null
+      # - name: tempo_viagem
+      #   description: "Tempo planejado de uma viagem"
+      #   tests:
+      #     - not_null
+      #     - greater_than_zero
       - name: variacao_itinerario
         description: "Variação dee itinerário da viagem - categorias:
         DD, DU, SS, RT, RM, DA, SA"
@@ -136,9 +76,14 @@ models:
         tests:
           - not_null
       - name: distancia_planejada
-        description: "Distância do shape (trajeto) planejado"
+        description: "Distância do shape (trajeto) planejado em KM"
         tests:
           - not_null
+      - name: distancia_total_planejada
+        description: "Distância total planejada do serviço em KM (junta ida+volta)."
+        tests:
+          - not_null
+          - greater_than_zero
       - name: trip_id
         description: "Código identificador do itinerário (trip)"
         tests:
@@ -468,7 +413,7 @@ models:
         respectiva linha na tabela."
         tests:
           - not_null
-  - name: aux_viagem_distancia
+  - name: aux_viagem_registros
     description: "Tabela auxiliar de cálculo da distancia e total de
     registros do GPS das viagens."
     columns:
@@ -874,8 +819,7 @@ models:
           - not_null
           - not_negative
       - name: distancia_total_planejada
-        description: "Distância total planejada em KM (viagens planejadas x
-        distância do shape)."
+        description: "Distância total planejada do serviço em KM (junta ida+volta)."
         tests:
           - not_null
           - greater_than_zero
