@@ -21,9 +21,8 @@ with viagem as (
             *
         from (
             select
-                * except(sentido_shape, distancia_inicio_fim, shape_id, shape_id_planejado, trip_id, trip_id_planejado, datetime_chegada, distancia_planejada),
+                * except(sentido_shape, distancia_inicio_fim, shape_id, shape_id_planejado, trip_id, trip_id_planejado, datetime_chegada),
                 datetime_chegada,
-                distancia_planejada,
                 trip_id_planejado as trip_id,
                 shape_id_planejado as shape_id
             from 
@@ -38,13 +37,16 @@ with viagem as (
                 shape_id_planejado as shape_id,
             from 
                 (select 
-                    v.* except(datetime_chegada, distancia_planejada),
+                    v.* except(datetime_chegada),
                     lead(datetime_chegada) over (
                         partition by id_viagem order by sentido_shape)
                     as datetime_chegada,
-                    round(distancia_planejada + lead(distancia_planejada) over (
-                        partition by id_viagem order by sentido_shape), 3)
-                    as distancia_planejada,
+                    -- TODO: mudar se tiver distancia planejada separada
+                    -- por shape (ida/volta)
+                    -- distancia_planejada,
+                    -- round(distancia_planejada + lead(distancia_planejada) over (
+                    --     partition by id_viagem order by sentido_shape), 3)
+                    -- as distancia_planejada,
                 from 
                     {{ ref("aux_viagem_circular") }} v
                 where 

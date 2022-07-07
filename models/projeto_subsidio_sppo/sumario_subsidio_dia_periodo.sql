@@ -13,7 +13,8 @@ with viagem as (
 planejado as (
     select distinct
         p.*,
-        ifnull(v.viagens_realizadas, 0) as viagens_realizadas
+        ifnull(v.viagens_realizadas, 0) as viagens_realizadas,
+        ifnull(v.viagens_realizadas, 0) as viagens_subsidio, -- sem limite maximo de viagens
     from (
         select
             consorcio,
@@ -25,11 +26,14 @@ planejado as (
             sentido,
             inicio_periodo,
             fim_periodo,
-            sum(ifnull(distancia_planejada, 0)) as distancia_planejada,
-            max(viagens) as viagens_planejadas
+            case
+                when sentido = "C" then max(distancia_planejada)
+                else sum(distancia_planejada) 
+            end as distancia_planejada,
+            max(distancia_total_planejada) as distancia_total_planejada, -- distancia total do dia (junta ida+volta)
+            null as viagens_planejadas -- max(viagens) as viagens_planejadas
         from
             {{ ref("viagem_planejada") }}
-        where data_shape is not null
         group by 1,2,3,4,5,6,7,8,9
     ) p
     left join
@@ -37,24 +41,12 @@ planejado as (
     on
         v.trip_id = p.trip_id
         and v.data = p.data
-),
--- 3. Limita máximo de viagens do subsídio = total planejado 
-viagem_subsidio as (
-    select
-        *,
-        viagens_realizadas as viagens_subsidio
-        -- case 
-        --     when viagens_realizadas > viagens_planejadas
-        --     then viagens_planejadas
-        --     else viagens_realizadas
-        -- end as viagens_subsidio
-    from planejado
 )
--- 4 . Adiciona informações de distância total
+-- 4. Adiciona informações de distância total
 select 
-    * except(distancia_planejada),
-    round(viagens_planejadas * distancia_planejada, 3) as distancia_total_planejada,
+    * except(distancia_planejada, distancia_total_planejada),
+    distancia_total_planejada,
     round(viagens_subsidio * distancia_planejada, 3) as distancia_total_subsidio,
     round(viagens_realizadas * distancia_planejada, 3) as distancia_total_aferida,
     '{{ var("version") }}' as versao_modelo
-from viagem_subsidio
+from planejado
