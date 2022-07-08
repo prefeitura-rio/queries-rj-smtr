@@ -4,6 +4,7 @@ with viagem_periodo as (
     select distinct
         p.consorcio,
         p.vista,
+        p.tipo_dia,
         v.*,
         time("2022-06-01 00:00:00") as inicio_periodo,
         time("2022-06-01 23:59:59") as fim_periodo,
@@ -13,6 +14,7 @@ with viagem_periodo as (
             consorcio,
             vista,
             data,
+            tipo_dia,
             trip_id_planejado as trip_id,
             servico
         from

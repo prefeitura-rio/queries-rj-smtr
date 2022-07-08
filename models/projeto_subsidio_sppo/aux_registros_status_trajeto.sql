@@ -3,12 +3,7 @@ with gps as (
     select 
         g.* except(longitude, latitude),
         substr(id_veiculo, 2, 3) as id_empresa,
-        ST_GEOGPOINT(longitude, latitude) posicao_veiculo_geo,
-        case
-            when extract(dayofweek from timestamp_gps) = 1 then 'Domingo'
-            when extract(dayofweek from timestamp_gps) = 7 then 'Sabado'
-            else 'Dia Útil'
-        end as tipo_dia
+        ST_GEOGPOINT(longitude, latitude) posicao_veiculo_geo
     from 
         `rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo` g -- {{ ref('gps_sppo') }} g
     where (
@@ -26,7 +21,6 @@ with gps as (
 status_viagem as (
     select
         g.data,
-        g.tipo_dia,
         g.id_veiculo,
         g.id_empresa,
         g.timestamp_gps,

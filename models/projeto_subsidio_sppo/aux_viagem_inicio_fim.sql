@@ -56,7 +56,6 @@ inicio_fim AS (
 select distinct
     concat(id_veiculo, "-", servico_realizado ,"-", sentido, "-", FORMAT_DATETIME("%Y%m%d%H%M%S", datetime_partida)) as id_viagem,
     data,
-    tipo_dia,
     id_empresa,
     id_veiculo,
     servico_informado, -- no momento da partida
