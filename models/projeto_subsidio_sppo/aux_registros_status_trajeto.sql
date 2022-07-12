@@ -15,6 +15,7 @@ with gps as (
         timestamp_gps between datetime_sub(datetime_trunc("{{ var("run_date") }}", day), interval 2 day)
         and datetime_add(datetime_sub(datetime_trunc("{{ var("run_date") }}", day), interval 1 day), interval 3 hour)
     )
+    and status != "Parado garagem"
 ),
 -- 2. Classifica a posição do veículo em todos os shapes possíveis de
 --    serviços de uma mesma empresa
@@ -53,7 +54,7 @@ status_viagem as (
         select 
             *
         from
-            {{ ref('viagem_planejada') }}
+            {{ ref("viagem_planejada") }}
         where
         data between date_sub(date("{{ var("run_date") }}"), interval 2 day)
             and date_sub(date("{{ var("run_date") }}"), interval 1 day)
