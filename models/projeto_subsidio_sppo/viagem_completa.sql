@@ -29,14 +29,14 @@ with viagem_periodo as (
             servico
         from
             {{ ref("viagem_planejada") }}
-        {% if is_incremental %}
+        {% if is_incremental() %}
         WHERE
             data = date_sub(date("{{ var("run_date") }}"), interval 2 day)
         {% endif %}
     ) p
     inner join (
         select distinct * from {{ ref("viagem_conformidade") }} 
-        {% if is_incremental %}
+        {% if is_incremental() %}
         WHERE 
             data = date_sub(date("{{ var("run_date") }}"), interval 2 day)
         {% endif %}
