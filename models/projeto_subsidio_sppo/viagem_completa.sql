@@ -1,3 +1,13 @@
+{{ 
+config(
+    materialized='incremental',
+    partition_by={
+            "field":"data",
+            "data_type": "date",
+            "granularity":"day"
+    }
+)
+}}
 -- 1. Identifica viagens que estão dentro do quadro planejado (por
 --    enquanto, consideramos o dia todo).
 with viagem_periodo as (
@@ -19,9 +29,17 @@ with viagem_periodo as (
             servico
         from
             {{ ref("viagem_planejada") }}
+        {% if is_incremental %}
+        WHERE
+            data = date_sub(date("{{ var("run_date") }}"), interval 2 day)
+        {% endif %}
     ) p
     inner join (
         select distinct * from {{ ref("viagem_conformidade") }} 
+        {% if is_incremental %}
+        WHERE 
+            data = date_sub(date("{{ var("run_date") }}"), interval 2 day)
+        {% endif %}
     ) v 
     on 
         v.trip_id = p.trip_id
