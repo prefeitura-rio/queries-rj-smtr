@@ -89,6 +89,19 @@ vars:
   stop_details_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.stop_details"
   stops_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.stops"
   trips_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.trips"
+  
+  ### Subsídio SPPO (Ônibus) ###
+  run_date: "2022-06-03"
+  buffer: 500 # distância em metros para buffer
+  perc_conformidade_distancia_min: 0
+  perc_conformidade_shape_min: 80
+  perc_conformidade_registros_min: 50
+  perc_distancia_total_subsidio: 80
+  quadro_horario: "`rj-smtr.projeto_subsidio_sppo.quadro_horario`"
+  subsidio_shapes: "`rj-smtr.projeto_subsidio_sppo.shapes`"
+  subsidio_trips: "`rj-smtr.projeto_subsidio_sppo.trips`"
+  # valor_subsidio: "`rj-smtr-dev.projeto_subsidio_sppo.valor_subsidio`"
+  
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
@@ -102,9 +115,9 @@ models:
     columns: true
   rj_smtr:
     # Config indicated by + and applies to all files under models/example/
-    example:
+    projeto_subsidio_sppo:
       +materialized: view # Materialization type (view, table or incremental)
-      +schema: example # Overrides the default schema (defaults to what is set on profiles.yml)
+      +schema: projeto_subsidio_sppo # Overrides the default schema (defaults to what is set on profiles.yml)
     br_rj_riodejaneiro_sigmob:
       +materialized: view
       +schema: br_rj_riodejaneiro_sigmob
