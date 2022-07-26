@@ -5,7 +5,7 @@ with gps as (
         substr(id_veiculo, 2, 3) as id_empresa,
         ST_GEOGPOINT(longitude, latitude) posicao_veiculo_geo
     from 
-        `rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo` g -- {{ ref('gps_sppo') }} g
+        {{ ref('gps_sppo') }} g
     where (
         data between date_sub(date("{{ var("run_date") }}"), interval 2 day)
         and date_sub(date("{{ var("run_date") }}"), interval 1 day)
