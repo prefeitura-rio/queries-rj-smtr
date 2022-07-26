@@ -9,4 +9,9 @@ SELECT
     SAFE_CAST(data AS DATE) data,
     SAFE_CAST(hora AS INT64) hora
 from 
-    {{var('sppo_registros_staging')}} as t
+    {% if target.name == 'dev' %}
+        rj-smtr-{{ target.name }}.{{ var('sppo_registros_staging') }} as t
+    {%- else -%}
+        rj-smtr.{{ var('sppo_registros_staging') }} as t
+    {% endif %}
+    
