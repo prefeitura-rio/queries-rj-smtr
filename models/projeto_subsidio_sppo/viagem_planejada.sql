@@ -28,16 +28,18 @@ quadro as (
         horario_fim as fim_periodo
     from 
         data_efetiva e
-    inner join
-        {{ var("quadro_horario") }} p
+    inner join (
+        select * 
+        from {{ var("quadro_horario") }}
+        {% if is_incremental() %}
+        where 
+            data_versao = date("{{ var("subsidio_quadro_version_date") }}")
+        {% endif %}
+    ) p
     on
         e.data_versao_frequencies = p.data_versao
     and
         e.tipo_dia = p.tipo_dia
-    {% if is_incremental() %}
-    WHERE
-        p.data_versao = date("{{ var("sigmob_version_date") }}")
-    {% endif %}
 ),
 -- 3. Trata informação de trips: adiciona ao sentido da trip o sentido
 --    planejado (os shapes/trips circulares são separados em
@@ -46,16 +48,18 @@ trips as (
     select
         e.data,
         t.*
-    from
-        {{ ref('subsidio_trips_desaninhada') }} t
+    from (
+        select *
+        from {{ ref('subsidio_trips_desaninhada') }}
+        {% if is_incremental() %}
+        where 
+            data_versao = date("{{ var("subsidio_sigmob_version_date") }}")
+        {% endif %}
+    ) t
     inner join 
         data_efetiva e
     on 
         t.data_versao = e.data_versao_trips
-    {% if is_incremental() %}
-    WHERE
-        t.data_versao = date("{{ var("sigmob_version_date") }}")
-    {% endif %}
 ),
 quadro_trips as (
     select
@@ -120,14 +124,16 @@ shapes as (
         end_pt
     from 
         data_efetiva e
-    inner join
-        {{ ref('subsidio_shapes_geom') }} s
+    inner join (
+        select * 
+        from {{ ref('subsidio_shapes_geom') }}
+        {% if is_incremental() %}
+        where 
+            data_versao = date("{{ var("subsidio_sigmob_version_date") }}")
+        {% endif %}
+    ) s
     on 
         s.data_versao = e.data_versao_shapes
-    {% if is_incremental() %}
-    WHERE
-        s.data_versao = date("{{ var("sigmob_version_date") }}")
-    {% endif %}
 )
 -- 5. Junta shapes e trips aos servicos planejados no quadro horário
 select 
