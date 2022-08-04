@@ -38,7 +38,6 @@ WITH
     WHERE
       data between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
       AND timestamp_gps > "{{var('date_range_start')}}" and timestamp_gps <="{{var('date_range_end')}}"
-      AND DATETIME_DIFF(timestamp_captura, timestamp_gps, MINUTE) BETWEEN 0 AND 1
     {%- endif -%}
   ),
   velocidades AS (
@@ -137,5 +136,4 @@ ON
   WHERE
   date(r.timestamp_gps) between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
   AND r.timestamp_gps > "{{var('date_range_start')}}" and r.timestamp_gps <="{{var('date_range_end')}}"
-  AND DATETIME_DIFF(r.timestamp_captura, r.timestamp_gps, MINUTE) BETWEEN 0 AND 1
 {%- endif -%}
