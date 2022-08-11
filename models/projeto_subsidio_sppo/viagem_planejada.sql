@@ -33,7 +33,7 @@ quadro as (
         from {{ var("quadro_horario") }}
         {% if is_incremental() %}
         where 
-            data_versao = date("{{ var("subsidio_quadro_version_date") }}")
+            data_versao = date("{{ var("frequencies_version") }}")
         {% endif %}
     ) p
     on
@@ -53,7 +53,7 @@ trips as (
         from {{ ref('subsidio_trips_desaninhada') }}
         {% if is_incremental() %}
         where 
-            data_versao = date("{{ var("subsidio_sigmob_version_date") }}")
+            data_versao = date("{{ var("shapes_version") }}")
         {% endif %}
     ) t
     inner join 
@@ -129,7 +129,7 @@ shapes as (
         from {{ ref('subsidio_shapes_geom') }}
         {% if is_incremental() %}
         where 
-            data_versao = date("{{ var("subsidio_sigmob_version_date") }}")
+            data_versao = date("{{ var("shapes_version") }}")
         {% endif %}
     ) s
     on 

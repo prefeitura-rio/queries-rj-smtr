@@ -91,7 +91,7 @@ vars:
   trips_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.trips"
   
   ### Subsídio SPPO (Ônibus) ###
-  run_date: "2022-06-03"
+  run_date: "YYYY-MM-DD"
   buffer: 500 # distância em metros para buffer
   perc_conformidade_distancia_min: 0
   perc_conformidade_shape_min: 80
@@ -101,8 +101,8 @@ vars:
   quadro_horario: "`rj-smtr-dev.projeto_subsidio_sppo.quadro_horario`"
   subsidio_shapes: "`rj-smtr-dev.projeto_subsidio_sppo.shapes`"
   subsidio_trips: "`rj-smtr-dev.projeto_subsidio_sppo.trips`"
-  subsidio_sigmob_version_date: "2022-07-XX"
-  subsidio_quadro_version_date: "2022-07-XX"
+  shapes_version: "YYYY-MM-DD"
+  frequencies_version: "YYYY-MM-DD"
   # valor_subsidio: "`rj-smtr-dev.projeto_subsidio_sppo.valor_subsidio`"
   
 
