@@ -19,6 +19,10 @@ with contents as (
         DATE(data_versao) AS data_versao
     FROM 
         {{ var("subsidio_shapes") }} s
+    {% if is_incremental() %}
+    WHERE
+        data_versao = date("{{ var("subsidio_sigmob_version_date") }}")
+    {% endif %}
 ),
 pts as (
     select
