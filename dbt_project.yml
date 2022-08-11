@@ -38,7 +38,7 @@ vars:
   linhas_sppo: "rj-smtr.br_rj_riodejaneiro_transporte.linhas_sppo" # registros_agg_data_hora_consorcio
   polygon_garagem: "rj-smtr.br_rj_riodejaneiro_geo.garagens_polygon" # aux_registros_parada
   sppo_terminais: "rj-smtr.br_rj_riodejaneiro_transporte.terminais_onibus_coordenadas" # aux_registros_parada
-  sppo_registros_staging: "rj-smtr-dev.br_rj_riodejaneiro_onibus_gps_staging.registros"
+  sppo_registros_staging: "rj-smtr.br_rj_riodejaneiro_onibus_gps_staging.registros"
 
   # Parametros de intersecção do ônibus com rota
   ## Tamanho do buffer da rota
