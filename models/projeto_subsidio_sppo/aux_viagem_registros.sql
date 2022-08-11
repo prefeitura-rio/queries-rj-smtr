@@ -24,10 +24,8 @@ with distancia as (
         from (
             select distinct * except(posicao_veiculo_geo, start_pt, end_pt)
             from {{ ref("registros_status_viagem") }}
-            where (
-                data between date_sub(date("{{ var("run_date") }}"), interval 2 day)
-                and date_sub(date("{{ var("run_date") }}"), interval 1 day)
-            )
+            where
+                data between date_sub(date("{{ var("run_date") }}"), interval 1 day) and date("{{ var("run_date") }}")
         )
         group by 1,2
     )
