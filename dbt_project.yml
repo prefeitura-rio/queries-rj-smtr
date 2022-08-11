@@ -97,9 +97,10 @@ vars:
   perc_conformidade_shape_min: 80
   perc_conformidade_registros_min: 50
   perc_distancia_total_subsidio: 80
-  quadro_horario: "`rj-smtr.projeto_subsidio_sppo.quadro_horario`"
-  subsidio_shapes: "`rj-smtr.projeto_subsidio_sppo.shapes`"
-  subsidio_trips: "`rj-smtr.projeto_subsidio_sppo.trips`"
+  # TODO: CHANGE TO PROD SENDING TO MASTER
+  quadro_horario: "`rj-smtr-dev.projeto_subsidio_sppo.quadro_horario`"
+  subsidio_shapes: "`rj-smtr-dev.projeto_subsidio_sppo.shapes`"
+  subsidio_trips: "`rj-smtr-dev.projeto_subsidio_sppo.trips`"
   subsidio_sigmob_version_date: "2022-07-XX"
   subsidio_quadro_version_date: "2022-07-XX"
   # valor_subsidio: "`rj-smtr-dev.projeto_subsidio_sppo.valor_subsidio`"
