@@ -97,7 +97,7 @@ vars:
   perc_conformidade_shape_min: 80
   perc_conformidade_registros_min: 50
   perc_distancia_total_subsidio: 80
-  # TODO: CHANGE TO PROD SENDING TO MASTER
+  # TODO: change refs to prod
   quadro_horario: "`rj-smtr-dev.projeto_subsidio_sppo.quadro_horario`"
   subsidio_shapes: "`rj-smtr-dev.projeto_subsidio_sppo.shapes`"
   subsidio_trips: "`rj-smtr-dev.projeto_subsidio_sppo.trips`"
