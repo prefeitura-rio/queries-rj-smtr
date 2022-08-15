@@ -9,23 +9,17 @@ select
   end as tipo_dia,
   case
     when data between date(2022,6,1) and last_day(date(2022,6,30), month) then date(2022,6,1)
-    when data between date(2022,7,1) and date(2022,7,15) then date(2022,7,1)
-    when data between date(2022,7,16) and last_day(date(2022,7,16), month) then date(2022,7,16)
-    when data between date(2022,8,1) and date(2022,8,15) then date(2022,8,1)
-    -- {% for i in range(6, 13) %}
-    --   when data between date(2022,{{ i }},1) and last_day(date(2022,{{ i }},30), month) then date(2022,{{ i }},01)
-    --   -- when data between date(2022,{{ i }},16) and date(2022,{{ i }},30) then date(2022,{{ i }},16)
-    -- {% endfor %}
+    {% for i in range(7, 13) %}
+      when data between date(2022,{{ i }},1) and date(2022,{{ i }},15) then date(2022,{{ i }},01)
+      when data between date(2022,{{ i }},16) and last_day(date(2022,{{ i }},30), month) then date(2022,{{ i }},16)
+    {% endfor %}
   end as data_versao_trips,
   case
     when data between date(2022,6,1) and last_day(date(2022,6,30), month) then date(2022,6,1)
-    when data between date(2022,7,1) and date(2022,7,15) then date(2022,7,1)
-    when data between date(2022,7,16) and last_day(date(2022,7,16), month) then date(2022,7,16)
-    when data between date(2022,8,1) and date(2022,8,15) then date(2022,8,1)
-    -- {% for i in range(6, 13) %}
-    --   when data between date(2022,{{ i }},1) and last_day(date(2022,{{ i }},30), month) then date(2022,{{ i }},01)
-    --   -- when data between date(2022,{{ i }},16) and date(2022,{{ i }},30) then date(2022,{{ i }},16)
-    -- {% endfor %}
+    {% for i in range(7, 13) %}
+      when data between date(2022,{{ i }},1) and date(2022,{{ i }},15) then date(2022,{{ i }},01)
+      when data between date(2022,{{ i }},16) and last_day(date(2022,{{ i }},30), month) then date(2022,{{ i }},16)
+    {% endfor %}
   end as data_versao_shapes,
   case
     {% for i in range(6, 13) %}
