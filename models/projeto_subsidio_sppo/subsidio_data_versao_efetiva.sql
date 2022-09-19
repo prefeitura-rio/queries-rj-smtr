@@ -3,6 +3,8 @@ select
   case
       when data = "2022-06-16" then "Domingo"
       when data = "2022-06-17" then "Sabado"
+      when data = "2022-09-02" then "Sabado"
+      when data = "2022-09-07" then "Domingo"
       when extract(dayofweek from data) = 1 then 'Domingo'
       when extract(dayofweek from data) = 7 then 'Sabado'
       else 'Dia Útil'
