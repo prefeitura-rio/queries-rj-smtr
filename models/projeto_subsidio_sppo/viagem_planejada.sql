@@ -28,12 +28,18 @@ quadro as (
         horario_fim as fim_periodo
     from 
         data_efetiva e
-    inner join
-        {{ var("quadro_horario") }} p
+    inner join (
+        select * 
+        from {{ var("quadro_horario") }}
+        {% if is_incremental() %}
+        where 
+            data_versao = date("{{ var("frequencies_version") }}")
+        {% endif %}
+    ) p
     on
         e.data_versao_frequencies = p.data_versao
     and
-        e.tipo_dia = p.tipo_dia 
+        e.tipo_dia = p.tipo_dia
 ),
 -- 3. Trata informação de trips: adiciona ao sentido da trip o sentido
 --    planejado (os shapes/trips circulares são separados em
@@ -42,8 +48,14 @@ trips as (
     select
         e.data,
         t.*
-    from
-        {{ ref('subsidio_trips_desaninhada') }} t
+    from (
+        select *
+        from {{ ref('subsidio_trips_desaninhada') }}
+        {% if is_incremental() %}
+        where 
+            data_versao = date("{{ var("shapes_version") }}")
+        {% endif %}
+    ) t
     inner join 
         data_efetiva e
     on 
@@ -112,8 +124,14 @@ shapes as (
         end_pt
     from 
         data_efetiva e
-    inner join
-        {{ ref('subsidio_shapes_geom') }} s
+    inner join (
+        select * 
+        from {{ ref('subsidio_shapes_geom') }}
+        {% if is_incremental() %}
+        where 
+            data_versao = date("{{ var("shapes_version") }}")
+        {% endif %}
+    ) s
     on 
         s.data_versao = e.data_versao_shapes
 )

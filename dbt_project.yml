@@ -38,7 +38,7 @@ vars:
   linhas_sppo: "rj-smtr.br_rj_riodejaneiro_transporte.linhas_sppo" # registros_agg_data_hora_consorcio
   polygon_garagem: "rj-smtr.br_rj_riodejaneiro_geo.garagens_polygon" # aux_registros_parada
   sppo_terminais: "rj-smtr.br_rj_riodejaneiro_transporte.terminais_onibus_coordenadas" # aux_registros_parada
-  sppo_registros_staging: rj-smtr-staging.br_rj_riodejaneiro_onibus_gps_staging.registros
+  sppo_registros_staging: "rj-smtr-staging.br_rj_riodejaneiro_onibus_gps_staging.registros"
 
   # Parametros de intersecção do ônibus com rota
   ## Tamanho do buffer da rota
@@ -91,15 +91,18 @@ vars:
   trips_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.trips"
   
   ### Subsídio SPPO (Ônibus) ###
-  run_date: "2022-06-03"
+  run_date: "YYYY-MM-DD"
   buffer: 500 # distância em metros para buffer
   perc_conformidade_distancia_min: 0
   perc_conformidade_shape_min: 80
   perc_conformidade_registros_min: 50
   perc_distancia_total_subsidio: 80
-  quadro_horario: "`rj-smtr.projeto_subsidio_sppo.quadro_horario`"
-  subsidio_shapes: "`rj-smtr.projeto_subsidio_sppo.shapes`"
-  subsidio_trips: "`rj-smtr.projeto_subsidio_sppo.trips`"
+  # TODO: change refs to prod
+  quadro_horario: "`rj-smtr-dev.projeto_subsidio_sppo.quadro_horario`"
+  subsidio_shapes: "`rj-smtr-dev.projeto_subsidio_sppo.shapes`"
+  subsidio_trips: "`rj-smtr-dev.projeto_subsidio_sppo.trips`"
+  shapes_version: "YYYY-MM-DD"
+  frequencies_version: "YYYY-MM-DD"
   # valor_subsidio: "`rj-smtr-dev.projeto_subsidio_sppo.valor_subsidio`"
   
 

@@ -7,13 +7,12 @@ with gps as (
     from 
         `rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo` g -- {{ ref('gps_sppo') }} g
     where (
-        data between date_sub(date("{{ var("run_date") }}"), interval 2 day)
-        and date_sub(date("{{ var("run_date") }}"), interval 1 day)
+        data between date_sub(date("{{ var("run_date") }}"), interval 1 day) and date("{{ var("run_date") }}")
     )
     -- Limita range de busca do gps de D-2 às 00h até D-1 às 3h
     and (
-        timestamp_gps between datetime_sub(datetime_trunc("{{ var("run_date") }}", day), interval 2 day)
-        and datetime_add(datetime_sub(datetime_trunc("{{ var("run_date") }}", day), interval 1 day), interval 3 hour)
+        timestamp_gps between datetime_sub(datetime_trunc("{{ var("run_date") }}", day), interval 1 day)
+        and datetime_add(datetime_trunc("{{ var("run_date") }}", day), interval 3 hour)
     )
     and status != "Parado garagem"
 ),
@@ -56,8 +55,7 @@ status_viagem as (
         from
             {{ ref("viagem_planejada") }}
         where
-        data between date_sub(date("{{ var("run_date") }}"), interval 2 day)
-            and date_sub(date("{{ var("run_date") }}"), interval 1 day)
+            data between date_sub(date("{{ var("run_date") }}"), interval 1 day) and date("{{ var("run_date") }}")
     ) s
     on 
         g.data = s.data
