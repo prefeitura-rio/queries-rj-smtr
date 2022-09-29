@@ -4,6 +4,3 @@ dbt_modules/
 logs/
 dbt-env/
 .DS_Store
-utils/
-credentials-prod/
-credentials-dev/
