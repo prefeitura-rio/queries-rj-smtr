@@ -1,0 +1,2 @@
+docker build -t test-dbt .
+docker rm -f test-dbt && docker run -itd --name test-dbt -p 3001:8580 -v "/Users/fernandascovino/Projects/prefeitura-rio/queries-rj-smtr/credentials-dev/dev.json:/credentials-dev/dev.json" -v "/Users/fernandascovino/Projects/prefeitura-rio/queries-rj-smtr/credentials-prod/prod.json:/credentials-prod/prod.json" --restart unless-stopped test-dbt
