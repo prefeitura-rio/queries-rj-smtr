@@ -1,18 +1,18 @@
 -- ==> aux_registros_status_trajeto = aux_registros_status_viagem
 with recursos as (
   select 
-    id_recurso,
+    protocolo,
     id_veiculo,
     datetime_partida,
     datetime_chegada,
     servico,
     sentido
-  FROM rj-smtr-dev.projeto_subsidio_sppo.aux_recurso_avaliado 
+  FROM {{ ref("aux_recurso_indeferido_viagem_paga") }} -- `rj-smtr-dev.projeto_subsidio_sppo.aux_recurso_indeferido_viagem_paga`
   where julgamento is null
 ),
 gps_viagem as (
   SELECT 
-    r.id_recurso,
+    r.protocolo,
     g.data,
     g.id_veiculo,
     substr(g.id_veiculo, 2, 3) as id_empresa,
@@ -37,8 +37,10 @@ gps_viagem as (
       timestamp_gps,
       timestamp_trunc(timestamp_gps, minute) as timestamp_minuto_gps,
       distancia
-    from rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo
-    where data between "2022-07-01" and "2022-07-31" ) g
+    from `rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo`  -- TODO: ref in prod
+    where data between date('{{ var("recurso_viagem_start")}}') and date('{{ var("recurso_viagem_end")}}')
+    and timestamp_gps between '{{ var("recurso_viagem_start")}}' and datetime_add('{{ var("recurso_viagem_end")}}', interval 3 hour)
+   ) g
   on
     r.id_veiculo = substr(g.id_veiculo, 2)
     and cast(g.timestamp_gps as datetime) between datetime_partida and datetime_chegada
@@ -74,33 +76,40 @@ registros_status_viagem as (
       *
     from (
       select 
-        * except(trip_id, shape_id, shape),
-        trip_id, shape_id, shape
+        * except(trip_id, shape_id, shape, distancia_planejada),
+        trip_id, shape_id, shape, distancia_planejada
       from
-          `rj-smtr-dev`.`projeto_subsidio_sppo`.`viagem_planejada`
-      where
-          data between "2022-07-01" and "2022-07-31"
-          and sentido != "C"
+          `rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada`
+      where data between date('{{ var("recurso_viagem_start")}}') and date('{{ var("recurso_viagem_end")}}')
+        and sentido != "C"
     )
     union all (
       select 
-        * 
+        * except(shape, shape_volta, distancia_planejada, distancia_planejada_volta),
+        st_geogfromtext(
+          concat(
+            "LINESTRING(", 
+            replace(TRIM(ST_ASTEXT(ST_UNION(shape, shape_volta)), "MULTILINESTRING()"), "), (", ","), 
+            ")"
+          )
+        ) as shape,
+        distancia_planejada + distancia_planejada_volta as distancia_planejada
       from (
         select 
-          * except(trip_id, shape_id, shape),
+          * except(trip_id, shape_id),
           concat(SUBSTR(trip_id, 1, 10), sentido, SUBSTR(trip_id, 12, length(trip_id))) as trip_id,
-          concat(SUBSTR(shape_id, 1, 10), sentido, SUBSTR(trip_id, 12, length(shape_id))) as trip_id,
-          ST_MAKELINE(shape, lead(shape) over (partition by data, servico order by sentido_shape)) as shape
+          concat(SUBSTR(shape_id, 1, 10), sentido, SUBSTR(shape_id, 12, length(shape_id))) as shape_id,
+          lead(shape) over (partition by data, servico order by sentido_shape) as shape_volta,
+          lead(distancia_planejada) over (partition by data, servico order by sentido_shape) as distancia_planejada_volta
         from
-            `rj-smtr-dev`.`projeto_subsidio_sppo`.`viagem_planejada`
-        where
-            data between "2022-07-01" and "2022-07-31"
-            and sentido = "C"
+            `rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada`
+        where data between date('{{ var("recurso_viagem_start")}}') and date('{{ var("recurso_viagem_end")}}')
+          and sentido = "C"
         ) 
         where sentido_shape = "I"
     )
   ) s
-  on 
+  on
     g.data = s.data
     and g.servico_realizado = s.servico
     and g.sentido = s.sentido
@@ -124,8 +133,8 @@ distancia as (
             sentido,
             sentido_shape,
             distancia_planejada,
-            -- max(distancia_inicio_fim) as distancia_inicio_fim,
-            -- round(sum(distancia)/1000 + max(distancia_inicio_fim), 3) as distancia_aferida,
+            0 as distancia_inicio_fim,
+            round(sum(distancia)/1000, 3) as distancia_aferida,
             sum(case when status_viagem = "middle" then 1 else 0 end) as n_registros_middle,
             sum(case when status_viagem = "start" then 1 else 0 end) as n_registros_start,
             sum(case when status_viagem = "end" then 1 else 0 end) as n_registros_end,
@@ -148,9 +157,9 @@ aux_viagem_registros as (
   from (
     select
       id_viagem,
-      sum(distancia_planejada) as distancia_planejada, -- Adiciona soma das distancias I/V
-      -- sum(distancia_aferida) as distancia_aferida,
-      -- sum(distancia_inicio_fim) as distancia_inicio_fim,
+      sum(distancia_planejada) as distancia_planejada,
+      sum(distancia_aferida) as distancia_aferida,
+      sum(distancia_inicio_fim) as distancia_inicio_fim,
       sum(n_registros_middle) as n_registros_middle,
       sum(n_registros_start) as n_registros_start,
       sum(n_registros_end) as n_registros_end,
@@ -167,9 +176,9 @@ aux_viagem_registros as (
   union all (
     select
       id_viagem,
-      distancia_planejada, -- Adiciona soma das distancias I/V
-      -- sum(distancia_aferida) as distancia_aferida,
-      -- sum(distancia_inicio_fim) as distancia_inicio_fim,
+      distancia_planejada,
+      distancia_aferida,
+      distancia_inicio_fim,
       n_registros_middle,
       n_registros_start,
       n_registros_end,
@@ -186,7 +195,7 @@ aux_viagem_registros as (
 -- (Adicional) Junta diferentes serviços informados por GPS ao longo viagem numa única string
 servicos_gps_viagem as (
   select 
-    id_recurso,
+    protocolo,
     id_viagem,
     STRING_AGG(distinct servico_informado, ', ') as servico_informado
   from registros_status_viagem
@@ -195,7 +204,7 @@ servicos_gps_viagem as (
 -- => aux_viagem_conformidade:
 -- 2. Calcula os percentuais de conformidade da distancia, trajeto e GPS
 select distinct
-  s.id_recurso,
+  s.protocolo,
   v.id_viagem, 
   v.data,
   v.id_empresa,
@@ -209,11 +218,9 @@ select distinct
   v.trip_id,
   v.shape_id,
   v.tempo_viagem,
-  null as distancia_aferida,
-  null as distancia_inicio_fim, 
   d.* except(id_viagem, distancia_planejada, versao_modelo),
   round(100 * n_registros_shape/n_registros_total, 2) as perc_conformidade_shape,
-  null as perc_conformidade_distancia, -- round(100 * d.distancia_aferida/v.distancia_planejada, 2) as perc_conformidade_distancia,
+  round(100 * d.distancia_aferida/d.distancia_planejada, 2) as perc_conformidade_distancia,
   round(100 * n_registros_minuto/tempo_viagem, 2) as perc_conformidade_registros,
   '{{ var("version") }}' as versao_modelo
 from 
@@ -224,5 +231,4 @@ on
     v.id_viagem = d.id_viagem
 inner join servicos_gps_viagem s
 on
-    v.id_viagem = s.id_viagem
-order by id_viagem;
+  v.id_viagem = s.id_viagem
