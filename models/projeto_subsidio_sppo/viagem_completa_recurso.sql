@@ -101,9 +101,9 @@ from
 where (
     perc_conformidade_shape >= {{ var("perc_conformidade_shape_min") }}
 )
--- and (
---     perc_conformidade_distancia >= {{ var("perc_conformidade_distancia_min") }}
--- )
+and (
+    perc_conformidade_distancia > {{ var("perc_conformidade_distancia_recurso_min") }}
+)
 and (
     perc_conformidade_registros >= {{ var("perc_conformidade_registros_min") }}
 )

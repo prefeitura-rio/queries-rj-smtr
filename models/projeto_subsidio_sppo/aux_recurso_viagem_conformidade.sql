@@ -40,6 +40,7 @@ gps_viagem as (
     from `rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo`  -- TODO: ref in prod
     where data between date('{{ var("recurso_viagem_start")}}') and date('{{ var("recurso_viagem_end")}}')
     and timestamp_gps between '{{ var("recurso_viagem_start")}}' and datetime_add('{{ var("recurso_viagem_end")}}', interval 3 hour)
+    and status != "Parado garagem"
    ) g
   on
     r.id_veiculo = substr(g.id_veiculo, 2)
