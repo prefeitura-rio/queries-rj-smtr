@@ -10,6 +10,7 @@ select
       else 'Dia Útil'
   end as tipo_dia,
   case
+    when data between date(2022,10,1) and date(2022,10,2) then date(2022,9,16)
     when data between date(2022,6,1) and last_day(date(2022,6,30), month) then date(2022,6,1)
     {% for i in range(7, 13) %}
       when data between date(2022,{{ i }},1) and date(2022,{{ i }},15) then date(2022,{{ i }},01)
@@ -17,6 +18,7 @@ select
     {% endfor %}
   end as data_versao_trips,
   case
+    when data between date(2022,10,1) and date(2022,10,2) then date(2022,9,16)
     when data between date(2022,6,1) and last_day(date(2022,6,30), month) then date(2022,6,1)
     {% for i in range(7, 13) %}
       when data between date(2022,{{ i }},1) and date(2022,{{ i }},15) then date(2022,{{ i }},01)
