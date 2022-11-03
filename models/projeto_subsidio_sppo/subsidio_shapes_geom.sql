@@ -4,7 +4,9 @@
         "field":"data_versao",
         "data_type": "date",
         "granularity":"day"
-    }
+    },
+    unique_key=['data_versao', 'shape_id'],
+    incremental_strategy='insert_overwrite'
 )
 }}
 
