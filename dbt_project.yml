@@ -39,7 +39,6 @@ vars:
   polygon_garagem: "rj-smtr.br_rj_riodejaneiro_geo.garagens_polygon" # aux_registros_parada
   sppo_terminais: "rj-smtr.br_rj_riodejaneiro_transporte.terminais_onibus_coordenadas" # aux_registros_parada
   sppo_registros_staging: "rj-smtr-staging.br_rj_riodejaneiro_onibus_gps_staging.registros"
-  sppo_registros_realocacao_staging: "rj-smtr-dev.br_rj_riodejaneiro_onibus_gps_staging.sppo_registros_realocacao" # todo: prod
 
   # Parametros de intersecção do ônibus com rota
   ## Tamanho do buffer da rota
@@ -111,9 +110,7 @@ vars:
   recurso_viagem_start: "2022-07-01 00:00:00"
   recurso_viagem_end: "2022-07-15 00:00:00"
   perc_conformidade_distancia_recurso_min: 50
-  
-  ### Realocação SPPO ###
-  data_inicio_realocacao: "2022-09-28"
+
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
