@@ -23,26 +23,26 @@ with viagem as (
             *
         from (
             select
-                * except(sentido_shape, distancia_inicio_fim, shape_id, shape_id_planejado, trip_id, trip_id_planejado, datetime_chegada),
-                datetime_chegada,
-                trip_id_planejado as trip_id,
-                shape_id_planejado as shape_id
+                * except(sentido_shape, distancia_inicio_fim, shape_id_planejado) --, trip_id, shape_id, trip_id_planejado),
+                -- trip_id_planejado as trip_id,
+                -- shape_id_planejado as shape_id
             from 
-                {{ ref("aux_viagem_circular") }} v
+                `rj-smtr-dev.viagens.aux_viagem_circular` AS v--{{ ref("aux_viagem_circular") }} v
             where 
                 sentido = "I" or sentido = "V"
         )
         union all (
             select 
-                * except(sentido_shape, distancia_inicio_fim, shape_id, shape_id_planejado, trip_id, trip_id_planejado),
-                trip_id_planejado as trip_id,
-                shape_id_planejado as shape_id,
+                * except(sentido_shape, distancia_inicio_fim, shape_id), --, shape_id_planejado, trip_id, trip_id_planejado),
+                -- trip_id_planejado as trip_id,
+                -- shape_id_planejado as shape_id,
             from 
                 (select 
                     v.* except(datetime_chegada),
                     lead(datetime_chegada) over (
                         partition by id_viagem order by sentido_shape)
                     as datetime_chegada,
+                    -- TODO: retornar shape_id e distancia_planejada original
                     -- TODO: mudar se tiver distancia planejada separada
                     -- por shape (ida/volta)
                     -- distancia_planejada,
@@ -50,7 +50,7 @@ with viagem as (
                     --     partition by id_viagem order by sentido_shape), 3)
                     -- as distancia_planejada,
                 from 
-                    {{ ref("aux_viagem_circular") }} v
+                    `rj-smtr-dev.viagens.aux_viagem_circular` AS v --{{ ref("aux_viagem_circular") }} v
                 where 
                     sentido = "C"
                 ) c

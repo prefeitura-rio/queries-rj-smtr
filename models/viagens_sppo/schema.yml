@@ -110,8 +110,7 @@ models:
         tests:
           - not_null
       - name: timestamp_minuto_gps
-        description: "Timestamp de emissão do sinal de GPS truncado em
-        minutos (para fins de comparação com minutos da viagem)"
+        description: "Timestamp de emissão do sinal de GPS truncado em minutos (para fins de comparação com minutos da viagem)"
         tests:
           - not_null
       - name: posicao_veiculo_geo
@@ -127,28 +126,7 @@ models:
         tests:
           # - not_null
       - name: shape_id
-        description: "Código identificador do shape (trajeto) do serviço
-        realizado "
-        tests:
-          - not_null
-      - name: distancia_planejada
-        description: "Distância do shape (trajeto) planejado"
-        tests:
-          - not_null
-      - name: distancia
-        description: "Distância geodésica da última posição do GPS em
-        relação a posição atual"
-        tests:
-          - not_null
-          - not_negative
-      - name: status_viagem
-        description: "Indica se a posição do GPS está no
-        início (start), meio (middle), fim (end) ou fora (out) do shape do serviço informado"
-        tests:
-          - not_null
-      - name: versao_modelo
-        description: "Versão da metodologia de cálculo da
-        respectiva linha na tabela."
+        description: "Código identificador do shape (trajeto) do serviço realizado"
         tests:
           - not_null
       - name: sentido_shape
@@ -164,6 +142,30 @@ models:
           - not_null
           - accepted_values:
               values: ["I", "V", "C"]
+      - name: start_pt
+        description: "Ponto de Controle inicial da linha (primeiro ponto geográfico do shape da linha)"
+        tests:
+          - not_null
+      - name: start_pt
+        description: "Ponto de Controle final da linha (último ponto geográfico do shape da linha)"
+        tests:
+          - not_null
+      - name: distancia_planejada
+        description: "Distância do shape (trajeto) planejado (m)"
+        tests:
+          - not_null
+      - name: distancia
+        description: "Distância da última posição do GPS em
+        relação a posição atual, conforme informado pelo GPS do veículo (m)"
+        tests:
+          - not_null
+          - not_negative
+      - name: status_viagem
+        description: "Indica se a posição do GPS está no
+        início (start), meio (middle), fim (end) ou fora (out) do shape do serviço informado"
+        tests:
+          - not_null
+      
   - name: aux_viagem_inicio_fim
     description: "Tabela auxiliar de identificação de início e fim de
     viagens (atualizada diariamente, sem histórico)."
@@ -587,7 +589,7 @@ models:
         respectiva linha na tabela."
         tests:
           - not_null
-  - name: viagem_completa
+  - name: viagem_gps
     description: "Detalhes de todas as viagens completas identificadas."
     columns:
       - name: consorcio
@@ -683,14 +685,12 @@ models:
           - not_null
           - greater_than_zero
       - name: distancia_aferida
-        description: "Distância aferida da viagem (geodésia entre
-        posições consecutivas do sinal de GPS)"
+        description: "Distância aferida da viagem (geodésia entre posições consecutivas do sinal de GPS)"
         tests:
           - not_null
           - greater_than_zero
       - name: n_registros_start
-        description: "Contagem de sinais de GPS emitidos no meio do
-      trajeto."
+        description: "Contagem de sinais de GPS emitidos no meio do trajeto."
         tests:
           - not_null
           - greater_than_zero
@@ -710,8 +710,7 @@ models:
           - not_null
           - greater_than_zero
       - name: perc_conformidade_shape
-        description: "Percentual de sinais emitidos dentro do shape (trajeto) ao
-        longo da viagem"
+        description: "Percentual de sinais emitidos dentro do shape (trajeto) ao longo da viagem"
         tests:
           - not_null
           - greater_than_zero
@@ -735,151 +734,151 @@ models:
         respectiva linha na tabela."
         tests:
           - not_null
-  - name: sumario_subsidio_dia_periodo
-    description: "Sumário de viagens, distância e valor total do subsídio por
-    dia, serviço e período de operação."
-    columns:
-      - name: consorcio
-        description: "Consórcio ao qual o serviço pertence"
-        tests:
-          - not_null
-      - name: data
-        description: "Data"
-        tests:
-          - not_null
-      - name: tipo_dia
-        description: "Dia da semana considerado para o cálculo da
-        distância planejada - categorias: Dia Útil, Sábado, Domingo"
-        tests:
-          - not_null
-          - accepted_values:
-              values: ["I", "V", "C"]
-      - name: servico
-        description: "Serviço planejado"
-        tests:
-          - not_null
-      - name: sentido
-        description: "Sentido planejado - categorias: I
-        (ida), V (volta), C (circular)"
-        tests:
-          - not_null
-      - name: inicio_periodo
-        description: "Início do período de operação planejado"
-        tests:
-          - not_null
-      - name: fim_periodo
-        description: "Fim do período de operação planejado"
-        tests:
-          - not_null
-      - name: viagens_planejadas
-        description: "Viagens planejadas no período"
-        tests:
-          - not_null
-          - greater_than_zero
-      - name: viagens_realizadas
-        description: "Viagens realizadas no período"
-        tests:
-          - not_null
-          - not_negative
-      - name: viagens_subsidio
-        description: "Viagens contabilizadas para o subsídio
-        - igual a realizadas com limite máximo igual a planejadas."
-        tests:
-          - not_null
-          - not_negative
-      - name: distancia_total_planejada
-        description: "Distância total planejada do serviço em KM (junta ida+volta)."
-        tests:
-          - not_null
-          - greater_than_zero
-      - name: distancia_total_subsidio
-        description: "Distância total contabilizada para o subsídio em KM (viagens suubsidio x
-        distância do shape)."
-        tests:
-          - not_null
-          - not_negative
-      - name: distancia_total_aferida
-        description: "Distância total aferida com GPS (soma da distância aferida
-        de todas as viagens realizadas)."
-        tests:
-          - not_null
-          - not_negative
-      - name: versao_modelo
-        description: "Versão da metodologia de cálculo da
-        respectiva linha na tabela."
-        tests:
-          - not_null
-  - name: sumario_subsidio_dia
-    description: "Sumário de viagens, distância e valor total do subsídio por
-    dia e serviço."
-    columns:
-      - name: consorcio
-        description: "Consórcio ao qual o serviço pertence"
-        tests:
-          - not_null
-      - name: data
-        description: "Data"
-        tests:
-          - not_null
-      - name: tipo_dia
-        description: "Dia da semana considerado para o cálculo da
-        distância planejada - categorias: Dia Útil, Sábado, Domingo"
-        tests:
-          - not_null
-          - accepted_values:
-              values: ["I", "V", "C"]
-      - name: servico
-        description: "Serviço planejado"
-        tests:
-          - not_null
-      - name: sentido
-        description: "Sentido planejado - categorias: I
-        (ida), V (volta), C (circular)"
-        tests:
-          - not_null
-      - name: inicio_periodo
-        description: "Início do período de operação planejado"
-        tests:
-          - not_null
-      - name: fim_periodo
-        description: "Fim do período de operação planejado"
-        tests:
-          - not_null
-      - name: viagens_planejadas
-        description: "Viagens planejadas no período"
-        tests:
-          - not_null
-          - greater_than_zero
-      - name: viagens_realizadas
-        description: "Viagens realizadas no período"
-        tests:
-          - not_null
-          - not_negative
-      - name: viagens_subsidio
-        description: "Viagens contabilizadas para o subsídio
-        - igual a realizadas com limite máximo igual a planejadas."
-        tests:
-          - not_null
-          - not_negative
-      - name: distancia_total_planejada
-        description: "Distância total planejada do serviço em KM (junta ida+volta)."
-        tests:
-          - not_null
-          - greater_than_zero
-      - name: distancia_total_subsidio
-        description: "Distância total contabilizada para o subsídio em KM (viagens suubsidio x
-        distância do shape)."
-        tests:
-          - not_null
-          - not_negative
-      - name: distancia_total_aferida
-        description: "Distância total aferida com GPS (soma da distância aferida
-        de todas as viagens realizadas)."
-        tests:
-          - not_null
-          - not_negative
-      - name: versao_modelo
-        description: "Versão da metodologia de cálculo da
-        respectiva linha na tabela."
-        tests:
-          - not_null
+  # - name: sumario_subsidio_dia_periodo
+  #   description: "Sumário de viagens, distância e valor total do subsídio por
+  #   dia, serviço e período de operação."
+  #   columns:
+  #     - name: consorcio
+  #       description: "Consórcio ao qual o serviço pertence"
+  #       tests:
+  #         - not_null
+  #     - name: data
+  #       description: "Data"
+  #       tests:
+  #         - not_null
+  #     - name: tipo_dia
+  #       description: "Dia da semana considerado para o cálculo da
+  #       distância planejada - categorias: Dia Útil, Sábado, Domingo"
+  #       tests:
+  #         - not_null
+  #         - accepted_values:
+  #             values: ["I", "V", "C"]
+  #     - name: servico
+  #       description: "Serviço planejado"
+  #       tests:
+  #         - not_null
+  #     - name: sentido
+  #       description: "Sentido planejado - categorias: I
+  #       (ida), V (volta), C (circular)"
+  #       tests:
+  #         - not_null
+  #     - name: inicio_periodo
+  #       description: "Início do período de operação planejado"
+  #       tests:
+  #         - not_null
+  #     - name: fim_periodo
+  #       description: "Fim do período de operação planejado"
+  #       tests:
+  #         - not_null
+  #     - name: viagens_planejadas
+  #       description: "Viagens planejadas no período"
+  #       tests:
+  #         - not_null
+  #         - greater_than_zero
+  #     - name: viagens_realizadas
+  #       description: "Viagens realizadas no período"
+  #       tests:
+  #         - not_null
+  #         - not_negative
+  #     - name: viagens_subsidio
+  #       description: "Viagens contabilizadas para o subsídio
+  #       - igual a realizadas com limite máximo igual a planejadas."
+  #       tests:
+  #         - not_null
+  #         - not_negative
+  #     - name: distancia_total_planejada
+  #       description: "Distância total planejada do serviço em KM (junta ida+volta)."
+  #       tests:
+  #         - not_null
+  #         - greater_than_zero
+  #     - name: distancia_total_subsidio
+  #       description: "Distância total contabilizada para o subsídio em KM (viagens suubsidio x
+  #       distância do shape)."
+  #       tests:
+  #         - not_null
+  #         - not_negative
+  #     - name: distancia_total_aferida
+  #       description: "Distância total aferida com GPS (soma da distância aferida
+  #       de todas as viagens realizadas)."
+  #       tests:
+  #         - not_null
+  #         - not_negative
+  #     - name: versao_modelo
+  #       description: "Versão da metodologia de cálculo da
+  #       respectiva linha na tabela."
+  #       tests:
+  #         - not_null
+  # - name: sumario_subsidio_dia
+  #   description: "Sumário de viagens, distância e valor total do subsídio por
+  #   dia e serviço."
+  #   columns:
+  #     - name: consorcio
+  #       description: "Consórcio ao qual o serviço pertence"
+  #       tests:
+  #         - not_null
+  #     - name: data
+  #       description: "Data"
+  #       tests:
+  #         - not_null
+  #     - name: tipo_dia
+  #       description: "Dia da semana considerado para o cálculo da
+  #       distância planejada - categorias: Dia Útil, Sábado, Domingo"
+  #       tests:
+  #         - not_null
+  #         - accepted_values:
+  #             values: ["I", "V", "C"]
+  #     - name: servico
+  #       description: "Serviço planejado"
+  #       tests:
+  #         - not_null
+  #     - name: sentido
+  #       description: "Sentido planejado - categorias: I
+  #       (ida), V (volta), C (circular)"
+  #       tests:
+  #         - not_null
+  #     - name: inicio_periodo
+  #       description: "Início do período de operação planejado"
+  #       tests:
+  #         - not_null
+  #     - name: fim_periodo
+  #       description: "Fim do período de operação planejado"
+  #       tests:
+  #         - not_null
+  #     - name: viagens_planejadas
+  #       description: "Viagens planejadas no período"
+  #       tests:
+  #         - not_null
+  #         - greater_than_zero
+  #     - name: viagens_realizadas
+  #       description: "Viagens realizadas no período"
+  #       tests:
+  #         - not_null
+  #         - not_negative
+  #     - name: viagens_subsidio
+  #       description: "Viagens contabilizadas para o subsídio
+  #       - igual a realizadas com limite máximo igual a planejadas."
+  #       tests:
+  #         - not_null
+  #         - not_negative
+  #     - name: distancia_total_planejada
+  #       description: "Distância total planejada do serviço em KM (junta ida+volta)."
+  #       tests:
+  #         - not_null
+  #         - greater_than_zero
+  #     - name: distancia_total_subsidio
+  #       description: "Distância total contabilizada para o subsídio em KM (viagens suubsidio x
+  #       distância do shape)."
+  #       tests:
+  #         - not_null
+  #         - not_negative
+  #     - name: distancia_total_aferida
+  #       description: "Distância total aferida com GPS (soma da distância aferida
+  #       de todas as viagens realizadas)."
+  #       tests:
+  #         - not_null
+  #         - not_negative
+  #     - name: versao_modelo
+  #       description: "Versão da metodologia de cálculo da
+  #       respectiva linha na tabela."
+  #       tests:
+  #         - not_null

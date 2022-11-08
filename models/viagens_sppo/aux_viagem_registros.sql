@@ -12,9 +12,9 @@ with distancia as (
     from (
         select distinct
             id_viagem,
-            trip_id,
+            --trip_id,
             max(distancia_inicio_fim) as distancia_inicio_fim,
-            round(sum(distancia)/1000 + max(distancia_inicio_fim), 3) as distancia_aferida,
+            sum(distancia) + max(distancia_inicio_fim) as distancia_aferida,
             sum(case when status_viagem = "middle" then 1 else 0 end) as n_registros_middle,
             sum(case when status_viagem = "start" then 1 else 0 end) as n_registros_start,
             sum(case when status_viagem = "end" then 1 else 0 end) as n_registros_end,
@@ -23,7 +23,7 @@ with distancia as (
             count(distinct timestamp_minuto_gps) as n_registros_minuto
         from (
             select distinct * except(posicao_veiculo_geo, start_pt, end_pt)
-            from {{ ref("registros_status_viagem") }}
+            from `rj-smtr-dev.viagens.registros_status_viagem` --{{ ref("registros_status_viagem") }}
             where
                 data between date_sub(date("{{ var("run_date") }}"), interval 1 day) and date("{{ var("run_date") }}")
         )
@@ -43,7 +43,7 @@ select
     sum(n_registros_total) as n_registros_total,
     sum(n_registros_minuto) as n_registros_minuto,
     sum(n_registros_shape) as n_registros_shape,
-    '{{ var("version") }}' as versao_modelo
+    --'{{ var("version") }}' as versao_modelo
 from
     distancia
 group by 1
