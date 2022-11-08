@@ -1,24 +1,34 @@
+{{ 
+config(
+    materialized='incremental',
+    partition_by={
+            "field":"data",
+            "data_type": "date",
+            "granularity":"day"
+    },
+    unique_key="data",
+    incremental_strategy = 'insert_overwrite'
+)
+}}
+
 -- ==> aux_registros_status_trajeto = aux_registros_status_viagem
 with recursos as (
-  select 
-    protocolo,
-    id_veiculo,
-    datetime_partida,
-    datetime_chegada,
-    servico,
-    sentido
-  FROM {{ ref("aux_recurso_indeferido_viagem_paga") }} -- `rj-smtr-dev.projeto_subsidio_sppo.aux_recurso_indeferido_viagem_paga`
-  where julgamento is null
+  select *
+  FROM {{ ref("aux_recurso_viagem_paga") }}
+  where id_julgamento is null
+  {# {% if is_incremental() -%} #}
+    and data_viagem between date('{{ var("recurso_viagem_start")}}') and date('{{ var("recurso_viagem_end")}}')
+  {# {% endif -%} #}
 ),
 gps_viagem as (
   SELECT 
     r.protocolo,
-    g.data,
+    r.data_viagem as data,
     g.id_veiculo,
     substr(g.id_veiculo, 2, 3) as id_empresa,
     r.datetime_partida, # Partida informada no recurso
     r.datetime_chegada, # Chegada informada no recurso
-    r.sentido, # Sentido informado no recurso
+    r.sentido, -- Sentido informado no recurso
     datetime_diff(r.datetime_chegada, r.datetime_partida, minute) + 1 as tempo_viagem, # Tempo da viagem com base no recurso
     g.timestamp_gps,
     timestamp_trunc(timestamp_gps, minute) as timestamp_minuto_gps,
@@ -29,7 +39,6 @@ gps_viagem as (
   from recursos r
   left join  (
     select 
-      data,
       id_veiculo,
       longitude, 
       latitude,
@@ -38,9 +47,11 @@ gps_viagem as (
       timestamp_trunc(timestamp_gps, minute) as timestamp_minuto_gps,
       distancia
     from `rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo`  -- TODO: ref in prod
-    where data between date('{{ var("recurso_viagem_start")}}') and date('{{ var("recurso_viagem_end")}}')
-    and timestamp_gps between '{{ var("recurso_viagem_start")}}' and datetime_add('{{ var("recurso_viagem_end")}}', interval 3 hour)
-    and status != "Parado garagem"
+    where status != "Parado garagem"
+    {# {% if is_incremental() -%} #}
+      and data between date('{{ var("recurso_viagem_start")}}') and date('{{ var("recurso_viagem_end")}}')
+      and timestamp_gps between '{{ var("recurso_viagem_start")}}' and datetime_add('{{ var("recurso_viagem_end")}}', interval 3 hour)
+    {# {% endif -%} #}
    ) g
   on
     r.id_veiculo = substr(g.id_veiculo, 2)
@@ -81,8 +92,10 @@ registros_status_viagem as (
         trip_id, shape_id, shape, distancia_planejada
       from
           `rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada`
-      where data between date('{{ var("recurso_viagem_start")}}') and date('{{ var("recurso_viagem_end")}}')
-        and sentido != "C"
+      where sentido != "C"
+      {# {% if is_incremental() -%} #}
+        and data between date('{{ var("recurso_viagem_start")}}') and date('{{ var("recurso_viagem_end")}}')
+      {# {% endif -%} #}
     )
     union all (
       select 
@@ -104,8 +117,10 @@ registros_status_viagem as (
           lead(distancia_planejada) over (partition by data, servico order by sentido_shape) as distancia_planejada_volta
         from
             `rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada`
-        where data between date('{{ var("recurso_viagem_start")}}') and date('{{ var("recurso_viagem_end")}}')
-          and sentido = "C"
+        where sentido = "C"
+        {# {% if is_incremental() -%} #}
+          and data between date('{{ var("recurso_viagem_start")}}') and date('{{ var("recurso_viagem_end")}}')
+        {# {% endif -%} #}
         ) 
         where sentido_shape = "I"
     )

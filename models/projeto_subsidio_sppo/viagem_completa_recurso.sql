@@ -5,13 +5,15 @@ config(
             "field":"data",
             "data_type": "date",
             "granularity":"day"
-    }
+    },
+    unique_key="data",
+    incremental_strategy = 'insert_overwrite'
 )
 }}
 
 with recursos_viagem as (
     select distinct * 
-    from {{ ref('aux_recurso_viagem_conformidade') }} -- `rj-smtr-dev`.`projeto_subsidio_sppo`.`aux_recurso_viagem_conformidade`
+    from {{ ref('viagem_conformidade_recurso') }}
     {% if is_incremental() %}
         where data between date('{{ var("recurso_viagem_start")}}') and date('{{ var("recurso_viagem_end")}}')
     {% endif %}
