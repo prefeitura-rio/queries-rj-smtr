@@ -39,18 +39,25 @@ aux_calendar_dates AS (
     d.data_versao = c.data_versao
   AND 
     d.exception_type = 1
-)
+),
 -- 3. Inclui o valor do subsídio por km
+subsidio_km AS (
+  SELECT
+    a.*,
+    CASE
+      WHEN EXTRACT(MONTH FROM data) = 6   THEN 2.13
+      WHEN EXTRACT(MONTH FROM data) = 7   THEN 1.84
+      WHEN EXTRACT(MONTH FROM data) = 8   THEN 1.80
+      WHEN EXTRACT(MONTH FROM data) = 9   THEN 1.75
+      WHEN EXTRACT(MONTH FROM data) = 10  THEN 1.62
+      WHEN EXTRACT(MONTH FROM data) = 11  THEN 1.53
+      WHEN EXTRACT(MONTH FROM data) = 12  THEN 1.78
+    END AS valor_subsidio_km
+  FROM aux_calendar_dates AS a
+  ORDER BY data DESC
+)
+
 SELECT
-  a.*,
-  CASE
-    WHEN EXTRACT(MONTH FROM data) = 6   THEN 2.13
-    WHEN EXTRACT(MONTH FROM data) = 7   THEN 1.84
-    WHEN EXTRACT(MONTH FROM data) = 8   THEN 1.80
-    WHEN EXTRACT(MONTH FROM data) = 9   THEN 1.75
-    WHEN EXTRACT(MONTH FROM data) = 10  THEN 1.62
-    WHEN EXTRACT(MONTH FROM data) = 11  THEN 1.53
-    WHEN EXTRACT(MONTH FROM data) = 12  THEN 1.78
-  END AS valor_subsidio_km
-FROM aux_calendar_dates AS a
-ORDER BY data DESC
+  *
+FROM subsidio_km
+WHERE data_versao IS NOT NULL

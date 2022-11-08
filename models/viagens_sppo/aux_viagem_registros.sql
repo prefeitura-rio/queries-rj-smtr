@@ -23,7 +23,7 @@ with distancia as (
             count(distinct timestamp_minuto_gps) as n_registros_minuto
         from (
             select distinct * except(posicao_veiculo_geo, start_pt, end_pt)
-            from `rj-smtr-dev.viagens.registros_status_viagem` --{{ ref("registros_status_viagem") }}
+            from {{ ref('registros_status_viagem') }}
             where
                 data between date_sub(date("{{ var("run_date") }}"), interval 1 day) and date("{{ var("run_date") }}")
         )

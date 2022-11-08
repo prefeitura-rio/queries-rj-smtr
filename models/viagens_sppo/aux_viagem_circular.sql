@@ -15,8 +15,7 @@ WITH ida_volta_circular AS (
             LEAD(sentido_shape) OVER (
                 PARTITION BY id_veiculo, servico_realizado ORDER BY id_veiculo, servico_realizado, datetime_partida, sentido_shape) = "V" AS flag_proximo_volta -- possui volta
         FROM 
-            `rj-smtr-dev.viagens.aux_viagem_inicio_fim` AS v
-            --{{ ref("aux_viagem_inicio_fim") }} v
+            {{ ref('aux_viagem_inicio_fim') }} AS v
         WHERE
             sentido = "C"
     ) AS t
@@ -44,7 +43,7 @@ viagem_circular AS (
             END AS id_viagem,
             v.* EXCEPT(id_viagem)
         FROM 
-            `rj-smtr-dev.viagens.aux_viagem_inicio_fim` AS v --{{ ref("aux_viagem_inicio_fim") }} v
+            {{ ref('aux_viagem_inicio_fim') }} AS v
         INNER JOIN
             ida_volta_circular AS c
         ON
@@ -64,7 +63,7 @@ UNION ALL (
     SELECT
         *
     FROM
-        `rj-smtr-dev.viagens.aux_viagem_inicio_fim` --{{ ref("aux_viagem_inicio_fim") }} v
+        {{ ref('aux_viagem_inicio_fim') }}
     WHERE 
         (sentido = "I" OR sentido = "V")
 )

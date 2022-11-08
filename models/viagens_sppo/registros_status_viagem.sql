@@ -19,7 +19,7 @@ WITH registros_viagem AS (
         v.distancia_inicio_fim,
         v.id_viagem
     FROM
-        `rj-smtr-dev.viagens.aux_registros_status_trajeto` AS s --{{ ref("aux_registros_status_trajeto") }} s
+        {{ ref('aux_registros_status_trajeto') }} AS s
     LEFT JOIN (
         SELECT
             id_veiculo,
@@ -31,7 +31,7 @@ WITH registros_viagem AS (
             datetime_chegada,
             distancia_inicio_fim
         FROM
-            `rj-smtr-dev.viagens.aux_viagem_circular` --{{ ref("aux_viagem_circular") }}
+            {{ ref('aux_viagem_circular') }}
     ) AS v
     ON
         s.id_veiculo = v.id_veiculo

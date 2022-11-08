@@ -24,7 +24,7 @@ WITH viagens_prod_km_du AS (
     END AS sentido,
     g.shape_distance AS distancia_planejada,
     vd.viagens_planejadas*shape_distance AS distancia_total_planejada
-  FROM `rj-smtr-dev.viagens.aux_viagem_planejada_dia` AS vd
+  FROM {{ ref('aux_viagem_planejada_dia') }} AS vd
   LEFT JOIN `rj-smtr-dev.gtfs_test.shapes_geom` AS g
   ON
     vd.shape_id = g.shape_id

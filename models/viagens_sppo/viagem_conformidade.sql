@@ -27,7 +27,7 @@ with viagem as (
                 -- trip_id_planejado as trip_id,
                 -- shape_id_planejado as shape_id
             from 
-                `rj-smtr-dev.viagens.aux_viagem_circular` AS v--{{ ref("aux_viagem_circular") }} v
+                {{ ref('aux_viagem_circular') }} AS v
             where 
                 sentido = "I" or sentido = "V"
         )
@@ -50,7 +50,7 @@ with viagem as (
                     --     partition by id_viagem order by sentido_shape), 3)
                     -- as distancia_planejada,
                 from 
-                    `rj-smtr-dev.viagens.aux_viagem_circular` AS v --{{ ref("aux_viagem_circular") }} v
+                    {{ ref('aux_viagem_circular') }} AS v
                 where 
                     sentido = "C"
                 ) c

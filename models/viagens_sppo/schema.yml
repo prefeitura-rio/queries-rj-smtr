@@ -57,6 +57,7 @@ models:
         description: "Quantidades de viagens planejadas para um dia útil"
         tests:
           - not_null
+
   - name: viagem_planejada
     description: "Tabela histórica com detalhes das viagens planejadas a cada dia"
     columns:
@@ -188,6 +189,7 @@ models:
       #   description: "Código identificador do itinerário (trip)"
       #   tests:
       #     - not_null
+
   - name: aux_registros_status_trajeto
     description: "Tabela auxiliar de classificação dos registros de GPS
     no trajeto (shape), com base no serviço informado pelo veículo (atualizada diariamente, sem histórico)."
@@ -271,8 +273,7 @@ models:
     viagens (atualizada diariamente, sem histórico)."
     columns:
       - name: id_viagem
-        description: "Código identificador da viagem (id_veiculo +
-        servico + datetime_partida)" 
+        description: "Código identificador da viagem (id_veiculo + servico + sentido + datetime_partida)" 
         tests:
           - not_null
           - unique
@@ -293,8 +294,7 @@ models:
         tests:
           - not_null
       - name: servico_realizado
-        description: "Serviço realizado pelo veículo (com base na
-        identificação do trajeto)"
+        description: "Serviço realizado pelo veículo (com base na identificação do trajeto)"
         tests:
           - not_null
       - name: shape_id

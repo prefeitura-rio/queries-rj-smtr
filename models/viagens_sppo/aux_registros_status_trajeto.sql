@@ -36,7 +36,7 @@ aux_viagem_planejada_circ AS (
         SELECT
             *
         FROM 
-            `rj-smtr-dev.viagens.viagem_planejada` AS v
+            {{ ref('viagem_planejada') }} AS v
         WHERE 
             (sentido = 'I' OR sentido = 'V')
         AND
@@ -58,7 +58,7 @@ aux_viagem_planejada_circ AS (
             "I" AS sentido_shape,
             c.shape_distance_ida AS distancia_planejada
         FROM 
-            `rj-smtr-dev.viagens.viagem_planejada` AS v
+            {{ ref('viagem_planejada') }} AS v
         JOIN
             `rj-smtr-dev.gtfs_test.aux_circ_shapes_geom` AS c
         ON
@@ -88,7 +88,7 @@ aux_viagem_planejada_circ AS (
             "V" AS sentido_shape,
             c.shape_distance_volta AS distancia_planejada
         FROM 
-            `rj-smtr-dev.viagens.viagem_planejada` AS v
+            {{ ref('viagem_planejada') }} AS v
         JOIN
             `rj-smtr-dev.gtfs_test.aux_circ_shapes_geom` AS c
         ON
@@ -134,7 +134,7 @@ status_viagem AS (
         END AS status_viagem
     FROM  
         gps AS g
-    LEFT JOIN `rj-smtr-dev.viagens.aux_data_versao` AS d
+    LEFT JOIN {{ ref('aux_data_versao') }} AS d
     ON 
         g.data = d.data
     LEFT JOIN aux_viagem_planejada_circ AS v

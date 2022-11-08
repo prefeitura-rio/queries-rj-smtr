@@ -11,8 +11,7 @@ WITH aux_status AS (
             ORDER BY id_veiculo, shape_id, timestamp_gps
             ROWS BETWEEN 1 PRECEDING AND CURRENT ROW) = 'middleend' AS ends
     FROM 
-        --{{ ref('aux_registros_status_trajeto') }} 
-        `rj-smtr-dev.viagens.aux_registros_status_trajeto` AS r
+        {{ ref('aux_registros_status_trajeto') }} AS r
 ),
 -- 2. Classifica início-fim consecutivos como partida-chegada da viagem
 aux_inicio_fim AS (
