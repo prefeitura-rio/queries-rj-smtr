@@ -48,6 +48,7 @@ models:
           - not_null
           - accepted_values:
               values: [0, 1]
+              quote: false
       - name: shape_id
         description: "Código identificador do shape (trajeto) do serviço realizado, conforme GTFS"
         tests:
@@ -77,92 +78,116 @@ models:
           - not_null
           - accepted_values:
               values: [0, 1]
+              quote: false
       - name: shape_id
         description: "Código identificador do shape (trajeto) do serviço realizado, conforme GTFS"
-        tests:
-          - not_null
-      - name: viagens_planejadas
-        description: "Quantidades de viagens planejadas para um dia útil"
-        tests:
-          - not_null
-
-
-      - name: data_shape
-        description: "Data do shape capturado no SIGMOB (00h)"
-        tests:
-          - not_null
-      - name: tipo_dia
-        description: "Dia da semana considerado para o cálculo da
-        distância planejada - categorias: Dia Útil, Sábado, Domingo"
-        tests:
-          - not_null
-          - accepted_values:
-              values: ["I", "V", "C"]
-      - name: servico
-        description: "Serviço planejado"
-        tests:
-          - not_null
-      - name: sentido
-        description: "Sentido planejado - categorias: I
-        (ida), V (volta), C (circular)"
-        tests:
-          - not_null
-      - name: inicio_periodo
-        description: "Início do período de operação planejado"
-        tests:
-          - not_null
-      - name: fim_periodo
-        description: "Fim do período de operação planejado"
-        tests:
-          - not_null
-      - name: intervalo
-        description: "Intervalo de saída planejado"
-        tests:
-          - not_null
-      # - name: viagens
-      #   description: "Viagens planejadas"
-      #   tests:
-      #     - not_null
-      # - name: tempo_viagem
-      #   description: "Tempo planejado de uma viagem"
-      #   tests:
-      #     - not_null
-      #     - greater_than_zero
-      - name: variacao_itinerario
-        description: "Variação dee itinerário da viagem - categorias:
-        DD, DU, SS, RT, RM, DA, SA"
-        tests:
-          - not_null
-          - accepted_values:
-              values: ["DD", "DU", "SS", "RT", "RM", "DA", "SA"]
-      - name: sentido_shape
-        description: "Sentido do shape (codificado no shape_id - categorias: I (ida), V (volta), C (circular)"
-        tests:
-          - not_null
-          - accepted_values:
-              values: ["I", "V", "C"]
-      - name: shape_id
-        description: "Código identificador do shape (trajeto) do serviço
-        realizado "
         tests:
           - not_null
       - name: shape
         description: "Linestring dos pontos gelocalizados do trajeto"
         tests:
           - not_null
+      - name: start_pt
+        description: "Ponto de Controle inicial da linha (primeiro ponto geográfico do shape da linha)"
+        tests:
+          - not_null
+      - name: end_pt
+        description: "Ponto de Controle final da linha (último ponto geográfico do shape da linha)"
+        tests:
+          - not_null
+      - name: sentido
+        description: "Sentido planejado - categorias: I (ida), V (volta), C (circular)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["I", "V", "C"]
       - name: distancia_planejada
-        description: "Distância do shape (trajeto) planejado em KM"
+        description: "Distância do shape (trajeto) planejado (m)"
         tests:
           - not_null
       - name: distancia_total_planejada
-        description: "Distância total planejada do serviço em KM (junta ida+volta)."
+        description: "Distância total planejada do serviço (viagens_planejadas*distancia_planejada) (m)."
         tests:
           - not_null
           - greater_than_zero
-      - name: trip_id
-        description: "Código identificador do itinerário (trip)"
-        tests:
-          - not_null
+
+      # - name: viagens_planejadas
+      #   description: "Quantidades de viagens planejadas para um dia útil"
+      #   tests:
+      #     - not_null
+      # - name: data_shape
+      #   description: "Data do shape capturado no SIGMOB (00h)"
+      #   tests:
+      #     - not_null
+      # - name: tipo_dia
+      #   description: "Dia da semana considerado para o cálculo da
+      #   distância planejada - categorias: Dia Útil, Sábado, Domingo"
+      #   tests:
+      #     - not_null
+      #     - accepted_values:
+      #         values: ["I", "V", "C"]
+      # - name: servico
+      #   description: "Serviço planejado"
+      #   tests:
+      #     - not_null
+      # - name: sentido
+      #   description: "Sentido planejado - categorias: I
+      #   (ida), V (volta), C (circular)"
+      #   tests:
+      #     - not_null
+      # - name: inicio_periodo
+      #   description: "Início do período de operação planejado"
+      #   tests:
+      #     - not_null
+      # - name: fim_periodo
+      #   description: "Fim do período de operação planejado"
+      #   tests:
+      #     - not_null
+      # - name: intervalo
+      #   description: "Intervalo de saída planejado"
+      #   tests:
+      #     - not_null
+      # # - name: viagens
+      # #   description: "Viagens planejadas"
+      # #   tests:
+      # #     - not_null
+      # # - name: tempo_viagem
+      # #   description: "Tempo planejado de uma viagem"
+      # #   tests:
+      # #     - not_null
+      # #     - greater_than_zero
+      # - name: variacao_itinerario
+      #   description: "Variação dee itinerário da viagem - categorias:
+      #   DD, DU, SS, RT, RM, DA, SA"
+      #   tests:
+      #     - not_null
+      #     - accepted_values:
+      #         values: ["DD", "DU", "SS", "RT", "RM", "DA", "SA"]
+      # - name: sentido_shape
+      #   description: "Sentido do shape (codificado no shape_id - categorias: I (ida), V (volta), C (circular)"
+      #   tests:
+      #     - not_null
+      #     - accepted_values:
+      #         values: ["I", "V", "C"]
+      # - name: shape_id
+      #   description: "Código identificador do shape (trajeto) do serviço
+      #   realizado "
+      #   tests:
+      #     - not_null
+      
+      # - name: distancia_planejada
+      #   description: "Distância do shape (trajeto) planejado em KM"
+      #   tests:
+      #     - not_null
+      # - name: distancia_total_planejada
+      #   description: "Distância total planejada do serviço em KM (junta ida+volta)."
+      #   tests:
+      #     - not_null
+      #     - greater_than_zero
+      # - name: trip_id
+      #   description: "Código identificador do itinerário (trip)"
+      #   tests:
+      #     - not_null
   - name: aux_registros_status_trajeto
     description: "Tabela auxiliar de classificação dos registros de GPS
     no trajeto (shape), com base no serviço informado pelo veículo (atualizada diariamente, sem histórico)."
@@ -220,7 +245,7 @@ models:
         description: "Ponto de Controle inicial da linha (primeiro ponto geográfico do shape da linha)"
         tests:
           - not_null
-      - name: start_pt
+      - name: end_pt
         description: "Ponto de Controle final da linha (último ponto geográfico do shape da linha)"
         tests:
           - not_null
