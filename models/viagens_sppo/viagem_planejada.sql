@@ -19,7 +19,7 @@ WITH viagens_prod_km_du AS (
     g.* EXCEPT(shape_id, data_versao, shape_distance),
     CASE
       WHEN ST_DWithin(g.start_pt, g.end_pt, 50) THEN 'C'
-      WHEN vd.direction_id = 0 THEN 'IA'
+      WHEN vd.direction_id = 0 THEN 'I'
       ELSE 'V'
     END AS sentido,
     g.shape_distance AS distancia_planejada,
