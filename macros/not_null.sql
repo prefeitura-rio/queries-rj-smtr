@@ -4,7 +4,9 @@ SELECT
 FROM
     {{model}}
 WHERE
-    {{partition_column}} = (SELECT MAX({{partition_column}}) FROM {{model}})
+    {{column_name}} IS NULL
+{% if partition_column != NULL %}
 AND
-    {{column_name}} is null
+    {{partition_column}} = (SELECT MAX({{partition_column}}) FROM {{model}})   
+{% endif %}
 {%endtest%}

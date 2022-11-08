@@ -2,17 +2,91 @@
 version: 2
 
 models:
-  - name: viagem_planejada
-    description: "Tabela histórica com detalhes das viagens planejadas a cada dia"
+  - name: aux_data_versao
+    description: "Tabela de relacionamento entre data_versao, data, service_id e valor_subsidio"
     columns:
-      - name: consorcio
-        description: "Consórcio ao qual o serviço pertence"
+      - name: data_versao
+        description: "Data da versão relacionada à respectiva quinzena"
         tests:
           - not_null
       - name: data
-        description: "Data"
+        description: "Data de operação"
         tests:
           - not_null
+      - name: service_id
+        description: "Tipo de dia"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["D", "U", "S"]
+      - name: valor_subsidio_km
+        description: "Valor do subsídio (R$/km)"
+        tests:
+          - greater_than_zero
+          - accepted_values:
+              values: [2.13, 1.84, 1.80, 1.75, 1.62, 1.53, 1.78]
+              quote: false
+
+  - name: aux_viagem_planejada_dia
+    description: "Tabela histórica com detalhes das viagens planejadas a cada dia"
+    columns:
+      - name: data_versao
+        description: "Data da versão relacionada à respectiva quinzena"
+        tests:
+          - not_null
+      - name: trip_short_name
+        description: "Serviço planejado"
+        tests:
+          - not_null
+      - name: route_id
+        description: "Código identificador da rota do serviço realizado, conforme GTFS"
+        tests:
+          - not_null
+      - name: direction_id
+        description: "Indica a direção de uma viagem. (0: ida e 1: volta)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+      - name: shape_id
+        description: "Código identificador do shape (trajeto) do serviço realizado, conforme GTFS"
+        tests:
+          - not_null
+      - name: viagens_planejadas
+        description: "Quantidades de viagens planejadas para um dia útil"
+        tests:
+          - not_null
+  - name: viagem_planejada
+    description: "Tabela histórica com detalhes das viagens planejadas a cada dia"
+    columns:
+      - name: data_versao
+        description: "Data da versão relacionada à respectiva quinzena"
+        tests:
+          - not_null
+      - name: trip_short_name
+        description: "Serviço planejado"
+        tests:
+          - not_null
+      - name: route_id
+        description: "Código identificador da rota do serviço realizado, conforme GTFS"
+        tests:
+          - not_null
+      - name: direction_id
+        description: "Indica a direção de uma viagem. (0: ida e 1: volta)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+      - name: shape_id
+        description: "Código identificador do shape (trajeto) do serviço realizado, conforme GTFS"
+        tests:
+          - not_null
+      - name: viagens_planejadas
+        description: "Quantidades de viagens planejadas para um dia útil"
+        tests:
+          - not_null
+
+
       - name: data_shape
         description: "Data do shape capturado no SIGMOB (00h)"
         tests:
@@ -154,6 +228,7 @@ models:
         description: "Distância do shape (trajeto) planejado (m)"
         tests:
           - not_null
+          - greater_than_zero
       - name: distancia
         description: "Distância da última posição do GPS em
         relação a posição atual, conforme informado pelo GPS do veículo (m)"
@@ -170,18 +245,24 @@ models:
     description: "Tabela auxiliar de identificação de início e fim de
     viagens (atualizada diariamente, sem histórico)."
     columns:
-      - name: data
-        description: "Data de emissão do sinal de GPS"
+      - name: id_viagem
+        description: "Código identificador da viagem (id_veiculo +
+        servico + datetime_partida)" 
         tests:
           - not_null
-      - name: id_veiculo
-        description: "Código identificador do veículo (número de ordem)"
+          - unique
+      - name: data
+        description: "Data de emissão do sinal de GPS"
         tests:
           - not_null
       - name: id_empresa
         description: "Código identificador da empresa que opera o veículo"
         tests:
           # - not_null
+      - name: id_veiculo
+        description: "Código identificador do veículo (número de ordem)"
+        tests:
+          - not_null
       - name: servico_informado
         description: "Serviço informado pelo GPS do veículo"
         tests:
@@ -201,6 +282,17 @@ models:
           - not_null
           - accepted_values:
               values: ["I", "V", "C"]
+      - name: distancia_inicio_fim
+        description: "Distância do ponto identificado de encerramento da viagem até o ponto último do itinerário + distância do ponto identificado de início da viagem
+        até o ponto primeiro do itinerário (m)"
+        tests:
+          - not_null
+          - not_negative
+      - name: distancia_planejada
+        description: "Distância do shape (trajeto) planejado (m)"
+        tests:
+          - not_null
+          - not_negative
       - name: sentido
         description: "Sentido do trajeto identificado - categorias: I
         (ida), V (volta), C (circular)"
@@ -208,12 +300,6 @@ models:
           - not_null
           - accepted_values:
               values: ["I", "V", "C"]
-      - name: id_viagem
-        description: "Código identificador da viagem (id_veiculo +
-        servico + datetime_partida)" 
-        tests:
-          - not_null
-          - unique
       - name: datetime_partida
         description: "Horário de início da viagem"
         tests:
@@ -222,15 +308,11 @@ models:
         description: "Horário de fim da viagem"
         tests:
           - not_null
-      - name: versao_modelo
-        description: "Versão da metodologia de cálculo da
-        respectiva linha na tabela."
-        tests:
-          - not_null
-      - name: distancia_planejada
-        description: "Distância do shape (trajeto) planejado"
-        tests:
-          - not_null
+      # - name: versao_modelo
+      #   description: "Versão da metodologia de cálculo da
+      #   respectiva linha na tabela."
+      #   tests:
+      #     - not_null
   - name: aux_viagem_circular
     description: "Tabela auxiliar de tratamento de viagens circulares (atualizada diariamente, sem histórico)."
     columns:
