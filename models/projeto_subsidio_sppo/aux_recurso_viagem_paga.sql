@@ -19,7 +19,7 @@ with recursos as (
 -- 1. Avalia recursos cuja viagem ja foi paga
 viagens as (
     select * 
-    from `rj-smtr-dev.projeto_subsidio_sppo.viagem_completa`
+    from `rj-smtr.projeto_subsidio_sppo.viagem_completa`
     {# {% if is_incremental() -%} #}
       where data between date('{{ var("recurso_viagem_start")}}') and date('{{ var("recurso_viagem_end")}}')
     {# {% endif -%} #}
@@ -32,7 +32,8 @@ recursos_pagos as (
   FROM recursos r
   inner join viagens v
   on r.id_veiculo = substr(v.id_veiculo,2,6)
-  and r.datetime_partida <= v.datetime_partida and r.datetime_chegada >= v.datetime_chegada
+  and v.datetime_partida <= r.datetime_chegada
+  and v.datetime_chegada >= r.datetime_partida
   group by 1,2
 )
 select
