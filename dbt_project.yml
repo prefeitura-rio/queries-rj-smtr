@@ -109,6 +109,7 @@ vars:
   recurso_julgamento: "rj-smtr-dev.projeto_subsidio_sppo.recurso_julgamento"
   recurso_viagem_start: "2022-07-01 00:00:00"
   recurso_viagem_end: "2022-07-15 00:00:00"
+  recurso_timestamp_captura: "2022-11-04T14:17:00"
   perc_conformidade_distancia_recurso_min: 50
 
 

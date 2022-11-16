@@ -14,7 +14,7 @@
 SELECT
     data,
     hora,
-    safe_cast(timestamp_captura as timestamp) as timestamp_captura,
+    SAFE_CAST(DATETIME(TIMESTAMP(timestamp_captura), "America/Sao_Paulo") AS DATETIME) as timestamp_captura,
     safe_cast(modo as string) as modo,
     safe_cast(id_recurso as string) as id_recurso,
     safe_cast(split(data_recurso,".")[OFFSET(0)] as datetime) as data_recurso,
@@ -34,4 +34,5 @@ FROM {{ var("recurso_staging") }}
 {# {% if is_incremental() -%} #}
 where
     safe_cast(data_viagem as date) between date('{{ var("recurso_viagem_start")}}') and date('{{ var("recurso_viagem_end")}}')
+    and SAFE_CAST(DATETIME(TIMESTAMP(timestamp_captura), "America/Sao_Paulo" ) AS DATETIME) = '{{ var("recurso_timestamp_captura")}}'
 {# {% endif -%} #}
