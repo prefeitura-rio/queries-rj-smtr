@@ -7,8 +7,11 @@ select
       when data = "2022-09-07" then "Domingo"
       when data = "2022-10-12" then "Domingo"
       when data = "2022-10-17" then "Sabado"
-      when extract(dayofweek from data) = 1 then 'Domingo'
-      when extract(dayofweek from data) = 7 then 'Sabado'
+      when data = "2022-11-02" then "Domingo"
+      when data = "2022-11-14" then "Sabado"
+      when data = "2022-11-15" then "Domingo"
+      when extract(dayofweek from data) = 1 then "Domingo"
+      when extract(dayofweek from data) = 7 then "Sabado"
       else 'Dia Útil'
   end as tipo_dia,
   case
