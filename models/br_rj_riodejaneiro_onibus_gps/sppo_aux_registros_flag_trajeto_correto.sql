@@ -66,7 +66,7 @@ WITH
     FROM registros r
     LEFT JOIN (
       SELECT * 
-      FROM {{ ref('shapes_geom') }}
+      FROM `rj-smtr.br_rj_riodejaneiro_sigmob.shapes_geom` -- {{ ref('shapes_geom') }} -- todo: mudar para prod
       WHERE id_modal_smtr in ({{ var('sppo_id_modal_smtr')|join(', ') }})
       AND data_versao = "{{ var('versao_fixa_sigmob')}}"
     ) s
