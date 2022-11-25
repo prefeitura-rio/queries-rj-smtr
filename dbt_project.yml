@@ -105,6 +105,8 @@ vars:
   frequencies_version: "YYYY-MM-DD"
   # valor_subsidio: "`rj-smtr-dev.projeto_subsidio_sppo.valor_subsidio`"
   
+  ### Realocação SPPO ###
+  data_inicio_realocacao: "2022-09-28"
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
