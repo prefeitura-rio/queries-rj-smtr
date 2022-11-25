@@ -5,7 +5,9 @@ config(
             "field":"data",
             "data_type": "date",
             "granularity":"day"
-    }
+    },
+    unique_key=['id_viagem'],
+    incremental_strategy='insert_overwrite'
 )
 }}
 -- 1. Identifica viagens que estão dentro do quadro planejado (por

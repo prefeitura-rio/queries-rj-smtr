@@ -4,7 +4,9 @@
         "field":"data",
         "data_type": "date",
         "granularity":"day"
-    }
+    },
+    unique_key=['data', 'trip_id'],
+    incremental_strategy='insert_overwrite'
 )
 }}
 
