@@ -49,9 +49,9 @@ combinacao as (
     g.timestamp_gps,
     g.linha as servico_gps,
     r.servico as servico_realocado,
-    r.datetime_operacao as timestamp_realocacao,
-    r.data,
-    r.hora
+    r.datetime_operacao as datetime_realocacao,
+    g.data,
+    g.hora
   from gps g
   inner join realocacao r
   on 
