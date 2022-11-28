@@ -1,4 +1,4 @@
-# Queries SMTR
+# Queries SMTR 🚍🔎
 
 > Repositório adaptado do template do [Escritório de
 > Dados](https://github.com/prefeitura-rio/queries) para versionamento e
