@@ -37,7 +37,9 @@ gps as (
   select
     ordem,
     timestamp_gps,
-    linha
+    linha,
+    data,
+    hora
   from {{ ref('sppo_registros') }}
   where
     data between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
@@ -65,7 +67,7 @@ select
 from (
   select 
     *,
-    row_number() over (partition by id_veiculo, timestamp_gps order by timestamp_realocacao desc) as rn
+    row_number() over (partition by id_veiculo, timestamp_gps order by datetime_realocacao desc) as rn
   from combinacao
 )
 where rn = 1

@@ -41,7 +41,7 @@ combinacao as (
     g.id_veiculo,
     g.timestamp_gps,
     r.linha,
-    r.dataOperacao as timestamp_realocacao
+    r.dataOperacao as datetime_realocacao
   from gps g
   inner join realocacao r
   on 
@@ -55,7 +55,7 @@ select
 from (
   select 
     *,
-    row_number() over (partition by id_veiculo, timestamp_gps order by timestamp_realocacao) as rn
+    row_number() over (partition by id_veiculo, timestamp_gps order by datetime_realocacao) as rn
   from combinacao
 )
 where rn = 1
