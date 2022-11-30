@@ -137,5 +137,3 @@ ON
   date(r.timestamp_gps) between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
   AND r.timestamp_gps > "{{var('date_range_start')}}" and r.timestamp_gps <="{{var('date_range_end')}}"
 {%- endif -%}
-
--- TODO: adicionar realocação das linhas
