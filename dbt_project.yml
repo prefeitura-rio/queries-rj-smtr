@@ -104,6 +104,19 @@ vars:
   shapes_version: "YYYY-MM-DD"
   frequencies_version: "YYYY-MM-DD"
   # valor_subsidio: "`rj-smtr-dev.projeto_subsidio_sppo.valor_subsidio`"
+
+  ### Subsídio SPPO Pré-Produção (Ônibus) ###
+  gtfs_agency: "`rj-smtr-dev.gtfs.agency`"
+  gtfs_calendar: "`rj-smtr-dev.gtfs.calendar`"
+  gtfs_calendar_dates: "`rj-smtr-dev.gtfs.calendar_dates`"
+  gtfs_feed_info: "`rj-smtr-dev.gtfs.feed_info`"
+  gtfs_frequencies: "`rj-smtr-dev.gtfs.frequencies`"
+  gtfs_quadro: "`rj-smtr-dev.gtfs.quadro`"
+  gtfs_routes: "`rj-smtr-dev.gtfs.routes`"
+  gtfs_shapes: "`rj-smtr-dev.gtfs.shapes`"
+  gtfs_stop_times: "`rj-smtr-dev.gtfs.stop_times`"
+  gtfs_stops: "`rj-smtr-dev.gtfs.stops`"
+  gtfs_trips: "`rj-smtr-dev.gtfs.trips`"
   
   ### Realocação SPPO ###
   data_inicio_realocacao: "2022-11-15"
@@ -122,7 +135,7 @@ models:
     # Config indicated by + and applies to all files under models/example/
     projeto_subsidio_sppo:
       +materialized: view # Materialization type (view, table or incremental)
-      +schema: projeto_subsidio_sppo # Overrides the default schema (defaults to what is set on profiles.yml)
+      +schema: projeto_subsidio_sppo_preprod # Overrides the default schema (defaults to what is set on profiles.yml)
     br_rj_riodejaneiro_sigmob:
       +materialized: view
       +schema: br_rj_riodejaneiro_sigmob
