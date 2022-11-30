@@ -67,17 +67,17 @@ vars:
   versao_fixa_sigmob: '2022-06-10'
 
   ### GTFS (novo SIGMOB) ### TODO: change capture dataset to gtfs (pipelines)
-  agency_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.agency"
-  calendar_dates_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.calendar_dates"
-  calendar_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.calendar"
-  feed_info_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.feed_info"
-  frequencies_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.frequencies"
-  quadro_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.quadro"
-  routes_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.routes"
-  shapes_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.shapes"
-  stops_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.stops"
-  stop_times_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.stop_times"
-  trips_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.trips"
+  agency_staging: "rj-smtr-dev.gtfs_staging.agency"
+  calendar_dates_staging: "rj-smtr-dev.gtfs_staging.calendar_dates"
+  calendar_staging: "rj-smtr-dev.gtfs_staging.calendar"
+  feed_info_staging: "rj-smtr-dev.gtfs_staging.feed_info"
+  frequencies_staging: "rj-smtr-dev.gtfs_staging.frequencies"
+  quadro_staging: "rj-smtr-dev.gtfs_staging.quadro"
+  routes_staging: "rj-smtr-dev.gtfs_staging.routes"
+  shapes_staging: "rj-smtr-dev.gtfs_staging.shapes"
+  stops_staging: "rj-smtr-dev.gtfs_staging.stops"
+  stop_times_staging: "rj-smtr-dev.gtfs_staging.stop_times"
+  trips_staging: "rj-smtr-dev.gtfs_staging.trips"
   
   ### Subsídio SPPO (Ônibus) ###
   run_date: "YYYY-MM-DD"
@@ -110,7 +110,7 @@ models:
     # Config indicated by + and applies to all files under models/example/
     projeto_subsidio_sppo:
       +materialized: view # Materialization type (view, table or incremental)
-      +schema: projeto_subsidio_sppo # Overrides the default schema (defaults to what is set on profiles.yml)
+      +schema: projeto_subsidio_sppo_preprod # Overrides the default schema (defaults to what is set on profiles.yml)
     br_rj_riodejaneiro_onibus_gps:
       +materialized: view
       +schema: br_rj_riodejaneiro_onibus_gps
