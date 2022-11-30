@@ -62,34 +62,22 @@ vars:
   # Modal BRT
   brt_id_modal_smtr: ["'20'", "'B'"]
 
-  ### SIGMOB ###
-  # data_versao fixada para operações que envolvem o uso do SIGMOB
+  ### SIGMOB (antigo) ###
+  # data_versao fixada para operações que envolvem o uso do antigo SIGMOB
   versao_fixa_sigmob: '2022-06-10'
 
-  data_inclusao_agency: "2021-08-03"
-  data_inclusao_stop_times: "2021-08-03"
-  data_inclusao_linhas: "2021-08-03"
-  data_inclusao_routes: "2021-08-03"
-  data_inclusao_trips: "2021-08-03"
-  data_inclusao_shapes: "2021-08-24"
-  data_inclusao_stops: "2021-08-24"
-  data_inclusao_calendar: "2021-09-30"
-  data_inclusao_frota_determinada: "2021-09-30"
-  data_inclusao_stop_details: "2021-09-30"
-  data_inclusao_holidays: "2021-11-05"
-
-  agency_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.agency"
-  calendar_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.calendar"
-  frota_determinada_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.frota_determinada"
-  holidays_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.holidays"
-  linhas_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.linhas"
-  routes_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.routes"
-  shapes_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.shapes"
-  shapes_geom_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.shapes_geom"
-  stop_times_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.stop_times"
-  stop_details_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.stop_details"
-  stops_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.stops"
-  trips_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.trips"
+  ### GTFS (novo SIGMOB) ### TODO: change capture dataset to gtfs (pipelines)
+  agency_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.agency"
+  calendar_dates_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.calendar_dates"
+  calendar_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.calendar"
+  feed_info_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.feed_info"
+  frequencies_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.frequencies"
+  quadro_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.quadro"
+  routes_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.routes"
+  shapes_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.shapes"
+  stops_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.stops"
+  stop_times_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.stop_times"
+  trips_staging: "rj-smtr-dev.projeto_subsidio_sppo_preprod_staging.trips"
   
   ### Subsídio SPPO (Ônibus) ###
   run_date: "YYYY-MM-DD"
@@ -123,9 +111,6 @@ models:
     projeto_subsidio_sppo:
       +materialized: view # Materialization type (view, table or incremental)
       +schema: projeto_subsidio_sppo # Overrides the default schema (defaults to what is set on profiles.yml)
-    br_rj_riodejaneiro_sigmob:
-      +materialized: view
-      +schema: br_rj_riodejaneiro_sigmob
     br_rj_riodejaneiro_onibus_gps:
       +materialized: view
       +schema: br_rj_riodejaneiro_onibus_gps
@@ -135,3 +120,6 @@ models:
     br_rj_riodejaneiro_veiculos:
       +materialized: view
       +schema: br_rj_riodejaneiro_veiculos
+    gtfs:
+      +materialized: view # Materialization type (view, table or incremental)
+      +schema: gtfs # Overrides the default schema (defaults to what is set on profiles.yml)
