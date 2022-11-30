@@ -11,6 +11,6 @@ SELECT
   ROUND(SAFE_CAST(shape_distance AS FLOAT64),3) shape_distance,
   SAFE_CAST(service_id AS STRING) service_id,
   ROUND(SAFE_CAST(trip_daily_distance AS FLOAT64),3) trip_daily_distance
-  -- SAFE_CAST(DATETIME(TIMESTAMP(timestamp_captura), "America/Sao_Paulo") AS DATETIME) timestamp_captura
+  SAFE_CAST(DATETIME(TIMESTAMP(timestamp_captura), "America/Sao_Paulo") AS DATETIME) timestamp_captura
 FROM
   {{ var("quadro_staging") }} AS t
