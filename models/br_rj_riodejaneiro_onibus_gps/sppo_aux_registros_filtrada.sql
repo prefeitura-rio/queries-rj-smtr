@@ -37,6 +37,18 @@ gps AS (
     AND timestamp_gps > "{{var('date_range_start')}}" and timestamp_gps <="{{var('date_range_end')}}"
   {%- endif -%}
 ),
+realocacao as (
+  SELECT
+    g.* except(linha),
+    coalesce(r.servico_realocado, g.linha) as linha
+  FROM
+    gps g
+  LEFT JOIN
+    {{ ref('sppo_aux_registros_realocacao') }} r
+  ON
+    g.ordem = r.id_veiculo
+    and g.timestamp_gps = r.timestamp_gps
+),
 filtrada AS (
   /*1,2, e 3. Muda o nome de variáveis para o padrão do projeto.*/
   SELECT
@@ -52,7 +64,7 @@ filtrada AS (
     hora,
     row_number() over (partition by ordem, timestamp_gps, linha) rn
   FROM
-    gps
+    realocacao
   WHERE
     ST_INTERSECTSBOX(posicao_veiculo_geo,
       ( SELECT min_longitude FROM box),

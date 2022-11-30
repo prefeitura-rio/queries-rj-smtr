@@ -1,6 +1,16 @@
-dbt-env/
-target/
+# DBT
 dbt_modules/
 logs/
+target/
+
+# VENV
 dbt-env/
+
+# CONFIG
 .DS_Store
+.vscode/
+
+# DEV
+scripts/
+dev/profiles.yml
+dev/.user.yml
