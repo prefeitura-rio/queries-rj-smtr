@@ -26,7 +26,7 @@ status_viagem as (
         g.timestamp_gps,
         timestamp_trunc(g.timestamp_gps, minute) as timestamp_minuto_gps,
         g.posicao_veiculo_geo,
-        TRIM(g.servico, " ") as servico_informado,
+        g.servico as servico_informado,
         s.servico as servico_realizado,
         s.shape_id,
         s.sentido_shape,
