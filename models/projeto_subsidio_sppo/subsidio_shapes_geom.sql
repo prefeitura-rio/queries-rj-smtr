@@ -10,7 +10,12 @@
 )
 }}
 
-with contents as (
+with data_versao as (
+    select data_versao_shapes
+    from {{ ref("subsidio_data_versao_efetiva") }}
+    where data between date_sub("{{ var("run_date") }}", interval 1 day) and date("{{ var("run_date") }}")
+),
+contents as (
     SELECT 
         shape_id,
         ST_GEOGPOINT(
@@ -23,7 +28,7 @@ with contents as (
         {{ var("subsidio_shapes") }} s
     {% if is_incremental() %}
     WHERE
-        data_versao = date("{{ var("shapes_version") }}")
+        data_versao in (select data_versao_shapes from data_versao)
     {% endif %}
 ),
 pts as (
@@ -34,7 +39,7 @@ pts as (
         ) final_pt_sequence
     from 
         contents c
-    order by 
+    order by
         data_versao, shape_id, shape_pt_sequence
 ),
 shapes as (
