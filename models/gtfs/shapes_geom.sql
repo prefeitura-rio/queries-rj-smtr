@@ -27,7 +27,6 @@ with contents as (
     WHERE 
       timestamp_captura = DATETIME("{{ var("gtfs_version") }}")
       and data = DATE("{{ var("gtfs_version") }}")
-      and shape_id in ("O0432AAA0AIDU02", "O0010AAA0ACDU02") -- TODO: consertar shapes bugados
 ),
 -- 2. Identifica pontos inicial, final e médio dos shapes
 start_pt as (
@@ -93,11 +92,11 @@ loops as (
       and shape_pt_sequence >= m.shape_middle_sequence
   )
 ),
--- 3. Constrói a linestring de cada shape circular
+-- 4. Constrói a linestring de cada shape circular
 loop_shapes as (
   SELECT
     * except(shape_pt_geo),
-    st_makeline(ARRAY_AGG(shape_pt_geo)) as shape,
+    ARRAY_AGG(shape_pt_geo) as arr_shape_pt_geo,
     FROM (
       select
         timestamp_captura, shape_id, shape_pt_geo
@@ -109,7 +108,7 @@ loop_shapes as (
 shapes as (
   SELECT
     * except(shape_pt_geo),
-    st_makeline(ARRAY_AGG(shape_pt_geo)) as shape,
+    ARRAY_AGG(shape_pt_geo) as arr_shape_pt_geo,
     FROM (
       select
         timestamp_captura, shape_id, shape_pt_geo
@@ -118,16 +117,16 @@ shapes as (
       order by shape_id, shape_pt_sequence
   )
   group by 1,2
-)
--- 4. Calcula distância do shape
+),
+-- 5. Constrói as linestrings de cada
+linestring_construct AS (
 select
   extract(date from timestamp_captura) as data,
   extract(hour from timestamp_captura) as hora,
   shape_id,
-  shape,
-  ST_STARTPOINT(shape) as start_pt,
-  ST_ENDPOINT(shape) as end_pt,
-  ROUND(ST_LENGTH(shape)/1000, 3) as shape_distance,
+  ST_MAKELINE(arr_shape_pt_geo) AS shape,
+  arr_shape_pt_geo[ORDINAL(1)] AS start_pt,
+  arr_shape_pt_geo[ORDINAL(ARRAY_LENGTH(arr_shape_pt_geo))] AS end_pt,
   timestamp_captura
 FROM ((
   select * from shapes
@@ -135,3 +134,10 @@ FROM ((
 union all (
   select * from loop_shapes
 ))
+)
+-- 6. Calcula distância do shape
+select
+  * EXCEPT(timestamp_captura),
+  ROUND(ST_LENGTH(shape)/1000, 3) as shape_distance,
+  timestamp_captura
+FROM linestring_construct
