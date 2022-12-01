@@ -44,7 +44,7 @@ calendar_dates AS (
     WHERE
         timestamp_captura = DATETIME("{{ var("gtfs_version") }}")
         AND date = DATE("{{ var("run_date") }}")
-        AND exception_type = 1 -- service added for the date
+        AND exception_type = "1" -- service added for the date
 ),
 service_calendar AS (
     SELECT 
