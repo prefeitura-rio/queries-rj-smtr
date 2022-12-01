@@ -1,6 +1,6 @@
 
 SELECT 
-    SAFE_CAST(DATA AS DATE) DATA,
+    SAFE_CAST(data AS DATE) data,
     SAFE_CAST(hora AS INT64) hora,
     SAFE_CAST(stop_id AS STRING) stop_id,
     SAFE_CAST(stop_code AS STRING) stop_code,

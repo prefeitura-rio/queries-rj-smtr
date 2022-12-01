@@ -1,6 +1,6 @@
 
 SELECT 
-    SAFE_CAST(DATA AS DATE) DATA,
+    SAFE_CAST(data AS DATE) data,
     SAFE_CAST(hora AS INT64) hora,
     SAFE_CAST(SPLIT(trip_id, '_')[OFFSET(0)] AS STRING) trip_id,
     SAFE_CAST(start_time AS TIME) start_time,

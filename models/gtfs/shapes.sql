@@ -1,5 +1,5 @@
 SELECT
-  SAFE_CAST(DATA AS DATE) DATA,
+  SAFE_CAST(data AS DATE) data,
   SAFE_CAST(hora AS INT64) hora,
   SAFE_CAST(shape_id AS STRING) shape_id,
   SAFE_CAST(shape_pt_lat AS FLOAT64) shape_pt_lat,

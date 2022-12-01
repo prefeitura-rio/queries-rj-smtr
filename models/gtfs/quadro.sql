@@ -1,5 +1,5 @@
 SELECT
-  SAFE_CAST(DATA AS DATE) DATA,
+  SAFE_CAST(data AS DATE) data,
   SAFE_CAST(hora AS INT64) hora,
   CONCAT( IFNULL(REGEXP_EXTRACT(trip_short_name, r'[A-Z]+'), ""), IFNULL(REGEXP_EXTRACT(trip_short_name, r'[0-9]+'), "") ) AS trip_short_name,
   SAFE_CAST(route_long_name AS STRING) route_long_name,

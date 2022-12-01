@@ -1,5 +1,5 @@
 SELECT 
-    SAFE_CAST(DATA AS DATE) DATA,
+    SAFE_CAST(data AS DATE) data,
     SAFE_CAST(hora AS INT64) hora,
     SAFE_CAST(route_id AS STRING) route_id,
     SAFE_CAST(agency_id AS STRING) agency_id,

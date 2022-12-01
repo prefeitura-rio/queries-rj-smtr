@@ -1,6 +1,6 @@
 
 SELECT
-  SAFE_CAST(DATA AS DATE) DATA,
+  SAFE_CAST(data AS DATE) data,
   SAFE_CAST(hora AS INT64) hora,
   SAFE_CAST(feed_publisher_name AS STRING) feed_publisher_name,
   SAFE_CAST(feed_id AS STRING) feed_id,
