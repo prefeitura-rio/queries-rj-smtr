@@ -125,8 +125,8 @@ select
   extract(hour from timestamp_captura) as hora,
   shape_id,
   shape,
-  ST_STARTPOINT(shape) as shape_start_pt,
-  ST_ENDPOINT(shape) as shape_end_pt,
+  ST_STARTPOINT(shape) as start_pt,
+  ST_ENDPOINT(shape) as end_pt,
   ROUND(ST_LENGTH(shape)/1000, 3) as shape_distance,
   timestamp_captura
 FROM ((
