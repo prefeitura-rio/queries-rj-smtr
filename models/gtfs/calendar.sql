@@ -1,7 +1,7 @@
 SELECT 
     SAFE_CAST(data AS DATE) data,
     SAFE_CAST(hora AS INT64) hora,
-    SAFE_CAST(service_id AS INT64) service_id,
+    SAFE_CAST(service_id AS STRING) service_id,
     SAFE_CAST(monday AS INT64) monday,
     SAFE_CAST(tuesday AS INT64) tuesday,
     SAFE_CAST(wednesday AS INT64) wednesday,
