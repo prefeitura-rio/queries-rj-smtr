@@ -111,13 +111,13 @@ shapes_quadro AS (
         st.shape_direction
     FROM
         combined c
-    LEFT JOIN ( -- TODO: inner
+    INNER JOIN (
         SELECT
             t.trip_id,
             s.*
         FROM
             trips t
-        LEFT JOIN
+        INNER JOIN
             shapes s
         ON
             t.shape_id = s.shape_id_no_direction
