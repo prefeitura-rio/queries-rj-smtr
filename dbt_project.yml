@@ -80,17 +80,13 @@ vars:
   trips_staging: "rj-smtr-dev.gtfs_staging.trips"
   
   ### Subsídio SPPO (Ônibus) ###
-  run_date: "YYYY-MM-DD"
+  run_date: "2022-11-02"
+  gtfs_version: "2022-11-30T16:43:00"
   buffer: 500 # distância em metros para buffer
   perc_conformidade_distancia_min: 0
   perc_conformidade_shape_min: 80
   perc_conformidade_registros_min: 50
   perc_distancia_total_subsidio: 80
-  quadro_horario: "`rj-smtr.projeto_subsidio_sppo.quadro_horario`"
-  subsidio_shapes: "`rj-smtr.projeto_subsidio_sppo.shapes`"
-  subsidio_trips: "`rj-smtr.projeto_subsidio_sppo.trips`"
-  shapes_version: "YYYY-MM-DD"
-  frequencies_version: "YYYY-MM-DD"
   # valor_subsidio: "`rj-smtr-dev.projeto_subsidio_sppo.valor_subsidio`"
   
   ### Realocação SPPO ###
