@@ -10,142 +10,152 @@
 )
 }}
 
--- 1. Define datas do período planejado
-with data_efetiva as (
-    select 
-        data,
-        tipo_dia,
-        data_versao_shapes,
-        data_versao_trips,
-        data_versao_frequencies
-    from {{ ref("subsidio_data_versao_efetiva") }}
+-- 1. Obtém o serviço planejado do dia
+WITH calendar AS (
+  SELECT
+    c.timestamp_captura,
+    data,
+    c.service_id
+  FROM 
+    UNNEST(GENERATE_DATE_ARRAY(DATE("{{ var("run_date") }}"), DATE("{{ var("run_date") }}"))) AS data
+  LEFT JOIN (
+    SELECT *
+    FROM {{ ref("calendar") }} AS c
+    WHERE timestamp_captura = DATETIME("{{ var("gtfs_version") }}")
+  ) AS c
+  ON
+      CASE
+        WHEN EXTRACT(DAYOFWEEK FROM data) = 1 AND c.sunday      = 1 THEN TRUE
+        WHEN EXTRACT(DAYOFWEEK FROM data) = 2 AND c.monday      = 1 THEN TRUE
+        WHEN EXTRACT(DAYOFWEEK FROM data) = 3 AND c.tuesday     = 1 THEN TRUE
+        WHEN EXTRACT(DAYOFWEEK FROM data) = 4 AND c.wednesday   = 1 THEN TRUE
+        WHEN EXTRACT(DAYOFWEEK FROM data) = 5 AND c.thursday    = 1 THEN TRUE
+        WHEN EXTRACT(DAYOFWEEK FROM data) = 6 AND c.friday      = 1 THEN TRUE
+        WHEN EXTRACT(DAYOFWEEK FROM data) = 7 AND c.saturday    = 1 THEN TRUE
+        ELSE FALSE
+      END
 ),
--- 2. Puxa dados de distancia quadro no quadro horário
-quadro as (
-    select
-        e.data,
-        e.tipo_dia,
-        p.* except(tipo_dia, data_versao, horario_inicio, horario_fim),
-        horario_inicio as inicio_periodo,
-        horario_fim as fim_periodo
-    from 
-        data_efetiva e
-    inner join (
-        select * 
-        from {{ var("quadro_horario") }}
-        {% if is_incremental() %}
-        where 
-            data_versao = date("{{ var("frequencies_version") }}")
-        {% endif %}
-    ) p
-    on
-        e.data_versao_frequencies = p.data_versao
-    and
-        e.tipo_dia = p.tipo_dia
+-- 1.1. Checa se há exceção para a data
+calendar_dates AS (
+    SELECT
+        date, service_id
+    FROM
+        {{ ref("calendar_dates") }}
+    WHERE
+        timestamp_captura = DATETIME("{{ var("gtfs_version") }}")
+        AND date = DATE("{{ var("run_date") }}")
+        AND exception_type = 1 -- service added for the date
 ),
--- 3. Trata informação de trips: adiciona ao sentido da trip o sentido
---    planejado (os shapes/trips circulares são separados em
---    ida/volta no sigmob)
-trips as (
-    select
-        e.data,
-        t.*
-    from (
-        select *
-        from {{ ref('subsidio_trips_desaninhada') }}
-        {% if is_incremental() %}
-        where 
-            data_versao = date("{{ var("shapes_version") }}")
-        {% endif %}
-    ) t
-    inner join 
-        data_efetiva e
-    on 
-        t.data_versao = e.data_versao_trips
+service_calendar AS (
+    SELECT 
+        c.* except(service_id),
+        IFNULL(cd.service_id, c.service_id) as service_id
+    FROM
+        calendar c
+    LEFT JOIN 
+        calendar_dates cd
+    ON c.data = cd.date
 ),
-quadro_trips as (
-    select
-        *
-    from (
-        select distinct
-            * except(trip_id),
-            trip_id as trip_id_planejado,
-            trip_id
-        from
-            quadro
-        where sentido = "I" or sentido = "V"
-    )
-    union all (
-        select
-            * except(trip_id),
-            trip_id as trip_id_planejado,
-            concat(SUBSTR(trip_id, 1, 10), "I", SUBSTR(trip_id, 12, length(trip_id))) as trip_id,
-        from
-            quadro
-        where sentido = "C"
-    )
-    union all (
-        select
-            * except(trip_id),
-            trip_id as trip_id_planejado,
-            concat(SUBSTR(trip_id, 1, 10), "V", SUBSTR(trip_id, 12, length(trip_id))) as trip_id,
-        from
-            quadro
-        where sentido = "C"
-    )
+-- 2. Puxa informações do quadro horário com base no serviço planejado
+quadro AS (
+  SELECT
+    * except(data, hora)
+  FROM
+    {{ ref("quadro") }}
+  WHERE 
+    timestamp_captura = DATETIME("{{ var("gtfs_version") }}")
 ),
-quadro_tratada as (
-    select
-        q.*,
-        t.shape_id,
-        case 
-            when sentido = "C"
-            then concat(SUBSTR(shape_id, 1, 10), "C", SUBSTR(shape_id, 12, length(shape_id))) 
-            else shape_id
-        end as shape_id_planejado, -- TODO: adicionar no sigmob
-    from
-        quadro_trips q
-    left join 
-        trips t
-    on 
-        t.data = q.data
-    and
-        t.trip_id = q.trip_id
+combined AS (
+    SELECT
+        sc.data,
+        q.*
+    FROM
+        service_calendar sc
+    LEFT JOIN
+        quadro q
+    ON
+        sc.service_id = q.service_id
 ),
--- 4. Trata informações de shapes: junta trips e shapes para resgatar o sentido
---    planejado (os shapes/trips circulares são separados em
---    ida/volta no sigmob)
-shapes as (
-    select
-        e.data,
-        data_versao as data_shape,
+-- 3. Puxa shape_id das trips
+trips AS (
+  SELECT
+    trip_id, shape_id
+  FROM
+    {{ ref("trips") }}
+  WHERE 
+    timestamp_captura = DATETIME("{{ var("gtfs_version") }}")
+),
+-- 3. Puxa os shapes das trips planejadas
+shapes AS (
+    SELECT
         shape_id,
+        SPLIT(shape_id, "_")[OFFSET(0)] AS shape_id_no_direction,
+        SPLIT(shape_id, "_")[safe_offset(1)] AS shape_direction,
         shape,
-        SUBSTR(shape_id, 11, 1) as sentido_shape,
         start_pt,
         end_pt
-    from 
-        data_efetiva e
-    inner join (
-        select * 
-        from {{ ref('subsidio_shapes_geom') }}
-        {% if is_incremental() %}
-        where 
-            data_versao = date("{{ var("shapes_version") }}")
-        {% endif %}
-    ) s
-    on 
-        s.data_versao = e.data_versao_shapes
+    FROM
+        {{ ref("shapes_geom") }}
+    WHERE
+        timestamp_captura = DATETIME("{{ var("gtfs_version") }}")
+),
+-- 5. Agrega shapes ao quadro horario
+shapes_quadro AS (
+    SELECT
+        c.*,
+        st.shape,
+        st.start_pt,
+        st.end_pt,
+        st.shape_id,
+        st.shape_id_no_direction,
+        st.shape_direction
+    FROM
+        combined c
+    LEFT JOIN ( -- TODO: inner
+        SELECT
+            t.trip_id,
+            s.*
+        FROM
+            trips t
+        LEFT JOIN
+            shapes s
+        ON
+            t.shape_id = s.shape_id_no_direction
+    ) AS st
+    ON
+        c.trip_id = st.trip_id
 )
--- 5. Junta shapes e trips aos servicos planejados no quadro horário
-select 
-    p.*,
-    s.* except(data, shape_id)
-from
-    quadro_tratada p
-inner join
-    shapes s
-on 
-    p.shape_id = s.shape_id
-and
-    p.data = s.data
+-- 6. Ajusta colunas finais
+SELECT
+    data,
+    CASE 
+        WHEN service_id = "U" THEN "Dia Útil"
+        WHEN service_id = "S" THEN "Sabado"
+        WHEN service_id = "D" THEN "Domingo"
+    END AS tipo_dia,
+    trip_short_name as servico,
+    route_long_name as vista,
+    agency_name as consorcio,
+    CASE 
+        WHEN REGEXP_CONTAINS(shape_id, "_") THEN "C"
+        WHEN direction_id = 0 THEN "I"
+        WHEN direction_id = 1 THEN "V"
+    END AS sentido,
+    shape_distance as distancia_planejada,
+    trip_daily_distance as distancia_total_planejada,
+    start_time as inicio_periodo,
+    end_time as fim_periodo,
+    trip_id as trip_id_planejado,
+    CONCAT(trip_id, IFNULL(shape_direction, "")) AS trip_id,
+    shape_id AS shape_id_planejado,
+    shape_id_no_direction as shape_id,
+    DATE(timestamp_captura) as data_shape,
+    shape,
+    CASE
+        WHEN IFNULL(CAST(shape_direction AS INT64), direction_id) = 0 THEN "I"
+        WHEN IFNULL(CAST(shape_direction AS INT64), direction_id) = 1 THEN "V"
+    END AS sentido_shape,
+    start_pt,
+    end_pt
+FROM
+    shapes_quadro
