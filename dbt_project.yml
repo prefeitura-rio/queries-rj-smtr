@@ -39,7 +39,7 @@ vars:
   polygon_garagem: "rj-smtr.br_rj_riodejaneiro_geo.garagens_polygon" # aux_registros_parada
   sppo_terminais: "rj-smtr.br_rj_riodejaneiro_transporte.terminais_onibus_coordenadas" # aux_registros_parada
   sppo_registros_staging: "rj-smtr-staging.br_rj_riodejaneiro_onibus_gps_staging.registros"
-  sppo_realocacao_staging: "rj-smtr.br_rj_riodejaneiro_onibus_gps_staging.realocacao"
+  sppo_realocacao_staging: "rj-smtr-staging.br_rj_riodejaneiro_onibus_gps_staging.realocacao"
 
   # Parametros de intersecção do ônibus com rota
   ## Tamanho do buffer da rota
