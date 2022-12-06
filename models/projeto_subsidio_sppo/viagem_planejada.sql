@@ -33,7 +33,7 @@ quadro as (
         data_efetiva e
     inner join (
         select * 
-        from {{ var("quadro_horario") }}
+        from {{ ref("subsidio_quadro_horario") }}
         {% if is_incremental() %}
         where 
             data_versao in (select data_versao_frequencies from data_efetiva)
