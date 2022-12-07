@@ -13,7 +13,7 @@ WITH
   FROM
     {{ ref("viagem_completa") }}
   WHERE
-    data BETWEEN "2022-06-01" AND DATE("{{ var("run_date") }}")
+    data BETWEEN "2022-06-01" AND DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 1 DAY)
   GROUP BY
     1,
     2 ),
@@ -45,7 +45,7 @@ WITH
     FROM
       {{ ref("viagem_planejada") }}
     WHERE
-      data BETWEEN "2022-06-01" AND DATE("{{ var("run_date") }}")
+      data BETWEEN "2022-06-01" AND DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 1 DAY)
     GROUP BY
       1,
       2,
