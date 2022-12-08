@@ -64,7 +64,7 @@ vars:
 
   ### SIGMOB ###
   # data_versao fixada para operações que envolvem o uso do SIGMOB
-  versao_fixa_sigmob: '2022-06-10'
+  versao_fixa_sigmob: "2022-06-10"
 
   data_inclusao_agency: "2021-08-03"
   data_inclusao_stop_times: "2021-08-03"
@@ -90,7 +90,7 @@ vars:
   stop_details_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.stop_details"
   stops_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.stops"
   trips_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.trips"
-  
+
   ### Subsídio SPPO (Ônibus) ###
   run_date: "YYYY-MM-DD"
   buffer: 500 # distância em metros para buffer
@@ -104,9 +104,13 @@ vars:
   shapes_version: "YYYY-MM-DD"
   frequencies_version: "YYYY-MM-DD"
   # valor_subsidio: "`rj-smtr-dev.projeto_subsidio_sppo.valor_subsidio`"
-  
+
   ### Realocação SPPO ###
   data_inicio_realocacao: "2022-11-15"
+
+  ### RDO ###
+  rho_registros_sppo_staging: "`rj-smtr-staging.br_rj_riodejaneiro_rdo_staging.rho_registros_sppo`"
+  rho_max_processing_interval: 7
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
