@@ -4,7 +4,9 @@
         "field":"data",
         "data_type": "date",
         "granularity":"day"
-    }
+    },
+    unique_key=['data', 'trip_id'],
+    incremental_strategy='insert_overwrite'
 )
 }}
 
@@ -17,6 +19,7 @@ with data_efetiva as (
         data_versao_trips,
         data_versao_frequencies
     from {{ ref("subsidio_data_versao_efetiva") }}
+    where data between date_sub("{{ var("run_date") }}", interval 1 day) and date("{{ var("run_date") }}")
 ),
 -- 2. Puxa dados de distancia quadro no quadro horário
 quadro as (
@@ -30,10 +33,10 @@ quadro as (
         data_efetiva e
     inner join (
         select * 
-        from {{ var("quadro_horario") }}
+        from {{ ref("subsidio_quadro_horario") }}
         {% if is_incremental() %}
         where 
-            data_versao = date("{{ var("frequencies_version") }}")
+            data_versao in (select data_versao_frequencies from data_efetiva)
         {% endif %}
     ) p
     on
@@ -53,7 +56,7 @@ trips as (
         from {{ ref('subsidio_trips_desaninhada') }}
         {% if is_incremental() %}
         where 
-            data_versao = date("{{ var("shapes_version") }}")
+            data_versao in (select data_versao_trips from data_efetiva)
         {% endif %}
     ) t
     inner join 
@@ -129,7 +132,7 @@ shapes as (
         from {{ ref('subsidio_shapes_geom') }}
         {% if is_incremental() %}
         where 
-            data_versao = date("{{ var("shapes_version") }}")
+            data_versao in (select data_versao_shapes from data_efetiva)
         {% endif %}
     ) s
     on 

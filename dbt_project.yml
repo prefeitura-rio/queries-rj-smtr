@@ -39,6 +39,7 @@ vars:
   polygon_garagem: "rj-smtr.br_rj_riodejaneiro_geo.garagens_polygon" # aux_registros_parada
   sppo_terminais: "rj-smtr.br_rj_riodejaneiro_transporte.terminais_onibus_coordenadas" # aux_registros_parada
   sppo_registros_staging: "rj-smtr-staging.br_rj_riodejaneiro_onibus_gps_staging.registros"
+  sppo_realocacao_staging: "rj-smtr-staging.br_rj_riodejaneiro_onibus_gps_staging.realocacao"
 
   # Parametros de intersecção do ônibus com rota
   ## Tamanho do buffer da rota
@@ -97,9 +98,9 @@ vars:
   perc_conformidade_shape_min: 80
   perc_conformidade_registros_min: 50
   perc_distancia_total_subsidio: 80
-  quadro_horario: "`rj-smtr.projeto_subsidio_sppo.quadro_horario`"
-  subsidio_shapes: "`rj-smtr.projeto_subsidio_sppo.shapes`"
-  subsidio_trips: "`rj-smtr.projeto_subsidio_sppo.trips`"
+  quadro_horario: "`rj-smtr-staging.projeto_subsidio_sppo_staging.quadro_horario`"
+  subsidio_shapes: "`rj-smtr-staging.projeto_subsidio_sppo_staging.shapes`"
+  subsidio_trips: "`rj-smtr-staging.projeto_subsidio_sppo_staging.trips`"
   shapes_version: "YYYY-MM-DD"
   frequencies_version: "YYYY-MM-DD"
   # valor_subsidio: "`rj-smtr-dev.projeto_subsidio_sppo.valor_subsidio`"
@@ -112,6 +113,9 @@ vars:
   recurso_timestamp_captura: "2022-11-04T14:17:00"
   perc_conformidade_distancia_recurso_min: 50
 
+  
+  ### Realocação SPPO ###
+  data_inicio_realocacao: "2022-11-15"
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
@@ -140,3 +144,6 @@ models:
     br_rj_riodejaneiro_veiculos:
       +materialized: view
       +schema: br_rj_riodejaneiro_veiculos
+    dashboard_subsidio_sppo:
+      +materialized: view
+      +schema: dashboard_subsidio_sppo
