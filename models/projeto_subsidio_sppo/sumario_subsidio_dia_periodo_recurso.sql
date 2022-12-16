@@ -26,12 +26,11 @@ viagem as (
         (ifnull(p.viagens_realizadas,0) + ifnull(r.viagens_realizadas,0)) as viagens_realizadas
     from 
         viagem_paga p
-    full outer join
+    left join
         viagem_recurso r
     on
         r.trip_id = p.trip_id
         and r.data = p.data  
-    where p.data between (select min(data) from viagem_recurso) and (select max(data) from viagem_recurso) -- todo: declare vars
 ),
 -- 2. Junta informações de viagens planejadas às realizadas
 planejado as (
