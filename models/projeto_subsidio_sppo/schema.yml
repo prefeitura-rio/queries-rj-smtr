@@ -349,11 +349,6 @@ models:
         início (start), meio (middle), fim (end) ou fora (out) do shape do serviço informado"
         tests:
           - not_null
-      - name: versao_modelo
-        description: "Versão da metodologia de cálculo da
-        respectiva linha na tabela."
-        tests:
-          - not_null
       - name: sentido_shape
         description: "Sentido do shape (codificado no shape_id - categorias: I (ida), V (volta), C (circular)"
         tests:

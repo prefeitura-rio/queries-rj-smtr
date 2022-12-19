@@ -104,6 +104,15 @@ vars:
   shapes_version: "YYYY-MM-DD"
   frequencies_version: "YYYY-MM-DD"
   # valor_subsidio: "`rj-smtr-dev.projeto_subsidio_sppo.valor_subsidio`"
+  # Recursos #
+  recurso_staging: "rj-smtr-staging.projeto_subsidio_sppo_staging.recurso"
+  recurso_prazo: "rj-smtr.projeto_subsidio_sppo.recurso_prazo"
+  recurso_julgamento: "rj-smtr.projeto_subsidio_sppo.recurso_julgamento"
+  recurso_viagem_start: "2022-07-01 00:00:00"
+  recurso_viagem_end: "2022-07-15 00:00:00"
+  recurso_timestamp_captura: "2022-11-04T14:17:00"
+  perc_conformidade_distancia_recurso_min: 50
+
   
   ### Realocação SPPO ###
   data_inicio_realocacao: "2022-11-15"
