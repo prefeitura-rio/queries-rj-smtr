@@ -14,6 +14,7 @@ select
       when data = "2022-11-28" then "Sabado"
       when data = "2022-12-02" then "Sabado"
       when data = "2022-12-05" then "Sabado"
+      when data = "2022-12-09" then "Sabado"
       when extract(dayofweek from data) = 1 then "Domingo"
       when extract(dayofweek from data) = 7 then "Sabado"
       else 'Dia Útil'
