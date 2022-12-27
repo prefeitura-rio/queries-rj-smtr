@@ -1,0 +1,1 @@
+{# Calcula a predição de chegada no próximo ponto para todas as trips #}

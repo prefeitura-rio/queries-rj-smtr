@@ -138,3 +138,6 @@ models:
     dashboard_subsidio_sppo:
       +materialized: view
       +schema: dashboard_subsidio_sppo
+    projeto_brt_predicao:
+      +materialized: view
+      +schema: projeto_brt_predicao
