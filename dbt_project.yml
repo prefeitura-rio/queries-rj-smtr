@@ -111,6 +111,7 @@ vars:
   ### RDO ###
   rho_registros_sppo_staging: "`rj-smtr-staging.br_rj_riodejaneiro_rdo_staging.rho_registros_sppo`"
   rho_max_processing_interval: 7
+  rho_sppo_start_date: "2021-03-01"
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
@@ -139,3 +140,6 @@ models:
     br_rj_riodejaneiro_veiculos:
       +materialized: view
       +schema: br_rj_riodejaneiro_veiculos
+    br_rj_riodejaneiro_rdo:
+      +materialized: view
+      +schema: br_rj_riodejaneiro_rdo
