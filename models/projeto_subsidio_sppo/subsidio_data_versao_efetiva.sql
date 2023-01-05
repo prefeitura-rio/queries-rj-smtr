@@ -27,6 +27,10 @@ select
       when data between date(2022,{{ i }},16) and last_day(date(2022,{{ i }},30), month) then date(2022,{{ i }},16)
     {% endfor %}
   end as data_versao_trips,
+  -- TESTE:
+  {# date("2022-12-29") as data_versao_trips,
+  date("2022-12-29") as data_versao_shapes,
+  date("2022-12-29") as data_versao_frequencies, #}
   case
     when data between date(2022,10,1) and date(2022,10,2) then date(2022,9,16)
     when data between date(2022,6,1) and last_day(date(2022,6,30), month) then date(2022,6,1)

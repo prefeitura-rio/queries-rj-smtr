@@ -57,18 +57,32 @@ with viagem as (
             where sentido_shape = "I"
         )
     )
-)
+),
 -- 2. Calcula os percentuais de conformidade da distancia, trajeto e GPS
-select distinct
-    v.* except(versao_modelo),
-    d.* except(id_viagem, versao_modelo),
-    round(100 * n_registros_shape/n_registros_total, 2) as perc_conformidade_shape,
-    round(100 * d.distancia_aferida/v.distancia_planejada, 2) as perc_conformidade_distancia,
-    round(100 * n_registros_minuto/tempo_viagem, 2) as perc_conformidade_registros,
-    '{{ var("version") }}' as versao_modelo
-from 
-    viagem v
-inner join 
-    {{ ref("aux_viagem_registros") }} d
-on
-    v.id_viagem = d.id_viagem
+conformidade as (
+    select distinct
+        v.* except(versao_modelo),
+        d.* except(id_viagem, versao_modelo),
+        round(100 * n_registros_shape/n_registros_total, 2) as perc_conformidade_shape,
+        round(100 * d.distancia_aferida/v.distancia_planejada, 2) as perc_conformidade_distancia,
+        round(100 * n_registros_minuto/tempo_viagem, 2) as perc_conformidade_registros,
+        '{{ var("version") }}' as versao_modelo
+    from 
+        viagem v
+    inner join 
+        {{ ref("aux_viagem_registros") }} d
+    on
+        v.id_viagem = d.id_viagem
+)
+-- 3. Seleciona viagem com maior conformidade caso exista mais de um shape possível
+select
+    * except(rn)
+from (
+    select
+        *,
+        row_number() over (partition by id_veiculo, datetime_partida order by perc_conformidade_shape desc, perc_conformidade_registros desc) as rn
+    from
+        conformidade
+)
+where
+    rn = 1
