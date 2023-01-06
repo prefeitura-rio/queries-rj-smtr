@@ -42,12 +42,22 @@ select
     {% endfor %}
   end as data_versao_frequencies,
   case  
-    when extract(month from data) = 6 then 2.13
-    when extract(month from data) = 7 then 1.84
-    when extract(month from data) = 8 then 1.80
-    when extract(month from data) = 9 then 1.75
-    when extract(month from data) = 10 then 1.62
-    when extract(month from data) = 11 then 1.53
-    when extract(month from data) = 12 then 1.78
+    when extract(year from data) = 2022 then (
+      case
+        when extract(month from data) = 6 then 2.13
+        when extract(month from data) = 7 then 1.84
+        when extract(month from data) = 8 then 1.80
+        when extract(month from data) = 9 then 1.75
+        when extract(month from data) = 10 then 1.62
+        when extract(month from data) = 11 then 1.53
+        when extract(month from data) = 12 then 1.78
+      end
+    )
+    when extract(year from data) = 2023 then (
+      case
+        when date <= date("2023-01-06") then 3.18
+        else 2.81
+      end
+    )
   end as valor_subsidio_por_km
-from unnest(GENERATE_DATE_ARRAY("2022-06-01", "2022-12-31")) data
+from unnest(GENERATE_DATE_ARRAY("2022-06-01", "2023-12-31")) data
