@@ -35,7 +35,7 @@ WITH
     FROM
       {{ ref("subsidio_data_versao_efetiva") }}
     WHERE
-      data BETWEEN "2022-06-01" AND DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 1 DAY)) AS v
+      data BETWEEN "2022-06-01" AND DATE("{{ var("end_date") }}") AS v
   ON
     v.data = s.data )
 SELECT
