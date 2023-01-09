@@ -26,6 +26,12 @@ select
       when data between date(2022,{{ i }},1) and date(2022,{{ i }},15) then date(2022,{{ i }},01)
       when data between date(2022,{{ i }},16) and last_day(date(2022,{{ i }},30), month) then date(2022,{{ i }},16)
     {% endfor %}
+    {% for j in range(2023, 2024) %}
+      {% for i in range(1, 13) %}
+        when data between date({{ j }},{{ i }},1) and date({{ j }},{{ i }},15) then date({{ j }},{{ i }},01)
+        when data between date({{ j }},{{ i }},16) and last_day(date({{ j }},{{ i }},1), month) then date({{ j }},{{ i }},16)
+      {% endfor %}
+    {% endfor %}
   end as data_versao_trips,
   case
     when data between date(2022,10,1) and date(2022,10,2) then date(2022,9,16)
@@ -34,11 +40,23 @@ select
       when data between date(2022,{{ i }},1) and date(2022,{{ i }},15) then date(2022,{{ i }},01)
       when data between date(2022,{{ i }},16) and last_day(date(2022,{{ i }},30), month) then date(2022,{{ i }},16)
     {% endfor %}
+    {% for j in range(2023, 2024) %}
+      {% for i in range(1, 13) %}
+        when data between date({{ j }},{{ i }},1) and date({{ j }},{{ i }},15) then date({{ j }},{{ i }},01)
+        when data between date({{ j }},{{ i }},16) and last_day(date({{ j }},{{ i }},1), month) then date({{ j }},{{ i }},16)
+      {% endfor %}
+    {% endfor %}
   end as data_versao_shapes,
   case
     {% for i in range(6, 13) %}
       when data between date(2022,{{ i }},1) and date(2022,{{ i }},15) then date(2022,{{ i }},01)
       when data between date(2022,{{ i }},16) and last_day(date(2022,{{ i }},30), month) then date(2022,{{ i }},16)
+    {% endfor %}
+    {% for j in range(2023, 2024) %}
+      {% for i in range(1, 13) %}
+        when data between date({{ j }},{{ i }},1) and date({{ j }},{{ i }},15) then date({{ j }},{{ i }},01)
+        when data between date({{ j }},{{ i }},16) and last_day(date({{ j }},{{ i }},1), month) then date({{ j }},{{ i }},16)
+      {% endfor %}
     {% endfor %}
   end as data_versao_frequencies,
   case  
