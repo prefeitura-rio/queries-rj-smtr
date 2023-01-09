@@ -39,7 +39,7 @@ WITH
     SELECT
       *
     FROM
-      `rj-smtr.projeto_subsidio_sppo.viagem_planejada` -- `rj-smtr-dev`.`projeto_subsidio_sppo_844_conf1`.`viagem_planejada`
+      {{ ref("viagem_planejada") }}
     WHERE
       DATA BETWEEN DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 1 day)
       AND DATE("{{ var("run_date") }}") ) AS s
@@ -62,7 +62,7 @@ WITH
     SELECT
       *
     FROM
-      `rj-smtr.projeto_subsidio_sppo.viagem_planejada` -- `rj-smtr-dev`.`projeto_subsidio_sppo_844_conf1`.`viagem_planejada`
+      {{ ref("viagem_planejada") }}
     WHERE
       DATA BETWEEN DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 1 day)
       AND DATE("{{ var("run_date") }}")
@@ -126,7 +126,7 @@ INNER JOIN (
   SELECT
     *
   FROM
-    `rj-smtr.projeto_subsidio_sppo.viagem_planejada` -- `rj-smtr-dev`.`projeto_subsidio_sppo_844_conf1`.`viagem_planejada`
+    {{ ref("viagem_planejada") }}
   WHERE
     DATA BETWEEN DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 1 day)
     AND DATE("{{ var("run_date") }}") ) AS s
