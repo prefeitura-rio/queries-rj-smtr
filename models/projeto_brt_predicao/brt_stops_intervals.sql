@@ -18,8 +18,7 @@ WITH
   FROM
     `rj-smtr-dev.gtfs.stop_times`
   WHERE
-    timestamp_captura = "2022-12-27 10:46:00"
-    AND trip_id = "19dabe0f-a321-4a7c-a177-16b779c3c919"),
+    timestamp_captura = "2022-12-27 10:46:00"),
   stops_sequence AS (
   SELECT
     st.trip_id,
@@ -104,6 +103,12 @@ WITH
     timestamp_gps )
   -- 4. Calcula os intervalos de origem/destino
 SELECT
+  EXTRACT(DAYOFWEEK
+  FROM
+    timestamp_gps) AS tipo_dia,
+  EXTRACT(hour
+  FROM
+    timestamp_gps) AS hora,
   id_veiculo,
   trip_id,
   stop_id AS stop_id_origin,
