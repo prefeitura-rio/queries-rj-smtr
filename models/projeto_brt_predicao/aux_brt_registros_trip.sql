@@ -17,7 +17,7 @@ WITH
     `rj-smtr.br_rj_riodejaneiro_brt_gps.registros_desaninhada`
   WHERE
     DATA BETWEEN "2022-12-01"
-    AND "2022-12-02"),
+    AND "2022-12-31"),
   trips AS (
   SELECT
     * EXCEPT(rn)
