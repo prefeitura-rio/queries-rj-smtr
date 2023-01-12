@@ -37,7 +37,7 @@ with viagem_periodo as (
         {% endif %}
     ) p
     inner join (
-        select distinct * from {{ ref("viagem_conformidade") }} 
+        select distinct * from {{ ref("viagem_validacao") }} 
         {% if is_incremental() %}
         WHERE 
             data = date_sub(date("{{ var("run_date") }}"), interval 1 day)
