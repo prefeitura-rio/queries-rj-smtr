@@ -1,0 +1,18 @@
+
+version: 2
+
+models:
+  - name: shapes_with_stops
+    description: "Shapes with stops"
+    columns:
+      - name: trip_id
+        description: "The composite primary key for this table"
+
+      - name: stop_id
+        description: "The composite primary key for this table"
+
+      - name: latitude
+        description: "shape_pt_lat"
+
+      - name: longitude
+        description: "shape_pt_lon"
