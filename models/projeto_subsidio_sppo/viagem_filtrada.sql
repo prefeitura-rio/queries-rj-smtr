@@ -1,4 +1,10 @@
--- 1. Filtra viagens com mesma chegada e partida pelo maior % de conformidade do shape - total: 25798
+{{
+  config(
+    materialized='ephemeral'
+  )
+}}
+
+-- 1. Filtra viagens com mesma chegada e partida pelo maior % de conformidade do shape
 WITH filtro_desvio as (
   SELECT
   * EXCEPT(rn)
@@ -11,7 +17,7 @@ FROM (
 WHERE
   rn = 1
 ),
--- 2. Filtra viagens com partida ou chegada diferentes pela maior distancia percorrida -  total: 23289
+-- 2. Filtra viagens com partida ou chegada diferentes pela maior distancia percorrida
 filtro_partida AS (
   SELECT
     * EXCEPT(rn)
