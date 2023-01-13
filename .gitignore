@@ -9,6 +9,7 @@ dbt-env/
 # CONFIG
 .DS_Store
 .vscode/
+*.cpython-*
 
 # DEV
 scripts/
