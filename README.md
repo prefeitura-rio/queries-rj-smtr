@@ -23,8 +23,10 @@ pip install -r requirements-dev.txt
 * Configure suas credenciais para leitura/escrita no datalake:
 
 ```bash
+# crie a pasta de configuração
+mkdir -p profiles-dev
 # copie o arquivo de exemplo
-cp dev/profiles-example.yml dev/profiles.yml
+cp dev/profiles-example.yml profiles-dev/profiles.yml
 # preencha com suas credenciais
 ```
 
