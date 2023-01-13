@@ -15,3 +15,5 @@ dbt-env/
 scripts/
 dev/profiles.yml
 dev/.user.yml
+credentials*/
+profiles*/
