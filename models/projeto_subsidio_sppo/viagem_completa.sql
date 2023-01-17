@@ -18,8 +18,8 @@ with viagem_periodo as (
         p.vista,
         p.tipo_dia,
         v.*,
-        time("2022-06-01 00:00:00") as inicio_periodo,
-        time("2022-06-01 23:59:59") as fim_periodo,
+        p.inicio_periodo,
+        p.fim_periodo,
         0 as tempo_planejado
     from (
         select distinct
@@ -46,19 +46,19 @@ with viagem_periodo as (
     on 
         v.trip_id = p.trip_id
         and v.data = p.data
-    -- where (
-    --     ( -- 05:00:00 as 23:00:00
-    --         inicio_periodo < time_sub(fim_periodo, interval p.intervalo minute) 
-    --         and extract (time from datetime_partida) >= inicio_periodo 
-    --             and extract (time from datetime_partida) < time_sub(fim_periodo, interval p.intervalo minute)
-    --     ) or
-    --     ( -- 23:00:00 as 5:00:00
-    --         inicio_periodo > time_sub(fim_periodo, interval intervalo minute)
-    --         and ((extract (time from datetime_partida) >= inicio_periodo) -- até 00h
-    --             or (extract (time from datetime_partida) < time_sub(fim_periodo, interval p.intervalo minute)) -- apos 00h
-    --         )
-    --     )
-    -- )
+    where (
+        ( -- 05:00:00 as 23:00:00
+            inicio_periodo < time_sub(fim_periodo, interval p.intervalo minute) 
+            and extract (time from datetime_partida) >= inicio_periodo 
+                and extract (time from datetime_partida) < time_sub(fim_periodo, interval p.intervalo minute)
+        ) or
+        ( -- 23:00:00 as 5:00:00
+            inicio_periodo > time_sub(fim_periodo, interval intervalo minute)
+            and ((extract (time from datetime_partida) >= inicio_periodo) -- até 00h
+                or (extract (time from datetime_partida) < time_sub(fim_periodo, interval p.intervalo minute)) -- apos 00h
+            )
+        )
+    )
 )
 -- 2. Seleciona viagens completas de acordo com a conformidade
 select distinct
