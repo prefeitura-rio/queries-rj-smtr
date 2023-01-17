@@ -53,7 +53,7 @@ with viagem_periodo as (
                 and extract (time from datetime_partida) < time_sub(fim_periodo, interval p.intervalo minute)
         ) or
         ( -- 23:00:00 as 5:00:00
-            inicio_periodo > time_sub(fim_periodo, interval intervalo minute)
+            inicio_periodo > time_sub(fim_periodo, interval p.intervalo minute)
             and ((extract (time from datetime_partida) >= inicio_periodo) -- até 00h
                 or (extract (time from datetime_partida) < time_sub(fim_periodo, interval p.intervalo minute)) -- apos 00h
             )
