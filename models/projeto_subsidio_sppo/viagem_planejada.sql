@@ -123,9 +123,9 @@ shapes as (
         shape_id,
         shape,
         case 
-            when sentido = "C"
-            split(shape_id, "_")[offset(1)]
-            else sentido_shape
+            when sentido = "C" and split(shape_id, "_")[offset(1)] = "0" then "I"
+            when sentido = "C" and split(shape_id, "_")[offset(1)] = "1" then "V"
+            when sentido = "I" or sentido = "V" then sentido
         end as sentido_shape,
         start_pt,
         end_pt
