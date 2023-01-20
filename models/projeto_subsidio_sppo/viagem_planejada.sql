@@ -80,7 +80,7 @@ quadro_trips as (
         select
             * except(trip_id),
             trip_id as trip_id_planejado,
-            concat(SUBSTR(trip_id, 1, 10), "I", SUBSTR(trip_id, 12, length(trip_id))) as trip_id,
+            concat(trip_id, "_0") as trip_id,
         from
             quadro
         where sentido = "C"
@@ -89,7 +89,7 @@ quadro_trips as (
         select
             * except(trip_id),
             trip_id as trip_id_planejado,
-            concat(SUBSTR(trip_id, 1, 10), "V", SUBSTR(trip_id, 12, length(trip_id))) as trip_id,
+            concat(trip_id, "_1") as trip_id,
         from
             quadro
         where sentido = "C"
@@ -101,7 +101,7 @@ quadro_tratada as (
         t.shape_id,
         case 
             when sentido = "C"
-            then concat(SUBSTR(shape_id, 1, 10), "C", SUBSTR(shape_id, 12, length(shape_id))) 
+            then split(shape_id, "_")[offset(0)]
             else shape_id
         end as shape_id_planejado, -- TODO: adicionar no sigmob
     from
@@ -122,7 +122,11 @@ shapes as (
         data_versao as data_shape,
         shape_id,
         shape,
-        SUBSTR(shape_id, 11, 1) as sentido_shape,
+        case 
+            when sentido = "C"
+            split(shape_id, "_")[offset(1)]
+            else sentido_shape
+        end as sentido_shape,
         start_pt,
         end_pt
     from 
