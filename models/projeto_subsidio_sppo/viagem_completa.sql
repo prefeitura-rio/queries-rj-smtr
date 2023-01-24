@@ -49,8 +49,8 @@ with viagem_periodo as (
         v.trip_id = p.trip_id
         and v.data = p.data
 ),
-viagem_comp_conf as (
 -- 2. Seleciona viagens completas de acordo com a conformidade
+viagem_comp_conf as (
 select distinct
     consorcio,
     data,
@@ -146,7 +146,7 @@ FROM (
 WHERE
   rn = 1
 ),
--- 2. Filtra viagens com partida ou chegada diferentes pela maior distancia percorrida
+-- 4. Filtra viagens com partida ou chegada diferentes pela maior distancia percorrida
 filtro_partida AS (
   SELECT
     * EXCEPT(rn)
