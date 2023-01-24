@@ -48,42 +48,8 @@ with viagem_periodo as (
     on 
         v.trip_id = p.trip_id
         and v.data = p.data
-        -- Reveillon (2022-12-31)
-        {% if var("run_date") == "2023-01-01" %}
-        where
-            (
-                -- 1. Viagens pre fechamento das vias
-                (p.fim_periodo = "22:00:00" and datetime_chegada <= "2023-12-31 22:05:00")
-                or 
-                (p.fim_periodo = "18:00:00" and datetime_chegada <= "2023-12-31 18:05:00") -- 18h as 5h
-                or 
-                -- 2. Viagens durante fechamento das vias
-                (p.inicio_periodo = "22:00:00" and datetime_partida >= "2023-12-31 21:55:00") -- 22h as 5h/10h
-                or
-                (p.inicio_periodo = "18:00:00" and datetime_partida >= "2023-12-31 17:55:00") -- 18h as 5h
-                or
-                -- 3. Viagens que nao sao afetadas pelo fechamento das vias
-                (p.inicio_periodo = "00:00:00" and p.fim_periodo = "23:59:59")
-            )
-        -- Feriado do Dia da Fraternidade Universal (2023-01-01)
-        {% elif var("run_date") == "2023-01-02" %}
-        where
-            (
-                -- 1. Viagens durante fechamento das vias
-                (p.fim_periodo = "05:00:00" and datetime_partida <= "2023-01-01 05:05:00")
-                or 
-                (p.fim_periodo = "10:00:00" and datetime_partida <= "2023-01-01 10:05:00")
-                or 
-                -- 2. Viagens pos abertura das vias
-                (p.inicio_periodo = "05:00:00" and datetime_partida >= "2023-01-01 04:55:00")
-                or
-                (p.inicio_periodo = "10:00:00" and datetime_partida >= "2023-01-01 09:55:00")
-                or 
-                -- 3. Viagens que nao sao afetadas pelo fechamento das vias
-                (p.inicio_periodo = "00:00:00" and p.fim_periodo = "23:59:59")
-            )
-        {% endif %}
-)
+),
+viagem_comp_conf AS (
 -- 2. Seleciona viagens completas de acordo com a conformidade
 select distinct
     consorcio,
@@ -131,3 +97,75 @@ and (
 and (
     perc_conformidade_registros >= {{ var("perc_conformidade_registros_min") }}
 )
+{% if var("run_date") == "2023-01-01" %}
+-- Reveillon (2022-12-31)
+and
+    (
+        -- 1. Viagens pre fechamento das vias
+        (fim_periodo = "22:00:00" and datetime_chegada <= "2022-12-31 22:05:00")
+        or 
+        (fim_periodo = "18:00:00" and datetime_chegada <= "2022-12-31 18:05:00") -- 18h as 5h
+        or 
+        -- 2. Viagens durante fechamento das vias
+        (inicio_periodo = "22:00:00" and datetime_partida >= "2022-12-31 21:55:00") -- 22h as 5h/10h
+        or
+        (inicio_periodo = "18:00:00" and datetime_partida >= "2022-12-31 17:55:00") -- 18h as 5h
+        or
+        -- 3. Viagens que nao sao afetadas pelo fechamento das vias
+        (inicio_periodo = "00:00:00" and fim_periodo = "23:59:59")
+    )
+-- Feriado do Dia da Fraternidade Universal (2023-01-01)
+{% elif var("run_date") == "2023-01-02" %}
+and
+    (
+        -- 1. Viagens durante fechamento das vias
+        (fim_periodo = "05:00:00" and datetime_partida <= "2023-01-01 05:05:00")
+        or 
+        (fim_periodo = "10:00:00" and datetime_partida <= "2023-01-01 10:05:00")
+        or 
+        -- 2. Viagens pos abertura das vias
+        (inicio_periodo = "05:00:00" and datetime_partida >= "2023-01-01 04:55:00")
+        or
+        (inicio_periodo = "10:00:00" and datetime_partida >= "2023-01-01 09:55:00")
+        or 
+        -- 3. Viagens que nao sao afetadas pelo fechamento das vias
+        (inicio_periodo = "00:00:00" and fim_periodo = "23:59:59")
+    )
+{% endif %}
+),
+-- 3. Filtra viagens com mesma chegada e partida pelo maior % de conformidade do shape
+filtro_desvio as (
+  SELECT
+  * EXCEPT(rn)
+FROM (
+  SELECT
+    *,
+    ROW_NUMBER() OVER(PARTITION BY id_veiculo, datetime_partida, datetime_chegada ORDER BY perc_conformidade_shape DESC) AS rn
+  FROM
+    viagem_comp_conf )
+WHERE
+  rn = 1
+),
+-- 2. Filtra viagens com partida ou chegada diferentes pela maior distancia percorrida
+filtro_partida AS (
+  SELECT
+    * EXCEPT(rn)
+  FROM (
+    SELECT
+      *,
+      ROW_NUMBER() OVER(PARTITION BY id_veiculo, datetime_partida ORDER BY distancia_planejada DESC) AS rn
+    FROM
+      filtro_desvio )
+  WHERE
+    rn = 1 ) 
+-- filtro_chegada
+SELECT
+  * EXCEPT(rn)
+FROM (
+  SELECT
+    *,
+    ROW_NUMBER() OVER(PARTITION BY id_veiculo, datetime_chegada ORDER BY distancia_planejada DESC) AS rn
+  FROM
+    filtro_partida )
+WHERE
+  rn = 1
