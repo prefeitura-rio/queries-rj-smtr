@@ -3,6 +3,13 @@ config(
     alias='sumario_dia'
 )
 }}
+
+-- Calcula percentual de KM executado de todos os serviços para cada dia, 
+-- desde o início do subsídio (jun/22) até a data máxima da última quinzena apurada.
+
+-- 1. Soma viagens realizadas de diferentes sentidos do mesmo serviço. 
+-- A KM planejada é por serviço e nao sentido, portanto a distancia_total_planejada 
+-- da sumario_periodo já é a total do serviço para ambos os sentidos e por isso nao somamos.
 WITH
   sumario AS (
   SELECT
@@ -21,12 +28,15 @@ WITH
     2,
     3,
     4 ),
+-- 2. Recupera o valor do KM para cada data planejada e calcula o percentual de KM executado. 
+-- No caso de serviços sem planejamento para o dia, o percentual padrao é nulo.
   valor AS (
   SELECT
     s.*,
     v.valor_subsidio_por_km,
     ROUND(distancia_total_subsidio * v.valor_subsidio_por_km, 2) AS valor_total_aferido,
-    ROUND(100*distancia_total_subsidio/distancia_total_planejada, 2) AS perc_distancia_total_subsidio
+  IF
+    (distancia_total_planejada = 0, NULL, ROUND(100*distancia_total_subsidio/distancia_total_planejada, 2)) AS perc_distancia_total_subsidio
   FROM
     sumario s
   LEFT JOIN (
@@ -38,10 +48,11 @@ WITH
       data BETWEEN "2022-06-01" AND DATE("{{ var("end_date") }}")) AS v
   ON
     v.data = s.data )
+-- 3. Define o valor total a ser pago com base no cumprimento do KM planejado - mínimo de 80%.
 SELECT
   *,
   CASE
-    WHEN perc_distancia_total_subsidio < {{ var("perc_distancia_total_subsidio") }} THEN 0
+    WHEN (perc_distancia_total_subsidio < {{ var("perc_distancia_total_subsidio") }}) OR (perc_distancia_total_subsidio IS NULL) THEN 0
   ELSE
   valor_total_aferido
 END
