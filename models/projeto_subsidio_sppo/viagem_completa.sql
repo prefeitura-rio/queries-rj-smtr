@@ -49,7 +49,7 @@ with viagem_periodo as (
         v.trip_id = p.trip_id
         and v.data = p.data
 ),
-viagem_comp_conf AS (
+viagem_comp_conf as (
 -- 2. Seleciona viagens completas de acordo com a conformidade
 select distinct
     consorcio,
