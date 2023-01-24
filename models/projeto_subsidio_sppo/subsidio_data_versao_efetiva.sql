@@ -22,12 +22,17 @@ SELECT
   CASE
     WHEN data BETWEEN DATE(2022,10,1) AND DATE(2022,10,2) THEN DATE(2022,9,16)
     WHEN data BETWEEN DATE(2022,6,1) AND LAST_DAY(DATE(2022,6,30), MONTH) THEN DATE(2022,6,1)
-    {% for i in range(7, 13) %}
+    {% for i in range(7, 12) %}
       WHEN data BETWEEN DATE(2022,{{ i }},1) AND DATE(2022,{{ i }},15) THEN DATE(2022,{{ i }},1)
       WHEN data BETWEEN DATE(2022,{{ i }},16) AND LAST_DAY(DATE(2022,{{ i }},30), MONTH) THEN DATE(2022,{{ i }},16)
     {% endfor %}
+    WHEN data BETWEEN DATE(2022,12,1) AND DATE(2022,12,15) THEN DATE(2022,12,1)
+    WHEN data BETWEEN DATE(2022,12,16) AND DATE(2022,12,30) THEN DATE(2022,12,16)
+    WHEN data BETWEEN DATE(2022,12,31) AND DATE(2023,1,1) THEN DATE(2022,12,31)
     {% for j in range(2023, 2024) %}
-      {% for i in range(1, 13) %}
+      WHEN data BETWEEN DATE({{ j }},1,2) AND DATE({{ j }},1,15) THEN DATE({{ j }},1,1)
+      WHEN data BETWEEN DATE({{ j }},1,16) AND LAST_DAY(DATE({{ j }},1,1), MONTH) THEN DATE({{ j }},1,16)
+      {% for i in range(2, 13) %}
         WHEN data BETWEEN DATE({{ j }},{{ i }},1) AND DATE({{ j }},{{ i }},15) THEN DATE({{ j }},{{ i }},1)
         WHEN data BETWEEN DATE({{ j }},{{ i }},16) AND LAST_DAY(DATE({{ j }},{{ i }},1), MONTH) THEN DATE({{ j }},{{ i }},16)
       {% endfor %}
