@@ -80,7 +80,7 @@ quadro_trips as (
         select
             * except(trip_id),
             trip_id as trip_id_planejado,
-            concat(SUBSTR(trip_id, 1, 10), "I", SUBSTR(trip_id, 12, length(trip_id))) as trip_id,
+            concat(trip_id, "_0") as trip_id,
         from
             quadro
         where sentido = "C"
@@ -89,7 +89,7 @@ quadro_trips as (
         select
             * except(trip_id),
             trip_id as trip_id_planejado,
-            concat(SUBSTR(trip_id, 1, 10), "V", SUBSTR(trip_id, 12, length(trip_id))) as trip_id,
+            concat(trip_id, "_1") as trip_id,
         from
             quadro
         where sentido = "C"
@@ -98,12 +98,12 @@ quadro_trips as (
 quadro_tratada as (
     select
         q.*,
-        t.shape_id,
+        t.shape_id as shape_id_planejado,
         case 
             when sentido = "C"
-            then concat(SUBSTR(shape_id, 1, 10), "C", SUBSTR(shape_id, 12, length(shape_id))) 
+            then shape_id || "_" || split(q.trip_id, "_")[offset(1)]
             else shape_id
-        end as shape_id_planejado, -- TODO: adicionar no sigmob
+        end as shape_id, -- TODO: adicionar no sigmob
     from
         quadro_trips q
     left join 
@@ -111,7 +111,7 @@ quadro_tratada as (
     on 
         t.data = q.data
     and
-        t.trip_id = q.trip_id
+        t.trip_id = q.trip_id_planejado
 ),
 -- 4. Trata informações de shapes: junta trips e shapes para resgatar o sentido
 --    planejado (os shapes/trips circulares são separados em
@@ -122,7 +122,6 @@ shapes as (
         data_versao as data_shape,
         shape_id,
         shape,
-        SUBSTR(shape_id, 11, 1) as sentido_shape,
         start_pt,
         end_pt
     from 
@@ -141,7 +140,15 @@ shapes as (
 -- 5. Junta shapes e trips aos servicos planejados no quadro horário
 select 
     p.*,
-    s.* except(data, shape_id)
+    s.data_shape,
+    s.shape,
+    case 
+        when p.sentido = "C" and split(p.shape_id, "_")[offset(1)] = "0" then "I"
+        when p.sentido = "C" and split(p.shape_id, "_")[offset(1)] = "1" then "V"
+        when p.sentido = "I" or p.sentido = "V" then p.sentido
+    end as sentido_shape,
+    s.start_pt,
+    s.end_pt
 from
     quadro_tratada p
 inner join
