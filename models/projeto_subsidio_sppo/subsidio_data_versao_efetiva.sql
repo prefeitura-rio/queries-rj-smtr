@@ -32,8 +32,7 @@ SELECT
     -- 2023:
     {% for j in range(2023, 2024) %}
       {% for i in range(1, 13) %}
-        WHEN data BETWEEN DATE({{ j }},{{ i }},1) AND DATE({{ j }},{{ i }},15) THEN DATE({{ j }},{{ i }},1)
-        WHEN data BETWEEN DATE({{ j }},{{ i }},16) AND LAST_DAY(DATE({{ j }},{{ i }},1), MONTH) THEN DATE({{ j }},{{ i }},16)
+        WHEN EXTRACT(MONTH FROM data) = {{ i }} THEN DATE({{ j }},{{ i }},1)
       {% endfor %}
     {% endfor %}
   END AS data_versao_trips,
@@ -50,8 +49,7 @@ SELECT
     -- 2023:
     {% for j in range(2023, 2024) %}
       {% for i in range(1, 13) %}
-        WHEN data BETWEEN DATE({{ j }},{{ i }},1) AND DATE({{ j }},{{ i }},15) THEN DATE({{ j }},{{ i }},1)
-        WHEN data BETWEEN DATE({{ j }},{{ i }},16) AND LAST_DAY(DATE({{ j }},{{ i }},1), MONTH) THEN DATE({{ j }},{{ i }},16)
+        WHEN EXTRACT(MONTH FROM data) = {{ i }} THEN DATE({{ j }},{{ i }},1)
       {% endfor %}
     {% endfor %}
   END AS data_versao_shapes,
@@ -66,8 +64,7 @@ SELECT
     -- 2023:
     {% for j in range(2023, 2024) %}
       {% for i in range(1, 13) %}
-        WHEN data BETWEEN DATE({{ j }},{{ i }},1) AND DATE({{ j }},{{ i }},15) THEN DATE({{ j }},{{ i }},1)
-        WHEN data BETWEEN DATE({{ j }},{{ i }},16) AND LAST_DAY(DATE({{ j }},{{ i }},1), MONTH) THEN DATE({{ j }},{{ i }},16)
+        WHEN EXTRACT(MONTH FROM data) = {{ i }} THEN DATE({{ j }},{{ i }},1)
       {% endfor %}
     {% endfor %}
   END AS data_versao_frequencies,
