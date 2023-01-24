@@ -20,12 +20,16 @@ SELECT
       ELSE 'Dia Útil'
   END AS tipo_dia,
   CASE
+    -- Reveillon:
+    WHEN data BETWEEN DATE(2022,12,31) AND DATE(2023,1,1) THEN DATE(2022,12,31)
+    -- 2022:
     WHEN data BETWEEN DATE(2022,10,1) AND DATE(2022,10,2) THEN DATE(2022,9,16)
     WHEN data BETWEEN DATE(2022,6,1) AND LAST_DAY(DATE(2022,6,30), MONTH) THEN DATE(2022,6,1)
     {% for i in range(7, 13) %}
       WHEN data BETWEEN DATE(2022,{{ i }},1) AND DATE(2022,{{ i }},15) THEN DATE(2022,{{ i }},1)
       WHEN data BETWEEN DATE(2022,{{ i }},16) AND LAST_DAY(DATE(2022,{{ i }},30), MONTH) THEN DATE(2022,{{ i }},16)
     {% endfor %}
+    -- 2023:
     {% for j in range(2023, 2024) %}
       {% for i in range(1, 13) %}
         WHEN data BETWEEN DATE({{ j }},{{ i }},1) AND DATE({{ j }},{{ i }},15) THEN DATE({{ j }},{{ i }},1)
@@ -34,12 +38,16 @@ SELECT
     {% endfor %}
   END AS data_versao_trips,
   CASE
+    -- Reveillon:
+    WHEN data BETWEEN DATE(2022,12,31) AND DATE(2023,1,1l) THEN DATE(2022,12,31)
+    -- 2022:
     WHEN data BETWEEN DATE(2022,10,1) AND DATE(2022,10,2) THEN DATE(2022,9,16)
     WHEN data BETWEEN DATE(2022,6,1) AND LAST_DAY(DATE(2022,6,30), MONTH) THEN DATE(2022,6,1)
     {% for i in range(7, 13) %}
       WHEN data BETWEEN DATE(2022,{{ i }},1) AND DATE(2022,{{ i }},15) THEN DATE(2022,{{ i }},1)
       WHEN data BETWEEN DATE(2022,{{ i }},16) AND LAST_DAY(DATE(2022,{{ i }},30), MONTH) THEN DATE(2022,{{ i }},16)
     {% endfor %}
+    -- 2023:
     {% for j in range(2023, 2024) %}
       {% for i in range(1, 13) %}
         WHEN data BETWEEN DATE({{ j }},{{ i }},1) AND DATE({{ j }},{{ i }},15) THEN DATE({{ j }},{{ i }},1)
@@ -48,10 +56,14 @@ SELECT
     {% endfor %}
   END AS data_versao_shapes,
   CASE
+    -- Reveillon:
+    WHEN data in (DATE(2022,12,31), DATE(2023,1,1)) THEN DATE(2022,12,31)
+    -- 2022:
     {% for i in range(6, 13) %}
       WHEN data BETWEEN DATE(2022,{{ i }},1) AND DATE(2022,{{ i }},15) THEN DATE(2022,{{ i }},1)
       WHEN data BETWEEN DATE(2022,{{ i }},16) AND LAST_DAY(DATE(2022,{{ i }},30), MONTH) THEN DATE(2022,{{ i }},16)
     {% endfor %}
+    -- 2023:
     {% for j in range(2023, 2024) %}
       {% for i in range(1, 13) %}
         WHEN data BETWEEN DATE({{ j }},{{ i }},1) AND DATE({{ j }},{{ i }},15) THEN DATE({{ j }},{{ i }},1)
