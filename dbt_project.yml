@@ -104,6 +104,8 @@ vars:
   sppo_perc_distancia_penalidade_grave: 40 # DECRETO RIO No 51940 DE 16 DE JANEIRO DE 2023
   sppo_perc_distancia_penalidade_media: 60 # RESOLUÇÃO SMTR No 3552, DE 12 DE SETEMBRO DE 2022
   sppo_perc_distancia_minima_subsidio: 80 # RESOLUÇÃO SMTR No 3552, DE 12 DE SETEMBRO DE 2022
+  sppo_valor_penalidade_grave: 563.28
+  sppo_valor_penalidade_media: 1126.55
 
   # Parâmetros para validação das viagens
   perc_conformidade_shape_min: 80 # RESOLUÇÃO SMTR No 3552, DE 12 DE SETEMBRO DE 2022

@@ -56,8 +56,8 @@ SELECT
     WHEN perc_distancia_total_subsidio IS NULL THEN 0
     {% if var("run_date") > "2023-01-16" -%}
         -- Penalidades segundo legislação
-        WHEN (perc_distancia_total_subsidio < {{ var("sppo_perc_distancia_penalidade_grave") }}) THEN {{ var("sppo_valor_penalidade_grave") }}
-        WHEN (perc_distancia_total_subsidio < {{ var("sppo_perc_distancia_penalidade_media") }}) THEN {{ var("sppo_valor_penalidade_media") }}
+        WHEN (perc_distancia_total_subsidio < {{ var("sppo_perc_distancia_penalidade_grave") }}) THEN -{{ var("sppo_valor_penalidade_grave") }}
+        WHEN (perc_distancia_total_subsidio < {{ var("sppo_perc_distancia_penalidade_media") }}) THEN -{{ var("sppo_valor_penalidade_media") }}
     {%- endif %}
     -- Distância mínima para pagamento segundo legislação
     WHEN perc_distancia_total_subsidio < {{ var("sppo_perc_distancia_minima_subsidio") }} THEN 0
