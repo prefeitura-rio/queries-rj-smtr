@@ -101,15 +101,15 @@ vars:
   frequencies_version: "YYYY-MM-DD"
 
   # Parâmetros para o cálculo do valor pago
-  sppo_perc_distancia_penalidade_grave: 40
-  sppo_perc_distancia_penalidade_media: 60
-  sppo_perc_distancia_minima_subsidio: 80
+  sppo_perc_distancia_penalidade_grave: 40 # DECRETO RIO No 51940 DE 16 DE JANEIRO DE 2023
+  sppo_perc_distancia_penalidade_media: 60 # RESOLUÇÃO SMTR No 3552, DE 12 DE SETEMBRO DE 2022
+  sppo_perc_distancia_minima_subsidio: 80 # RESOLUÇÃO SMTR No 3552, DE 12 DE SETEMBRO DE 2022
 
   # Parâmetros para validação das viagens
-  perc_conformidade_shape_min: 80
-  perc_conformidade_registros_min: 50
-  perc_conformidade_distancia_min: 0
-  viagem_raio: 500 # metros
+  perc_conformidade_shape_min: 80 # RESOLUÇÃO SMTR No 3552, DE 12 DE SETEMBRO DE 2022
+  perc_conformidade_registros_min: 50 # RESOLUÇÃO SMTR No 3552, DE 12 DE SETEMBRO DE 2022
+  perc_conformidade_distancia_min: 0 # RESOLUÇÃO SMTR No 3552, DE 12 DE SETEMBRO DE 2022
+  viagem_raio: 500 # RESOLUÇÃO SMTR No 3552, DE 12 DE SETEMBRO DE 2022
 
   # Recursos #
   recurso_staging: "rj-smtr-staging.projeto_subsidio_sppo_staging.recurso"
