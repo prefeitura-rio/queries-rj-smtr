@@ -39,11 +39,11 @@ status_viagem as (
         s.distancia_planejada,
         ifnull(g.distancia,0) as distancia,
         case
-            when ST_DWITHIN(g.posicao_veiculo_geo, start_pt, {{ var("buffer") }})
+            when ST_DWITHIN(g.posicao_veiculo_geo, start_pt, {{ var("viagem_raio") }})
             then 'start'
-            when ST_DWITHIN(g.posicao_veiculo_geo, end_pt, {{ var("buffer") }})
+            when ST_DWITHIN(g.posicao_veiculo_geo, end_pt, {{ var("viagem_raio") }})
             then 'end'
-            when ST_DWITHIN(g.posicao_veiculo_geo, shape, {{ var("buffer") }})
+            when ST_DWITHIN(g.posicao_veiculo_geo, shape, {{ var("viagem_raio") }})
             then 'middle'
         else 'out'
         end status_viagem

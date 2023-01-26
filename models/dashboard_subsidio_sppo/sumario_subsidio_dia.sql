@@ -48,11 +48,19 @@ WITH
       data BETWEEN "2022-06-01" AND DATE("{{ var("end_date") }}")) AS v
   ON
     v.data = s.data )
--- 3. Define o valor total a ser pago com base no cumprimento do KM planejado - mínimo de 80%.
+-- 3. Define o valor total a ser pago com base no cumprimento do KM planejado.
 SELECT
   *,
   CASE
-    WHEN (perc_distancia_total_subsidio < {{ var("perc_distancia_total_subsidio") }}) OR (perc_distancia_total_subsidio IS NULL) THEN 0
+    -- Serviços não programados para a data
+    WHEN perc_distancia_total_subsidio IS NULL THEN 0
+    {% if var("run_date") > "2023-01-16" -%}
+        -- Penalidades segundo a resolução XX
+        WHEN (perc_distancia_total_subsidio < {{ var("sppo_perc_distancia_penalidade_grave") }}) THEN {{ var("sppo_valor_penalidade_grave") }}
+        WHEN (perc_distancia_total_subsidio < {{ var("sppo_perc_distancia_penalidade_media") }}) THEN {{ var("sppo_valor_penalidade_media") }}
+    {%- endif %}
+    -- Distância mínima para pagamento segundo a resolução XX
+    WHEN perc_distancia_total_subsidio < {{ var("sppo_perc_distancia_minima_subsidio") }} THEN 0
   ELSE
   valor_total_aferido
 END
