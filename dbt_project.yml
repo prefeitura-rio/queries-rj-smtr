@@ -153,3 +153,6 @@ models:
     veiculo:
       +materialized: view
       +schema: veiculo
+    operacao:
+      +materialized: view
+      +schema: operacao
