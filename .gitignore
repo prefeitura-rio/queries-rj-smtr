@@ -12,5 +12,3 @@ dbt-env/
 
 # DEV
 scripts/
-dev/
-credentials-dev/
