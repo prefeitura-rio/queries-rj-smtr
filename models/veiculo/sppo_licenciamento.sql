@@ -1,6 +1,5 @@
 -- TODO: configurar materializacao da tabela
-
- SELECT
+SELECT
    data,
    timestamp_captura,
    SAFE_CAST(id_veiculo AS STRING) id_veiculo,
@@ -23,6 +22,7 @@
    SAFE_CAST(JSON_VALUE(content,"$.quantidade_lotacao_pe") AS INT64) quantidade_lotacao_pe,
    SAFE_CAST(JSON_VALUE(content,"$.quantidade_lotacao_sentado") AS INT64) quantidade_lotacao_sentado,
    SAFE_CAST(JSON_VALUE(content,"$.tipo_combustivel") AS STRING) tipo_combustivel,
-   SAFE_CAST(JSON_VALUE(content,"$.tipo_veiculo") AS STRING) tipo_veiculo
+   SAFE_CAST(JSON_VALUE(content,"$.tipo_veiculo") AS STRING) tipo_veiculo,
+   SAFE_CAST(JSON_VALUE(content,"$.status") AS STRING) status
  FROM
      {{ var('sppo_licenciamento_staging') }} as t
