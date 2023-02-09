@@ -42,6 +42,7 @@ vars:
   sppo_terminais: "rj-smtr.br_rj_riodejaneiro_transporte.terminais_onibus_coordenadas" # aux_registros_parada
   sppo_registros_staging: "rj-smtr-staging.br_rj_riodejaneiro_onibus_gps_staging.registros"
   sppo_realocacao_staging: "rj-smtr-staging.br_rj_riodejaneiro_onibus_gps_staging.realocacao"
+  sppo_licenciamento_staging: "rj-smtr-dev.veiculo.sppo_licenciamento"
 
   # Parametros de intersecção do ônibus com rota
   ## Tamanho do buffer da rota
@@ -148,3 +149,6 @@ models:
     dashboard_subsidio_sppo:
       +materialized: view
       +schema: dashboard_subsidio_sppo
+    veiculo:
+      +materialized: view
+      +schema: veiculo
