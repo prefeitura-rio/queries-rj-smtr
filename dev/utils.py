@@ -13,6 +13,7 @@ def run_dbt_model(
     upstream: bool = None,
     downstream: bool = None,
     exclude: str = None,
+    #flags: str = "-x --profiles-dir ./dev --full-refresh",
     flags: str = "-x --profiles-dir ./dev",
     _vars: Union[dict, List[Dict]] = None,
 ):
