@@ -15,6 +15,7 @@ SELECT
       WHEN data = "2022-12-02" THEN "Sabado"
       WHEN data = "2022-12-05" THEN "Sabado"
       WHEN data = "2022-12-09" THEN "Sabado"
+      WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 1 THEN "Domingo" -- Dia de São Sebastião -- Art. 8°, I - Lei Municipal nº 5146/2010
       WHEN EXTRACT(DAYOFWEEK FROM data) = 1 THEN "Domingo"
       WHEN EXTRACT(DAYOFWEEK FROM data) = 7 THEN "Sabado"
       ELSE 'Dia Útil'
