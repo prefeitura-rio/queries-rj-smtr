@@ -3,26 +3,31 @@ config(
     alias='sumario_periodo'
 )
 }}
+
 -- 1. Sumariza viagens aferidas
 WITH
   viagem AS (
   SELECT
     data,
     trip_id,
+    id_classificacao,
     COUNT(id_viagem) AS viagens_realizadas
   FROM
-    {{ ref("viagem_completa") }}
+    `rj-smtr-dev.projeto_subsidio_sppo.viagem_completa_subsidio` -- TODO: ref to prod {{ ref("viagem_completa") }}
   WHERE
-    data BETWEEN "2022-06-01" AND DATE("{{ var("end_date") }}")
+    -- TODO: def criterio data
+    data BETWEEN "2023-01-16" AND "2023-01-31"
   GROUP BY
     1,
-    2 ),
+    2,
+    3 ),
   -- 2. Junta informações de viagens planejadas às realizadas
   planejado AS (
   SELECT
     DISTINCT p.*,
     IFNULL(v.viagens_realizadas, 0) AS viagens_realizadas,
     IFNULL(v.viagens_realizadas, 0) AS viagens_subsidio,
+    id_classificacao,
   FROM (
     SELECT
       consorcio,
@@ -43,9 +48,10 @@ WITH
       MAX(distancia_total_planejada) AS distancia_total_planejada,
       NULL AS viagens_planejadas
     FROM
-      {{ ref("viagem_planejada") }}
+      `rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada` -- TODO: ref to prod {{ ref("viagem_planejada") }}
     WHERE
-      data BETWEEN "2022-06-01" AND DATE("{{ var("end_date") }}")
+      -- TODO: def criterio data
+      data BETWEEN "2023-01-16" AND "2023-01-31"
     GROUP BY
       1,
       2,
@@ -61,7 +67,7 @@ WITH
   ON
     v.trip_id = p.trip_id
     AND v.data = p.data )
-  -- 4. Adiciona informações de distância total
+  -- 3. Adiciona informações de distância total
 SELECT
   * EXCEPT(distancia_planejada,
     distancia_total_planejada),
