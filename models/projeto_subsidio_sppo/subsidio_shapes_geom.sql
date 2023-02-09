@@ -13,7 +13,7 @@
 with data_versao as (
     select data_versao_shapes
     from {{ ref("subsidio_data_versao_efetiva") }}
-    where data between date_sub("{{ var("run_date") }}", interval 1 day) and date("{{ var("run_date") }}")
+    where data BETWEEN DATE("{{ var("run_date") }}") AND DATE_ADD(DATE("{{ var("run_date") }}"), INTERVAL 1 DAY)
 ),
 contents as (
     SELECT 

@@ -57,7 +57,7 @@ planejado as (
             null as viagens_planejadas -- max(viagens) as viagens_planejadas
         from
             `rj-smtr.projeto_subsidio_sppo.viagem_planejada` -- {{ ref("viagem_planejada") }} # todo: ref to prod
-        where data <= date_sub(current_date(), interval 1 day)
+        where data <= current_date()
         group by 1,2,3,4,5,6,7,8,9
     ) p
     left join

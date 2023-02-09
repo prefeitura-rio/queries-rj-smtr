@@ -161,7 +161,7 @@ distancia as (
             select distinct * except(posicao_veiculo_geo, start_pt, end_pt)
             from registros_status_viagem
             -- where
-            --     data between date_sub(date("{{ var("run_date") }}"), interval 1 day) and date("{{ var("run_date") }}")
+            --     data BETWEEN DATE("{{ var("run_date") }}") AND DATE_ADD(DATE("{{ var("run_date") }}"), INTERVAL 1 DAY)
         )
         group by 1,2,3,4,5
     )

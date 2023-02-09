@@ -19,7 +19,7 @@ with data_efetiva as (
         data_versao_trips,
         data_versao_frequencies
     from {{ ref("subsidio_data_versao_efetiva") }}
-    where data between date_sub("{{ var("run_date") }}", interval 1 day) and date("{{ var("run_date") }}")
+    where data BETWEEN DATE("{{ var("run_date") }}") AND DATE_ADD(DATE("{{ var("run_date") }}"), INTERVAL 1 DAY)
 ),
 -- 2. Puxa dados de distancia quadro no quadro horário
 quadro as (

@@ -26,7 +26,7 @@ valor as (
 select 
   *,
   case
-    when perc_distancia_total_subsidio < {{ var("perc_distancia_total_subsidio") }}
+    when perc_distancia_total_subsidio < {{ var("perc_distancia_total_subsidio_min") }}
     then 0
     else valor_total_aferido
   end as valor_total_subsidio
