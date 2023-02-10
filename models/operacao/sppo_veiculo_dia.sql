@@ -22,8 +22,8 @@ WITH
     {{ ref("sppo_licenciamento") }}
   WHERE
   -- TODO: configurar viagem_versao
-    DATA = "2023-02-08"
-    AND timestamp_captura = "2023-02-08 19:39:00-03:00"),
+    DATA = "2023-02-10"
+    AND timestamp_captura = "2023-02-10 15:05:00-03:00"),
   veiculo_licenciado_dia AS ( --89.370 veiculo-dia
   SELECT
     DATA,
@@ -53,7 +53,7 @@ WITH
     {{ ref("sppo_infracao") }}
   WHERE
   -- TODO: configurar viagem_versao
-    DATA = "2023-02-07"
+    DATA = "2023-02-10"
     -- TODO: def critério de data
     AND data_infracao BETWEEN DATE("2023-01-16")
     AND DATE("2023-01-31")
