@@ -1,4 +1,16 @@
--- TODO: configurar materializacao da tabela
+{{ 
+config(
+    materialized='incremental',
+    partition_by={
+            "field":"data",
+            "data_type": "date",
+            "granularity":"day"
+    },
+    unique_key=["data", "id_veiculo"],
+    incremental_strategy='insert_overwrite'
+)
+}}
+
 WITH
   veiculo_licenciado AS ( -- 5.958 veiculos
   SELECT
@@ -38,7 +50,7 @@ WITH
     data_infracao,
     TRUE AS indicador_veiculo_autuado
   FROM
-    `rj-smtr-dev.operacao.sppo_infracao`
+    {{ ref("sppo_infracao") }}
   WHERE
   -- TODO: configurar viagem_versao
     DATA = "2023-02-07"
@@ -48,7 +60,7 @@ WITH
     AND modo = "ONIBUS"
     AND id_infracao = "023.II" )
 SELECT
-  COALESCE(l.data, g.data) AS DATA,
+  COALESCE(l.data, g.data) AS data,
   COALESCE(l.id_veiculo, g.id_veiculo) AS id_veiculo,
   CASE
     WHEN g.id_veiculo IS NULL THEN FALSE
@@ -62,8 +74,7 @@ END
   TRUE
 END
   AS indicador_veiculo_licenciado,
-  COALESCE(l.indicador_veiculo_com_ar, FALSE) AS indicador_veiculo_com_ar,
-  --l.indicador_veiculo_com_ar AS indicador_veiculo_com_ar,
+  l.indicador_veiculo_com_ar AS indicador_veiculo_com_ar,
   CASE
     WHEN i.indicador_veiculo_autuado IS NULL THEN FALSE
   ELSE
