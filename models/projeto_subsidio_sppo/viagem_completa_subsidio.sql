@@ -15,7 +15,7 @@ SELECT
     WHEN vd.indicador_veiculo_com_ar = FALSE THEN 2
     WHEN (vd.indicador_veiculo_com_ar = TRUE AND vd.indicador_veiculo_autuado = TRUE) THEN 3
     WHEN (vd.indicador_veiculo_com_ar = TRUE AND vd.indicador_veiculo_autuado = FALSE) THEN 4
-    ELSE 999
+    ELSE NULL
   END AS id_classificacao
 FROM
   viagem_completa AS vc
