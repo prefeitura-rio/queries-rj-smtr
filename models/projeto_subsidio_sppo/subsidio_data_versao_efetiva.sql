@@ -15,7 +15,17 @@ SELECT
       WHEN data = "2022-12-02" THEN "Sabado"
       WHEN data = "2022-12-05" THEN "Sabado"
       WHEN data = "2022-12-09" THEN "Sabado"
+      WHEN data = "2023-04-07" THEN "Domingo" -- Paixão de Cristo -- Art. 1º, V - PORTARIA ME Nº 11.090/2022
       WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 1 THEN "Domingo" -- Dia de São Sebastião -- Art. 8°, I - Lei Municipal nº 5146/2010
+      WHEN EXTRACT(DAY FROM data) = 23 AND EXTRACT(MONTH FROM data) = 4 THEN "Domingo" -- Dia de São Jorge -- Art. 8°, II - Lei Municipal nº 5146/2010 / Lei Estadual Nº 5198/2008 / Lei Estadual Nº 5645/2010
+      WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 11 THEN "Domingo" -- Aniversário de morte de Zumbi dos Palmares / Dia da Consciência Negra -- Art. 8°, IV - Lei Municipal nº 5146/2010 / Lei Estadual nº 526/1982 / Lei Estadual nº 1929/1991 / Lei Estadual nº 4007/2002 / Lei Estadual Nº 5645/2010
+      WHEN EXTRACT(DAY FROM data) = 21 AND EXTRACT(MONTH FROM data) = 4 THEN "Domingo" -- Tiradentes -- Art. 1º, VI - PORTARIA ME Nº 11.090/2022
+      WHEN EXTRACT(DAY FROM data) = 1 AND EXTRACT(MONTH FROM data) = 5 THEN "Domingo" -- Dia Mundial do Trabalho -- Art. 1º, VII - PORTARIA ME Nº 11.090/2022
+      WHEN EXTRACT(DAY FROM data) = 7 AND EXTRACT(MONTH FROM data) = 9 THEN "Domingo" -- Independência do Brasil -- Art. 1º, IX - PORTARIA ME Nº 11.090/2022
+      WHEN EXTRACT(DAY FROM data) = 12 AND EXTRACT(MONTH FROM data) = 10 THEN "Domingo" -- Nossa Senhora Aparecida -- Art. 1º, X - PORTARIA ME Nº 11.090/2022
+      WHEN EXTRACT(DAY FROM data) = 2 AND EXTRACT(MONTH FROM data) = 11 THEN "Domingo" -- Finados -- Art. 1º, XII - PORTARIA ME Nº 11.090/2022
+      WHEN EXTRACT(DAY FROM data) = 15 AND EXTRACT(MONTH FROM data) = 11 THEN "Domingo" -- Proclamação da República -- Art. 1º, XIII - PORTARIA ME Nº 11.090/2022
+      WHEN EXTRACT(DAY FROM data) = 25 AND EXTRACT(MONTH FROM data) = 12 THEN "Domingo" -- Natal -- Art. 1º, XIV - PORTARIA ME Nº 11.090/2022
       WHEN EXTRACT(DAYOFWEEK FROM data) = 1 THEN "Domingo"
       WHEN EXTRACT(DAYOFWEEK FROM data) = 7 THEN "Sabado"
       ELSE 'Dia Útil'
