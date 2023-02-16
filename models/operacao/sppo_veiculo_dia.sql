@@ -1,16 +1,3 @@
-{{ 
-config(
-    materialized='incremental',
-    partition_by={
-            "field":"data",
-            "data_type": "date",
-            "granularity":"day"
-    },
-    unique_key=["data", "id_veiculo"],
-    incremental_strategy='insert_overwrite'
-)
-}}
-
 WITH
   veiculo_licenciado AS ( -- 5.958 veiculos
   SELECT
@@ -21,9 +8,8 @@ WITH
   FROM
     {{ ref("sppo_licenciamento") }}
   WHERE
-  -- TODO: configurar viagem_versao
-    DATA = "2023-02-10"
-    AND timestamp_captura = "2023-02-10 15:05:00-03:00"),
+    DATA = "2023-02-08"
+    AND timestamp_captura = "2023-02-08 19:39:00-03:00"),
   veiculo_licenciado_dia AS ( --89.370 veiculo-dia
   SELECT
     DATA,
@@ -31,7 +17,6 @@ WITH
   FROM
     veiculo_licenciado l
   CROSS JOIN
-  -- TODO: ref mesmo array para todas tabelas
     UNNEST(GENERATE_DATE_ARRAY("2023-01-16", "2023-01-31")) DATA),
   veiculo_gps_dia AS ( -- 59.568 veiculo-dia
   SELECT
@@ -40,7 +25,6 @@ WITH
   FROM
     `rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo`
   WHERE
-  -- TODO: def critério de data
     DATA BETWEEN DATE("2023-01-16")
     AND DATE("2023-01-31") ),
   veiculo_infracao AS ( -- 672 multas
@@ -52,9 +36,7 @@ WITH
   FROM
     {{ ref("sppo_infracao") }}
   WHERE
-  -- TODO: configurar viagem_versao
-    DATA = "2023-02-10"
-    -- TODO: def critério de data
+    DATA = "2023-02-07"
     AND data_infracao BETWEEN DATE("2023-01-16")
     AND DATE("2023-01-31")
     AND modo = "ONIBUS"
@@ -74,7 +56,8 @@ END
   TRUE
 END
   AS indicador_veiculo_licenciado,
-  l.indicador_veiculo_com_ar AS indicador_veiculo_com_ar,
+  COALESCE(l.indicador_veiculo_com_ar, FALSE) AS indicador_veiculo_com_ar,
+  --l.indicador_veiculo_com_ar AS indicador_veiculo_com_ar,
   CASE
     WHEN i.indicador_veiculo_autuado IS NULL THEN FALSE
   ELSE
