@@ -42,7 +42,7 @@ vars:
   sppo_terminais: "rj-smtr.br_rj_riodejaneiro_transporte.terminais_onibus_coordenadas" # aux_registros_parada
   sppo_registros_staging: "rj-smtr-staging.br_rj_riodejaneiro_onibus_gps_staging.registros"
   sppo_realocacao_staging: "rj-smtr-staging.br_rj_riodejaneiro_onibus_gps_staging.realocacao"
-  sppo_licenciamento_staging: "rj-smtr-dev.veiculo_staging.sppo_licenciamento"
+  sppo_licenciamento_staging: "rj-smtr-dev.veiculo_reprocessamento_q2_jan_23_staging.sppo_licenciamento"
   sppo_infracao_staging: "rj-smtr-dev.operacao_staging.sppo_infracao"
 
   # Parametros de intersecção do ônibus com rota
@@ -101,9 +101,9 @@ vars:
   perc_conformidade_shape_min: 80
   perc_conformidade_registros_min: 50
   perc_distancia_total_subsidio: 80
-  quadro_horario: "`rj-smtr-staging.projeto_subsidio_sppo_staging.quadro_horario`"
-  subsidio_shapes: "`rj-smtr-staging.projeto_subsidio_sppo_staging.shapes`"
-  subsidio_trips: "`rj-smtr-staging.projeto_subsidio_sppo_staging.trips`"
+  quadro_horario: "`rj-smtr-staging.projeto_subsidio_sppo_reprocessamento_q2_jan_23_staging.quadro_horario`"
+  subsidio_shapes: "`rj-smtr-staging.projeto_subsidio_sppo_reprocessamento_q2_jan_23_staging.shapes`"
+  subsidio_trips: "`rj-smtr-staging.projeto_subsidio_sppo_reprocessamento_q2_jan_23_staging.trips`"
   shapes_version: "YYYY-MM-DD"
   frequencies_version: "YYYY-MM-DD"
   # valor_subsidio: "`rj-smtr-dev.projeto_subsidio_sppo.valor_subsidio`"
