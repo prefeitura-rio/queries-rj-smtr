@@ -11,7 +11,7 @@ WITH
     MAX(distancia_total_planejada) AS distancia_total_planejada,
     ROUND(SUM(distancia_total_subsidio), 3) AS distancia_total_subsidio,
   FROM
-    {{ ref("sumario_periodo") }}
+    {{ ref("sumario_subsidio_dia_periodo") }}
   GROUP BY
     1,
     2,
