@@ -1,3 +1,4 @@
+-- TODO: rever tratamento
 WITH
   veiculo_licenciado AS (
   SELECT
@@ -5,10 +6,11 @@ WITH
     placa,
     tipo_veiculo,
     status,
-    -- Licenciado, Validacao, Em andamento
+    -- Licenciado, Em andamento
     indicador_ar_condicionado AS indicador_veiculo_com_ar,
   FROM
     {{ ref("sppo_licenciamento") }}
+  -- TODO: passar para data_versao
   WHERE
     data = "2023-02-16"),
   veiculo_licenciado_dia AS (
@@ -37,6 +39,7 @@ WITH
   FROM
     `rj-smtr-dev`.`operacao`.`sppo_infracao`
   WHERE
+    -- TODO: passar para data_versao
     data = "2023-02-07"
     AND data_infracao BETWEEN DATE("2023-01-16")
     AND DATE("2023-01-31")
@@ -86,6 +89,7 @@ SELECT
   AND NOT indicador_veiculo_autuado THEN 4
     WHEN status = "Em andamento" AND indicador_veiculo_com_ar AND indicador_veiculo_autuado THEN 5
     WHEN status = "Em andamento"
+  -- TODO: remover essa condicao
   AND NOT indicador_veiculo_com_ar THEN 6
     WHEN status = "Validacao" AND indicador_veiculo_com_ar AND NOT indicador_veiculo_autuado THEN 7
     WHEN status = "Validacao"
