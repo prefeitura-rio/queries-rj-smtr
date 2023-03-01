@@ -1,28 +1,38 @@
--- TODO: configurar materializacao da tabela
-SELECT
-   data,
-   timestamp_captura,
-   SAFE_CAST(id_veiculo AS STRING) id_veiculo,
-   SAFE_CAST(JSON_VALUE(content,"$.ano_fabricacao") AS STRING) ano_fabricacao,
-   SAFE_CAST(JSON_VALUE(content,"$.carroceria") AS STRING) carroceria,
-   SAFE_CAST(JSON_VALUE(content,"$.data_ultima_vistoria") AS STRING) data_ultima_vistoria,
-   SAFE_CAST(JSON_VALUE(content,"$.id_carroceria") AS INT64) id_carroceria,
-   SAFE_CAST(JSON_VALUE(content,"$.id_chassi") AS INT64) id_chassi,
-   SAFE_CAST(JSON_VALUE(content,"$.id_fabricante_chassi") AS INT64) id_fabricante_chassi,
-   SAFE_CAST(JSON_VALUE(content,"$.id_interno_carroceria") AS INT64) id_interno_carroceria,
-   SAFE_CAST(JSON_VALUE(content,"$.id_planta") AS INT64) id_planta,
-   SAFE_CAST(JSON_VALUE(content,"$.indicador_ar_condicionado") AS BOOL) indicador_ar_condicionado,
-   SAFE_CAST(JSON_VALUE(content,"$.indicador_elevador") AS BOOL) indicador_elevador,
-   SAFE_CAST(JSON_VALUE(content,"$.indicador_usb") AS BOOL) indicador_usb,
-   SAFE_CAST(JSON_VALUE(content,"$.indicador_wifi") AS BOOL) indicador_wifi,
-   SAFE_CAST(JSON_VALUE(content,"$.modo") AS STRING) modo,
-   SAFE_CAST(JSON_VALUE(content,"$.nome_chassi") AS STRING) nome_chassi,
-   SAFE_CAST(JSON_VALUE(content,"$.permissao") AS STRING) permissao,
-   SAFE_CAST(JSON_VALUE(content,"$.placa") AS STRING) placa,
-   SAFE_CAST(JSON_VALUE(content,"$.quantidade_lotacao_pe") AS INT64) quantidade_lotacao_pe,
-   SAFE_CAST(JSON_VALUE(content,"$.quantidade_lotacao_sentado") AS INT64) quantidade_lotacao_sentado,
-   SAFE_CAST(JSON_VALUE(content,"$.tipo_combustivel") AS STRING) tipo_combustivel,
-   SAFE_CAST(JSON_VALUE(content,"$.tipo_veiculo") AS STRING) tipo_veiculo,
-   SAFE_CAST(JSON_VALUE(content,"$.status") AS STRING) status
- FROM
-     {{ var('sppo_licenciamento_staging') }} as t
+{{
+    config(
+        materialized="incremental",
+        partition_by={"field": "data", "data_type": "date", "granularity": "day"},
+        unique_key=["data", "id_veiculo"],
+        incremental_strategy="insert_overwrite",
+    )
+}}
+
+with
+    -- Tabela de licenciamento
+    stu as (
+        select *
+        from {{ ref("sppo_licenciamento_stu") }} as t
+        where data = date("{{ var('run_date')}}")  -- run_date
+    ),
+    -- Solicitações válidas de licenciamento
+    -- TODO: add if run_date < ... antes de subir p proda te data max de validade das
+    -- solicitacoes
+    solicitacao as (
+        select * except (solicitacao)
+        from {{ ref("sppo_licenciamento_solicitacao") }} as t
+        where
+            data = date("{{ var('sppo_licenciamento_solicitacao_data_versao') }}")  -- fixo
+            and status = "Válido"
+            and solicitacao != "Baixa"
+    )
+select date("{{ var('run_date')}}") as data, * except (data, timestamp_captura)
+from solicitacao sol
+union all
+-- Se tiver id_veiculo em solicitacao e for valido, substitui o que esta em
+-- licenciamento
+(
+    select stu.* except (timestamp_captura)
+    from stu
+    left join solicitacao sol on stu.id_veiculo = sol.id_veiculo
+    where sol.id_veiculo is null
+)

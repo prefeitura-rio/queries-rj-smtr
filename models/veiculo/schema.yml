@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: sppo_infracao_stu
+    description: "Tabela histórica  todas as multas aplicadas aos modos
+    de transporte no município do Rio de Janeiro, com qualquer situação.
+    Dados capturados diariamente de: https://www.data.rio/documents/multas-aplicadas-aos-modos-de-transporte-nos-%C3%BAltimos-cinco-anos/about"
+    columns:
+      - name: data
+        description: "Data da captura (partição)"
+      - name: timestamp_captura
+        description: "Consórcio ao qual o serviço pertence"
+      - name: modo
+        description: "ÔNIBUS – nesse arquivo só constam os ônibus"
+      - name: permissao
+        description: "Número da permissão do ônibus"
+      - name: placa
+        description: "Placa do veículo"
+      - name: id_auto_infracao
+        description: "Identificador da multa aplicada"
+      - name: data_infracao
+        description: "Data da infração"
+      - name: valor
+        description: "Valor devido"
+      - name: id_infracao
+        description: "Código da infração"
+      - name: infracao
+        description: "Descrição da infração"
+      - name: status
+        description: "CADASTRADA, EM ABERTO, VENCIDA, EM RECURSO, PAGA, CANCELADA"
+      - name: data_pagamento
+        description: "Valor devido"
