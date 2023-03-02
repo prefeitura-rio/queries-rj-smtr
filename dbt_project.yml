@@ -20,6 +20,7 @@ vars:
   ### Date default variables ###
   date_range_start: "2022-01-01T00:00:00"
   date_range_end: "2022-01-01T01:00:00"
+  start_date: "YYYY-MM-DD"
   end_date: "YYYY-MM-DD"
   run_date: "YYYY-MM-DD"
 
