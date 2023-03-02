@@ -80,10 +80,10 @@ WITH
     p.tipo_dia,
     p.consorcio,
     p.servico,
-    SUM(v.viagens) AS viagens,
-    SUM(v.km_apurada) AS km_apurada,
+    IFNULL(SUM(v.viagens), 0) AS viagens,
+    IFNULL(SUM(v.km_apurada), 0) AS km_apurada,
     p.km_planejada AS km_planejada,
-    100 * SUM(v.km_apurada) / p.km_planejada AS perc_km_planejada
+    IFNULL(100 * SUM(v.km_apurada) / p.km_planejada, 0) AS perc_km_planejada
   FROM
     planejado p
   LEFT JOIN
@@ -105,7 +105,7 @@ SELECT
   0
 END
   AS valor_subsidio_pago,
-  -p.valor AS valor_penalidade
+  IFNULL(-p.valor, 0) AS valor_penalidade
 FROM
   servico_km s
 LEFT JOIN
