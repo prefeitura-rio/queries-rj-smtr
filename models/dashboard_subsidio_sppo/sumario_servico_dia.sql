@@ -81,9 +81,9 @@ WITH
     p.consorcio,
     p.servico,
     IFNULL(SUM(v.viagens), 0) AS viagens,
-    IFNULL(SUM(v.km_apurada), 0) AS km_apurada,
+    IFNULL(ROUND(SUM(v.km_apurada), 2), 0) AS km_apurada,
     p.km_planejada AS km_planejada,
-    IFNULL(100 * SUM(v.km_apurada) / p.km_planejada, 0) AS perc_km_planejada
+    IFNULL(ROUND(100 * SUM(v.km_apurada) / p.km_planejada, 2), 0) AS perc_km_planejada
   FROM
     planejado p
   LEFT JOIN
@@ -99,12 +99,7 @@ WITH
     7 )
 SELECT
   s.*,
-  CASE
-    WHEN p.valor IS NULL THEN st.valor_subsidio_apurado
-  ELSE
-  0
-END
-  AS valor_subsidio_pago,
+  IF(p.valor IS NULL, st.valor_subsidio_apurado, 0) AS valor_subsidio_pago,
   IFNULL(-p.valor, 0) AS valor_penalidade
 FROM
   servico_km s
