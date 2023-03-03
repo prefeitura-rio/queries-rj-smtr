@@ -1,15 +1,14 @@
 version: 2
 
 models:
-  - name: sppo_infracao_stu
-    description: "Tabela histórica  todas as multas aplicadas aos modos
-    de transporte no município do Rio de Janeiro, com qualquer situação.
-    Dados capturados diariamente de: https://www.data.rio/documents/multas-aplicadas-aos-modos-de-transporte-nos-%C3%BAltimos-cinco-anos/about"
+  - name: sppo_infracao
+    description: "Tabela histórica de todas as multas aplicadas aos modos de transporte no município do Rio de Janeiro, com qualquer situação.
+    Dados capturados diariamente de: https://www.data.rio/documents/multas-aplicadas-aos-modos-de-transporte-nos-%C3%BAltimos-cinco-anos"
     columns:
       - name: data
         description: "Data da captura (partição)"
       - name: timestamp_captura
-        description: "Consórcio ao qual o serviço pertence"
+        description: "Timestamp de captura dos dados de infração"
       - name: modo
         description: "ÔNIBUS – nesse arquivo só constam os ônibus"
       - name: permissao
@@ -17,16 +16,197 @@ models:
       - name: placa
         description: "Placa do veículo"
       - name: id_auto_infracao
-        description: "Identificador da multa aplicada"
+        description: "Identificador do auto de infração da multa aplicada"
       - name: data_infracao
         description: "Data da infração"
       - name: valor
-        description: "Valor devido"
+        description: "Valor devido (R$)"
       - name: id_infracao
         description: "Código da infração"
       - name: infracao
         description: "Descrição da infração"
       - name: status
-        description: "CADASTRADA, EM ABERTO, VENCIDA, EM RECURSO, PAGA, CANCELADA"
+        description: "CADASTRADA - Registrada no sistema sem guia de pagamento
+                      EM ABERTO - Com guia de pagamento e dentro do prazo de vencimento
+                      VENCIDA - Com guia de pagamento e fora do prazo de vencimento
+                      EM RECURSO - Possui Processo de Recurso aguardando julgamento
+                      PAGA - Com guia de pagamento efetivamente paga
+                      CANCELADA - Multa foi cancelada através de um Processo de Recurso"
       - name: data_pagamento
-        description: "Valor devido"
+        description: "Data de pagamento"
+  - name: sppo_licenciamento
+    description: "Tabela histórica de dados cadastrais dos veículos que operam o sistema de ônibus (BRT e SPPO),
+                  considerando tanto os licenciados no Sistema de Transporte Urbano (STU) quanto as solicitações
+                  válidas em andamento para ingresso no sistema"
+    columns:
+      - name: data
+        description: "Data da captura (partição)"
+      - name: modo
+        description: "ÔNIBUS – nesse arquivo só constam os ônibus"
+      - name: id_veiculo
+        description: "Número de ordem do veículo, identificação que é exibida na lateral do ônibus"
+      - name: ano_fabricacao
+        description: "Ano de fabricação do veículo"
+      - name: carroceria
+        description: "Descrição do modelo da carroceria"
+      - name: data_ultima_vistoria
+        description: "Data da última vistoria do veículo"
+      - name: id_carroceria
+        description: "Código do modelo da carroceria"
+      - name: id_chassi
+        description: "Código do modelo do chassi"
+      - name: id_fabricante_chassi
+        description: "Identificador do fabricante do chassi"
+      - name: id_interno_carroceria
+        description: "Código interno do modelo de carroceria"
+      - name: id_planta
+        description: "Código da planta do veículo"
+      - name: indicador_ar_condicionado
+        description: "Indicador se possui ar condicionado (Verdadeiro/Falso)"
+      - name: indicador_elevador
+        description: "Indicador se possui elevador (Verdadeiro/Falso)"
+      - name: indicador_usb
+        description: "Indicador se tem USB (Verdadeiro/Falso)"
+      - name: indicador_wifi
+        description: "Indicador se tem Wi-fi (Verdadeiro/Falso)"
+      - name: nome_chassi
+        description: "Descrição do modelo do chassi"
+      - name: permissao
+        description: "Número da permissão do ônibus"
+      - name: placa
+        description: "Placa do veículo"
+      - name: quantidade_lotacao_pe
+        description: "Quantidade de passageiros em pé"
+      - name: quantidade_lotacao_sentado
+        description: "Quantidade de passageiros sentados"
+      - name: tipo_combustivel
+        description: "Combustível utilizado"
+      - name: tipo_veiculo
+        description: "Tipo de veículo"
+      - name: status
+        description: "Licenciado - Veículo licenciado no Sistema de Transporte Urbano (STU)
+                      Válido - Veículo com solicitação válida para ingresso no Sistema de Transporte Urbano (STU)"
+  - name: sppo_licenciamento_solicitacao
+    description: "Tabela histórica de dados cadastrais das solicitações em andamento para ingresso no Sistema de Transporte Urbano (STU)"
+    columns:
+      - name: data
+        description: "Data da captura (partição)"
+      - name: timestamp_captura
+        description: "Timestamp de captura dos dados de licenciamento"
+      - name: modo
+        description: "ÔNIBUS – nesse arquivo só constam os ônibus"
+      - name: id_veiculo
+        description: "Número de ordem do veículo, identificação que é exibida na lateral do ônibus"
+      - name: ano_fabricacao
+        description: "Ano de fabricação do veículo"
+      - name: carroceria
+        description: "Descrição do modelo da carroceria"
+      - name: data_ultima_vistoria
+        description: "Data da última vistoria do veículo"
+      - name: id_carroceria
+        description: "Código do modelo da carroceria"
+      - name: id_chassi
+        description: "Código do modelo do chassi"
+      - name: id_fabricante_chassi
+        description: "Identificador do fabricante do chassi"
+      - name: id_interno_carroceria
+        description: "Código interno do modelo de carroceria"
+      - name: id_planta
+        description: "Código da planta do veículo"
+      - name: indicador_ar_condicionado
+        description: "Indicador se possui ar condicionado (Verdadeiro/Falso)"
+      - name: indicador_elevador
+        description: "Indicador se possui elevador (Verdadeiro/Falso)"
+      - name: indicador_usb
+        description: "Indicador se tem USB (Verdadeiro/Falso)"
+      - name: indicador_wifi
+        description: "Indicador se tem Wi-fi (Verdadeiro/Falso)"
+      - name: nome_chassi
+        description: "Descrição do modelo do chassi"
+      - name: permissao
+        description: "Número da permissão do ônibus"
+      - name: placa
+        description: "Placa do veículo"
+      - name: quantidade_lotacao_pe
+        description: "Quantidade de passageiros em pé"
+      - name: quantidade_lotacao_sentado
+        description: "Quantidade de passageiros sentados"
+      - name: tipo_combustivel
+        description: "Combustível utilizado"
+      - name: tipo_veiculo
+        description: "Tipo de veículo"
+      - name: status
+        description: "Inválido - Veículo com solicitação inválida para ingresso no Sistema de Transporte Urbano (STU)
+                      Válido - Veículo com solicitação válida para ingresso no Sistema de Transporte Urbano (STU)"
+      - name: solicitacao
+        description: "Inclusão - Solicitação de ingresso de veículo no Sistema de Transporte Urbano (STU)
+                      Baixa - Solicitação de baixa de veículo já incluído no Sistema de Transporte Urbano (STU)
+                      Renumeração - Solicitação de alteração de número de ordem de veículo já incluído no Sistema de Transporte Urbano (STU)"
+  - name: sppo_licenciamento_stu
+    description: "Tabela histórica de Dados cadastrais dos veículos que operam o sistema de ônibus (BRT e SPPO) no município do Rio de Janeiro.
+    Dados capturados diariamente de: https://www.data.rio/documents/c6c97d3c15434b5088965e25f85e27c3"
+    columns:
+      - name: data
+        description: "Data da captura (partição)"
+      - name: timestamp_captura
+        description: "Timestamp de captura dos dados de licenciamento"
+      - name: modo
+        description: "ÔNIBUS – nesse arquivo só constam os ônibus"
+      - name: id_veiculo
+        description: "Número de ordem do veículo, identificação que é exibida na lateral do ônibus"
+      - name: ano_fabricacao
+        description: "Ano de fabricação do veículo"
+      - name: carroceria
+        description: "Descrição do modelo da carroceria"
+      - name: data_ultima_vistoria
+        description: "Data da última vistoria do veículo"
+      - name: id_carroceria
+        description: "Código do modelo da carroceria"
+      - name: id_chassi
+        description: "Código do modelo do chassi"
+      - name: id_fabricante_chassi
+        description: "Identificador do fabricante do chassi"
+      - name: id_interno_carroceria
+        description: "Código interno do modelo de carroceria"
+      - name: id_planta
+        description: "Código da planta do veículo"
+      - name: indicador_ar_condicionado
+        description: "Indicador se possui ar condicionado (Verdadeiro/Falso)"
+      - name: indicador_elevador
+        description: "Indicador se possui elevador (Verdadeiro/Falso)"
+      - name: indicador_usb
+        description: "Indicador se tem USB (Verdadeiro/Falso)"
+      - name: indicador_wifi
+        description: "Indicador se tem Wi-fi (Verdadeiro/Falso)"
+      - name: nome_chassi
+        description: "Descrição do modelo do chassi"
+      - name: permissao
+        description: "Número da permissão do ônibus"
+      - name: placa
+        description: "Placa do veículo"
+      - name: quantidade_lotacao_pe
+        description: "Quantidade de passageiros em pé"
+      - name: quantidade_lotacao_sentado
+        description: "Quantidade de passageiros sentados"
+      - name: tipo_combustivel
+        description: "Combustível utilizado"
+      - name: tipo_veiculo
+        description: "Tipo de veículo"
+      - name: status
+        description: "Licenciado - Veículo licenciado no Sistema de Transporte Urbano (STU)"
+  - name: sppo_veiculo_dia
+    description: "Tabela resumo dos veículos que operaram no SPPO e seus respectivos indicadores"
+    columns:
+      - name: data
+        description: "Data de operação"
+      - name: id_veiculo
+        description: "Número de ordem do veículo, identificação que é exibida na lateral do ônibus"
+      - name: indicadores
+        description: "indicador_autuacao - Indicador se o veículo foi autuado (Verdadeiro/Falso)
+                      indicador_ar_condicionado - Indicador se o veículo possui ar condicionado (Verdadeiro/Falso)
+                      indicador_em_operacao - Indicador se o veículo foi autuado (Verdadeiro/Falso)"
+      - name: status
+        description: "Nao licenciado - Veículo que operou, mas não é licenciado
+                      Licenciado sem ar - Veículo que operou e foi licenciado sem ar condicionado
+                      Licenciado com ar e não autuado (023.II) - Veículo que operou, foi licenciado com ar condicionado e não foi autuado por inoperância do ar condicionado (023.II)
+                      Licenciado com ar e autuado (023.II) - Veículo que operou, foi licenciado com ar condicionado e foi autuado por inoperância do ar condicionado (023.II)"
