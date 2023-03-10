@@ -13,6 +13,7 @@ with
         select *
         from {{ ref("sppo_licenciamento_stu") }} as t
         where data = date("{{ var('run_date')}}")  -- run_date
+        AND tipo_veiculo NOT LIKE "%ROD%"
     ),
     -- Solicitações válidas de licenciamento
     -- TODO: add if run_date < ... antes de subir p proda te data max de validade das
@@ -24,6 +25,7 @@ with
             data = date("{{ var('sppo_licenciamento_solicitacao_data_versao') }}")  -- fixo
             and status = "Válido"
             and solicitacao != "Baixa"
+            AND tipo_veiculo NOT LIKE "%ROD%"
     )
 select date("{{ var('run_date')}}") as data, * except (data, timestamp_captura)
 from solicitacao sol
