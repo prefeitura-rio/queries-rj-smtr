@@ -65,7 +65,7 @@ vars:
   brt_id_modal_smtr: ["'20'", "'B'"]
 
   # data_versao fixada para operações que envolvem o uso do SIGMOB
-  versao_fixa_sigmob: '2022-06-10'
+  versao_fixa_sigmob: "2022-06-10"
 
   data_inclusao_agency: "2021-08-03"
   data_inclusao_stop_times: "2021-08-03"
@@ -122,7 +122,12 @@ vars:
   sppo_infracao_staging: "rj-smtr-staging.operacao_staging.sppo_infracao"
   sppo_licenciamento_solicitacao_data_versao: "2023-02-06"
   stu_data_versao: ""
-
+  
+  
+  ### RDO ###
+  rho_registros_sppo_staging: "rj-smtr-staging.br_rj_riodejaneiro_rdo_staging.rho_registros_sppo"
+  rho_max_processing_interval: 7
+  rho_sppo_start_date: "2021-03-01"
 
 models:
   +persist_docs:
@@ -150,3 +155,6 @@ models:
     veiculo:
       +materialized: view
       +schema: veiculo
+    br_rj_riodejaneiro_rdo:
+      +materialized: view
+      +schema: br_rj_riodejaneiro_rdo
