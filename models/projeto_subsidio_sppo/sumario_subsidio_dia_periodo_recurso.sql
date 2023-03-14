@@ -1,13 +1,36 @@
 -- 1. Sumariza viagens aferidas
-with viagem as (
+with viagem_paga as (
     select
         data,
         trip_id,
         count(id_viagem) as viagens_realizadas
     from 
-        {{ ref("viagem_completa") }}
+        `rj-smtr.projeto_subsidio_sppo.viagem_completa` -- {{ ref("viagem_completa") }} -- todo: ref to prod
     group by
         1,2
+),
+viagem_recurso as (
+    select
+        data,
+        trip_id,
+        count(id_viagem) as viagens_realizadas
+    from 
+        {{ ref("viagem_completa_recurso") }}
+    group by
+        1,2
+),
+viagem as (
+    select
+        coalesce(p.data, r.data) as data,
+        coalesce(p.trip_id, r.trip_id) as trip_id,
+        (ifnull(p.viagens_realizadas,0) + ifnull(r.viagens_realizadas,0)) as viagens_realizadas
+    from 
+        viagem_paga p
+    left join
+        viagem_recurso r
+    on
+        r.trip_id = p.trip_id
+        and r.data = p.data  
 ),
 -- 2. Junta informações de viagens planejadas às realizadas
 planejado as (
@@ -33,7 +56,7 @@ planejado as (
             max(distancia_total_planejada) as distancia_total_planejada, -- distancia total do dia (junta ida+volta)
             null as viagens_planejadas -- max(viagens) as viagens_planejadas
         from
-            {{ ref("viagem_planejada") }}
+            `rj-smtr.projeto_subsidio_sppo.viagem_planejada` -- {{ ref("viagem_planejada") }} # todo: ref to prod
         where data <= date_sub(current_date(), interval 1 day)
         group by 1,2,3,4,5,6,7,8,9
     ) p

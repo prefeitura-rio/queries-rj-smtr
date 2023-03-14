@@ -8,7 +8,7 @@ with sumario as (
     round(sum(viagens_subsidio), 3) as viagens_subsidio,
     max(distancia_total_planejada) as distancia_total_planejada, -- distancia total do dia (junta ida+volta)
     round(sum(distancia_total_subsidio), 3) as distancia_total_subsidio,
-  FROM {{ ref("sumario_subsidio_dia_periodo")}}
+  FROM {{ ref("sumario_subsidio_dia_periodo_recurso")}}
   group by 1,2,3,4
 ),
 valor as (
@@ -20,7 +20,7 @@ valor as (
   from
     sumario s
   left join
-    {{ ref("subsidio_data_versao_efetiva")}} v
+    `rj-smtr.projeto_subsidio_sppo.subsidio_data_versao_efetiva` v -- {{ ref("subsidio_data_versao_efetiva")}} v
   on v.data = s.data
 )
 select 

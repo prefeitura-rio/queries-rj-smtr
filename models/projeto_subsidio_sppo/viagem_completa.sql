@@ -18,8 +18,8 @@ with viagem_periodo as (
         p.vista,
         p.tipo_dia,
         v.*,
-        time("2022-06-01 00:00:00") as inicio_periodo,
-        time("2022-06-01 23:59:59") as fim_periodo,
+        p.inicio_periodo,
+        p.fim_periodo,
         0 as tempo_planejado
     from (
         select distinct
@@ -28,7 +28,9 @@ with viagem_periodo as (
             data,
             tipo_dia,
             trip_id_planejado as trip_id,
-            servico
+            servico,
+            inicio_periodo,
+            fim_periodo
         from
             {{ ref("viagem_planejada") }}
         {% if is_incremental() %}
@@ -46,21 +48,9 @@ with viagem_periodo as (
     on 
         v.trip_id = p.trip_id
         and v.data = p.data
-    -- where (
-    --     ( -- 05:00:00 as 23:00:00
-    --         inicio_periodo < time_sub(fim_periodo, interval p.intervalo minute) 
-    --         and extract (time from datetime_partida) >= inicio_periodo 
-    --             and extract (time from datetime_partida) < time_sub(fim_periodo, interval p.intervalo minute)
-    --     ) or
-    --     ( -- 23:00:00 as 5:00:00
-    --         inicio_periodo > time_sub(fim_periodo, interval intervalo minute)
-    --         and ((extract (time from datetime_partida) >= inicio_periodo) -- até 00h
-    --             or (extract (time from datetime_partida) < time_sub(fim_periodo, interval p.intervalo minute)) -- apos 00h
-    --         )
-    --     )
-    -- )
-)
+),
 -- 2. Seleciona viagens completas de acordo com a conformidade
+viagem_comp_conf as (
 select distinct
     consorcio,
     data,
@@ -107,3 +97,75 @@ and (
 and (
     perc_conformidade_registros >= {{ var("perc_conformidade_registros_min") }}
 )
+{% if var("run_date") == "2023-01-01" %}
+-- Reveillon (2022-12-31)
+and
+    (
+        -- 1. Viagens pre fechamento das vias
+        (fim_periodo = "22:00:00" and datetime_chegada <= "2022-12-31 22:05:00")
+        or 
+        (fim_periodo = "18:00:00" and datetime_chegada <= "2022-12-31 18:05:00") -- 18h as 5h
+        or 
+        -- 2. Viagens durante fechamento das vias
+        (inicio_periodo = "22:00:00" and datetime_partida >= "2022-12-31 21:55:00") -- 22h as 5h/10h
+        or
+        (inicio_periodo = "18:00:00" and datetime_partida >= "2022-12-31 17:55:00") -- 18h as 5h
+        or
+        -- 3. Viagens que nao sao afetadas pelo fechamento das vias
+        (inicio_periodo = "00:00:00" and fim_periodo = "23:59:59")
+    )
+-- Feriado do Dia da Fraternidade Universal (2023-01-01)
+{% elif var("run_date") == "2023-01-02" %}
+and
+    (
+        -- 1. Viagens durante fechamento das vias
+        (fim_periodo = "05:00:00" and datetime_partida <= "2023-01-01 05:05:00")
+        or 
+        (fim_periodo = "10:00:00" and datetime_partida <= "2023-01-01 10:05:00")
+        or 
+        -- 2. Viagens pos abertura das vias
+        (inicio_periodo = "05:00:00" and datetime_partida >= "2023-01-01 04:55:00")
+        or
+        (inicio_periodo = "10:00:00" and datetime_partida >= "2023-01-01 09:55:00")
+        or 
+        -- 3. Viagens que nao sao afetadas pelo fechamento das vias
+        (inicio_periodo = "00:00:00" and fim_periodo = "23:59:59")
+    )
+{% endif %}
+),
+-- 3. Filtra viagens com mesma chegada e partida pelo maior % de conformidade do shape
+filtro_desvio as (
+  SELECT
+  * EXCEPT(rn)
+FROM (
+  SELECT
+    *,
+    ROW_NUMBER() OVER(PARTITION BY id_veiculo, datetime_partida, datetime_chegada ORDER BY perc_conformidade_shape DESC) AS rn
+  FROM
+    viagem_comp_conf )
+WHERE
+  rn = 1
+),
+-- 4. Filtra viagens com partida ou chegada diferentes pela maior distancia percorrida
+filtro_partida AS (
+  SELECT
+    * EXCEPT(rn)
+  FROM (
+    SELECT
+      *,
+      ROW_NUMBER() OVER(PARTITION BY id_veiculo, datetime_partida ORDER BY distancia_planejada DESC) AS rn
+    FROM
+      filtro_desvio )
+  WHERE
+    rn = 1 ) 
+-- filtro_chegada
+SELECT
+  * EXCEPT(rn)
+FROM (
+  SELECT
+    *,
+    ROW_NUMBER() OVER(PARTITION BY id_veiculo, datetime_chegada ORDER BY distancia_planejada DESC) AS rn
+  FROM
+    filtro_partida )
+WHERE
+  rn = 1
