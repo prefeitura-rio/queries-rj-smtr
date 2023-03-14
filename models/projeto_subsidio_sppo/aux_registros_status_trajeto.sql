@@ -1,7 +1,13 @@
 -- 1. Seleciona sinais de GPS registrados no período
 with gps as (
     select 
-        g.* except(longitude, latitude),
+        g.* except(longitude, latitude, servico),
+        -- Reprocessamento: Substitui servicos noturnos por regulares, salvo exceções
+        case
+            when servico like "SN%" and servico not in ("SN006", "SN415", "SN474", "SN483")
+            then REGEXP_EXTRACT(servico, r'[0-9]+')
+            else servico
+        end as servico,
         substr(id_veiculo, 2, 3) as id_empresa,
         ST_GEOGPOINT(longitude, latitude) posicao_veiculo_geo
     from 
