@@ -92,6 +92,7 @@ vars:
   stops_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.stops"
   trips_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.trips"
 
+
   ### Subsídio SPPO (Ônibus) ###
   buffer: 500 # distância em metros para buffer
   perc_conformidade_distancia_min: 0
@@ -114,12 +115,14 @@ vars:
   recurso_timestamp_captura: "2022-11-04T14:17:00"
   perc_conformidade_distancia_recurso_min: 50
 
+
   ### Veiculos ###
   sppo_licenciamento_stu_staging: "rj-smtr-staging.veiculo_staging.sppo_licenciamento_stu"
   sppo_licenciamento_solicitacao_staging: "rj-smtr-staging.veiculo_staging.sppo_licenciamento_solicitacao"
   sppo_infracao_staging: "rj-smtr-staging.operacao_staging.sppo_infracao"
   sppo_licenciamento_solicitacao_data_versao: "2023-02-06"
   stu_data_versao: ""
+  
   
   ### RDO ###
   rho_registros_sppo_staging: "rj-smtr-staging.br_rj_riodejaneiro_rdo_staging.rho_registros_sppo"
