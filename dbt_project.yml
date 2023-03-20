@@ -119,7 +119,7 @@ vars:
   ### Veiculos ###
   sppo_licenciamento_stu_staging: "rj-smtr-staging.veiculo_staging.sppo_licenciamento_stu"
   sppo_licenciamento_solicitacao_staging: "rj-smtr-staging.veiculo_staging.sppo_licenciamento_solicitacao"
-  sppo_infracao_staging: "rj-smtr-staging.operacao_staging.sppo_infracao"
+  sppo_infracao_staging: "rj-smtr-staging.veiculo_staging.sppo_infracao"
   sppo_licenciamento_solicitacao_data_versao: "2023-02-06"
   stu_data_versao: ""
   
