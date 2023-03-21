@@ -18,7 +18,6 @@ with
         -- status
         from {{ ref("sppo_licenciamento") }}
         -- TODO: usar redis p controle de versao
-        -- {% if var("run_date") > "2023-03-10" -%}
         {% if var("stu_data_versao") != "" -%}
             where data = date("{{ var('stu_data_versao') }}")
         {% else %}
