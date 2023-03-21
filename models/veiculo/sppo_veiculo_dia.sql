@@ -18,10 +18,11 @@ with
         -- status
         from {{ ref("sppo_licenciamento") }}
         -- TODO: usar redis p controle de versao
+        -- {% if var("run_date") > "2023-03-10" -%}
         {% if var("stu_data_versao") != "" -%}
             where data = date("{{ var('stu_data_versao') }}")
         {% else %}
-            where data = (select max(data) from {{ ref("sppo_licenciamento") }})
+            where data = date_add(date("{{ var('run_date') }}"), interval 5 day)
         {%- endif %}
     ),
     gps as (
@@ -35,7 +36,7 @@ with
         select distinct data_infracao as data, placa, true as indicador_autuacao
         from {{ ref("sppo_infracao") }}
         where
-            data = (select max(data) from {{ ref("sppo_infracao") }})
+            data = date_add(date("{{ var('run_date') }}"), interval 5 day)
             and data_infracao = date("{{ var('run_date') }}")
             and modo = "ONIBUS"
             and id_infracao = "023.II"
