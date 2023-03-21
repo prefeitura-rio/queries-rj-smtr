@@ -35,7 +35,11 @@ with
         select distinct data_infracao as data, placa, true as indicador_autuacao
         from {{ ref("sppo_infracao") }}
         where
-            data = date_add(date("{{ var('run_date') }}"), interval 5 day)
+            {% if var("stu_data_versao") != "" -%}
+                data = date("{{ var('stu_data_versao') }}")
+            {% else %}
+                data = date_add(date("{{ var('run_date') }}"), interval 5 day)
+            {%- endif %}
             and data_infracao = date("{{ var('run_date') }}")
             and modo = "ONIBUS"
             and id_infracao = "023.II"
