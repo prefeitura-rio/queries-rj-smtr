@@ -12,7 +12,11 @@ with
     stu as (
         select *
         from {{ ref("sppo_licenciamento_stu") }} as t
-        where data = date("{{ var('run_date')}}")  -- run_date
+        {% if var("stu_data_versao") != "" -%}
+        where data = date("{{ var('stu_data_versao') }}")
+        {% else %}
+        where data = date_add(date("{{ var('run_date') }}"), interval 5 day)
+        {%- endif %}
         AND tipo_veiculo NOT LIKE "%ROD%"
     ),
     -- Solicitações válidas de licenciamento
@@ -27,7 +31,13 @@ with
             and solicitacao != "Baixa"
             AND tipo_veiculo NOT LIKE "%ROD%"
     )
-select date("{{ var('run_date')}}") as data, * except (data, timestamp_captura)
+select 
+    {% if var("stu_data_versao") != "" -%}
+    date("{{ var('stu_data_versao') }}") as data,
+    {% else %}
+    date_add(date("{{ var('run_date') }}"), interval 5 day) as data,
+    {%- endif %}
+    * except (data, timestamp_captura)
 from solicitacao sol
 union all
 -- Se tiver id_veiculo em solicitacao e for valido, substitui o que esta em
