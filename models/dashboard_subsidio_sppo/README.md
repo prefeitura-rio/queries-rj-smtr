@@ -36,7 +36,7 @@ Considerando o tipo de viagem e a distância apurada, é calculado o valor de re
 | `Licenciado com ar e autuado (023.II)` | 0.00 |
 
 ### 3. Apuração do Percentual Diário de Operação (POD)
-A distância diária apurada é relacionada com a distância diária planejada  para o serviço, sendo a razão entre esse parâmetros multiplicada por 100 é definida como Percentual Diário de Operação (POD).
+A distância diária apurada é relacionada com a distância diária planejada  para o serviço, sendo a razão entre esse parâmetros multiplicada por 100 definida como Percentual Diário de Operação (POD).
 
 Com base no POD, é definido o valor de remuneração ou penalidade para cada serviço conforme [DECRETO RIO N.o 51.889/2022](https://transportes.prefeitura.rio/wp-content/uploads/sites/31/2022/12/DECRETO_RIO_No_51889_DE_26_DE_DEZEMBRO_DE_2022.pdf), alterado pelo [DECRETO RIO N.o 51.915/2023](https://transportes.prefeitura.rio/wp-content/uploads/sites/31/2023/01/DECRETO-RIO-No-51915-DE-2-DE-JANEIRO-DE-2023-1.pdf) e pelo [DECRETO RIO N.o 51.940/2023](https://transportes.prefeitura.rio/wp-content/uploads/sites/31/2023/01/Decreto-51940-de-16-de-janeiro-de-2023.pdf):
 | Intervalo do POD | Remuneração (R$) | Tipo de Penalidade  | Penalidade (R$) |
