@@ -2,7 +2,7 @@
 * Versão: 1.0.0
 * Data de início: 16/01/2023
 
-![dashboard_subsidio_sppo](https://user-images.githubusercontent.com/66736583/227094879-fc446ea3-e1c5-483e-94e7-51b2f76c4f19.png)
+![veiculo](https://user-images.githubusercontent.com/66736583/227351937-7fe4113b-1d94-425d-a170-7e49ed40d66e.png)
 
 <div align="justify">
   
