@@ -22,7 +22,7 @@ Na sequência, são considerados todos os veículos identificados na operação 
 Nesta tabela, há uma relação diária de operação do veículo e seu respectivo status para aquela data, a saber:
 * `Nao licenciado` - caso o veículo não seja identificado na tabela `veiculo.sppo_licenciamento`;
 * `Licenciado sem ar` - caso o veículo não tenha sido licenciado com ar condicionado;
-* `Licenciado com ar e não autuado (023.II)` - caso o veículo tenha sido licenciado com ar condicionado e não tenha sido identificada nenhuma infração relativa ao código `023.II - ART 023 INC II DEC 36343/12 - INOPERÂNCIA OU MAU FUNCIONAMENTO DO SISTEMA DE AR CONDICIONADO, NOS VEÍCULOS EM QUE SEJA EXIGIDA A UTILIZAÇÃO DO EQUIPAMENTO` na data;
+* `Licenciado com ar e não autuado (023.II)` - caso o veículo tenha sido licenciado com ar condicionado e não tenha sido identificada nenhuma infração relativa ao código `023.II - ART 023 INC II DEC 36343/12 - Inoperância ou mau funcionamento do sistema de ar condicionado, nos veículos em que seja exigida a utilização do equipamento` na data;
 * `Licenciado com ar e autuado (023.II)` - caso o veículo tenha sido licenciado com ar condicionado e não tenha sido identificada alguma infração relativa ao código `023.II` na data.
 
 ### 3. Sumarização das Informações
