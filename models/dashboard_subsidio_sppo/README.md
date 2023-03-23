@@ -3,13 +3,7 @@
 * Versão: 1.0.0
 * Data de início: 16/01/2023
 
-<!-- <img width="1283" alt="image"
-src="https://user-images.githubusercontent.com/20743819/172705939-b4afdb7d-f11f-454e-9dd1-68c1f447ca47.png"> -->
-
-<!-- ## Descrição -->
-
-<img width="995" alt="image"
-src="https://user-images.githubusercontent.com/20743819/179116129-8f8d56d2-97c8-4e5b-b490-12c58d39bc80.png">
+![dashboard_subsidio_sppo](https://user-images.githubusercontent.com/66736583/227094879-fc446ea3-e1c5-483e-94e7-51b2f76c4f19.png)
 
 ## Etapas
 
