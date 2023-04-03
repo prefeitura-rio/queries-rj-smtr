@@ -21,7 +21,7 @@ with
         {% if var("stu_data_versao") != "" -%}
             where data = date("{{ var('stu_data_versao') }}")
         {% else %}
-            where data = (select max(data) from {{ ref("sppo_licenciamento") }})
+            where data = date_add(date("{{ var('run_date') }}"), interval 5 day)
         {%- endif %}
     ),
     gps as (

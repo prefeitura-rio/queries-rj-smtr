@@ -1,15 +1,3 @@
- {{ config(
-       materialized='incremental',
-       partition_by={
-              "field":"data",
-              "data_type": "date",
-              "granularity":"day"
-       },
-       unique_key=['data', 'id_veiculo'],
-       incremental_strategy='insert_overwrite'
-)
-}}
-
 SELECT
    SAFE_CAST(data AS DATE) data,
    SAFE_CAST(DATETIME(TIMESTAMP_TRUNC(TIMESTAMP(timestamp_captura), SECOND), "America/Sao_Paulo" ) AS DATETIME) timestamp_captura,
