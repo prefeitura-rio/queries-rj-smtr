@@ -1,16 +1,9 @@
-# Name your project! Project names should contain only lowercase characters
-# and underscores. A good package name should reflect your organization's
-# name or the intended use of these models
 name: "rj_smtr"
 version: "1.0.0"
 config-version: 2
 
-# This setting configures which "profile" dbt uses for this project.
 profile: "default"
 
-# These configurations specify where dbt should look for different types of files.
-# The `source-paths` config, for example, states that models in this project can be
-# found in the "models/" directory. You probably won't need to change these!
 source-paths: ["models"]
 analysis-paths: ["analysis"]
 test-paths: ["tests"]
@@ -18,8 +11,8 @@ data-paths: ["data"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
-target-path: "target" # directory which will store compiled SQL files
-clean-targets: # directories to be removed by `dbt clean`
+target-path: "target"
+clean-targets:
   - "target"
   - "dbt_modules"
 
@@ -27,9 +20,14 @@ vars:
   ### Date default variables ###
   date_range_start: "2022-01-01T00:00:00"
   date_range_end: "2022-01-01T01:00:00"
+  start_date: "YYYY-MM-DD"
+  end_date: "YYYY-MM-DD"
+  run_date: "YYYY-MM-DD"
+
 
   ### Version default variable (replaced on deploy) ###
   version: ""
+
 
   ### GPS ###
   brt_terminais: "rj-smtr.br_rj_riodejaneiro_transporte.estacoes_e_terminais_brt" # aux_registros_parada
@@ -40,6 +38,7 @@ vars:
   sppo_terminais: "rj-smtr.br_rj_riodejaneiro_transporte.terminais_onibus_coordenadas" # aux_registros_parada
   sppo_registros_staging: "rj-smtr-staging.br_rj_riodejaneiro_onibus_gps_staging.registros"
   sppo_realocacao_staging: "rj-smtr-staging.br_rj_riodejaneiro_onibus_gps_staging.realocacao"
+  data_inicio_realocacao: "2022-11-15"
 
   # Parametros de intersecção do ônibus com rota
   ## Tamanho do buffer da rota
@@ -56,15 +55,17 @@ vars:
   ## Distância mínima para que o veículo seja identificado parado em um terminal ou garagem em aux_registros_parada
   distancia_limiar_parada: 250
 
+
+  ### [ANTIGO] SIGMOB ###
+
   # Modal SPPO (ônibus)
   sppo_id_modal_smtr: ["'22'", "'23'", "'O'"]
 
   # Modal BRT
   brt_id_modal_smtr: ["'20'", "'B'"]
 
-  ### SIGMOB ###
   # data_versao fixada para operações que envolvem o uso do SIGMOB
-  versao_fixa_sigmob: '2022-06-10'
+  versao_fixa_sigmob: "2022-06-10"
 
   data_inclusao_agency: "2021-08-03"
   data_inclusao_stop_times: "2021-08-03"
@@ -90,9 +91,9 @@ vars:
   stop_details_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.stop_details"
   stops_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.stops"
   trips_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.trips"
-  
+
+
   ### Subsídio SPPO (Ônibus) ###
-  run_date: "YYYY-MM-DD"
   buffer: 500 # distância em metros para buffer
   perc_conformidade_distancia_min: 0
   perc_conformidade_shape_min: 80
@@ -104,22 +105,35 @@ vars:
   shapes_version: "YYYY-MM-DD"
   frequencies_version: "YYYY-MM-DD"
   # valor_subsidio: "`rj-smtr-dev.projeto_subsidio_sppo.valor_subsidio`"
+
+  # Recursos #
+  recurso_staging: "rj-smtr-staging.projeto_subsidio_sppo_staging.recurso"
+  recurso_prazo: "rj-smtr.projeto_subsidio_sppo.recurso_prazo"
+  recurso_julgamento: "rj-smtr.projeto_subsidio_sppo.recurso_julgamento"
+  recurso_viagem_start: "2022-07-01 00:00:00"
+  recurso_viagem_end: "2022-07-15 00:00:00"
+  recurso_timestamp_captura: "2022-11-04T14:17:00"
+  perc_conformidade_distancia_recurso_min: 50
+
+
+  ### Veiculos ###
+  sppo_licenciamento_stu_staging: "rj-smtr-staging.veiculo_staging.sppo_licenciamento_stu"
+  sppo_licenciamento_solicitacao_staging: "rj-smtr-staging.veiculo_staging.sppo_licenciamento_solicitacao"
+  sppo_infracao_staging: "rj-smtr-staging.veiculo_staging.sppo_infracao"
+  sppo_licenciamento_solicitacao_data_versao: "2023-02-06"
+  stu_data_versao: ""
   
-  ### Realocação SPPO ###
-  data_inicio_realocacao: "2022-11-15"
+  
+  ### RDO ###
+  rho_registros_sppo_staging: "rj-smtr-staging.br_rj_riodejaneiro_rdo_staging.rho_registros_sppo"
+  rho_max_processing_interval: 7
+  rho_sppo_start_date: "2021-03-01"
 
-# Configuring models
-# Full documentation: https://docs.getdbt.com/docs/configuring-models
-
-# In this example config, we tell dbt to build all models in the example/ directory
-# as tables. These settings can be overridden in the individual model files
-# using the `{{ config(...) }}` macro.
 models:
   +persist_docs:
     relation: true
     columns: true
   rj_smtr:
-    # Config indicated by + and applies to all files under models/example/
     projeto_subsidio_sppo:
       +materialized: view # Materialization type (view, table or incremental)
       +schema: projeto_subsidio_sppo # Overrides the default schema (defaults to what is set on profiles.yml)
@@ -138,3 +152,9 @@ models:
     dashboard_subsidio_sppo:
       +materialized: view
       +schema: dashboard_subsidio_sppo
+    veiculo:
+      +materialized: view
+      +schema: veiculo
+    br_rj_riodejaneiro_rdo:
+      +materialized: view
+      +schema: br_rj_riodejaneiro_rdo
