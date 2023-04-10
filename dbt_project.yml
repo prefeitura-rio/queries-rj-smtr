@@ -135,8 +135,8 @@ models:
     columns: true
   rj_smtr:
     projeto_subsidio_sppo:
-      +materialized: view # Materialization type (view, table or incremental)
-      +schema: projeto_subsidio_sppo # Overrides the default schema (defaults to what is set on profiles.yml)
+      +materialized: view
+      +schema: projeto_subsidio_sppo
     br_rj_riodejaneiro_sigmob:
       +materialized: view
       +schema: br_rj_riodejaneiro_sigmob
@@ -149,9 +149,6 @@ models:
     br_rj_riodejaneiro_veiculos:
       +materialized: view
       +schema: br_rj_riodejaneiro_veiculos
-    dashboard_subsidio_sppo:
-      +materialized: view
-      +schema: dashboard_subsidio_sppo
     dashboard_subsidio_sppo:
       +materialized: view
       +schema: dashboard_subsidio_sppo
