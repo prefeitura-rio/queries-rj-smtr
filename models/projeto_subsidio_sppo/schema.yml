@@ -590,7 +590,7 @@ models:
         tests:
           - not_null
       - name: data
-        description: "Data de emissão do sinal de GPS"
+        description: "Data da viagem"
         tests:
           - not_null
       - name: tipo_dia
