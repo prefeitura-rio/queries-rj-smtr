@@ -104,6 +104,7 @@ vars:
   subsidio_trips: "`rj-smtr-staging.projeto_subsidio_sppo_staging.trips`"
   shapes_version: "YYYY-MM-DD"
   frequencies_version: "YYYY-MM-DD"
+  DATA_SUBSIDIO_V2_INICIO: "2023-01-16"
   # valor_subsidio: "`rj-smtr-dev.projeto_subsidio_sppo.valor_subsidio`"
 
   # Recursos #
