@@ -1,9 +1,4 @@
--- DECLARE
---   "{{ var(""{{ var("DATA_SUBSIDIO_V2_INICIO") }}"") }}" STRING DEFAULT "{{ var(""{{ var("DATA_SUBSIDIO_V2_INICIO") }}"") }}";
--- DECLARE
---   "{{ var(""{{ var("DATA_SUBSIDIO_QUINZENA_ATUAL") }}"") }}" STRING DEFAULT "{{ var(""{{ var("DATA_SUBSIDIO_QUINZENA_ATUAL") }}"") }}";
-
-  -- Gabarito v1 + v2
+-- Gabarito v1 + v2
 WITH
   planejado AS (
   SELECT
@@ -14,7 +9,7 @@ WITH
   FROM
     `rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada`
   WHERE
-    `data` <= DATE( "{{ var(""{{ var("DATA_SUBSIDIO_QUINZENA_ATUAL") }}"") }}" )
+    `data` <= DATE( "{{ var("end_date") }}" )
     AND distancia_total_planejada > 0 ),
   sumario_v1 AS ( -- Viagens v1
   SELECT
@@ -26,7 +21,7 @@ WITH
   FROM
     `rj-smtr`.`dashboard_subsidio_sppo`.`sumario_dia`
   WHERE
-    `data` < DATE( "{{ var(""{{ var("DATA_SUBSIDIO_V2_INICIO") }}"") }}" ) ),
+    `data` < DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" ) ),
   tipo_viagem_v2 AS ( -- Classifica os tipos de viagem (v2)
   SELECT
     `data`,
@@ -35,8 +30,8 @@ WITH
   FROM
     `rj-smtr`.`veiculo`.`sppo_veiculo_dia`
   WHERE
-    `data` BETWEEN DATE( "{{ var(""{{ var("DATA_SUBSIDIO_V2_INICIO") }}"") }}" )
-    AND DATE( "{{ var(""{{ var("DATA_SUBSIDIO_QUINZENA_ATUAL") }}"") }}" ) ),
+    `data` BETWEEN DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
+    AND DATE( "{{ var("end_date") }}" ) ),
   viagem_v2 AS (
   SELECT
     `data`,
@@ -47,8 +42,8 @@ WITH
   FROM
     `rj-smtr`.`projeto_subsidio_sppo`.`viagem_completa`
   WHERE
-    `data` BETWEEN DATE( "{{ var(""{{ var("DATA_SUBSIDIO_V2_INICIO") }}"") }}" )
-    AND DATE( "{{ var(""{{ var("DATA_SUBSIDIO_QUINZENA_ATUAL") }}"") }}" ) ),
+    `data` BETWEEN DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
+    AND DATE( "{{ var("end_date") }}" ) ),
   sumario_v2 AS (
   SELECT
     v.`data`,
