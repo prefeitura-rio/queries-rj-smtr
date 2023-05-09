@@ -45,6 +45,6 @@ with
 -- (
     select stu.* except (timestamp_captura)
     from stu
-    left join solicitacao sol on stu.id_veiculo = sol.id_veiculo
-    where sol.id_veiculo is null
+    -- left join solicitacao sol on stu.id_veiculo = sol.id_veiculo
+    -- where sol.id_veiculo is null
 -- )
