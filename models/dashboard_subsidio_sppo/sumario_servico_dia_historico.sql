@@ -11,7 +11,7 @@ SELECT
   valor_subsidio_pago,
   valor_penalidade
 FROM
-  {{ ref("sumario_dia") }} s
+  {{ ref("sumario_servico_dia") }} s
 LEFT JOIN (
   SELECT
     DISTINCT DATA,
