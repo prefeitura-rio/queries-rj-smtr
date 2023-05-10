@@ -2,7 +2,7 @@ WITH
   planejado AS (
   SELECT
     consorcio,
-    DATA,
+    data,
     tipo_dia,
     trip_id_planejado AS trip_id,
     servico,
@@ -18,8 +18,8 @@ WITH
   FROM
     {{ ref("viagem_planejada") }}
   WHERE
-    DATA >= "2022-06-01"
-    AND DATA < "{{ var("DATA_SUBSIDIO_V2_INICIO") }}"
+    data >= "2022-06-01"
+    AND data < "{{ var("data_SUBSIDIO_V2_INICIO") }}"
     AND distancia_total_planejada > 0
   GROUP BY
     1,
@@ -30,21 +30,21 @@ WITH
     6),
   viagem AS (
   SELECT
-    DATA,
+    data,
     trip_id,
     COUNT(id_viagem) AS viagens_realizadas
   FROM
     {{ ref("viagem_completa") }}
   WHERE
-    DATA >= "2022-06-01"
-    AND DATA < "{{ var("DATA_SUBSIDIO_V2_INICIO") }}"
+    data >= "2022-06-01"
+    AND data < "{{ var("data_SUBSIDIO_V2_INICIO") }}"
   GROUP BY
     1,
     2),
   sumario AS (
   SELECT
     consorcio,
-    DATA,
+    data,
     tipo_dia,
     servico,
     distancia_planejada,
@@ -58,7 +58,7 @@ WITH
     viagem AS v
   USING
     (trip_id,
-      DATA)
+      data)
   GROUP BY
     1,
     2,
@@ -69,7 +69,7 @@ WITH
   sumario_agg AS (
   SELECT
     consorcio,
-    DATA,
+    data,
     tipo_dia,
     servico,
     NULL AS viagens_planejadas,
@@ -100,8 +100,8 @@ WITH
     FROM
       {{ ref("subsidio_data_versao_efetiva") }}
     WHERE
-      DATA >= "2022-06-01"
-      AND DATA < "{{ var("DATA_SUBSIDIO_V2_INICIO") }}") AS v
+      data >= "2022-06-01"
+      AND data < "{{ var("data_SUBSIDIO_V2_INICIO") }}") AS v
   ON
     v.data = s.data )
 SELECT

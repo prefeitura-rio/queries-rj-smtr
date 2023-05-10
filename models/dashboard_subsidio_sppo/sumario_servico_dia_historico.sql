@@ -14,13 +14,13 @@ FROM
   {{ ref("sumario_servico_dia") }} s
 LEFT JOIN (
   SELECT
-    DISTINCT DATA,
+    DISTINCT data,
     servico,
     vista
   FROM
     {{ ref("viagem_planejada") }}
   WHERE
-    DATA >= "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" ) p
+    data >= "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" ) p
 ON
   s.data = p.data
   AND s.servico = p.servico
@@ -41,15 +41,15 @@ UNION ALL (
     {{ ref("sumario_dia") }} s
   LEFT JOIN (
     SELECT
-      DISTINCT DATA,
+      DISTINCT data,
       servico,
       vista
     FROM
       {{ ref("viagem_planejada") }}
     WHERE
-      DATA < "{{ var("DATA_SUBSIDIO_V2_INICIO") }}") p
+      data < "{{ var("DATA_SUBSIDIO_V2_INICIO") }}") p
   ON
     s.data = p.data
     AND s.servico = p.servico
   WHERE
-    s.DATA < "{{ var("DATA_SUBSIDIO_V2_INICIO") }}")
+    s.data < "{{ var("DATA_SUBSIDIO_V2_INICIO") }}")
