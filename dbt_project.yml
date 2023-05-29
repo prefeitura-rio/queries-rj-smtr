@@ -130,6 +130,10 @@ vars:
   rho_max_processing_interval: 7
   rho_sppo_start_date: "2021-03-01"
 
+
+  ### TG ####
+  tg_card_transactions_staging: "`rj-smtr-staging.br_rj_riodejaneiro_onibus_tg.card_transactions`"
+
 models:
   +persist_docs:
     relation: true
@@ -159,3 +163,6 @@ models:
     br_rj_riodejaneiro_rdo:
       +materialized: view
       +schema: br_rj_riodejaneiro_rdo
+    br_rj_riodejaneiro_onibus_tg:
+      +materialized: view
+      +schema: br_rj_riodejaneiro_onibus_tg

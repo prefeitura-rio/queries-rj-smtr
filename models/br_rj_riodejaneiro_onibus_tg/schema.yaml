@@ -1,0 +1,56 @@
+version: 2
+
+models:
+  - name: tg_card_transactions
+    description: "tg_card_transactions"
+    columns:
+      - name: tipo_registro
+        description: "Tipo de registro de acordo com a especificação TG/PRODATA (Valor Fixo: 002)"
+      - name: versao_registro
+        description: "Versão deste registro"
+      - name: tsn_timestamp
+        description: "Timestamp da transação em GMT-3"
+      - name: aplicacao
+        description: "Número do aplicação (Vide anexo 'Aplicações')"
+      - name: emissor_aplicacao
+        description: "emissor_aplicacao"
+      - name: tsn
+        description: "tsn"
+      - name: valor_tarifa
+        description: "valor_tarifa"
+      - name: valor_tarifa_anterior
+        description: "valor_tarifa_anterior"
+      - name: valor_debitado
+        description: "valor_debitado"
+      - name: status
+        description: "status"
+      - name: id_veiculo
+        description: "id_veiculo"
+      - name: tipo_embarque
+        description: "tipo_embarque"
+      - name: diferenca_valor_debitado
+        description: "diferenca_valor_debitado"
+      - name: valor_promo_desconto
+        description: "valor_promo_desconto"
+      - name: valor_acumulado
+        description: "valor_acumulado"
+      - name: tipo_debito
+        description: "tipo_debito"
+      - name: mensagem_debito
+        description: "mensagem_debito"
+      - name: origin_file
+        description: "origin_file"
+      - name: garagem
+        description: "garagem"
+      - name: file_date
+        description: "file_date"
+      - name: codigo_empresa
+        description: "codigo_empresa"
+      - name: uid
+        description: "uid"
+      - name: ano
+        description: "ano"
+      - name: mes
+        description: "mes"
+      - name: dia
+        description: "dia"
