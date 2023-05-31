@@ -1,56 +1,54 @@
 version: 2
 
 models:
-  - name: tg_card_transactions
-    description: "tg_card_transactions"
+  - name: tg_microdados_transacao_cartao
+    description: "Microdados das transações de cartão. Cada registro é uma transação."
     columns:
       - name: tipo_registro
         description: "Tipo de registro de acordo com a especificação TG/PRODATA (Valor Fixo: 002)"
       - name: versao_registro
         description: "Versão deste registro"
-      - name: tsn_timestamp
+      - name: timestamp_transacao
         description: "Timestamp da transação em GMT-3"
-      - name: aplicacao
+      - name: numero_aplicacao
         description: "Número do aplicação (Vide anexo 'Aplicações')"
-      - name: emissor_aplicacao
-        description: "emissor_aplicacao"
-      - name: tsn
-        description: "tsn"
+      - name: sequencial_transacao
+        description: "Número sequencial da transação no veículo naquele dia"
       - name: valor_tarifa
-        description: "valor_tarifa"
+        description: "Valor da tarifa configurado no equipamento (R$)"
       - name: valor_tarifa_anterior
-        description: "valor_tarifa_anterior"
+        description: "Valor da tarifa anterior da viagem anterior (R$)"
       - name: valor_debitado
-        description: "valor_debitado"
+        description: "Valor debitado na viagem atual (R$)"
       - name: status
-        description: "status"
+        description: "Estado da transação, indicando falha ou sucesso (0 - Sucesso, 1 - Falha, 2 - Cartão rejeitado)"
       - name: id_veiculo
-        description: "id_veiculo"
+        description: "Número do veículo configurado no equipamento (apenas número)"
       - name: tipo_embarque
-        description: "tipo_embarque"
+        description: "Tipo de embarque atual, indica se é integração ou não (0 - Embarque normal, 1 - Integração)"
       - name: diferenca_valor_debitado
-        description: "diferenca_valor_debitado"
+        description: "Diferença do valor debitado na transação (R$)"
       - name: valor_promo_desconto
-        description: "valor_promo_desconto"
+        description: "Valor promocional ou de desconto da tarifa (R$)"
       - name: valor_acumulado
-        description: "valor_acumulado"
+        description: "Soma do valor total pago em uma integração (R$)"
       - name: tipo_debito
-        description: "tipo_debito"
+        description: "Tipo de débito no cartão (0 - Full fare, 1 - Promotional Fare, 2 - Discount Applied, 3 - BU Fare, 4 - BU-MUN Fare, 5 - BUCS, 6 - Prouni)"
       - name: mensagem_debito
-        description: "mensagem_debito"
-      - name: origin_file
-        description: "origin_file"
+        description: "Mensagem de estado do débito no cartão (0 - Normal, 161 - Validation Without Finger, 190 - Passback BU, 191 - Limite por dia BU atingido, 192 - Créditos expirados para uso BU, 193 - BU desabilitado)"
+      - name: arquivo_origem
+        description: "Nome do arquivo txt de origem do registro: TG[Código da Empresa]_[id_veiculo]_[Número do Validador]_[Número de Controle Sequencial]_[Código da Empresa]_[Timestamp de geração do arquivo]_[Versão do Validador (Software) - XX.XX]"
       - name: garagem
-        description: "garagem"
-      - name: file_date
-        description: "file_date"
+        description: "Garagem onde o arquivo de origem foi descarregado"
+      - name: data_arquivo_origem
+        description: "Data de criação do arquivo binário de origem extraída do nome do arquivo"
       - name: codigo_empresa
-        description: "codigo_empresa"
-      - name: uid
-        description: "uid"
+        description: "Código da empresa que opera o veículo de origem da transação"
+      - name: id_cartao
+        description: "Número único criptografado do cartão RioCard"
       - name: ano
-        description: "ano"
+        description: "Ano da transação (partição)"
       - name: mes
-        description: "mes"
+        description: "Mês da transação (partição)"
       - name: dia
-        description: "dia"
+        description: "Dia da transação (partição)"

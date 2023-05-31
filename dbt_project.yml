@@ -132,7 +132,7 @@ vars:
 
 
   ### TG ####
-  tg_card_transactions_staging: "`rj-smtr-staging.br_rj_riodejaneiro_onibus_tg.card_transactions`"
+  tg_microdados_transacao_cartao_staging: "`rj-smtr-staging.br_rj_riodejaneiro_onibus_tg.card_transactions`"
 
 models:
   +persist_docs:
