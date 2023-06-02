@@ -6,7 +6,7 @@ SELECT
   SAFE_CAST(tipo_registro AS STRING) AS tipo_registro,
   SAFE_CAST(versao_registro AS STRING) AS versao_registro,
   SAFE_CAST(DATETIME(TIMESTAMP_ADD(TIMESTAMP(DATE_ADD(DATE '2002-12-31', INTERVAL data DAY)), INTERVAL hora SECOND), "America/Sao_Paulo") AS DATETIME) AS timestamp_transacao,
-  SAFE_CAST(aplicacao AS INT64) AS numero_aplicacao,
+  SAFE_CAST(emissor_aplicacao || "_" || aplicacao AS STRING) AS numero_aplicacao,
   SAFE_CAST(tsn AS INT64) AS sequencial_transacao,
   SAFE_CAST(status AS INT64) AS status,
   SAFE_CAST(num_onibus AS STRING) AS id_veiculo,
@@ -33,5 +33,6 @@ WHERE
   ano = 2023
   AND mes = 4
   AND dia = 1
+  AND status = 0 -- Apenas transações com sucesso
 LIMIT
   10
