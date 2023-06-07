@@ -1,6 +1,34 @@
 version: 2
 
 models:
+  - name: sumario_servico_dia_historico_dashboard
+    description: "sumario_servico_dia_historico_dashboard"
+    columns:
+      - name: data
+        description: "Data de emissão do sinal de GPS"
+      - name: tipo_dia
+        description: "Dia da semana considerado para o cálculo da distância planejada - categorias: Dia Útil, Sabado, Domingo"
+      - name: servico
+        description: "Serviço realizado pelo veículo"
+      - name: viagens
+        description: "Quantidade de viagens apuradas"
+      - name: km_apurada
+        description: "Distância apurada do serviço (km)
+        Distância planejada da viagem multiplicada pela quantidade de viagens"
+      - name: km_planejada
+        description: "Distância planejada para o serviço (km)"
+      - name: perc_km_planejada
+        description: "Indicador percentual de quilometragem apurada em relação à planejada da linha"
+      - name: valor_subsidio_pago
+        description: "Valor de subsídio apurado (R$)
+        Distância apurada do serviço multiplicada pelos respectivos valores pela classificação do veículo"
+      - name: valor_penalidade
+        description: "Valor de penalidade apurado (R$)
+        Linha com operação entre 40% e 60% da quilometragem estipulada - penalidade equivalente a uma infração média prevista no Código Disciplinar do Serviço Público de Transporte de Passageiros por Meio de Ônibus do Município do Rio de Janeiro - SPPO.
+        Linha com operação inferior a 40% da quilometragem estipulada - penalidade equivalente a uma infração grave prevista no Código Disciplinar do Serviço Público de Transporte de Passageiros por Meio de Ônibus do Município do Rio de Janeiro - SPPO."
+      - name: valor_final_subsidio
+        description: "Valor final de subsídio (R$)
+        Diferença entre o valor de subsídio apurado e o valor das penalidades."
   - name: sumario_servico_dia
     description: "sumario_servico_dia"
     columns:
