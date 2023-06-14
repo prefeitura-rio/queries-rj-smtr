@@ -16,6 +16,7 @@ SELECT
       WHEN data = "2022-12-05" THEN "Sabado"
       WHEN data = "2022-12-09" THEN "Sabado"
       WHEN data = "2023-04-06" THEN "Sabado" -- Ponto Facultativo - DECRETO RIO Nº 52275/2023
+      WHEN data = "2023-06-08" THEN "Domingo" -- Corpus Christi - Lei nº 336/1949
       WHEN data = "2023-06-09" THEN "Sabado" -- Ponto Facultativo - DECRETO RIO Nº 52584/2023
       WHEN data = "2023-04-07" THEN "Domingo" -- Paixão de Cristo -- Art. 1º, V - PORTARIA ME Nº 11.090/2022
       WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 1 THEN "Domingo" -- Dia de São Sebastião -- Art. 8°, I - Lei Municipal nº 5146/2010
