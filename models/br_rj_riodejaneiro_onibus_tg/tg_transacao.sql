@@ -1,5 +1,5 @@
 {{ 
-  config(alias='microdados_transacao_cartao') 
+  config(alias='transacao') 
 }}
 
 SELECT
@@ -30,9 +30,7 @@ SELECT
 FROM
   {{var('tg_microdados_transacao_cartao_staging')}}
 WHERE
-  ano = 2023
-  AND mes = 4
+  (ano = 2022 OR ano = 2023) -- Apenas dados de 2022 e 2023
+  AND mes >= 1
   AND dia = 1
   AND status = 0 -- Apenas transações com sucesso
-LIMIT
-  10
