@@ -16,7 +16,7 @@ SELECT
   SAFE_CAST(valor_tarifa/100 AS FLOAT64) AS valor_tarifa,
   SAFE_CAST(valor_tarifa_anterior/100 AS FLOAT64) AS valor_tarifa_anterior,
   SAFE_CAST(valor_debitado/100 AS FLOAT64) AS valor_debitado,
-  SAFE_CAST(SAFE_CAST(diferenca_valor_debitado AS INT64)/100 AS FLOAT64) AS diferenca_valor_debitado,
+  SAFE_CAST(COALESCE(SAFE_CAST(diferenca_valor_debitado AS INT64)/100, 0) AS FLOAT64) AS diferenca_valor_debitado,
   SAFE_CAST(SAFE_CAST(valor_promo_desconto AS INT64)/100 AS FLOAT64) AS valor_promo_desconto,
   SAFE_CAST(SAFE_CAST(valor_acumulado AS INT64)/100 AS FLOAT64) AS valor_acumulado,
   SAFE_CAST(origin_file AS STRING) AS arquivo_origem,
@@ -30,7 +30,9 @@ SELECT
 FROM
   {{var('tg_microdados_transacao_cartao_staging')}}
 WHERE
-  (ano = 2022 OR ano = 2023) -- Apenas dados de 2022 e 2023
+  (ano BETWEEN 2022 AND 2023) -- Apenas dados de 2022 e 2023
   AND mes >= 1
-  AND dia = 1
+  AND dia >= 1
   AND status = 0 -- Apenas transações com sucesso
+  AND (emissor_aplicacao BETWEEN 1 AND 15)
+  AND (aplicacao BETWEEN 0 AND 1023)
