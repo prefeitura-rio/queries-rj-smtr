@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: tg_microdados_transacao_cartao
+  - name: tg_transacao
     description: "Microdados das transações de cartão. Cada registro é uma transação."
     columns:
       - name: tipo_registro
