@@ -28,7 +28,7 @@ SELECT
   SAFE_CAST(mes AS INT64) AS mes,
   SAFE_CAST(dia AS INT64) AS dia
 FROM
-  {{var('tg_microdados_transacao_cartao_staging')}}
+  {{var('tg_transacao_staging')}}
 WHERE
   (ano BETWEEN 2022 AND 2023) -- Apenas dados de 2022 e 2023
   AND mes >= 1
