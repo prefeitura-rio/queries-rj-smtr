@@ -159,3 +159,6 @@ models:
     br_rj_riodejaneiro_rdo:
       +materialized: view
       +schema: br_rj_riodejaneiro_rdo
+    gtfs_teste_leone:
+      +materialized: view
+      +schema: gtfs_teste_leone
