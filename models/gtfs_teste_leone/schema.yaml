@@ -1,0 +1,435 @@
+version: 2
+
+models:
+  - name: agency
+    description: "Agências de trânsito com serviço representado neste conjunto de dados."
+    columns:
+      - name: agency_id
+        description: "Identifica uma marca que normalmente é sinônimo de uma agência de transporte público. \
+          Em alguns casos, as empresas e as marcas são diferentes, como quando uma única empresa \
+          opera vários serviços independentes. Este documento usa o termo 'empresa' em vez de 'marca'. \
+          Um conjunto pode conter dados de várias empresas de transporte público, caso em que esse \
+          campo é obrigatório. Se ele tiver informações de apenas uma empresa, o campo será opcional."
+      - name: agency_name
+        description: "Nome completo da empresa de transporte público."
+      - name: agency_url
+        description: "URL da empresa de transporte público."
+      - name: agency_timezone
+        description: "Fuso horário de onde a empresa de transporte público está localizada. \
+          Se várias empresas são especificadas no conjunto de dados, elas precisam ter o mesmo agency_timezone."
+      - name: agency_lang
+        description: "Idioma principal usado pela empresa de transporte público. \
+          Esse campo ajuda os consumidores da GTFS a escolher regras de uso de maiúsculas e minúsculas \
+          e outras configurações específicas do idioma para o conjunto de dados."
+  - name: calendar
+    description: "Datas de serviço especificadas usando um cronograma semanal com datas de início e término. \
+      Esse arquivo é obrigatório, a menos que todas as datas de serviço estejam definidas em calendar_dates.txt."
+    columns:
+      - name: service_id
+        description: "Identifica exclusivamente um conjunto de datas quando o serviço está disponível \
+          para um ou mais trajetos. Cada valor de service_id pode aparecer no máximo uma vez em um arquivo calendar.txt."
+      - name: monday
+        description: "Indica se o serviço opera todas as segundas-feiras dentro do período especificado pelos \
+          campos start_date e end_date. Você pode indicar exceções para datas específicas no arquivo calendar_dates.txt. \
+          Estas são as opções válidas: \n\
+          True: o serviço está disponível para todas as segundas-feiras no período. \n\
+          False: o serviço não está disponível para as segundas-feiras no período."
+      - name: tuesday
+        description: "Funciona da mesma maneira que monday, mas se aplica às terças-feiras."
+      - name: wednesday
+        description: "Funciona da mesma maneira que monday, mas se aplica às quartas-feiras."
+      - name: thursday
+        description: "Funciona da mesma maneira que monday, mas se aplica às quintas-feiras."
+      - name: friday
+        description: "Funciona da mesma maneira que monday, mas se aplica às sextas-feiras."
+      - name: saturday
+        description: "Funciona da mesma maneira que monday, mas se aplica aos sábados."
+      - name: sunday
+        description: "Funciona da mesma maneira que monday, mas se aplica aos domingos."
+      - name: start_date
+        description: "Data de início do dia de serviço para o intervalo."
+      - name: end_date
+        description: "Data de término do dia de serviço para o intervalo. Este dia está incluído no intervalo."
+  - name: calendar_dates
+    description: "Exceções para os serviços definidos no calendar.txt. Se calendar.txt for omitido, \
+      calendar_dates.txt será obrigatório e precisará conter todas as datas de serviço."
+    columns:
+      - name: service_id
+        description: "Identifica um conjunto de datas em que ocorre uma exceção de serviço para um ou mais trajetos. \
+          Cada par (service_id, date) só vai poder aparecer uma vez no calendar_dates.txt se você estiver usando \
+          calendar.txt e calendar_dates.txt. Se um valor de service_id estiver presente no calendar.txt e calendar_dates.txt, \
+          as informações no calendar_dates.txt modificarão os dados de serviço especificados no calendar.txt."
+      - name: date
+        description: "Data em que a exceção do serviço ocorre."
+      - name: exception_type
+        description: "Indica se o serviço está disponível na data especificada, no campo date. Estas são as opções válidas: \n
+          True: o serviço está disponível para a data especificada. \n
+          False: o serviço não está disponível para a data especificada. \n
+          Por exemplo, suponha que um trajeto tenha um conjunto de viagens disponíveis em feriados e outro em todos os outros dias. \
+          Um service_id poderia corresponder ao cronograma de serviço regular, e outro service_id, ao cronograma de feriados. \n
+          Para um feriado específico, o arquivo calendar_dates.txt pode ser usado para relacionar o feriado e o service_id correspondente \
+          e removê-lo da programação regular do service_id."
+  - name: fare_attributes
+    description: "Informações sobre tarifas dos trajetos de uma empresa de transporte público."
+    columns:
+      - name: fare_id
+        description: "Identifica uma classe de tarifa."
+      - name: price
+        description: "Preço da tarifa, na unidade especificada por currency_type."
+      - name: currency_type
+        description: "Moeda usada para pagar a tarifa."
+      - name: payment_method
+        description: "Indica quando a tarifa precisa ser paga. Estas são as opções válidas:\n
+          0: a tarifa é paga a bordo.\n
+          1: a tarifa precisa ser paga antes do embarque."
+      - name: transfers
+        description: "Especifica o número de baldeações permitidas nesta tarifa.
+          Esse campo pode ficar vazio e é, portanto, uma exceção ao requisito de que um campo obrigatório não pode ficar em branco.
+          Estas são as opções válidas:\n
+          0: não são permitidas baldeações nesta tarifa.\n
+          1: os passageiros só podem fazer uma baldeação.\n
+          2: os passageiros podem fazer duas baldeações.\n
+          Vazio: as baldeações são ilimitadas."
+      - name: agency_id
+        description: "Identifica a empresa relevante para uma tarifa.
+          Este campo é obrigatório para conjuntos de dados que têm várias empresas definidas no agency.txt.
+          Caso contrário, é opcional."
+      - name: transfer_duration
+        description: "Tempo em segundos antes de a baldeação expirar.
+          Quando transfers=0, esse campo poderá ser usado para indicar por quanto tempo um bilhete é válido ou poderá ficar em branco."
+  - name: fare_rules
+    description: "Regras para aplicar tarifas a itinerários."
+    columns:
+      - name: fare_id
+        description: "Identifica uma classe de tarifa."
+      - name: route_id
+        description: "Identifica um trajeto associado à classe de tarifa. \n
+          Se houver trajetos com os mesmos atributos de tarifa, crie um registro no fare_rules.txt para cada trajeto. \n
+          Exemplo: se a classe de tarifa 'b' for válida nos trajetos 'TSW' e 'TSE', o arquivo fare_rules.txt conterá estes registros: \n
+          fare_id,route_id \n
+          b,TSW \n
+          b,TSE"
+  - name: feed_info
+    description: "Metadados do conjunto de dados, incluindo informações sobre o editor, a versão e a validade."
+    columns:
+      - name: feed_publisher_name
+        description: "Nome completo da organização que publica o conjunto de dados. Pode ser igual a um dos valores de agency.agency_name."
+      - name: feed_publisher_url
+        description: "URL do site da organização que publica o conjunto de dados. Pode ser igual a um dos valores de agency.agency_url."
+      - name: feed_lang
+        description: "Idioma padrão do texto neste conjunto de dados. Esta configuração ajuda os consumidores da GTFS a escolher regras para
+         o uso de letras maiúsculas e minúsculas e outras definições específicas do idioma. \n\n
+          Para escolher outro idioma, use o campo language no arquivo translations.txt. \n\n
+          Conjuntos de dados multilíngues podem ser o idioma padrão quando o texto original está em várias línguas. Nesses casos,
+         use o código de idioma ISO 639-2 mul no campo feed_lang. Forneça uma tradução para cada um dos idiomas usados no conjunto de dados no translations.txt. 
+         Se todo o texto original do conjunto de dados estiver no mesmo idioma, não use mul. \n\n
+         Por exemplo, em um conjunto na Suíça, o campo stops.stop_name original pode ser preenchido com os nomes das paradas em vários idiomas. 
+         Cada nome de parada é escrito de acordo com o idioma dominante na localização geográfica dela. Exemplos incluem 'Genève' para a cidade de Genebra, 
+         onde se fala francês, 'Zürich' para a cidade de Zurique, onde o idioma principal é o alemão, e 'Biel/Bienne' para a cidade de Bienna, que é bilíngue. 
+         Defina feed_lang=mul e forneça as traduções a seguir no translations.txt: \n\n
+         Alemão: 'Genf', 'Zürich' e 'Biel' \n
+         Francês: 'Genève', 'Zurich' e 'Bienne' \n
+         Italiano: 'Ginevra', 'Zurigo' e 'Bienna' \n
+         Inglês: 'Geneva', 'Zurich' e 'Biel/Bienne'"
+      - name: feed_start_date
+        description: "O conjunto de dados apresenta informações de cronograma completas e confiáveis para o serviço no período que abrange 
+          o início do dia em feed_start_date até o fim do dia em feed_end_date. Ambos os dias poderão ser deixados em branco se não estiverem disponíveis. 
+          A data em feed_end_date não poderá ser anterior à data em feed_start_date caso ambos sejam informados. 
+          Recomendamos que os produtores de conjuntos disponibilizem dados de cronograma fora desse período para informar sobre possíveis serviços futuros, 
+          mas os consumidores precisam estar conscientes do status não oficial. 
+          O fato de feed_start_date ou feed_end_date se estenderem para além das datas de calendário ativas definidas nos arquivos calendar.txt e calendar_dates.txt 
+          será considerado uma afirmação explícita de que não há serviço para as datas do intervalo de feed_start_date a feed_end_date não incluídas nas datas ativas."
+      - name: feed_end_date
+        description: "Consulte a linha feed_start_date nesta tabela."
+      - name: feed_contact_email
+        description: "Endereço de e-mail para comunicação sobre as práticas de publicação de informações e conjunto de dados da GTFS. 
+          O feed_contact_email representa um contato técnico para os aplicativos que usam a GTFS. Envie os dados de contato para atendimento ao cliente pelo agency.txt."
+  - name: frequencies
+    description: "Intervalo entre as viagens para o serviço com base no intervalo ou uma representação resumida do serviço de cronograma fixo."
+    columns:
+      - name: trip_id
+        description: "Identifica uma viagem à qual o intervalo especificado do serviço se aplica."
+      - name: start_time
+        description: "Horário em que o primeiro veículo sai da primeira parada da viagem com o intervalo especificado."
+      - name: end_time
+        description: "Horário em que o serviço muda para um intervalo diferente ou é interrompido na primeira parada da viagem."
+      - name: headway_secs
+        description: "Tempo, em segundos, entre as partidas de uma mesma parada (intervalo) da viagem, durante o período especificado por start_time e end_time. 
+          É possível haver vários intervalos para a mesma viagem, mas eles não podem se sobrepor. 
+          Novos intervalos podem começar no momento exato em que o intervalo anterior termina."
+      - name: exact_times
+        description: "Indica o tipo de serviço de uma viagem. Veja a descrição do arquivo para mais informações.\n
+          Estas são as opções válidas:\n
+          0 ou vazio: viagens com base na frequência.\n
+          1: viagens com base em cronograma com o mesmo intervalo ao longo do dia.\n
+          Nesse caso, o valor de end_time precisa ser maior que o último start_time desejado,
+          mas menor que o último start_time desejado + headway_secs."
+  - name: routes
+    description: "Trajetos de transporte público. Um trajeto é um grupo de viagens exibidas aos viajantes como um único serviço."
+    columns:
+      - name: route_id
+        description: "Identifica um trajeto."
+      - name: agency_id
+        description: "Empresa do trajeto especificado. Esse campo é obrigatório quando o conjunto oferece dados para trajetos de mais de uma empresa no agency.txt. 
+          Caso contrário, ele é opcional."
+      - name: route_short_name
+        description: "Nome abreviado de um trajeto. Costuma ser um identificador curto e abstrato, como '32', '100X' ou 'Verde', que os passageiros usam para distinguir um trajeto, 
+          mas que não apresenta indicação sobre os locais atendidos. É preciso especificar route_short_name ou route_long_name. Se adequado, ambos podem ser definidos."
+      - name: route_long_name
+        description: "Nome completo de um trajeto. Geralmente, esse nome é mais descritivo do que route_short_name e pode incluir o destino ou a parada. 
+          É preciso especificar route_short_name ou route_long_name. Se adequado, ambos podem ser definidos."
+      - name: route_desc
+        description: "Descrição de um trajeto que apresenta informações úteis e de qualidade. 
+          Não basta repetir o nome do trajeto. \n\n
+          Por exemplo: 'Os trens da linha Azul operam entre as estações Tucuruvi e Jabaquara. 
+          É possível fazer conexão com a linha Verde nas estações Paraíso e Ana Rosa. 
+          A conexão com a linha Vermelha é feita na estação Sé. Na estação da Luz, é possível fazer conexão com as seguintes linhas da CPTM: Coral, Rubi e Turquesa.'."
+      - name: route_type
+        description: "Descreve o tipo de transporte usado em um trajeto. Estas são as opções válidas:\n
+          0: bonde com cabo suspenso, ônibus elétrico, veículo leve sobre trilhos (VLT). Qualquer VLT ou sistema de transporte de superfície em uma área metropolitana.\n
+          1: metrô, trem subterrâneo. Qualquer sistema de transporte subterrâneo sobre trilhos dentro de uma área metropolitana.\n
+          2: via férrea. Usado para viagens intermunicipais ou de longa distância.\n
+          3: ônibus. Usado para trajetos de ônibus curtos e de longa distância.\n
+          4: balsa. Usado para serviço de navegação de curta e longa distância.\n
+          5: bonde a cabo. Usado para vagões de superfície, em que o cabo passa por baixo do veículo, como o bonde de São Francisco.\n
+          6: teleférico (por exemplo, gôndola). Transporte a cabo em que cabines, carros, gôndolas ou cadeiras abertas são suspensos por um ou mais cabos.\n
+          7: funicular. Qualquer sistema de trilho projetado para subir ladeiras.\n
+          11: ônibus elétrico. Ônibus elétricos que recebem energia de cabos suspensos por postes.\n
+          12: monotrilho. Sistema ferroviário com um único trilho ou uma barra."
+      - name: route_color
+        description: "Designação de cor do trajeto que corresponde ao material voltado para o público. 
+          Quando o valor estiver vazio ou for omitido, o padrão será branco (FFFFFF). 
+          A diferença de cores entre route_color e route_text_color deve ter contraste suficiente com uma tela em preto e branco."
+      - name: route_text_color
+        description: "Cor legível a ser usada em um texto sobre um plano de fundo de route_color. 
+          Quando o valor estiver vazio ou for omitido, o padrão será preto (000000). 
+          A diferença de cores entre route_color e route_text_color deve ter contraste suficiente com uma tela em preto e branco."
+  - name: shapes
+    description: "Regras para mapear caminhos de viagem de veículos, às vezes chamados de alinhamentos de trajetos."
+    columns:
+      - name: shape_id
+        description: "Identifica um polígono."
+      - name: shape_pt_sequence
+        description: "Sequência em que os pontos se conectam para formar o polígono. Os valores precisam aumentar ao longo da viagem, mas não precisam ser consecutivos. \n\n
+          Por exemplo, se o polígono 'A_shp' tiver três pontos na definição, o arquivo shapes.txt poderá conter estes registros para definir o polígono: \n
+          shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence \n
+          A_shp,37.61956,-122.48161,0 \n
+          A_shp,37.64430,-122.41070,6 \n
+          A_shp,37.65863,-122.30839,11"
+      - name: shape_pt_lat
+        description: "Latitude de uma parada do polígono. Cada registro no shapes.txt representa um ponto do polígono usado para definir o polígono."
+      - name: shape_pt_lon
+        description: "Longitude de uma parada do polígono."
+      - name: shape_dist_traveled
+        description: "Distância real percorrida ao longo do polígono desde o primeiro ponto até o ponto especificado nesse registro. 
+          Usado pelos planejadores de viagem para mostrar a parte correta do polígono em um mapa. 
+          Os valores precisam aumentar com a shape_pt_sequence e não podem ser usados para exibir a viagem de retorno em um trajeto. 
+          Use as mesmas unidades de distância utilizadas no stop_times.txt.\n\n
+          Por exemplo, se um ônibus passa pelos três pontos definidos acima para A_shp, 
+          os outros valores de shape_dist_traveled (em quilômetros) seriam semelhantes a estes:\n
+          shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence,shape_dist_traveled\n
+          A_shp,37.61956,-122.48161,0,0\n
+          A_shp,37.64430,-122.41070,6,6.8310\n
+          A_shp,37.65863,-122.30839,11,15.8765"
+  - name: stop_times
+    description: "Horários de partida e chegada dos veículos nas paradas específicas de cada viagem."
+    columns:
+      - name: trip_id
+        description: "Identifica uma viagem."
+      - name: stop_sequence
+        description: "Ordem das paradas de uma viagem específica. Os valores precisam aumentar ao longo da viagem, mas não precisam ser consecutivos.\n\n
+          Por exemplo, o primeiro local da viagem poderia ter stop_sequence=1, o segundo, stop_sequence=23, o terceiro, stop_sequence=40, e assim por diante."
+      - name: stop_id
+        description: "Identifica a parada de serviço. É necessário registrar todas as paradas atendidas durante uma viagem no stop_times.txt. 
+          Os locais referenciados precisam ser paradas, e não estações ou entradas de estações. 
+          Uma parada pode ser atendida várias vezes na mesma viagem, e várias viagens e trajetos podem atender a mesma parada."
+      - name: arrival_time
+        description: "Hora de chegada em uma parada de uma viagem específica no trajeto. 
+          Se não houver horários distintos de chegada e partida em uma parada, insira o mesmo valor para arrival_time e departure_time. 
+          Para horários após a meia-noite, insira um valor maior que 24:00:00 no formato HH:MM:SS com a hora local do dia em que a viagem está programada para iniciar.\n\n
+          Pontos de tempo são paradas programadas em que o veículo cumpre pontualmente os horários de chegada e partida especificados. 
+          Se essa parada não for programada, é recomendável informar um horário estimado ou interpolado. 
+          Se esse valor não estiver disponível, arrival_time poderá ser deixado em branco. 
+          Além disso, indique que os horários interpolados são fornecidos inserindo o valor no campo timepoint=0. 
+          Se esses horários forem determinados usando o timepoint=0, os pontos de tempo precisarão ser especificados com timepoint=1. 
+          Forneça horários de chegada para todas as paradas que representam pontos de tempo. 
+          É necessário especificar um horário de chegada para a primeira e última parada de uma viagem."
+      - name: departure_time
+        description: "Horário de partida de uma parada específica de uma determinada viagem no trajeto. 
+          Para horários após a meia-noite, insira um valor maior que 24:00:00 no formato HH:MM:SS com a hora local do dia em que a viagem está programada para iniciar. 
+          Se não houver horários distintos de chegada e partida em uma parada, insira o mesmo valor para arrival_time e departure_time. 
+          Veja a descrição de arrival_time para mais detalhes sobre como usar pontos de tempo corretamente.\n\n
+          O campo departure_time precisa especificar valores de tempo sempre que possível, 
+          incluindo horários estimados ou interpolados não vinculados entre os pontos."
+      - name: stop_headsign
+        description: "Texto que aparece na sinalização identificando o destino da viagem para os passageiros. 
+          Este campo substitui o padrão trips.trip_headsign quando o letreiro muda entre as paradas. 
+          Se o letreiro é exibido na viagem inteira, use trips.trip_headsign.\n\n
+          Um valor de stop_headsign especificado para um stop_time não se aplica aos stop_times subsequentes na mesma viagem. 
+          Se você quiser modificar o trip_headsign de vários stop_times na mesma viagem, o valor de stop_headsign precisará ser repetido em todas as linhas de stop_time."
+      - name: shape_dist_traveled
+        description: "Distância real percorrida ao longo do polígono associado, desde a primeira parada até a parada especificada neste registro. 
+          Este campo especifica o polígono entre duas paradas de uma viagem. 
+          Precisa ter as mesmas unidades que aquelas usadas no shapes.txt. 
+          Os valores usados para shape_dist_traveled precisam aumentar com stop_sequence e não podem ser utilizados para mostrar a viagem de retorno em um trajeto.\n\n
+          Por exemplo, se um ônibus percorre uma distância de 5,25 km do início do polígono até a parada, seria shape_dist_traveled=5.25."
+      - name: timepoint
+        description: "Indica se os horários de chegada e partida de uma parada são cumpridos pontualmente pelo veículo ou se são horários aproximados e/ou interpolados. 
+          Com esse campo, um produtor de GTFS pode informar tempos de parada interpolados e indicar se eles são aproximados. 
+          Estas são as opções válidas:\n\n
+          0: o horário é aproximado.\n
+          1 ou vazio: o horário é exato."
+  - name: stops
+    description: "Paradas onde os veículos pegam ou deixam passageiros. Também define estações e entradas de estações."
+    columns:
+      - name: stop_id
+        description: "Identifica uma parada de ônibus, estação ou entrada da estação."
+      - name: stop_code
+        description: "Texto curto ou um número que identifica o local para os passageiros. 
+          Esses códigos costumam ser usados em sistemas de informações de transporte público para smartphones ou impressos na sinalização, 
+          dando aos passageiros informações sobre um local específico. 
+          O stop_code pode ser igual ao stop_id se o código está disponível para o público. 
+          Este campo precisa ser deixado em branco no caso de locais que não mostram um código aos passageiros."
+      - name: stop_name
+        description: "Nome do local. Use um nome compreensível para as pessoas locais e turistas.\n\n
+          Quando o lugar é uma área de embarque (location_type=4), o stop_name precisa incluir o nome da área conforme exibido pela empresa. 
+          Pode ser apenas uma letra, como em algumas estações ferroviárias interurbanas da Europa, ou texto como 
+          'Área de embarque para cadeiras de rodas' (metrô de Nova York) ou 'Parte frontal de trens curtos' (RER de Paris).\n\n
+          Obrigatório sob certas condições:\n
+          • Obrigatório para locais que são paradas de ônibus (location_type=0), estações (location_type=1) ou entradas/saídas (location_type=2).\n
+          • Opcional para locais que são nós genéricos (location_type=3) ou áreas de embarque (location_type=4)."
+      - name: stop_desc
+        description: "Descrição do local que oferece informações úteis e de qualidade. Não basta repetir o nome dele."
+      - name: stop_lat
+        description: "Latitude do local.\n\n
+          Obrigatório sob certas condições:\n
+          • Obrigatório para locais que são paradas de ônibus (location_type=0), estações (location_type=1) ou entradas/saídas (location_type=2).\n
+          • Opcional para locais que são nós genéricos (location_type=3) ou áreas de embarque (location_type=4)."
+      - name: stop_lon
+        description: "Longitude do local.\n\n
+          Obrigatório sob certas condições:\n
+          • Obrigatório para locais que são paradas de ônibus (location_type=0), estações (location_type=1) ou entradas/saídas (location_type=2).\n
+          • Opcional para locais que são nós genéricos (location_type=3) ou áreas de embarque (location_type=4)."
+      - name: zone_id
+        description: "Identifica a zona de tarifa de uma parada. Esse campo será obrigatório se você enviar informações de tarifa usando o fare_rules.txt. 
+          Caso contrário, será opcional. Se esse registro representar uma estação ou entrada de estação, o zone_id será ignorado."
+      - name: stop_url
+        description: "URL de uma página da Web sobre o local, que precisa ser diferente dos valores do campo agency.agency_url e routes.route_url."
+      - name: location_type
+        description: "Tipo do local:\n
+          • 0 (ou vazio): parada (ou plataforma). Um local onde os passageiros embarcam ou desembarcam do transporte público. 
+          São chamados de 'plataforma' quando definidos em uma parent_station.\n
+          • 1: estação. Uma estrutura ou área física que contém uma ou mais plataformas.\n
+          • 2: entrada/saída. Local na rua em que passageiros podem entrar ou sair de uma estação. 
+          Se uma entrada/saída pertencer a várias estações, ela poderá ser vinculada por caminhos a ambas, mas o provedor de dados vai precisar escolher uma delas como a principal.\n
+          • 3: nó genérico. Um local dentro de uma estação que não corresponde a nenhum outro location_type e que pode ser usado para vincular caminhos definidos no pathways.txt.\n
+          • 4: área de embarque. Um local específico em uma plataforma, em que os passageiros podem embarcar e/ou desembarcar de veículos."
+      - name: parent_station
+        description: "Define a hierarquia entre os diferentes locais especificados no stops.txt. Contém o ID do local principal da seguinte forma:\n
+          • Parada/plataforma (location_type=0): o campo parent_station contém o ID de uma estação.\n
+          • Estação (location_type=1): este campo precisa estar vazio.\n
+          • Entrada/saída (location_type=2) ou nó genérico (location_type=3): o campo parent_station contém o ID de uma estação (location_type=1)\n
+          • Área de embarque (location_type=4): o campo parent_station contém o ID de uma plataforma.\n\n
+          Obrigatório sob certas condições:\n
+          • Obrigatório para locais que são entradas (location_type=2), nós genéricos (location_type=3) ou áreas de embarque (location_type=4).\n
+          • Opcional para paradas/plataformas (location_type=0).\n
+          • Proibido para estações (location_type=1)."
+      - name: stop_timezone
+        description: "Fuso horário do local. Se o local tiver uma estação principal, ele herdará o fuso horário dela em vez de aplicar o próprio. 
+          As estações e as paradas de ônibus de menor movimento com stop_timezone vazio herdam o fuso horário especificado por agency.agency_timezone. 
+          Se os valores de stop_timezone forem fornecidos, os horários no stop_times.txt precisarão ser inseridos como um horário após a meia-noite no fuso especificado por agency.agency_timezone. 
+          Isso garante que os valores de horário de uma viagem sempre aumentem, independente dos fusos que ela percorre."
+      - name: wheelchair_boarding
+        description: "Indica se é possível embarcar utilizando cadeira de rodas no local. Estas são as opções válidas:\n\n
+          Para paradas de menor movimento:\n
+          0 ou vazio: nenhuma informação de acessibilidade disponível.\n
+          1: alguns veículos aceitam embarque de passageiros em cadeira de rodas nessa parada.\n
+          2: não há embarque de cadeirantes nessa parada.\n\n
+          Para paradas dentro de um grande terminal ou estação:\n
+          0 ou vazio: a parada herdará o valor de wheelchair_boarding do terminal ou a estação principal, se especificado.\n
+          1: existem vias de acesso na parte externa da estação para a plataforma ou parada específica.\n
+          2: não há vias de acesso na parte externa da estação para a plataforma ou o parada específica.\n\n
+          Para entradas/saídas de estações:\n
+          0 ou vazio: a entrada da estação herdará o valor de wheelchair_boarding do terminal ou estação principal, se especificado.\n
+          1: a entrada da estação é acessível para cadeira de rodas.\n
+          2: não há via de acesso da entrada da estação para as paradas/plataformas."
+      - name: platform_code
+        description: "O identificador de plataforma de uma parada (pertencente a uma estação) em plataforma. 
+          Deve incluir apenas o identificador da plataforma (por exemplo, G ou 3). 
+          Palavras como 'plataforma' ou 'portão' (ou qualquer outra equivalente no idioma utilizado no feed) não podem ser incluídas. 
+          Dessa forma, os consumidores do feed podem internacionalizar e localizar mais facilmente o identificador da plataforma em outros idiomas."
+  - name: trips
+    description: "As viagens de cada trajeto. Uma viagem é uma sequência de duas ou mais paradas que ocorrem durante um período específico."
+    columns:
+      - name: trip_id
+        description: "Identifica uma viagem."
+      - name: route_id
+        description: "Identifica um trajeto."
+      - name: service_id
+        description: "Identifica um conjunto de datas em que o serviço está disponível para um ou mais trajetos."
+      - name: trip_headsign
+        description: "Texto que aparece na sinalização identificando o destino da viagem para os passageiros. 
+          Use este campo para fazer distinção entre diversos padrões de serviço no mesmo trajeto. 
+          Se o letreiro mudar durante uma viagem, trip_headsign poderá ser modificado especificando valores para stop_times.stop_headsign."
+      - name: trip_short_name
+        description: "Texto visível ao público usado para identificar a viagem aos passageiros, por exemplo, destacar os números dos trens. 
+          Se as pessoas não costumam consultar os nomes da viagem, deixe este campo em branco. 
+          Um valor trip_short_name, se informado, precisará identificar exclusivamente uma viagem no dia do serviço. 
+          Ele não pode ser usado para nomes de destino nem designações limitadas/expressas."
+      - name: direction_id
+        description: "Indica a direção de uma viagem. Este campo não é usado para criar trajetos. 
+          Com ele, é possível diferenciar as viagens por direção no momento de publicar as tabelas de horários. 
+          Estas são as opções válidas:\n\n          
+          - 0: viagem em uma direção (por exemplo, só ida).\n
+          - 1: viagem na direção oposta (por exemplo, só volta).\n\n          
+          Por exemplo, você pode usar os campos trip_headsign e direction_id juntos para atribuir um nome à viagem em cada direção de um conjunto de viagens. 
+          Um arquivo trips.txt pode conter estes registros para uso em tabelas de horários:\n\n          
+          trip_id,...,trip_headsign,direction_id\n
+          1234,...,Airport,0\n
+          1505,...,Downtown,1"
+      - name: shape_id
+        description: "Identifica uma forma geoespacial que descreve o caminho do veículo em uma viagem.\n          
+          Obrigatório sob certas condições:\n
+          esse campo é obrigatório se a viagem tiver um comportamento contínuo definido, seja no nível do trajeto ou do tempo de parada.
+          Caso contrário, é opcional."
+  - name: os
+    description: "Ordem de Serviço que deve ser seguida pelo agency."
+    columns:
+      - name: servico
+        description: "Nome do serviço"
+      - name: vista
+        description: "Itinerário da linha (ex: Bananal ↔ Saens Peña)"
+      - name: consorcio
+        description: "Consórcio ao qual o serviço pertence"
+      - name: horario_inicio
+        description: "Horário em que o serviço começa"
+      - name: horario_fim
+        description: "Horário em que o serviço termina"
+      - name: extensao_de_ida
+        description: "Distância percorrida no trajeto de ida"
+      - name: extensao_de_volta
+        description: "Distância percorrida no trajeto de volta"
+      - name: partidas_ida_dia_util
+        description: "Número de partidas no trajeto de ida em dia útil"
+      - name: partidas_volta_dia_util
+        description: "Número de partidas no trajeto de volta em dia útil"
+      - name: viagens_dia_util
+        description: "Número total de viagens em dia útil"
+      - name: quilometragem_dia_util
+        description: "Quilometragem total em dia útil"
+      - name: partidas_ida_sabado
+        description: "Número de partidas no trajeto de ida no sábado"
+      - name: partidas_volta_sabado
+        description: "Número de partidas no trajeto de volta no sábado"
+      - name: viagens_sabado
+        description: "Número total de viagens no sábado"
+      - name: quilometragem_sabado
+        description: "Quilometragem total no sábado"
+      - name: partidas_ida_domingo
+        description: "Número de partidas no trajeto de ida no domingo"
+      - name: partidas_volta_domingo
+        description: "Número de partidas no trajeto de volta no domingo"
+      - name: viagens_domingo
+        description: "Número total de viagens no domingo"
+      - name: quilometragem_domingo
+        description: "Quilometragem total no domingo"
