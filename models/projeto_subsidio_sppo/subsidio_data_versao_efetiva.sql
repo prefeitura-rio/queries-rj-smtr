@@ -16,8 +16,9 @@ SELECT
       WHEN data = "2022-12-05" THEN "Sabado"
       WHEN data = "2022-12-09" THEN "Sabado"
       WHEN data = "2023-04-06" THEN "Sabado" -- Ponto Facultativo - DECRETO RIO Nº 52275/2023
-      WHEN data = "2023-06-09" THEN "Sabado" -- Ponto Facultativo - DECRETO RIO Nº 52584/2023
       WHEN data = "2023-04-07" THEN "Domingo" -- Paixão de Cristo -- Art. 1º, V - PORTARIA ME Nº 11.090/2022
+      WHEN data = "2023-06-08" THEN "Domingo" -- Corpus Christi - Lei nº 336/1949 - OFÍCIO Nº MTR-OFI-2023/03260 (MTROFI202303260A)
+      WHEN data = "2023-06-09" THEN "Sabado" -- Ponto Facultativo - DECRETO RIO Nº 52584/2023
       WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 1 THEN "Domingo" -- Dia de São Sebastião -- Art. 8°, I - Lei Municipal nº 5146/2010
       WHEN EXTRACT(DAY FROM data) = 23 AND EXTRACT(MONTH FROM data) = 4 THEN "Domingo" -- Dia de São Jorge -- Art. 8°, II - Lei Municipal nº 5146/2010 / Lei Estadual Nº 5198/2008 / Lei Estadual Nº 5645/2010
       WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 11 THEN "Domingo" -- Aniversário de morte de Zumbi dos Palmares / Dia da Consciência Negra -- Art. 8°, IV - Lei Municipal nº 5146/2010 / Lei Estadual nº 526/1982 / Lei Estadual nº 1929/1991 / Lei Estadual nº 4007/2002 / Lei Estadual Nº 5645/2010
@@ -40,6 +41,8 @@ SELECT
     -- Reprocessamento:
     WHEN data BETWEEN DATE(2023,1,15) AND DATE(2023,1,31) THEN DATE(2023,1,16)
     WHEN data BETWEEN DATE(2023,3,16) AND DATE(2023,3,31) THEN DATE(2023,3,16)
+    -- Alteração de Planejamento
+    WHEN data BETWEEN DATE(2023,6,16) AND DATE(2023,6,30) THEN DATE(2023,3,16)
     -- 2022:
     WHEN data BETWEEN DATE(2022,10,1) AND DATE(2022,10,2) THEN DATE(2022,9,16)
     WHEN data BETWEEN DATE(2022,6,1) AND LAST_DAY(DATE(2022,6,30), MONTH) THEN DATE(2022,6,1)
@@ -62,6 +65,8 @@ SELECT
     -- Reprocessamento:
     WHEN data BETWEEN DATE(2023,1,15) AND DATE(2023,1,31) THEN DATE(2023,1,16)
     WHEN data BETWEEN DATE(2023,3,16) AND DATE(2023,3,31) THEN DATE(2023,3,16)
+    -- Alteração de Planejamento
+    WHEN data BETWEEN DATE(2023,6,16) AND DATE(2023,6,30) THEN DATE(2023,3,16)
     -- 2022:
     WHEN data BETWEEN DATE(2022,10,1) AND DATE(2022,10,2) THEN DATE(2022,9,16)
     WHEN data BETWEEN DATE(2022,6,1) AND LAST_DAY(DATE(2022,6,30), MONTH) THEN DATE(2022,6,1)
@@ -84,6 +89,8 @@ SELECT
     -- Reprocessamento:
     WHEN data BETWEEN DATE(2023,1,15) AND DATE(2023,1,31) THEN DATE(2023,1,16)
     WHEN data BETWEEN DATE(2023,3,16) AND DATE(2023,3,31) THEN DATE(2023,3,16)
+    -- Alteração de Planejamento
+    WHEN data BETWEEN DATE(2023,6,16) AND DATE(2023,6,30) THEN DATE(2023,3,16)
     -- 2022:
     {% for i in range(6, 13) %}
       WHEN data BETWEEN DATE(2022,{{ i }},1) AND DATE(2022,{{ i }},15) THEN DATE(2022,{{ i }},1)
