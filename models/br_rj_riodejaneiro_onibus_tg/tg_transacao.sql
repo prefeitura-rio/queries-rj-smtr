@@ -1,5 +1,10 @@
 {{ 
-  config(alias='transacao') 
+  config( 
+    alias="transacao",
+    materialized="incremental",
+    partition_by={"field": "data", "data_type": "date", "granularity": "day"},
+    incremental_strategy="insert_overwrite",
+  ) 
 }}
 
 SELECT
@@ -24,9 +29,7 @@ SELECT
   SAFE_CAST(file_date AS STRING) AS data_arquivo_origem,
   SAFE_CAST(codigo_empresa AS INT64) AS codigo_empresa,
   SAFE_CAST(uid AS STRING) AS id_cartao,
-  SAFE_CAST(ano AS INT64) AS ano,
-  SAFE_CAST(mes AS INT64) AS mes,
-  SAFE_CAST(dia AS INT64) AS dia
+  SAFE_CAST(DATE_ADD(DATE '2002-12-31', INTERVAL data DAY) AS DATE) AS data
 FROM
   {{var('tg_transacao_staging')}}
 WHERE
@@ -36,3 +39,24 @@ WHERE
   AND status = 0 -- Apenas transações com sucesso
   AND (emissor_aplicacao BETWEEN 1 AND 15)
   AND (aplicacao BETWEEN 0 AND 1023)
+  AND dia <= EXTRACT(DAY FROM DATE("{{ var("date_range_end") }}"))
+  AND mes <= EXTRACT(MONTH FROM DATE("{{ var("date_range_end") }}"))
+  AND ano <= EXTRACT(YEAR FROM DATE("{{ var("date_range_end") }}"))
+
+  {% if is_incremental() %}
+
+  {% if var("date_range_start") == "None" %}
+
+  {% set date_range_start = run_query("SELECT gr FROM (SELECT IF(MAX(data) > DATE('" ~ var("date_range_end") ~ "'), DATE('" ~ var("date_range_end") ~ "'), MAX(data)) AS gr FROM " ~ this ~ ")").columns[0].values()[0] %}
+
+  {% else %}
+
+  {% set date_range_start = var("date_range_start") %}
+
+  {% endif %}
+
+    AND dia >= EXTRACT(DAY FROM DATE("{{ date_range_start }}"))
+    AND mes >= EXTRACT(MONTH FROM DATE("{{ date_range_start }}"))
+    AND ano >= EXTRACT(YEAR FROM DATE("{{ date_range_start }}"))
+
+  {% endif %}
