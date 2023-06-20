@@ -11,7 +11,7 @@ models:
       - name: timestamp_transacao
         description: "Timestamp da transação em GMT-3"
       - name: numero_aplicacao
-        description: "Número do aplicação (Vide anexo 'Aplicações')"
+        description: "Número do aplicação"
       - name: sequencial_transacao
         description: "Número sequencial da transação no veículo naquele dia"
       - name: valor_tarifa
@@ -21,11 +21,11 @@ models:
       - name: valor_debitado
         description: "Valor debitado na viagem atual (R$)"
       - name: status
-        description: "Estado da transação, indicando falha ou sucesso (0 - Sucesso, 1 - Falha, 2 - Cartão rejeitado)"
+        description: "Estado da transação, indicando falha ou sucesso"
       - name: id_veiculo
         description: "Número do veículo configurado no equipamento (apenas número)"
       - name: tipo_embarque
-        description: "Tipo de embarque atual, indica se é integração ou não (0 - Embarque normal, 1 - Integração)"
+        description: "Tipo de embarque atual, indica se é integração ou não"
       - name: diferenca_valor_debitado
         description: "Diferença do valor debitado na transação (R$)"
       - name: valor_promo_desconto
@@ -33,9 +33,9 @@ models:
       - name: valor_acumulado
         description: "Soma do valor total pago em uma integração (R$)"
       - name: tipo_debito
-        description: "Tipo de débito no cartão (0 - Full fare, 1 - Promotional Fare, 2 - Discount Applied, 3 - BU Fare, 4 - BU-MUN Fare, 5 - BUCS, 6 - Prouni)"
+        description: "Tipo de débito no cartão"
       - name: mensagem_debito
-        description: "Mensagem de estado do débito no cartão (0 - Normal, 161 - Validation Without Finger, 190 - Passback BU, 191 - Limite por dia BU atingido, 192 - Créditos expirados para uso BU, 193 - BU desabilitado)"
+        description: "Mensagem de estado do débito no cartão"
       - name: arquivo_origem
         description: "Nome do arquivo txt de origem do registro: TG[Código da Empresa]_[id_veiculo]_[Número do Validador]_[Número de Controle Sequencial]_[Código da Empresa]_[Timestamp de geração do arquivo]_[Versão do Validador (Software) - XX.XX]"
       - name: garagem
@@ -46,13 +46,9 @@ models:
         description: "Código da empresa que opera o veículo de origem da transação"
       - name: id_cartao
         description: "Número único criptografado do cartão RioCard"
-      - name: ano
-        description: "Ano da transação (partição)"
-      - name: mes
-        description: "Mês da transação (partição)"
-      - name: dia
-        description: "Dia da transação (partição)"
-  - name: dicionario
+      - name: data
+        description: "Data da transação (partição)"
+  - name: tg_dicionario
     description: "Dicionário de dados"
     columns:
       - name: chave
