@@ -52,3 +52,16 @@ models:
         description: "Mês da transação (partição)"
       - name: dia
         description: "Dia da transação (partição)"
+  - name: dicionario
+    description: "Dicionário de dados"
+    columns:
+      - name: chave
+        description: "Chave"
+      - name: cobertura_temporal
+        description: "Cobertura temporal"
+      - name: id_tabela
+        description: "Nome da tabela"
+      - name: nome_coluna
+        description: "Nome da coluna"
+      - name: valor
+        description: "Valor"
