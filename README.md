@@ -16,7 +16,7 @@
 
 ```bash
 python -m venv dbt-env
-. dbt-env/Scripts/activate
+. dbt-env/bin/activate # no Windows, usar . dbt-env/Scripts/activate
 python -m pip install --upgrade pip 
 pip install -r requirements-dev.txt
 ```
