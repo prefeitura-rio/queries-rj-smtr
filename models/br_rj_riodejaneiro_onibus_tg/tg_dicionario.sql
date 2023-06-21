@@ -1,5 +1,8 @@
 {{ 
-  config(alias='dicionario') 
+  config( 
+    alias="dicionario",
+    materialized="table",
+  ) 
 }}
 
 SELECT
