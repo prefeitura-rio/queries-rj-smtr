@@ -20,6 +20,11 @@ models:
         description: "Timestamp da transação em GMT-3"
       - name: tipo_embarque
         description: "Tipo de embarque atual, indica se é integração ou não"
+        tests:
+          - accepted_values:
+              values: ['0', '1']
+              config:
+                where: "__date_partition__"
       - name: tipo_debito
         description: "Tipo de débito no cartão, indica o tipo de tarifa executada (ex: cheia, com desconto). Categorias podem ser encontradas na tabela dicionário."
       - name: mensagem_debito
@@ -33,7 +38,14 @@ models:
       - name: valor_promo_desconto
         description: "Valor promocional ou de desconto da tarifa (R$)"
       - name: valor_total_integracao
-        description: "Soma do valor total pago em uma integração (R$)"     
+        description: "Soma do valor total pago em uma integração (R$)"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - id_cartao
+            - timestamp_transacao   
+          config:
+            where: "__date_partition__"  
   - name: tg_dicionario
     description: "Dicionário de dados"
     columns:
