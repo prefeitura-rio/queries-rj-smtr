@@ -13,7 +13,7 @@ SELECT
   SAFE_CAST(num_onibus AS STRING) AS id_veiculo,
   SAFE_CAST(uid AS STRING) AS id_cartao, 
   SAFE_CAST(emissor_aplicacao || "_" || aplicacao AS STRING) AS id_tipo_cartao,
-  SAFE_CAST(tsn AS STRING) AS sequencial_transacao_veiculo,
+  SAFE_CAST(tsn AS STRING) AS sequencial_transacao_cartao,
   SAFE_CAST(DATETIME(TIMESTAMP_ADD(TIMESTAMP(DATE_ADD(DATE '2002-12-31', INTERVAL data DAY)), INTERVAL hora SECOND), "America/Sao_Paulo") AS DATETIME) AS timestamp_transacao,
   SAFE_CAST(tipo_embarque AS STRING) AS tipo_embarque,
   SAFE_CAST(SAFE_CAST(tipo_debito AS FLOAT64) AS STRING) AS tipo_debito,
