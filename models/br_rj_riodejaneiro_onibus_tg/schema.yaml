@@ -12,7 +12,7 @@ models:
         description: "Número do veículo configurado no equipamento (apenas número)"
       - name: id_cartao
         description: "Número único criptografado do cartão RioCard"
-      - name: id_tipo_cartao
+      - name: tipo_cartao
         description: "Número do aplicação, indica qual o tipo do cartão (ex: gratuidade, vale transporte). Categorias podem ser encontradas na tabela dicionário."
       - name: sequencial_transacao_cartao
         description: "Número sequencial histórico de transações do cartão"
@@ -29,15 +29,15 @@ models:
         description: "Tipo de débito no cartão, indica o tipo de tarifa executada (ex: cheia, com desconto). Categorias podem ser encontradas na tabela dicionário."
       - name: mensagem_debito
         description: "Mensagem de estado do débito no cartão. Categorias podem ser encontradas na tabela dicionário."
-      - name: valor_tarifa
+      - name: tarifa
         description: "Valor da tarifa configurado no equipamento (R$)"
-      - name: valor_tarifa_anterior
+      - name: tarifa_anterior
         description: "Valor da tarifa anterior da viagem anterior (R$)"
-      - name: valor_debitado
+      - name: debito
         description: "Valor debitado na viagem atual (R$)"
-      - name: valor_promo_desconto
+      - name: desconto
         description: "Valor promocional ou de desconto da tarifa (R$)"
-      - name: valor_total_integracao
+      - name: total_integracao
         description: "Soma do valor total pago em uma integração (R$)"
     tests:
       - dbt_utils.unique_combination_of_columns:
