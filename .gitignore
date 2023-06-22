@@ -14,3 +14,4 @@ dbt-env/
 scripts/
 dev/profiles.yml
 dev/.user.yml
+dev/__pycache__
