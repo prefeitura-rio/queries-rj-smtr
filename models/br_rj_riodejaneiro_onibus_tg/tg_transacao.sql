@@ -12,17 +12,17 @@ SELECT
   SAFE_CAST(codigo_empresa AS STRING) AS id_empresa,
   SAFE_CAST(num_onibus AS STRING) AS id_veiculo,
   SAFE_CAST(uid AS STRING) AS id_cartao, 
-  SAFE_CAST(emissor_aplicacao || "_" || aplicacao AS STRING) AS id_tipo_cartao,
+  SAFE_CAST(emissor_aplicacao || "_" || aplicacao AS STRING) AS tipo_cartao,
   SAFE_CAST(tsn AS STRING) AS sequencial_transacao_cartao,
   SAFE_CAST(DATETIME(TIMESTAMP_ADD(TIMESTAMP(DATE_ADD(DATE '2002-12-31', INTERVAL data DAY)), INTERVAL hora SECOND), "America/Sao_Paulo") AS DATETIME) AS timestamp_transacao,
   SAFE_CAST(tipo_embarque AS STRING) AS tipo_embarque,
   SAFE_CAST(SAFE_CAST(tipo_debito AS FLOAT64) AS STRING) AS tipo_debito,
   SAFE_CAST(SAFE_CAST(mensagem_debito AS FLOAT64) AS STRING) AS mensagem_debito,
-  SAFE_CAST(valor_tarifa/100 AS FLOAT64) AS valor_tarifa,
-  SAFE_CAST(valor_tarifa_anterior/100 AS FLOAT64) AS valor_tarifa_anterior,
-  SAFE_CAST(valor_debitado/100 AS FLOAT64) AS valor_debitado,
-  SAFE_CAST(SAFE_CAST(valor_promo_desconto AS INT64)/100 AS FLOAT64) AS valor_promo_desconto,
-  SAFE_CAST(SAFE_CAST(valor_acumulado AS INT64)/100 AS FLOAT64) AS valor_total_integracao 
+  SAFE_CAST(valor_tarifa/100 AS FLOAT64) AS tarifa,
+  SAFE_CAST(valor_tarifa_anterior/100 AS FLOAT64) AS tarifa_anterior,
+  SAFE_CAST(valor_debitado/100 AS FLOAT64) AS debito,
+  SAFE_CAST(SAFE_CAST(valor_promo_desconto AS INT64)/100 AS FLOAT64) AS desconto,
+  SAFE_CAST(SAFE_CAST(valor_acumulado AS INT64)/100 AS FLOAT64) AS total_integracao 
 FROM
   {{var('tg_transacao_staging')}}
 WHERE
