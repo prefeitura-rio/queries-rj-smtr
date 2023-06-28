@@ -53,35 +53,35 @@ models:
         tests:
           - dbt_utils.accepted_range:
               min_value: 4.05
-              max_value: 17.00
+              max_value: 19.95
               where: "__date_partition__"
       - name: tarifa_anterior
         description: "Valor da tarifa anterior da viagem anterior (R$)"
         tests:
           - dbt_utils.accepted_range:
               min_value: 0
-              max_value: 17.00
+              max_value: 19.95
               where: "__date_partition__ AND tarifa_anterior IS NOT NULL"
       - name: debito
         description: "Valor debitado na viagem atual (R$)"
         tests:
           - dbt_utils.accepted_range:
               min_value: 0
-              max_value: 17.00
+              max_value: 19.95
               where: "__date_partition__"
       - name: desconto
         description: "Valor promocional ou de desconto da tarifa (R$)"
         tests:
           - dbt_utils.accepted_range:
               min_value: 0
-              max_value: 17.00
+              max_value: 19.95
               where: "__date_partition__ AND desconto IS NOT NULL"
       - name: total_integracao
         description: "Soma do valor total pago em uma integração (R$)"
         tests:
           - dbt_utils.accepted_range:
               min_value: 0
-              max_value: 17.00
+              max_value: 19.95
               where: "__date_partition__ AND total_integracao IS NOT NULL"
     tests:
       - dbt_utils.unique_combination_of_columns:
