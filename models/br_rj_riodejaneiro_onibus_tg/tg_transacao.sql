@@ -41,12 +41,20 @@ WITH
     AND mes >= EXTRACT(MONTH FROM DATE("{{ date_range_start }}"))
     AND ano >= EXTRACT(YEAR FROM DATE("{{ date_range_start }}"))
   ),
-  tg_rn_transactions AS (
+  tg_rn_garagem_transactions AS (
   SELECT
     *,
-    ROW_NUMBER() OVER (PARTITION BY tipo_registro, versao_registro, DATA, hora, numero_interno, aplicacao, emissor_aplicacao, tsn, valor_tarifa, valor_tarifa_anterior, valor_debitado, status, num_onibus, mot_tsp, mot_codigo_pro_data, mot_matricula, cob_tsp, cob_codigo_pro_data, cob_matricula, tipo_embarque, serial_number_sam_val, l_sequence_number, assinatura, diferenca_valor_debitado, secao_entrada, secao_saida, avl_status, provider_id, ext_use_ctr, ext_val_date, valor_promo_desconto, valor_acumulado, tipo_debito, mensagem_debito, tp_credit_purse_a, tp_credit_purse_b, csn_purse_a, csn_purse_b, origin_file, file_date, codigo_empresa, tsn_date, uid, ano, mes, dia ) AS rn
+    ROW_NUMBER() OVER (PARTITION BY tipo_registro, versao_registro, DATA, hora, numero_interno, aplicacao, emissor_aplicacao, tsn, valor_tarifa, valor_tarifa_anterior, valor_debitado, status, num_onibus, mot_tsp, mot_codigo_pro_data, mot_matricula, cob_tsp, cob_codigo_pro_data, cob_matricula, tipo_embarque, serial_number_sam_val, l_sequence_number, assinatura, diferenca_valor_debitado, secao_entrada, secao_saida, avl_status, provider_id, ext_use_ctr, ext_val_date, valor_promo_desconto, valor_acumulado, tipo_debito, mensagem_debito, tp_credit_purse_a, tp_credit_purse_b, csn_purse_a, csn_purse_b, origin_file, file_date, codigo_empresa, tsn_date, uid, ano, mes, dia ) AS rn_garagem
   FROM
     tg_all_transactions ),
+  tg_rn_debito_transactions AS (
+  SELECT
+    *,
+    ROW_NUMBER() OVER (PARTITION BY tipo_registro, versao_registro, DATA, hora, numero_interno, aplicacao, emissor_aplicacao, tsn, valor_tarifa, valor_tarifa_anterior, status, num_onibus, mot_tsp, mot_codigo_pro_data, mot_matricula, cob_tsp, cob_codigo_pro_data, cob_matricula, tipo_embarque, serial_number_sam_val, l_sequence_number, assinatura, diferenca_valor_debitado, secao_entrada, secao_saida, avl_status, provider_id, ext_use_ctr, ext_val_date, valor_promo_desconto, valor_acumulado, tipo_debito, mensagem_debito, tp_credit_purse_a, tp_credit_purse_b, csn_purse_a, csn_purse_b, origin_file, file_date, codigo_empresa, tsn_date, uid, ano, mes, dia ) AS rn_debito
+  FROM
+    tg_rn_garagem_transactions
+  WHERE 
+    rn_garagem = 1),
   tg_filtered_transactions AS (
   SELECT
     SAFE_CAST(DATE_ADD(DATE '2002-12-31', INTERVAL DATA DAY) AS DATE) AS DATA,
@@ -66,10 +74,9 @@ WITH
     SAFE_CAST(SAFE_CAST(valor_acumulado AS INT64)/100 AS FLOAT64) AS total_integracao,
     SAFE_CAST(garagem AS STRING) AS garagem
   FROM
-    tg_rn_transactions
+    tg_rn_debito_transactions
   WHERE
-    rn = 1 )
--- TODO: Filtrar apenas registros que tenham divergência exclusivamente na coluna valor_debitado para realizar a soma
+    rn_debito = 1 )
 SELECT
   DATA,
   id_empresa,
