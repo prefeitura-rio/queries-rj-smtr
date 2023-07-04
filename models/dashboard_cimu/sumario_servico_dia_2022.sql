@@ -1,5 +1,4 @@
 /*  Query para criar a view com dados de 2022*/ 
-CREATE OR REPLACE VIEW `rj-smtr-dev.dashboard_cimu.sumario_servico_dia_2022` AS
 
 SELECT
   s.`data`,
@@ -34,6 +33,3 @@ GROUP BY
   perc_km_planejada,
   valor_subsidio_pago,
   t.consorcio
-ORDER BY
-  s.servico,
-  s.`data`;

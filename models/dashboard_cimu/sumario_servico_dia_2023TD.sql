@@ -1,5 +1,5 @@
 /* Query para criar a view com dados de 2023 em diante (To Date) */
-CREATE OR REPLACE VIEW `rj-smtr-dev.dashboard_cimu.sumario_servico_dia_2023TD` AS
+
 SELECT
   s.`data`,
   s.tipo_dia,
@@ -43,6 +43,3 @@ GROUP BY
   valor_penalidade,
   valor_final_subsidio,
   t.consorcio
-ORDER BY
-  s.servico,
-  s.`data`;
