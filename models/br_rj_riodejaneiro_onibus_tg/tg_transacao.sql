@@ -10,13 +10,13 @@
 WITH
   tg AS (
   SELECT
-    SAFE_CAST(DATE_ADD(DATE '2002-12-31', INTERVAL DATA DAY) AS DATE) AS DATA,
+    SAFE_CAST(DATE_ADD(DATE '2002-12-31', INTERVAL data DAY) AS DATE) AS data,
     SAFE_CAST(codigo_empresa AS STRING) AS id_empresa,
     SAFE_CAST(num_onibus AS STRING) AS id_veiculo,
     SAFE_CAST(uid AS STRING) AS id_cartao,
     SAFE_CAST(emissor_aplicacao || "_" || aplicacao AS STRING) AS tipo_cartao,
     SAFE_CAST(tsn AS STRING) AS sequencial_transacao_cartao,
-    SAFE_CAST(DATETIME(TIMESTAMP_ADD(TIMESTAMP(DATE_ADD(DATE '2002-12-31', INTERVAL DATA DAY)), INTERVAL hora SECOND)) AS DATETIME) AS datetime,
+    SAFE_CAST(DATETIME(TIMESTAMP_ADD(TIMESTAMP(DATE_ADD(DATE '2002-12-31', INTERVAL data DAY)), INTERVAL hora SECOND)) AS DATETIME) AS datetime,
     SAFE_CAST(tipo_embarque AS STRING) AS tipo_embarque,
     SAFE_CAST(SAFE_CAST(tipo_debito AS FLOAT64) AS STRING) AS tipo_debito,
     SAFE_CAST(SAFE_CAST(mensagem_debito AS FLOAT64) AS STRING) AS mensagem_debito,
@@ -40,12 +40,18 @@ WITH
     {% endif %}
 
     ano BETWEEN EXTRACT(YEAR FROM DATE("{{ date_range_start }}")) AND EXTRACT(YEAR FROM DATE("{{ var("date_range_end") }}"))
-    AND mes BETWEEN EXTRACT(MONTH FROM DATE("{{ date_range_start }}")) AND EXTRACT(MONTH FROM DATE("{{ var("date_range_end") }}"))
-    AND dia BETWEEN EXTRACT(DAY FROM DATE("{{ date_range_start }}")) AND EXTRACT(DAY FROM DATE("{{ var("date_range_end") }}"))
     AND status = 0 -- Apenas transações com sucesso
     AND (emissor_aplicacao BETWEEN 1 AND 15) -- Range de emissores de cartão válidos (fonte: RioCard)
     AND (aplicacao BETWEEN 0 AND 1023) -- Range de aplicações válidas (fonte: RioCard)
 
+  ),
+  tg_filtra_data AS (
+    SELECT
+      *
+    FROM
+      tg
+    WHERE
+      data BETWEEN DATE("{{ date_range_start }}") AND DATE("{{ var("date_range_end") }}")
   ),
   tg_soma_debito AS ( 
   SELECT
@@ -66,7 +72,7 @@ WITH
     total_integracao,
     garagem
   FROM
-    tg
+    tg_filtra_data
   GROUP BY
     data,
     id_empresa,
