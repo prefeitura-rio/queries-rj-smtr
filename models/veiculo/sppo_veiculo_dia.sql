@@ -18,11 +18,15 @@ with
         -- status
         from {{ ref("sppo_licenciamento") }}
         -- TODO: usar redis p controle de versao
-        {% if var("stu_data_versao") != "" -%}
+        {% if var("stu_data_versao") != "" %}
             where data = date("{{ var('stu_data_versao') }}")
         {% else %}
-            where data = date_add(date("{{ var('run_date') }}"), interval 5 day)
-        {%- endif %}
+            {% if execute %}
+                {% set licenciamento_date = run_query("SELECT MIN(data) FROM " ~ ref("sppo_licenciamento") ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 5 DAY)").columns[0].values()[0] %}
+            {% endif %}
+
+            where data = DATE("{{ licenciamento_date }}")
+        {% endif %}
     ),
     gps as (
         select distinct data, id_veiculo, true as indicador_em_operacao
@@ -35,7 +39,11 @@ with
         select distinct data_infracao as data, placa, true as indicador_autuacao
         from {{ ref("sppo_infracao") }}
         where
-            data = date_add(date("{{ var('run_date') }}"), interval 7 day)
+            {% if execute %}
+                {% set infracao_date = run_query("SELECT MIN(data) FROM " ~ ref("sppo_infracao") ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 7 DAY)").columns[0].values()[0] %}
+            {% endif %}
+
+            data = DATE("{{ infracao_date }}")
             and data_infracao = date("{{ var('run_date') }}")
             and modo = "ONIBUS"
             and id_infracao = "023.II"
