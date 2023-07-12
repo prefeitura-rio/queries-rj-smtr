@@ -8,54 +8,7 @@
 }}
 
 WITH
-  tg_all_transactions AS (
-  SELECT
-    * EXCEPT(secao_entrada,
-      secao_saida),
-    SAFE_CAST(secao_entrada AS STRING) AS secao_entrada,
-    SAFE_CAST(secao_saida AS STRING) AS secao_saida
-  FROM
-    `rj-smtr-staging.br_rj_riodejaneiro_onibus_tg.card_transactions`
-  WHERE
-    (ano BETWEEN 2022 AND 2023) -- Apenas dados de 2022 e 2023
-    AND mes >= 1
-    AND dia >= 1
-    AND status = 0 -- Apenas transações com sucesso
-    AND (emissor_aplicacao BETWEEN 1 AND 15)
-    AND (aplicacao BETWEEN 0 AND 1023)
-    AND dia <= EXTRACT(DAY FROM DATE("{{ var("date_range_end") }}"))
-    AND mes <= EXTRACT(MONTH FROM DATE("{{ var("date_range_end") }}"))
-    AND ano <= EXTRACT(YEAR FROM DATE("{{ var("date_range_end") }}"))
-
-    {% if var("date_range_start") == "None" %}
-
-    {% set date_range_start = run_query("SELECT gr FROM (SELECT IF(MAX(data) > DATE('" ~ var("date_range_end") ~ "'), DATE('" ~ var("date_range_end") ~ "'), MAX(data)) AS gr FROM " ~ this ~ ")").columns[0].values()[0] %}
-
-    {% else %}
-
-    {% set date_range_start = var("date_range_start") %}
-
-    {% endif %}
-
-    AND dia >= EXTRACT(DAY FROM DATE("{{ date_range_start }}"))
-    AND mes >= EXTRACT(MONTH FROM DATE("{{ date_range_start }}"))
-    AND ano >= EXTRACT(YEAR FROM DATE("{{ date_range_start }}"))
-  ),
-  tg_rn_garagem_transactions AS (
-  SELECT
-    *,
-    ROW_NUMBER() OVER (PARTITION BY tipo_registro, versao_registro, DATA, hora, numero_interno, aplicacao, emissor_aplicacao, tsn, valor_tarifa, valor_tarifa_anterior, valor_debitado, status, num_onibus, mot_tsp, mot_codigo_pro_data, mot_matricula, cob_tsp, cob_codigo_pro_data, cob_matricula, tipo_embarque, serial_number_sam_val, l_sequence_number, assinatura, diferenca_valor_debitado, secao_entrada, secao_saida, avl_status, provider_id, ext_use_ctr, ext_val_date, valor_promo_desconto, valor_acumulado, tipo_debito, mensagem_debito, tp_credit_purse_a, tp_credit_purse_b, csn_purse_a, csn_purse_b, origin_file, file_date, codigo_empresa, tsn_date, uid, ano, mes, dia ) AS rn_garagem
-  FROM
-    tg_all_transactions ),
-  tg_rn_debito_transactions AS (
-  SELECT
-    *,
-    ROW_NUMBER() OVER (PARTITION BY tipo_registro, versao_registro, DATA, hora, numero_interno, aplicacao, emissor_aplicacao, tsn, valor_tarifa, valor_tarifa_anterior, status, num_onibus, mot_tsp, mot_codigo_pro_data, mot_matricula, cob_tsp, cob_codigo_pro_data, cob_matricula, tipo_embarque, serial_number_sam_val, l_sequence_number, assinatura, diferenca_valor_debitado, secao_entrada, secao_saida, avl_status, provider_id, ext_use_ctr, ext_val_date, valor_promo_desconto, valor_acumulado, tipo_debito, mensagem_debito, tp_credit_purse_a, tp_credit_purse_b, csn_purse_a, csn_purse_b, origin_file, file_date, codigo_empresa, tsn_date, uid, ano, mes, dia ) AS rn_debito
-  FROM
-    tg_rn_garagem_transactions
-  WHERE 
-    rn_garagem = 1),
-  tg_filtered_transactions AS (
+  tg AS (
   SELECT
     SAFE_CAST(DATE_ADD(DATE '2002-12-31', INTERVAL DATA DAY) AS DATE) AS DATA,
     SAFE_CAST(codigo_empresa AS STRING) AS id_empresa,
@@ -74,39 +27,72 @@ WITH
     SAFE_CAST(SAFE_CAST(valor_acumulado AS INT64)/100 AS FLOAT64) AS total_integracao,
     SAFE_CAST(garagem AS STRING) AS garagem
   FROM
-    tg_rn_debito_transactions
+    {{ var('tg_transacao_staging') }}
   WHERE
-    rn_debito = 1 )
+    {% if var("date_range_start") == "None" %}
+
+    {% set date_range_start = "2022-06-01" %}
+
+    {% else %}
+
+    {% set date_range_start = var("date_range_start") %}
+
+    {% endif %}
+
+    ano BETWEEN EXTRACT(YEAR FROM DATE("{{ date_range_start }}")) AND EXTRACT(YEAR FROM DATE("{{ var("date_range_end") }}"))
+    AND mes BETWEEN EXTRACT(MONTH FROM DATE("{{ date_range_start }}")) AND EXTRACT(MONTH FROM DATE("{{ var("date_range_end") }}"))
+    AND dia BETWEEN EXTRACT(DAY FROM DATE("{{ date_range_start }}")) AND EXTRACT(DAY FROM DATE("{{ var("date_range_end") }}"))
+    AND status = 0 -- Apenas transações com sucesso
+    AND (emissor_aplicacao BETWEEN 1 AND 15) -- Range de emissores de cartão válidos (fonte: RioCard)
+    AND (aplicacao BETWEEN 0 AND 1023) -- Range de aplicações válidas (fonte: RioCard)
+
+  ),
+  tg_soma_debito AS ( 
+  SELECT
+    data,
+    id_empresa,
+    id_veiculo,
+    id_cartao,
+    tipo_cartao,
+    sequencial_transacao_cartao,
+    datetime,
+    tipo_embarque,
+    tipo_debito,
+    mensagem_debito,
+    tarifa,
+    tarifa_anterior,
+    ROUND(SUM(debito), 2) AS debito,
+    desconto,
+    total_integracao,
+    garagem
+  FROM
+    tg
+  GROUP BY
+    data,
+    id_empresa,
+    id_veiculo,
+    id_cartao,
+    tipo_cartao,
+    sequencial_transacao_cartao,
+    datetime,
+    tipo_embarque,
+    tipo_debito,
+    mensagem_debito,
+    tarifa,
+    tarifa_anterior,
+    desconto,
+    total_integracao,
+    garagem),
+  tg_rn_garagem AS (
+  SELECT
+    *,
+    ROW_NUMBER() OVER (PARTITION BY datetime, id_cartao ) AS rn_garagem
+  FROM
+    tg_soma_debito )
 SELECT
-  DATA,
-  id_empresa,
-  id_veiculo,
-  id_cartao,
-  tipo_cartao,
-  sequencial_transacao_cartao,
-  datetime,
-  tipo_embarque,
-  tipo_debito,
-  mensagem_debito,
-  tarifa,
-  tarifa_anterior,
-  SUM(debito) AS debito,
-  desconto,
-  total_integracao
+  * EXCEPT(garagem,
+    rn_garagem)
 FROM
-  tg_filtered_transactions
-GROUP BY
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  14,
-  15
+  tg_rn_garagem
+WHERE
+  rn_garagem = 1
