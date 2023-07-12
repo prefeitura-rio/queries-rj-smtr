@@ -35,7 +35,7 @@ with
         select distinct data_infracao as data, placa, true as indicador_autuacao
         from {{ ref("sppo_infracao") }}
         where
-            data = (select max(data) from {{ ref("sppo_infracao") }})
+            data = date_add(date("{{ var('run_date') }}"), interval 7 day)
             and data_infracao = date("{{ var('run_date') }}")
             and modo = "ONIBUS"
             and id_infracao = "023.II"
