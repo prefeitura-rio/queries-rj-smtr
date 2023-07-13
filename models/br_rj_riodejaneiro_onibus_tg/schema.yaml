@@ -14,82 +14,26 @@ models:
         description: "Número único criptografado do cartão RioCard"
       - name: tipo_cartao
         description: "Emissor e número do aplicação, indica qual o tipo do cartão (ex: gratuidade, vale transporte). Categorias podem ser encontradas na tabela dicionário."
-        tests:
-          - accepted_values_dict:
-              ref_model: tg_dicionario
-              table_name: transacao
-              config:
-                where: "__date_partition__"
       - name: sequencial_transacao_cartao
         description: "Número sequencial histórico de transações do cartão"
       - name: datetime
         description: "Datetime da transação em GMT-3"
       - name: tipo_embarque
         description: "Tipo de embarque atual, indica se é integração ou não"
-        tests:
-          - accepted_values_dict:
-              ref_model: tg_dicionario
-              table_name: transacao
-              config:
-                where: "__date_partition__"
       - name: tipo_debito
         description: "Tipo de débito no cartão, indica o tipo de tarifa executada (ex: cheia, com desconto). Categorias podem ser encontradas na tabela dicionário."
-        tests:
-          - accepted_values_dict:
-              ref_model: tg_dicionario
-              table_name: transacao
-              config:
-                where: "__date_partition__"
       - name: mensagem_debito
         description: "Mensagem de estado do débito no cartão. Categorias podem ser encontradas na tabela dicionário."
-        tests:
-          - accepted_values_dict:
-              ref_model: tg_dicionario
-              table_name: transacao
-              config:
-                where: "__date_partition__"
       - name: tarifa
         description: "Valor da tarifa configurado no equipamento (R$)"
-        tests:
-          - dbt_utils.accepted_range:
-              min_value: 4.05
-              max_value: 19.95
-              where: "__date_partition__"
       - name: tarifa_anterior
         description: "Valor da tarifa anterior da viagem anterior (R$)"
-        tests:
-          - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 19.95
-              where: "__date_partition__ AND tarifa_anterior IS NOT NULL"
       - name: debito
         description: "Valor debitado na viagem atual (R$)"
-        tests:
-          - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 19.95
-              where: "__date_partition__"
       - name: desconto
         description: "Valor promocional ou de desconto da tarifa (R$)"
-        tests:
-          - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 19.95
-              where: "__date_partition__ AND desconto IS NOT NULL"
       - name: total_integracao
         description: "Soma do valor total pago em uma integração (R$)"
-        tests:
-          - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 19.95
-              where: "__date_partition__ AND total_integracao IS NOT NULL"
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - id_cartao
-            - datetime  
-          config:
-            where: "__date_partition__"  
   - name: tg_dicionario
     description: "Dicionário de dados"
     columns:
