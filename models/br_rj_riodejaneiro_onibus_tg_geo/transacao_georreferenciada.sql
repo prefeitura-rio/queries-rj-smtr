@@ -7,7 +7,7 @@ SELECT
     t1.id_cartao,
     t1.tipo_cartao,
     t1.sequencial_transacao_cartao,
-    t1.timestamp_transacao,
+    t1.datetime,
     t1.tipo_embarque,
     t1.tipo_debito,
     t1.mensagem_debito,
@@ -26,18 +26,18 @@ FROM (
       id_empresa,
       id_veiculo as id_veiculo_t1,  -- temporary alias to avoid duplication
       id_cartao,
-      id_tipo_cartao AS tipo_cartao,
-      sequencial_transacao_veiculo AS sequencial_transacao_cartao,
-      timestamp_transacao,
+      tipo_cartao,
+      sequencial_transacao_cartao,
+      datetime,
       tipo_embarque,
       tipo_debito,
       mensagem_debito,
-      MAX(valor_tarifa) AS tarifa,
-      MAX(valor_tarifa_anterior) AS tarifa_anterior,
-      SUM(valor_debitado) AS debito,
-      SUM(valor_promo_desconto) AS desconto,
-      SUM(valor_total_integracao) AS total_integracao,
-      FORMAT_TIMESTAMP("%Y-%m-%dT%H:%M", DATE_TRUNC(timestamp_transacao, MINUTE)) AS datetime_minuto
+      MAX(tarifa) AS tarifa,
+      MAX(tarifa_anterior) AS tarifa_anterior,
+      SUM(debito) AS debito,
+      SUM(desconto) AS desconto,
+      SUM(total_integracao) AS total_integracao,
+      FORMAT_TIMESTAMP("%Y-%m-%dT%H:%M", DATE_TRUNC(datetime, MINUTE)) AS datetime_minuto
     FROM
       `rj-smtr.br_rj_riodejaneiro_onibus_tg.transacao`
     WHERE
@@ -49,7 +49,7 @@ FROM (
 ) AS t1
 LEFT JOIN (
   SELECT
-    id_veiculo,  -- here, the column keeps its original name
+    id_veiculo, 
     datetime_minuto,
     servico,
     ROUND(AVG(latitude), 3) as latitude,
