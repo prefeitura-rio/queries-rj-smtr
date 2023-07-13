@@ -10,19 +10,33 @@
 with
     -- Tabela de licenciamento
     stu as (
-        select *
-        from {{ ref("sppo_licenciamento_stu") }} as t
+        select 
+            *
+        from
+            {{ ref("sppo_licenciamento_stu") }} as t
+        where
         {% if var("stu_data_versao") != "" %}
-            where data = date("{{ var('stu_data_versao') }}")
+            data = date("{{ var('stu_data_versao') }}")
         {% else %}
             {% if execute %}
                 {% set licenciamento_date = run_query("SELECT MIN(data) FROM " ~ ref("sppo_licenciamento_stu") ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 5 DAY)").columns[0].values()[0] %}
             {% endif %}
 
-            where data = DATE("{{ licenciamento_date }}")
+            data = DATE("{{ licenciamento_date }}")
         {% endif %}
-        AND tipo_veiculo NOT LIKE "%ROD%"
+            and tipo_veiculo not like "%ROD%"
+    ),
+    stu_rn AS (
+        select
+            * except (timestamp_captura),
+            ROW_NUMBER() OVER (PARTITION BY data, id_veiculo) rn
+        from
+            stu
     )
-select 
-    stu.* except (timestamp_captura)
-from stu
+select
+  * except(rn)
+from
+  stu_rn
+where
+  rn = 1
+
