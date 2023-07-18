@@ -10,7 +10,7 @@ WITH
     {{ ref("viagem_planejada") }}
   WHERE
     `data` <= DATE( "{{ var("end_date") }}" )
-    AND distancia_total_planejada > 0 ),
+    AND distancia_total_planejada is not null ),
   sumario_v1 AS ( -- Viagens v1
   SELECT
     `data`,

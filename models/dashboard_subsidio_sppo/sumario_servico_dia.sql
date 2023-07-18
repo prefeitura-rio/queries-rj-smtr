@@ -100,8 +100,7 @@ WITH
 SELECT
   s.*,
   IF(p.valor IS NULL, st.valor_subsidio_apurado, 0) AS valor_subsidio_pago,
-  IFNULL(-p.valor, 0) AS valor_penalidade,
-  "{{ var("version") }}" as versao
+  IFNULL(-p.valor, 0) AS valor_penalidade
 FROM
   servico_km s
 LEFT JOIN
