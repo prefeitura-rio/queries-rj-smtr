@@ -2,7 +2,7 @@ version: 2
 
 models:
   - name: sumario_servico_dia
-    description: "Sumário do subsídio dos serviços por dia"
+    description: "Sumário do subsídio dos serviços de ônibus (SPPO) por dia"
     columns:
       - name: data
         description: "Data de emissão do sinal de GPS"
