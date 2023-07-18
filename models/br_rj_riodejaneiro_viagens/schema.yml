@@ -1,8 +1,7 @@
-
 version: 2
 
 models:
-  - name: viagem_planejada
+  - name: viagem_planejada_sppo
     description: "Tabela histórica com detalhes das viagens planejadas a cada dia"
     columns:
       - name: consorcio
@@ -448,7 +447,7 @@ models:
         tests:
           - not_null
           - not_negative
-  - name: viagem_conformidade
+  - name: viagem_conformidade_sppo
     description: "Tabela de cálculo da conformidade de viagens
     identificadas por GPS."
     columns:
@@ -582,7 +581,7 @@ models:
         respectiva linha na tabela."
         tests:
           - not_null
-  - name: viagem_completa
+  - name: viagem_completa_sppo
     description: "Detalhes de todas as viagens completas identificadas."
     columns:
       - name: consorcio
