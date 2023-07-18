@@ -16,10 +16,10 @@ WITH
     `data`,
     servico,
     "Não classificado" AS tipo_viagem,
-    viagens_subsidio AS viagens,
-    ROUND(distancia_total_subsidio, 2) AS km_apurada
+    viagens,
+    ROUND(km_apurada, 2) AS km_apurada
   FROM
-     `rj-smtr`.`dashboard_subsidio_sppo`.`sumario_dia`
+     `rj-smtr.dashboard_subsidio_sppo.sumario_servico_dia_historico`
   WHERE
     `data` < DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" ) ),
   tipo_viagem_v2 AS ( -- Classifica os tipos de viagem (v2)
