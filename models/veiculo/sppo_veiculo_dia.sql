@@ -32,7 +32,7 @@ WITH
     DISTINCT data,
     id_veiculo
   FROM
-    `rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo`  -- {{ ref("gps_sppo") }})
+    {{ ref("gps_sppo") }})
   WHERE
     data = DATE("{{ var('run_date') }}") ),
   autuacoes AS (
