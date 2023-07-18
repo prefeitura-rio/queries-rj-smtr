@@ -26,11 +26,11 @@ models:
       - name: infracao
         description: "Descrição da infração"
       - name: status
-        description: "CADASTRADA - Registrada no sistema sem guia de pagamento
-                      EM ABERTO - Com guia de pagamento e dentro do prazo de vencimento
-                      VENCIDA - Com guia de pagamento e fora do prazo de vencimento
-                      EM RECURSO - Possui Processo de Recurso aguardando julgamento
-                      PAGA - Com guia de pagamento efetivamente paga
+        description: "CADASTRADA - Registrada no sistema sem guia de pagamento\n
+                      EM ABERTO - Com guia de pagamento e dentro do prazo de vencimento\n
+                      VENCIDA - Com guia de pagamento e fora do prazo de vencimento\n
+                      EM RECURSO - Possui Processo de Recurso aguardando julgamento\n
+                      PAGA - Com guia de pagamento efetivamente paga\n
                       CANCELADA - Multa foi cancelada através de um Processo de Recurso"
       - name: data_pagamento
         description: "Data de pagamento"
@@ -84,7 +84,7 @@ models:
       - name: tipo_veiculo
         description: "Tipo de veículo"
       - name: status
-        description: "Licenciado - Veículo licenciado no Sistema de Transporte Urbano (STU)
+        description: "Licenciado - Veículo licenciado no Sistema de Transporte Urbano (STU)\n
                       Válido - Veículo com solicitação válida para ingresso no Sistema de Transporte Urbano (STU)"
   - name: sppo_licenciamento_solicitacao
     description: "Tabela histórica de dados cadastrais das solicitações em andamento para ingresso no Sistema de Transporte Urbano (STU)"
@@ -136,14 +136,14 @@ models:
       - name: tipo_veiculo
         description: "Tipo de veículo"
       - name: status
-        description: "Inválido - Veículo com solicitação inválida para ingresso no Sistema de Transporte Urbano (STU)
+        description: "Inválido - Veículo com solicitação inválida para ingresso no Sistema de Transporte Urbano (STU)\n
                       Válido - Veículo com solicitação válida para ingresso no Sistema de Transporte Urbano (STU)"
       - name: solicitacao
-        description: "Inclusão - Solicitação de ingresso de veículo no Sistema de Transporte Urbano (STU)
-                      Baixa - Solicitação de baixa de veículo já incluído no Sistema de Transporte Urbano (STU)
+        description: "Inclusão - Solicitação de ingresso de veículo no Sistema de Transporte Urbano (STU)\n
+                      Baixa - Solicitação de baixa de veículo já incluído no Sistema de Transporte Urbano (STU)\n
                       Renumeração - Solicitação de alteração de número de ordem de veículo já incluído no Sistema de Transporte Urbano (STU)"
   - name: sppo_licenciamento_stu
-    description: "Tabela histórica de Dados cadastrais dos veículos que operam o sistema de ônibus (BRT e SPPO) no município do Rio de Janeiro.
+    description: "Tabela histórica de Dados cadastrais dos veículos que operam o sistema de ônibus (BRT e SPPO) no município do Rio de Janeiro.\n
     Dados capturados diariamente de: https://www.data.rio/documents/c6c97d3c15434b5088965e25f85e27c3"
     columns:
       - name: data
@@ -202,11 +202,28 @@ models:
       - name: id_veiculo
         description: "Número de ordem do veículo, identificação que é exibida na lateral do ônibus"
       - name: indicadores
-        description: "indicador_autuacao - Indicador se o veículo foi autuado (Verdadeiro/Falso)
-                      indicador_ar_condicionado - Indicador se o veículo possui ar condicionado (Verdadeiro/Falso)
-                      indicador_em_operacao - Indicador se o veículo foi autuado (Verdadeiro/Falso)"
+        description: "Indicadores para caraterização do status do veículo"
+      - name: indicadores.indicador_licenciado
+        description: "Indicador se o veículo encontra-se licenciado"
+      - name: indicadores.indicador_ar_condicionado
+        description: "Indicador se o veículo foi licenciado com ar condicionado"
+      - name: indicadores.indicador_autuacao_ar_condicionado
+        description: "Indicador se o veículo foi autuado por inoperância ou mau funcionamento do sistema de ar condicionado"
+      - name: indicadores.indicador_autuacao_seguranca
+        description: "Indicador se o veículo foi autuado por infração relacionada à segurança do veículo"
+      - name: indicadores.indicador_autuacao_limpeza
+        description: "Indicador se o veículo foi autuado por infração relacionada à limpeza do veículo"
+      - name: indicadores.indicador_autuacao_equipamento
+        description: "Indicador se o veículo foi autuado por infração relacionada à inoperância ou mau funcionamento de equipamentos do veículo"
+      - name: indicadores.indicador_sensor_temperatura
+        description: "Indicador se o sensor de temperatura do veículo não estava em funcionamento conforme especificação da SMTR"
+      - name: indicadores.indicador_validador_sbd
+        description: "Indicador se o veículo se encontra com o novo validador do Sistema de Bilhetagem Digital (SBD) instalado"
       - name: status
-        description: "Nao licenciado - Veículo que operou, mas não é licenciado
-                      Licenciado sem ar - Veículo que operou e foi licenciado sem ar condicionado
-                      Licenciado com ar e não autuado (023.II) - Veículo que operou, foi licenciado com ar condicionado e não foi autuado por inoperância do ar condicionado (023.II)
-                      Licenciado com ar e autuado (023.II) - Veículo que operou, foi licenciado com ar condicionado e foi autuado por inoperância do ar condicionado (023.II)"
+        description: "Classificação, observados os demais parâmetros - Categorias:\n
+                      - Não licenciado - Veículo que operou, mas não é licenciado\n
+                      - Autuado por ar inoperante - Veículo que operou, foi licenciado com ar condicionado e foi autuado por inoperância ou mau funcionamento do sistema de ar condicionado (023.II)\n
+                      - Autuado por segurança - Veículo que operou, foi licenciado, mas foi autuado por infração relacionada à segurança do veículo\n
+                      - Autuado por limpeza/equipamento - Veículo que operou, foi licenciado, mas foi autuado cumulativamente por infrações relacionadas à limpeza e equipamentos do veículo\n
+                      - Sem ar e não autuado - Veículo que operou, foi licenciado sem ar condicionado e não foi autuado\n
+                      - Com ar e não autuado - Veículo que operou, foi licenciado com ar condicionado e não foi autuado"
