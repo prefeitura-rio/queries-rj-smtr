@@ -5,7 +5,7 @@ models:
     description: "Tabela histórica de todas as multas aplicadas aos modos de transporte no município do Rio de Janeiro, com qualquer situação.
     Dados capturados diariamente de: https://www.data.rio/documents/multas-aplicadas-aos-modos-de-transporte-nos-%C3%BAltimos-cinco-anos"
     columns:
-      - name: data
+      - name: DATA
         description: "Data da captura (partição)"
       - name: timestamp_captura
         description: "Timestamp de captura dos dados de infração"
@@ -227,3 +227,5 @@ models:
                       - Autuado por limpeza/equipamento - Veículo que operou, foi licenciado, mas foi autuado cumulativamente por infrações relacionadas à limpeza e equipamentos do veículo\n
                       - Sem ar e não autuado - Veículo que operou, foi licenciado sem ar condicionado e não foi autuado\n
                       - Com ar e não autuado - Veículo que operou, foi licenciado com ar condicionado e não foi autuado"
+      - name: versao
+        description: "SHA do repositório no Github"
