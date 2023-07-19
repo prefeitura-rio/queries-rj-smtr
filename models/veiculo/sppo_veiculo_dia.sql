@@ -32,7 +32,7 @@ WITH
     DISTINCT data,
     id_veiculo
   FROM
-    {{ ref("gps_sppo") }})
+    {{ ref("gps_sppo") }}
   WHERE
     data = DATE("{{ var('run_date') }}") ),
   autuacoes AS (
@@ -141,34 +141,42 @@ WITH
     autuacao_limpeza
   USING
     (data,
-      placa) )
+      placa) ),
+  gps_licenciamento_autuacao AS (
+  SELECT
+    data,
+    id_veiculo,
+    STRUCT( COALESCE(l.indicador_licenciado, FALSE) AS indicador_licenciado,
+      COALESCE(l.indicador_ar_condicionado, FALSE) AS indicador_ar_condicionado,
+      COALESCE(a.indicador_autuacao_ar_condicionado, FALSE) AS indicador_autuacao_ar_condicionado,
+      COALESCE(a.indicador_autuacao_seguranca, FALSE) AS indicador_autuacao_seguranca,
+      COALESCE(a.indicador_autuacao_limpeza, FALSE) AS indicador_autuacao_limpeza,
+      COALESCE(a.indicador_autuacao_equipamento, FALSE) AS indicador_autuacao_equipamento) AS indicadores
+  FROM
+    gps g
+  LEFT JOIN
+    licenciamento AS l
+  USING
+    (data,
+      id_veiculo)
+  LEFT JOIN
+    autuacoes_agg AS a
+  USING
+    (data,
+      placa))
 SELECT
-  data,
-  id_veiculo,
-  STRUCT( indicador_licenciado,
-    indicador_ar_condicionado,
-    indicador_autuacao_ar_condicionado,
-    indicador_autuacao_seguranca,
-    indicador_autuacao_limpeza,
-    indicador_autuacao_equipamento ) AS indicadores,
-  CASE
-    WHEN indicador_licenciado IS NULL THEN "Não licenciado"
-    WHEN indicador_ar_condicionado = TRUE AND indicador_autuacao_ar_condicionado = TRUE THEN "Autuado por ar inoperante"
-    WHEN indicador_autuacao_seguranca = TRUE THEN "Autuado por segurança"
-    WHEN indicador_autuacao_limpeza = TRUE AND indicador_autuacao_equipamento = TRUE THEN "Autuado por limpeza/equipamento"
-    WHEN indicador_ar_condicionado = FALSE THEN "Sem ar e não autuado"
-    WHEN indicador_ar_condicionado = TRUE THEN "Com ar e não autuado"
-END
-  AS status
+  gla.* EXCEPT(indicadores),
+  TO_JSON(indicadores) AS indicadores,
+  status
 FROM
-  gps g
+  gps_licenciamento_autuacao AS gla
 LEFT JOIN
-  licenciamento AS l
-USING
-  (data,
-    id_veiculo)
-LEFT JOIN
-  autuacoes_agg AS a
-USING
-  (data,
-    placa)
+  {{ ref("parametros") }} AS p --`rj-smtr.dashboard_subsidio_sppo.parametros` 
+ON
+  gla.indicadores.indicador_licenciado = p.indicador_licenciado
+  AND gla.indicadores.indicador_ar_condicionado = p.indicador_ar_condicionado
+  AND gla.indicadores.indicador_autuacao_ar_condicionado = p.indicador_autuacao_ar_condicionado
+  AND gla.indicadores.indicador_autuacao_seguranca = p.indicador_autuacao_seguranca
+  AND gla.indicadores.indicador_autuacao_limpeza = p.indicador_autuacao_limpeza
+  AND gla.indicadores.indicador_autuacao_equipamento = p.indicador_autuacao_equipamento
+  AND (data BETWEEN p.data_inicio AND p.data_fim)
