@@ -7,19 +7,19 @@ WITH
     consorcio,
     servico
   FROM
-    `rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada`
+    {{ ref("viagem_planejada") }}
   WHERE
     `data` <= DATE( "{{ var("end_date") }}" )
-    AND distancia_total_planejada > 0 ),
+    AND distancia_total_planejada is not null ),
   sumario_v1 AS ( -- Viagens v1
   SELECT
     `data`,
     servico,
     "Não classificado" AS tipo_viagem,
-    viagens_subsidio AS viagens,
-    ROUND(distancia_total_subsidio, 2) AS km_apurada
+    viagens,
+    ROUND(km_apurada, 2) AS km_apurada
   FROM
-    `rj-smtr`.`dashboard_subsidio_sppo`.`sumario_dia`
+     {{ ref("sumario_servico_dia_historico") }}
   WHERE
     `data` < DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" ) ),
   tipo_viagem_v2 AS ( -- Classifica os tipos de viagem (v2)
@@ -28,7 +28,7 @@ WITH
     id_veiculo,
     status
   FROM
-    `rj-smtr`.`veiculo`.`sppo_veiculo_dia`
+      {{ ref("sppo_veiculo_dia") }} -- `rj-smtr`.`veiculo`.`sppo_veiculo_dia`
   WHERE
     `data` BETWEEN DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
     AND DATE( "{{ var("end_date") }}" ) ),
@@ -40,7 +40,7 @@ WITH
     id_viagem,
     distancia_planejada
   FROM
-    `rj-smtr`.`projeto_subsidio_sppo`.`viagem_completa`
+    {{ ref("viagem_completa") }}
   WHERE
     `data` BETWEEN DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
     AND DATE( "{{ var("end_date") }}" ) ),

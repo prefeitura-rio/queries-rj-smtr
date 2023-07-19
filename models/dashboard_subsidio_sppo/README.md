@@ -1,5 +1,5 @@
 # Dashboard Subsídio SPPO
-* Versão: 2.0.0
+* Versão: 3.0.0
 * Data de início: 16/01/2023
 
 ![dashboard_subsidio_sppo](https://user-images.githubusercontent.com/66736583/227256098-6371bf20-d031-483d-8a20-f211ff552c25.png)
@@ -48,12 +48,14 @@ A quilometragem por tipo de viagem é a dada pela multiplicação da quantidade 
 
 $$ QR_i = V_i \times d $$
 
-Essa quilometragem é registrada na tabela `sumario_servico_dia_tipo`. Os tipos de viagem considerados são definidos pelo estado do veículo que operou a viagem, podendo ser:
+Essa quilometragem é registrada na tabela `sumario_servico_tipo_viagem_dia`. Os tipos de viagem considerados são definidos pelo estado do veículo que operou a viagem, podendo ser:
 
-- `Licenciado com ar e autuado (023.II)`: viagem realizada por veículo com ar que foi autuado operando com ar condicionado desligado (código de autuação: 023.II);
-- `Licenciado com ar e não autuado (023.II)`: viagem realizada por veículo com ar que não foi autuado;
-- `Licenciado sem ar`: viagem realizada por veículo sem ar condicionado instalado;
 - `Não licenciado`: viagem realizada por veículo não licenciado na SMTR*
+- `Autuado por ar inoperante`: viagem realizada por veículo licenciado com ar condicionado e autuado por inoperância ou mau funcionamento do sistema de ar condicionado (código de autuação: 023.II)
+- `Autuado por segurança`: viagem realizada por veículo autuado por infração relacionada à segurança do veículo
+- `Autuado por limpeza/equipamento`: viagem realizada por veículo autuado cumulativamente por infrações relacionadas à limpeza e equipamentos do veículo
+- `Sem ar e não autuado`: viagem realizada por veículo licenciado sem ar condicionado e que não foi autuado
+- `Com ar e não autuado`: viagem realizada por veículo que foi licenciado com ar condicionado e não foi autuado
 
 \* Consta para fins de cálculo da QR e POD, mas é desconsiderado para remuneração.
 
@@ -65,14 +67,17 @@ A remuneração total é calculada combinando o percentual de operação (POD) c
 - Caso POD >= 80%, o subsídio é dado pela soma da QR de cada tipo de viagem pelo seu valor, sendo:
 
 
-| Tipo de Viagem ($i$) | Valor (R$/km) *
-|------------------|---|
-| `Licenciado com ar e autuado (023.II)` | 0.00 |
-| `Licenciado com ar e não autuado (023.II)` | 2.81 |
-| `Licenciado sem ar` | 1.97 |
+| Tipo de Viagem ($i$)                  | Valor (R$/km) * |
+|---------------------------------------|-----------------|
+| `Não licenciado`                      | 0.00            |
+| `Autuado por ar inoperante`           | 0.00            |
+| `Autuado por segurança`               | 0.00            |
+| `Autuado por limpeza/equipamento`     | 0.00            |
+| `Sem ar e não autuado`                | 1.97            |
+| `Com ar e não autuado`                | 2.81            |
 
 
-\* Os valores atuais refletem a [RESOLUÇÃO RIO N.o 3.591/2023](https://transportes.prefeitura.rio/wp-content/uploads/sites/31/2023/02/RESOLUCAO-SMTR-No-3591-DE-01-DE-FEVEREIRO-DE-2023.pdf), conforme legislação viagente.
+\* Os valores atuais refletem a [RESOLUÇÃO RIO N.o 3.591/2023](https://transportes.prefeitura.rio/wp-content/uploads/sites/31/2023/02/RESOLUCAO-SMTR-No-3591-DE-01-DE-FEVEREIRO-DE-2023.pdf), conforme legislação vigente.
 
 ## 3. Glossário
 
