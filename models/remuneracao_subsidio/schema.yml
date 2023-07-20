@@ -1,0 +1,61 @@
+version: 2
+
+sources:
+  - name: remuneracao_subsidio
+    database: rj-smtr-dev
+    tables:
+      - name: parametros
+
+  - name: recurso_subsidio_sppo
+    database: rj-smtr-dev
+    tables:
+      - name: reprocessamento
+      - name: bloqueio_via
+
+  - name: br_rj_riodejaneiro_rdo
+    database: rj-smtr
+    tables:
+      - name: rdo40_tratado
+
+  - name: dashboard_subsidio_sppo
+    database: rj-smtr
+    tables:
+      - name: sumario_servico_dia_historico
+      - name: sumario_servico_tipo_viagem_dia
+
+
+models:
+  - name: remuneracao_aferida
+    description: "remuneracao_aferida"
+    columns:
+      - name: data
+        description: "Data da execução do serviço."
+      - name: consorcio
+        description: "Nome do consórcio."
+      - name: servico
+        description: "Nome do serviço (linha de ônibus)."
+      - name: remuneracao_tarifaria
+        description: "Remuneração proveniente do pagamento da tarifa (R$)."
+      - name: subsidio
+        description: "Remuneração proveniente do pagamento do subsídio (R$)."
+      - name: receita_aferida
+        description: "Receita aferida = Remuneração Tarifária + Subsídio (R$)." 
+
+  - name: remuneracao_esperada
+    description: "remuneracao_esperada"
+    columns:
+      - name: data
+        description: "Data da execução do serviço."
+      - name: consorcio
+        description: "Nome do consórcio."
+      - name: servico
+        description: "Nome do serviço (linha de ônibus)."
+      - name: tipo_viagem
+        description: "Categorias: (1) Não Classificado, (2) Licenciado com ar e não autuado (023.II), (3) Licenciado com ar e autuado (023.II), (4) Licenciado sem ar e (5) Não licenciado."
+      - name: quilometragem
+        description: "Distância apurada do serviço (km) Distância planejada da viagem multiplicada pela quantidade de viagens."
+      - name: irk
+        description: "Índice de Remuneração por Quilômetro (R$/km)."
+      - name: remuneracao_esperada
+        description: "Remuneração esperada dos consórcios por serviço = quilometragem * irk."
+               

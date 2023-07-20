@@ -16,6 +16,8 @@ clean-targets:
   - "target"
   - "dbt_modules"
 
+
+
 vars:
   ### Date default variables ###
   date_range_start: "2022-01-01T00:00:00"
@@ -130,6 +132,11 @@ vars:
   rho_max_processing_interval: 7
   rho_sppo_start_date: "2021-03-01"
 
+  ### Remuneração Subsídio ### 
+  data_inicio_subsidio: "2022-06-01"
+  data_fim_subsidio: "2023-05-31"
+  datas_invalidas: "'2022-10-02', '2022-10-30', '2023-02-17', '2023-02-18', '2023-02-19', '2023-02-20', '2023-02-21', '2023-02-22'"
+
 models:
   +persist_docs:
     relation: true
@@ -165,3 +172,9 @@ models:
     br_rj_riodejaneiro_onibus_tg_geo:
       +materialized: view
       +schema: br_rj_riodejaneiro_onibus_tg_geo
+    dashboard_sppo_gps_8_dias:
+      +materialized: view
+      +schema: dashboard_sppo_gps_8_dias
+    remuneracao_subsidio:
+      +materialized: view
+      +schema: remuneracao_subsidio
