@@ -12,5 +12,4 @@ dbt-env/
 
 # DEV
 scripts/
-dev/profiles.yml
-dev/.user.yml
+dev/
