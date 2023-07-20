@@ -102,7 +102,7 @@ vars:
   quadro_horario: "`rj-smtr-staging.projeto_subsidio_sppo_staging.quadro_horario`"
   subsidio_shapes: "`rj-smtr-staging.projeto_subsidio_sppo_staging.shapes`"
   subsidio_trips: "`rj-smtr-staging.projeto_subsidio_sppo_staging.trips`"
-  subsidio_parametros: "`rj-smtr-staging.dashboard_subsidio_sppo_staging.parametros`"
+  subsidio_parametros: "`rj-smtr-staging.dashboard_subsidio_sppo_staging.subsidio_parametros`"
   shapes_version: "YYYY-MM-DD"
   frequencies_version: "YYYY-MM-DD"
   DATA_SUBSIDIO_V2_INICIO: "2023-01-16"

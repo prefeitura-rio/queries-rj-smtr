@@ -69,7 +69,7 @@ WITH
   FROM
     servico_km_tipo v
   LEFT JOIN
-    {{ ref("parametros") }} t
+    {{ ref("subsidio_parametros") }} t
   ON
     v.data BETWEEN t.data_inicio
     AND t.data_fim

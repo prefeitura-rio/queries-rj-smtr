@@ -172,7 +172,7 @@ WITH
 FROM
   gps_licenciamento_autuacao AS gla
 LEFT JOIN
-  {{ ref("parametros") }} AS p --`rj-smtr.dashboard_subsidio_sppo.parametros` 
+  {{ ref("subsidio_parametros") }} AS p --`rj-smtr.dashboard_subsidio_sppo.parametros` 
 ON
   gla.indicadores.indicador_licenciado = p.indicador_licenciado
   AND gla.indicadores.indicador_ar_condicionado = p.indicador_ar_condicionado
