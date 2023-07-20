@@ -1,4 +1,4 @@
-# Subsídio SPPO
+# Viagens SPPO
 
 * Versão: 1.0.0
 * Data de início: 01/06/2022
@@ -84,7 +84,7 @@ naquele momento.
 src="https://user-images.githubusercontent.com/20743819/179122550-1d502871-7b4f-4b1e-bd7f-0a5959dad565.png">
 
 Cruzamos essa tabela de posições de GPS com o trajeto (`shape`) da
-`viagem_planejada` pela data e serviço para classificar cada
+`viagem_planejada_sppo` pela data e serviço para classificar cada
 posição como:
 
 * `start`: veículo estava no ponto inicial do trajeto (num raio de 500m)
@@ -131,7 +131,7 @@ final do trajeto de volta.
 
 #### 2.3. Classificação das posições de GPS nas viagens (`registros_status_viagem`)
 
-#### 2.4. Cálculo dos percentuais de conformidade da viagem (`viagem_conformidade`, `viagem_completa`)
+#### 2.4. Cálculo dos percentuais de conformidade da viagem (`viagem_conformidade_sppo`, `viagem_completa_sppo`)
 
 ### 3. Sumarização de viagens
 

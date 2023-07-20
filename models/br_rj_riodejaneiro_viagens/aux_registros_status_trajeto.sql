@@ -63,7 +63,7 @@ status_viagem as (
         select 
             *
         from
-            {{ ref("viagem_planejada") }}
+            {{ ref("viagem_planejada_sppo") }}
         where
             data between date_sub(date("{{ var("run_date") }}"), interval 1 day) and date("{{ var("run_date") }}")
     ) s
