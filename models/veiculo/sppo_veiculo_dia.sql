@@ -164,7 +164,7 @@ WITH
   USING
     (data,
       placa))
-(SELECT
+SELECT
   gla.* EXCEPT(indicadores),
   TO_JSON(indicadores) AS indicadores,
   status,
@@ -172,7 +172,7 @@ WITH
 FROM
   gps_licenciamento_autuacao AS gla
 LEFT JOIN
-  {{ ref("parametros") }} AS p --`rj-smtr.dashboard_subsidio_sppo.parametros` 
+  {{ ref("subsidio_parametros") }} AS p --`rj-smtr.dashboard_subsidio_sppo.subsidio_parametros` 
 ON
   gla.indicadores.indicador_licenciado = p.indicador_licenciado
   AND gla.indicadores.indicador_ar_condicionado = p.indicador_ar_condicionado
@@ -180,14 +180,4 @@ ON
   AND gla.indicadores.indicador_autuacao_seguranca = p.indicador_autuacao_seguranca
   AND gla.indicadores.indicador_autuacao_limpeza = p.indicador_autuacao_limpeza
   AND gla.indicadores.indicador_autuacao_equipamento = p.indicador_autuacao_equipamento
-  AND (data BETWEEN p.data_inicio AND p.data_fim))
--- UNION ALL
--- (
---   SELECT
---   * EXCEPT(indicadores, status),
---   TO_JSON(indicadores) AS indicadores,
---   status,
---   "" as versao
--- FROM
---   `rj-smtr-dev.veiculo.sppo_veiculo_dia_bkp`
--- )
+  AND (data BETWEEN p.data_inicio AND p.data_fim)
