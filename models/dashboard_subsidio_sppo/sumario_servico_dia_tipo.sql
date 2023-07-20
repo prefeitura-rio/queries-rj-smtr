@@ -9,8 +9,8 @@ WITH
   FROM
     {{ ref("viagem_planejada") }}
   WHERE
-    DATA BETWEEN DATE("2023-01-16")
-    AND DATE("{{ var("end_date") }}")
+    DATA BETWEEN DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
+    AND DATE( "{{ var("DATA_SUBSIDIO_V2_FIM") }}" )
     AND distancia_total_planejada > 0 ),
   veiculos AS (
   SELECT
@@ -20,8 +20,8 @@ WITH
   FROM
     {{ ref("sppo_veiculo_dia") }}
   WHERE
-    DATA BETWEEN DATE("2023-01-16")
-    AND DATE("{{ var("end_date") }}")),
+    DATA BETWEEN DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
+    AND DATE( "{{ var("DATA_SUBSIDIO_V2_FIM") }}" )),
   viagem AS (
   SELECT
     DATA,
@@ -32,8 +32,8 @@ WITH
   FROM
     {{ ref("viagem_completa") }}
   WHERE
-    DATA BETWEEN DATE("2023-01-16")
-    AND DATE("{{ var("end_date") }}")),
+    DATA BETWEEN DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
+    AND DATE( "{{ var("DATA_SUBSIDIO_V2_FIM") }}" )),
   servico_km_tipo AS (
   SELECT
     v.DATA,
