@@ -164,7 +164,7 @@ WITH
   USING
     (data,
       placa))
-(SELECT
+SELECT
   gla.* EXCEPT(indicadores),
   TO_JSON(indicadores) AS indicadores,
   status,
@@ -180,4 +180,4 @@ ON
   AND gla.indicadores.indicador_autuacao_seguranca = p.indicador_autuacao_seguranca
   AND gla.indicadores.indicador_autuacao_limpeza = p.indicador_autuacao_limpeza
   AND gla.indicadores.indicador_autuacao_equipamento = p.indicador_autuacao_equipamento
-  AND (data BETWEEN p.data_inicio AND p.data_fim))
+  AND (data BETWEEN p.data_inicio AND p.data_fim)
