@@ -46,6 +46,48 @@ WITH
   WHERE
     `data` BETWEEN DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
     AND DATE( "{{ var("end_date") }}" ) ),
+  subsidio_parametros AS (
+  SELECT
+    *
+  FROM
+    {{ ref("subsidio_parametros") }}
+  WHERE
+    status != "Não classificado"
+  ORDER BY
+    data_inicio DESC,
+    ordem),
+  tabela_status_array AS (
+  SELECT
+    TO_JSON_STRING(STRUCT(indicador_licenciado,
+        indicador_ar_condicionado,
+        indicador_autuacao_ar_condicionado,
+        indicador_autuacao_seguranca,
+        indicador_autuacao_limpeza,
+        indicador_autuacao_equipamento,
+        indicador_sensor_temperatura,
+        indicador_validador_sbd )) AS indicadores,
+    ARRAY_AGG(status) AS status_array
+  FROM
+    subsidio_parametros
+  GROUP BY
+    indicadores),
+  status_update AS (
+  SELECT
+    indicadores,
+    status_array,
+    status_array[OFFSET(0)] AS status
+  FROM
+    tabela_status_array),
+  tipo_viagem_v2_atualizado AS (
+  SELECT
+    * EXCEPT(status),
+    u.status
+  FROM
+    tipo_viagem_v2 AS k
+  LEFT JOIN
+    status_update AS u
+  ON
+    k.status IN UNNEST(u.status_array)),
   sumario_v2 AS (
   SELECT
     v.`data`,
@@ -57,7 +99,7 @@ WITH
   FROM
     viagem_v2 v
   LEFT JOIN
-    tipo_viagem_v2 ve
+    tipo_viagem_v2_atualizado ve
   ON
     ve.`data` = v.`data`
     AND ve.id_veiculo = v.id_veiculo
