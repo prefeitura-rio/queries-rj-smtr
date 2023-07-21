@@ -41,7 +41,7 @@ SELECT
   ) AS status_tratado
 FROM
   tabela_status_array)
-SELECT
+SELECT DISTINCT
   status,
   REGEXP_REPLACE(
       REGEXP_REPLACE(

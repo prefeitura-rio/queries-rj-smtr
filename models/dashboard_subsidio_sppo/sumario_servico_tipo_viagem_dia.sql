@@ -88,7 +88,7 @@ UNION ALL
   p.tipo_dia,
   p.consorcio,
   p.servico,
-  IFNULL(v2.tipo_viagem, "Sem viagem apurada") AS tipo_viagem,
+  IFNULL(v2.tipo_viagem, "Não identificada") AS tipo_viagem,
   v2.indicador_ar_condicionado,
   IFNULL(v2.viagens, 0) AS viagens,
   IFNULL(v2.km_apurada, 0) AS km_apurada
