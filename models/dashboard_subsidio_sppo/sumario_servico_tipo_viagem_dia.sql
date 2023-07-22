@@ -78,6 +78,13 @@ WITH
     status_array[OFFSET(0)] AS status
   FROM
     tabela_status_array),
+  status_flat AS (
+      SELECT DISTINCT 
+        status_t, 
+        status 
+      FROM 
+        status_update, 
+        UNNEST(status_array) AS status_t),
   tipo_viagem_v2_atualizado AS (
   SELECT
     * EXCEPT(status),
@@ -85,9 +92,9 @@ WITH
   FROM
     tipo_viagem_v2 AS k
   LEFT JOIN
-    status_update AS u
-  ON
-    k.status IN UNNEST(u.status_array)),
+    status_flat AS u
+  ON 
+    u.status_t = k.status),
   sumario_v2 AS (
   SELECT
     v.`data`,
