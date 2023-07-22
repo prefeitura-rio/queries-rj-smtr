@@ -137,21 +137,26 @@ WITH
   SELECT
     indicadores,
     status_array,
-    status_array[
-  OFFSET
-    (0)] AS status
+    status_array[OFFSET(0)] AS status
   FROM
     tabela_status_array),
+  status_flat AS (
+  SELECT DISTINCT 
+    status_t, 
+    status 
+  FROM 
+    status_update, 
+    UNNEST(status_array) AS status_t),
   servico_km_tipo_atualizado AS (
   SELECT
-    * EXCEPT(tipo_viagem),
+    k.* EXCEPT(tipo_viagem),
     u.status AS tipo_viagem
   FROM
     servico_km_tipo AS k
   LEFT JOIN
-    status_update AS u
-  ON
-    k.tipo_viagem IN UNNEST(u.status_array)),
+    status_flat AS u
+  ON 
+    u.status_t = k.tipo_viagem),
   servico_km AS (
   SELECT
     p.data,
