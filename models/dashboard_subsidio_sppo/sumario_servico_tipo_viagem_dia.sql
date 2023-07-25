@@ -10,7 +10,8 @@ WITH
     {{ ref("viagem_planejada") }}
   WHERE
     `data` <= DATE( "{{ var("end_date") }}" )
-    AND distancia_total_planejada is not null ),
+    AND (distancia_total_planejada > 0
+    OR distancia_total_planejada IS NOT NULL) ),
   sumario_v1 AS ( -- Viagens v1
   SELECT
     `data`,
@@ -130,14 +131,16 @@ LEFT JOIN
   sumario_v1 v1
 ON
   p.`data` = v1.`data`
-  AND p.servico = v1.servico)
+  AND p.servico = v1.servico
+WHERE
+  p.`data` < DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" ))
 UNION ALL
 (SELECT
   p.`data`,
   p.tipo_dia,
   p.consorcio,
   p.servico,
-  IFNULL(v2.tipo_viagem, "Não identificada") AS tipo_viagem,
+  IFNULL(v2.tipo_viagem, "Sem viagem apurada") AS tipo_viagem,
   v2.indicador_ar_condicionado,
   IFNULL(v2.viagens, 0) AS viagens,
   IFNULL(v2.km_apurada, 0) AS km_apurada
@@ -147,4 +150,6 @@ LEFT JOIN
   sumario_v2 v2
 ON
   p.`data` = v2.`data`
-  AND p.servico = v2.servico)
+  AND p.servico = v2.servico
+WHERE
+  p.`data` >= DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" ))
