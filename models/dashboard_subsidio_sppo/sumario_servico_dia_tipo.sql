@@ -67,7 +67,8 @@ WITH
   WHERE
     DATA BETWEEN DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
     AND DATE( "{{ var("end_date") }}" )
-    AND distancia_total_planejada > 0 ),
+    AND (distancia_total_planejada > 0
+    OR distancia_total_planejada IS NOT NULL) ),
   veiculos AS (
   SELECT
     DATA,
