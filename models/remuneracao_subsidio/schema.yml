@@ -1,16 +1,17 @@
 version: 2
 
-sources:
-  - name: remuneracao_subsidio
-    database: rj-smtr-dev
-    tables:
-      - name: parametros
+sources:   
 
   - name: recurso_subsidio_sppo
     database: rj-smtr-dev
     tables:
       - name: reprocessamento
       - name: bloqueio_via
+
+  - name: remuneracao_subsidio
+    database: rj-smtr-dev
+    tables:
+      - name: sumario_servico_tipo_viagem_dia
 
   - name: br_rj_riodejaneiro_rdo
     database: rj-smtr
@@ -21,7 +22,8 @@ sources:
     database: rj-smtr
     tables:
       - name: sumario_servico_dia_historico
-      - name: sumario_servico_tipo_viagem_dia
+      - name: subsidio_parametros
+
 
 
 models:
