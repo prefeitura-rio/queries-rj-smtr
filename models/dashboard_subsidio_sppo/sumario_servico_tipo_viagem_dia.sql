@@ -16,7 +16,7 @@ WITH
     "Não classificado" AS tipo_viagem,
     NULL AS indicador_ar_condicionado,
     viagens,
-    ROUND(km_apurada, 2) AS km_apurada
+    km_apurada
   FROM
     {{ ref("sumario_servico_dia_historico") }}
   WHERE
