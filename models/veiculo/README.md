@@ -1,5 +1,5 @@
 # Veículo
-* Versão: 1.0.0
+* Versão: 2.0.0
 * Data de início: 16/01/2023
 
 ![veiculo](https://user-images.githubusercontent.com/66736583/227351937-7fe4113b-1d94-425d-a170-7e49ed40d66e.png)
@@ -21,8 +21,11 @@
   Na sequência, são considerados todos os veículos identificados na operação (através da tabela `br_rj_riodejaneiro_veiculos.gps_sppo`) e, considerando tanto os dados da tabela `veiculo.sppo_infracao` quanto da tabela `veiculo.sppo_licenciamento`, é gerada a tabela `veiculo.sppo_veiculo_dia`.
 
   Nesta tabela, há uma relação diária de operação do veículo e seu respectivo status para aquela data, a saber:
-  * `Nao licenciado` - caso o veículo não seja identificado na tabela `veiculo.sppo_licenciamento`;
-  * `Licenciado sem ar` - caso o veículo não tenha sido licenciado com ar condicionado;
-  * `Licenciado com ar e não autuado (023.II)` - caso o veículo tenha sido licenciado com ar condicionado e não tenha sido identificada nenhuma infração relativa ao código `023.II - ART 023 INC II DEC 36343/12 - Inoperância ou mau funcionamento do sistema de ar condicionado, nos veículos em que seja exigida a utilização do equipamento` na data;
-  * `Licenciado com ar e autuado (023.II)` - caso o veículo tenha sido licenciado com ar condicionado e não tenha sido identificada alguma infração relativa ao código `023.II` na data.
+
+  * `Não licenciado`: caso o veículo não seja identificado na tabela `veiculo.sppo_licenciamento`;
+  * `Autuado por ar inoperante`: caso o veículo tenha sido autuado por inoperância ou mau funcionamento do sistema de ar condicionado (código de autuação: 023.II)
+  * `Autuado por segurança`: caso o veículo tenha sido autuado por infração relacionada à segurança do veículo
+  * `Autuado por limpeza/equipamento`: caso o veículo tenha sido autuado cumulativamente por infrações relacionadas à limpeza e equipamentos do veículo;
+  * `Sem ar e não autuado`: caso o veículo não tenha sido licenciado com ar condicionado e não tenha sido autuado;
+  * `Com ar e não autuado`: caso o veículo tenha sido licenciado com ar condicionado e não tenha sido autuado.
 </div>

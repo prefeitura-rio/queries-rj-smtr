@@ -65,11 +65,11 @@ WITH
   subsidio_km_tipo AS (
   SELECT
     v.*,
-    round(v.km_apurada * t.valor_km, 2) AS valor_subsidio_apurado
+    round(v.km_apurada * t.subsidio_km, 2) AS valor_subsidio_apurado
   FROM
     servico_km_tipo v
   LEFT JOIN
-    {{ ref("valor_tipo_viagem") }} t
+    {{ ref("subsidio_parametros") }} t
   ON
     v.data BETWEEN t.data_inicio
     AND t.data_fim
