@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: sppo_gps_8_dias
+    description: "sppo_gps_8_dias"
+    columns:
+      - name: id_veiculo
+        description: "Número do veículo configurado no equipamento."
+      - name: servico
+        description: "Código do serviço."
+      - name: latitude
+        description: "Latitude do veículo no momento da captura do sinal de GPS."
+      - name: longitude
+        description: "Longitude do veículo no momento da captura do sinal de GPS."	
+      - name: data
+        description: "Data de captura do sinal de GPS no formato yyyy-mm-dd."
+      - name: hora
+        description: "Horário de captura do sinal de GPS no formato HH:mm:ss."
+      - name: timestamp_gps
+        description: "Timestamp de captura do sinal de GPS no formato yyyy-mm-dd T HH:mm:ss."	
+  
