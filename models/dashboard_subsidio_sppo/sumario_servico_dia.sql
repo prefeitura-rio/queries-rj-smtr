@@ -21,7 +21,8 @@ WITH
   WHERE
     DATA BETWEEN DATE("{{ var("start_date") }}")
     AND DATE( "{{ var("end_date") }}" )
-    AND distancia_total_planejada > 0 ),
+    AND ( distancia_total_planejada > 0
+          OR distancia_total_planejada IS NULL )),
   veiculos AS (
   SELECT
     DATA,
@@ -50,7 +51,7 @@ WITH
     v.servico,
     ve.status AS tipo_viagem,
     COUNT(id_viagem) AS viagens,
-    ROUND(SUM(distancia_planejada), 2) AS km_apurada
+    SUM(distancia_planejada) AS km_apurada
   FROM
     viagem v
   LEFT JOIN
@@ -65,7 +66,7 @@ WITH
   subsidio_km_tipo AS (
   SELECT
     v.*,
-    round(v.km_apurada * t.subsidio_km, 2) AS valor_subsidio_apurado
+    ROUND(v.km_apurada * t.subsidio_km, 2) AS valor_subsidio_apurado
   FROM
     servico_km_tipo v
   LEFT JOIN
@@ -80,10 +81,10 @@ WITH
     p.tipo_dia,
     p.consorcio,
     p.servico,
-    IFNULL(SUM(v.viagens), 0) AS viagens,
-    IFNULL(ROUND(SUM(v.km_apurada), 2), 0) AS km_apurada,
+    COALESCE(SUM(v.viagens), 0) AS viagens,
+    COALESCE(ROUND(SUM(v.km_apurada), 2), 0) AS km_apurada,
     p.km_planejada AS km_planejada,
-    IFNULL(ROUND(100 * SUM(v.km_apurada) / p.km_planejada, 2), 0) AS perc_km_planejada
+    COALESCE(ROUND(100 * SUM(v.km_apurada) / p.km_planejada, 2), 0) AS perc_km_planejada
   FROM
     planejado p
   LEFT JOIN
