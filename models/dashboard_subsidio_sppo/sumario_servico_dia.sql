@@ -22,7 +22,7 @@ WITH
     DATA BETWEEN DATE("{{ var("start_date") }}")
     AND DATE( "{{ var("end_date") }}" )
     AND ( distancia_total_planejada > 0
-          OR distancia_total_planejada IS NULL ),
+          OR distancia_total_planejada IS NULL )),
   veiculos AS (
   SELECT
     DATA,
