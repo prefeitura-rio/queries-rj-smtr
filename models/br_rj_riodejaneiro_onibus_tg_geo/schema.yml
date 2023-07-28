@@ -16,7 +16,7 @@ models:
         description: "Emissor e número do aplicação, indica qual o tipo do cartão (ex: gratuidade, vale transporte). Categorias podem ser encontradas na tabela dicionário."
       - name: sequencial_transacao_cartao
         description: "Número sequencial histórico de transações do cartão."
-      - name: timestamp_transacao
+      - name: datetime
         description: "Datetime da transação em GMT-3."
       - name: tipo_embarque
         description: "Tipo de embarque atual, indica se é integração ou não."
