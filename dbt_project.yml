@@ -127,7 +127,7 @@ vars:
   sppo_infracao_staging: "rj-smtr-staging.veiculo_staging.sppo_infracao"
   sppo_licenciamento_solicitacao_data_versao: "2023-02-06"
   stu_data_versao: ""
-  
+ 
   
   ### RDO ###
   rho_registros_sppo_staging: "rj-smtr-staging.br_rj_riodejaneiro_rdo_staging.rho_registros_sppo"
@@ -138,6 +138,12 @@ vars:
   data_inicio_subsidio: "2022-06-01"
   data_fim_subsidio: "2023-05-31"
   datas_invalidas: "'2022-10-02', '2022-10-30', '2023-02-17', '2023-02-18', '2023-02-19', '2023-02-20', '2023-02-21', '2023-02-22'"
+
+  ### Dashboard Subsídio SPPO 15d
+  data_inicio_quinzena: "2023-07-01" 
+  data_fim_quinzena: "2023-07-15" 
+  valor_subsidio_com_ar: 2.81 # subsidio por km com ar
+  valor_subsidio_sem_ar: 1.97 # subsidio por km sem ar
 
 models:
   +persist_docs:
@@ -180,3 +186,6 @@ models:
     remuneracao_subsidio:
       +materialized: view
       +schema: remuneracao_subsidio
+    dashboard_subsidio_sppo_15d:
+      +materialized: view
+      +schema: dashboard_subsidio_sppo_15d
