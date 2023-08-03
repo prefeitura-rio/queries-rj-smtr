@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: transacao_georreferenciada
+    description: "transacao_georreferenciada"
+    columns:
+      - name: DATA
+        description: "Data da transação."
+      - name: id_empresa
+        description: "Código da empresa que opera o veículo de origem da transação."
+      - name: id_veiculo
+        description: "Número do veículo configurado no equipamento (apenas número)."
+      - name: id_cartao
+        description: "Número único criptografado do cartão RioCard."
+      - name: tipo_cartao
+        description: "Emissor e número do aplicação, indica qual o tipo do cartão (ex: gratuidade, vale transporte). Categorias podem ser encontradas na tabela dicionário."
+      - name: sequencial_transacao_cartao
+        description: "Número sequencial histórico de transações do cartão."
+      - name: datetime
+        description: "Datetime da transação em GMT-3."
+      - name: tipo_embarque
+        description: "Tipo de embarque atual, indica se é integração ou não."
+      - name: tipo_debito
+        description: "Tipo de débito no cartão, indica o tipo de tarifa executada (ex: cheia, com desconto). Categorias podem ser encontradas na tabela dicionário."	
+      - name: mensagem_debito				
+        description: "Mensagem de estado do débito no cartão. Categorias podem ser encontradas na tabela dicionário."
+      - name: tarifa
+        description: "Valor da tarifa configurado no equipamento (R$)."
+      - name: tarifa_anterior
+        description: "Valor da tarifa anterior da viagem anterior (R$)."
+      - name: debito
+        description: "Valor debitado na viagem atual (R$)."
+      - name: desconto
+        description: "Valor promocional ou de desconto da tarifa (R$)."
+      - name: total_integracao
+        description: "Soma do valor total pago em uma integração (R$)."
+      - name: datetime_minuto
+        description: "Timestamp da transação arredondado por minuto."
+      - name: servico
+        description: "Serviço que o veículo estava operando."
+      - name: latitude
+        description: "Valor médio da latitude do veículo dentro de um minuto."
+      - name: longitude
+        description: "Valor médio da longitude do veículo dentro de um minuto."						
