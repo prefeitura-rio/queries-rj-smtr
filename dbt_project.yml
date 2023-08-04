@@ -161,3 +161,6 @@ models:
     br_rj_riodejaneiro_rdo:
       +materialized: view
       +schema: br_rj_riodejaneiro_rdo
+    dashboard_sppo_gps_8_dias:
+      +materialized: view
+      +schema: dashboard_sppo_gps_8_dias
