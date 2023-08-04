@@ -161,3 +161,6 @@ models:
     br_rj_riodejaneiro_rdo:
       +materialized: view
       +schema: br_rj_riodejaneiro_rdo
+    br_rj_riodejaneiro_onibus_tg_geo:
+      +materialized: view
+      +schema: br_rj_riodejaneiro_onibus_tg_geo
