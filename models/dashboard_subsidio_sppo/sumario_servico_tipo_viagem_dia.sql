@@ -85,8 +85,8 @@ WITH
     UNNEST(status_array) AS status_t),
   tipo_viagem_v2_atualizado AS (
   SELECT
-    * EXCEPT(status),
-    u.status
+    k.*,
+    u.status AS status_atualizado
   FROM
     tipo_viagem_v2 AS k
   LEFT JOIN
@@ -98,6 +98,7 @@ WITH
     v.`data`,
     v.servico,
     ve.status AS tipo_viagem,
+    ve.status_atualizado AS tipo_viagem_atualizado,
     ve.indicador_ar_condicionado,
     COUNT(id_viagem) AS viagens,
     ROUND(SUM(distancia_planejada), 2) AS km_apurada
@@ -112,7 +113,8 @@ WITH
     1,
     2,
     3,
-    4 )
+    4,
+    5 )
 (
 SELECT
   v1.`data`,
@@ -120,6 +122,7 @@ SELECT
   p.consorcio,
   v1.servico,
   COALESCE(v1.tipo_viagem, "Sem viagem apurada") AS tipo_viagem,
+  COALESCE(v1.tipo_viagem, "Sem viagem apurada") AS tipo_viagem_atualizado,
   SAFE_CAST(indicador_ar_condicionado AS BOOL) AS indicador_ar_condicionado,
   COALESCE(v1.viagens, 0) AS viagens,
   COALESCE(v1.km_apurada, 0) AS km_apurada
@@ -139,6 +142,7 @@ SELECT
   p.consorcio,
   v2.servico,
   COALESCE(v2.tipo_viagem, "Sem viagem apurada") AS tipo_viagem,
+  COALESCE(v2.tipo_viagem_atualizado, "Sem viagem apurada") AS tipo_viagem_atualizado,
   v2.indicador_ar_condicionado,
   COALESCE(v2.viagens, 0) AS viagens,
   COALESCE(v2.km_apurada, 0) AS km_apurada
