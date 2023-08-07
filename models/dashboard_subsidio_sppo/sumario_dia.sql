@@ -16,10 +16,10 @@ WITH
     MAX(distancia_total_planejada) AS distancia_total_planejada,
     NULL AS viagens_planejadas
   FROM
-    {{ ref("viagem_planejada") }}
+    {{ ref("viagem_planejada") }} --``rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada`
   WHERE
     data >= "2022-06-01"
-    AND data < "{{ var("data_SUBSIDIO_V2_INICIO") }}"
+    AND data < DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
     AND distancia_total_planejada > 0
   GROUP BY
     1,
@@ -34,10 +34,10 @@ WITH
     trip_id,
     COUNT(id_viagem) AS viagens_realizadas
   FROM
-    {{ ref("viagem_completa") }}
+    {{ ref("viagem_completa") }} -- `rj-smtr`.`projeto_subsidio_sppo`.`viagem_completa`
   WHERE
     data >= "2022-06-01"
-    AND data < "{{ var("data_SUBSIDIO_V2_INICIO") }}"
+    AND data < DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
   GROUP BY
     1,
     2),
@@ -98,10 +98,10 @@ WITH
     SELECT
       *
     FROM
-      {{ ref("subsidio_data_versao_efetiva") }}
+      {{ ref("subsidio_data_versao_efetiva") }} -- `rj-smtr`.`projeto_subsidio_sppo`.`subsidio_data_versao_efetiva`
     WHERE
       data >= "2022-06-01"
-      AND data < "{{ var("data_SUBSIDIO_V2_INICIO") }}") AS v
+      AND data < DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )) AS v
   ON
     v.data = s.data )
 SELECT
