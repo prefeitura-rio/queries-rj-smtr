@@ -1,63 +1,128 @@
-select 
+SELECT 
   data,
-  case
-      when data = "2022-06-16" then "Domingo"
-      when data = "2022-06-17" then "Sabado"
-      when data = "2022-09-02" then "Sabado"
-      when data = "2022-09-07" then "Domingo"
-      when data = "2022-10-12" then "Domingo"
-      when data = "2022-10-17" then "Sabado"
-      when data = "2022-11-02" then "Domingo"
-      when data = "2022-11-14" then "Sabado"
-      when data = "2022-11-15" then "Domingo"
-      when data = "2022-11-24" then "Sabado"
-      when data = "2022-11-28" then "Sabado"
-      when data = "2022-12-02" then "Sabado"
-      when data = "2022-12-05" then "Sabado"
-      when data = "2022-12-09" then "Sabado"
-      when extract(dayofweek from data) = 1 then "Domingo"
-      when extract(dayofweek from data) = 7 then "Sabado"
-      else 'Dia Útil'
-  end as tipo_dia,
-  case
-    when data between date(2022,10,1) and date(2022,10,2) then date(2022,9,16)
-    when data between date(2022,6,1) and last_day(date(2022,6,30), month) then date(2022,6,1)
+  CASE
+      WHEN data = "2022-06-16" THEN "Domingo"
+      WHEN data = "2022-06-17" THEN "Sabado"
+      WHEN data = "2022-09-02" THEN "Sabado"
+      WHEN data = "2022-09-07" THEN "Domingo"
+      WHEN data = "2022-10-12" THEN "Domingo"
+      WHEN data = "2022-10-17" THEN "Sabado"
+      WHEN data = "2022-11-02" THEN "Domingo"
+      WHEN data = "2022-11-14" THEN "Sabado"
+      WHEN data = "2022-11-15" THEN "Domingo"
+      WHEN data = "2022-11-24" THEN "Sabado"
+      WHEN data = "2022-11-28" THEN "Sabado"
+      WHEN data = "2022-12-02" THEN "Sabado"
+      WHEN data = "2022-12-05" THEN "Sabado"
+      WHEN data = "2022-12-09" THEN "Sabado"
+      WHEN data = "2023-04-06" THEN "Sabado" -- Ponto Facultativo - DECRETO RIO Nº 52275/2023
+      WHEN data = "2023-04-07" THEN "Domingo" -- Paixão de Cristo -- Art. 1º, V - PORTARIA ME Nº 11.090/2022
+      WHEN data = "2023-06-08" THEN "Domingo" -- Corpus Christi - Lei nº 336/1949 - OFÍCIO Nº MTR-OFI-2023/03260 (MTROFI202303260A)
+      WHEN data = "2023-06-09" THEN "Sabado" -- Ponto Facultativo - DECRETO RIO Nº 52584/2023
+      WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 1 THEN "Domingo" -- Dia de São Sebastião -- Art. 8°, I - Lei Municipal nº 5146/2010
+      WHEN EXTRACT(DAY FROM data) = 23 AND EXTRACT(MONTH FROM data) = 4 THEN "Domingo" -- Dia de São Jorge -- Art. 8°, II - Lei Municipal nº 5146/2010 / Lei Estadual Nº 5198/2008 / Lei Estadual Nº 5645/2010
+      WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 11 THEN "Domingo" -- Aniversário de morte de Zumbi dos Palmares / Dia da Consciência Negra -- Art. 8°, IV - Lei Municipal nº 5146/2010 / Lei Estadual nº 526/1982 / Lei Estadual nº 1929/1991 / Lei Estadual nº 4007/2002 / Lei Estadual Nº 5645/2010
+      WHEN EXTRACT(DAY FROM data) = 21 AND EXTRACT(MONTH FROM data) = 4 THEN "Domingo" -- Tiradentes -- Art. 1º, VI - PORTARIA ME Nº 11.090/2022
+      WHEN EXTRACT(DAY FROM data) = 1 AND EXTRACT(MONTH FROM data) = 5 THEN "Domingo" -- Dia Mundial do Trabalho -- Art. 1º, VII - PORTARIA ME Nº 11.090/2022
+      WHEN EXTRACT(DAY FROM data) = 7 AND EXTRACT(MONTH FROM data) = 9 THEN "Domingo" -- Independência do Brasil -- Art. 1º, IX - PORTARIA ME Nº 11.090/2022
+      WHEN EXTRACT(DAY FROM data) = 12 AND EXTRACT(MONTH FROM data) = 10 THEN "Domingo" -- Nossa Senhora Aparecida -- Art. 1º, X - PORTARIA ME Nº 11.090/2022
+      WHEN EXTRACT(DAY FROM data) = 2 AND EXTRACT(MONTH FROM data) = 11 THEN "Domingo" -- Finados -- Art. 1º, XII - PORTARIA ME Nº 11.090/2022
+      WHEN EXTRACT(DAY FROM data) = 15 AND EXTRACT(MONTH FROM data) = 11 THEN "Domingo" -- Proclamação da República -- Art. 1º, XIII - PORTARIA ME Nº 11.090/2022
+      WHEN EXTRACT(DAY FROM data) = 25 AND EXTRACT(MONTH FROM data) = 12 THEN "Domingo" -- Natal -- Art. 1º, XIV - PORTARIA ME Nº 11.090/2022
+      WHEN EXTRACT(DAYOFWEEK FROM data) = 1 THEN "Domingo"
+      WHEN EXTRACT(DAYOFWEEK FROM data) = 7 THEN "Sabado"
+      ELSE 'Dia Útil'
+  END AS tipo_dia,
+  CASE
+    -- Reveillon:
+    WHEN data = DATE(2022,12,31) THEN data
+    WHEN data = DATE(2023,1,1) THEN data
+    WHEN data BETWEEN DATE(2023,1,2) AND DATE(2023,1,15) THEN DATE(2023,1,2)
+    -- Reprocessamento:
+    WHEN data BETWEEN DATE(2023,1,15) AND DATE(2023,1,31) THEN DATE(2023,1,16)
+    WHEN data BETWEEN DATE(2023,3,16) AND DATE(2023,3,31) THEN DATE(2023,3,16)
+    -- Alteração de Planejamento
+    WHEN data BETWEEN DATE(2023,6,16) AND DATE(2023,6,30) THEN DATE(2023,6,16)
+    WHEN data BETWEEN DATE(2023,7,16) AND DATE(2023,7,31) THEN DATE(2023,7,16)
+    -- 2022:
+    WHEN data BETWEEN DATE(2022,10,1) AND DATE(2022,10,2) THEN DATE(2022,9,16)
+    WHEN data BETWEEN DATE(2022,6,1) AND LAST_DAY(DATE(2022,6,30), MONTH) THEN DATE(2022,6,1)
     {% for i in range(7, 13) %}
-      when data between date(2022,{{ i }},1) and date(2022,{{ i }},15) then date(2022,{{ i }},01)
-      when data between date(2022,{{ i }},16) and last_day(date(2022,{{ i }},30), month) then date(2022,{{ i }},16)
+      WHEN data BETWEEN DATE(2022,{{ i }},1) AND DATE(2022,{{ i }},15) THEN DATE(2022,{{ i }},1)
+      WHEN data BETWEEN DATE(2022,{{ i }},16) AND LAST_DAY(DATE(2022,{{ i }},30), MONTH) THEN DATE(2022,{{ i }},16)
     {% endfor %}
-  end as data_versao_trips,
-  case
-    when data between date(2022,10,1) and date(2022,10,2) then date(2022,9,16)
-    when data between date(2022,6,1) and last_day(date(2022,6,30), month) then date(2022,6,1)
+    -- 2023:
+    {% for j in range(2023, 2024) %}
+      {% for i in range(1, 13) %}
+        WHEN EXTRACT(MONTH FROM data) = {{ i }} THEN DATE({{ j }},{{ i }},1)
+      {% endfor %}
+    {% endfor %}
+  END AS data_versao_trips,
+  CASE
+    -- Reveillon:
+    WHEN data = DATE(2022,12,31) THEN data
+    WHEN data = DATE(2023,1,1) THEN data
+    WHEN data BETWEEN DATE(2023,1,2) AND DATE(2023,1,15) THEN DATE(2023,1,2)
+    -- Reprocessamento:
+    WHEN data BETWEEN DATE(2023,1,15) AND DATE(2023,1,31) THEN DATE(2023,1,16)
+    WHEN data BETWEEN DATE(2023,3,16) AND DATE(2023,3,31) THEN DATE(2023,3,16)
+    -- Alteração de Planejamento
+    WHEN data BETWEEN DATE(2023,6,16) AND DATE(2023,6,30) THEN DATE(2023,6,16)
+    WHEN data BETWEEN DATE(2023,7,16) AND DATE(2023,7,31) THEN DATE(2023,7,16)
+    -- 2022:
+    WHEN data BETWEEN DATE(2022,10,1) AND DATE(2022,10,2) THEN DATE(2022,9,16)
+    WHEN data BETWEEN DATE(2022,6,1) AND LAST_DAY(DATE(2022,6,30), MONTH) THEN DATE(2022,6,1)
     {% for i in range(7, 13) %}
-      when data between date(2022,{{ i }},1) and date(2022,{{ i }},15) then date(2022,{{ i }},01)
-      when data between date(2022,{{ i }},16) and last_day(date(2022,{{ i }},30), month) then date(2022,{{ i }},16)
+      WHEN data BETWEEN DATE(2022,{{ i }},1) AND DATE(2022,{{ i }},15) THEN DATE(2022,{{ i }},1)
+      WHEN data BETWEEN DATE(2022,{{ i }},16) AND LAST_DAY(DATE(2022,{{ i }},30), MONTH) THEN DATE(2022,{{ i }},16)
     {% endfor %}
-  end as data_versao_shapes,
-  case
+    -- 2023:
+    {% for j in range(2023, 2024) %}
+      {% for i in range(1, 13) %}
+        WHEN EXTRACT(MONTH FROM data) = {{ i }} THEN DATE({{ j }},{{ i }},1)
+      {% endfor %}
+    {% endfor %}
+  END AS data_versao_shapes,
+  CASE
+    -- Reveillon:
+    WHEN data = DATE(2022,12,31) THEN data
+    WHEN data = DATE(2023,1,1) THEN data
+    WHEN data BETWEEN DATE(2023,1,2) AND DATE(2023,1,15) THEN DATE(2023,1,2)
+    -- Reprocessamento:
+    WHEN data BETWEEN DATE(2023,1,15) AND DATE(2023,1,31) THEN DATE(2023,1,16)
+    WHEN data BETWEEN DATE(2023,3,16) AND DATE(2023,3,31) THEN DATE(2023,3,16)
+    -- Alteração de Planejamento
+    WHEN data BETWEEN DATE(2023,6,16) AND DATE(2023,6,30) THEN DATE(2023,6,16)
+    WHEN data BETWEEN DATE(2023,7,16) AND DATE(2023,7,31) THEN DATE(2023,7,16)
+    -- 2022:
     {% for i in range(6, 13) %}
-      when data between date(2022,{{ i }},1) and date(2022,{{ i }},15) then date(2022,{{ i }},01)
-      when data between date(2022,{{ i }},16) and last_day(date(2022,{{ i }},30), month) then date(2022,{{ i }},16)
+      WHEN data BETWEEN DATE(2022,{{ i }},1) AND DATE(2022,{{ i }},15) THEN DATE(2022,{{ i }},1)
+      WHEN data BETWEEN DATE(2022,{{ i }},16) AND LAST_DAY(DATE(2022,{{ i }},30), MONTH) THEN DATE(2022,{{ i }},16)
     {% endfor %}
-  end as data_versao_frequencies,
-  case  
-    when extract(year from data) = 2022 then (
-      case
-        when extract(month from data) = 6 then 2.13
-        when extract(month from data) = 7 then 1.84
-        when extract(month from data) = 8 then 1.80
-        when extract(month from data) = 9 then 1.75
-        when extract(month from data) = 10 then 1.62
-        when extract(month from data) = 11 then 1.53
-        when extract(month from data) = 12 then 1.78
-      end
+    -- 2023:
+    {% for j in range(2023, 2024) %}
+      {% for i in range(1, 13) %}
+        WHEN EXTRACT(MONTH FROM data) = {{ i }} THEN DATE({{ j }},{{ i }},1)
+      {% endfor %}
+    {% endfor %}
+  END AS data_versao_frequencies,
+  CASE  
+    WHEN EXTRACT(YEAR FROM data) = 2022 THEN (
+      CASE
+        WHEN EXTRACT(MONTH FROM data) = 6 THEN 2.13
+        WHEN EXTRACT(MONTH FROM data) = 7 THEN 1.84
+        WHEN EXTRACT(MONTH FROM data) = 8 THEN 1.80
+        WHEN EXTRACT(MONTH FROM data) = 9 THEN 1.75
+        WHEN EXTRACT(MONTH FROM data) = 10 THEN 1.62
+        WHEN EXTRACT(MONTH FROM data) = 11 THEN 1.53
+        WHEN EXTRACT(MONTH FROM data) = 12 THEN 1.78
+      END
     )
-    when extract(year from data) = 2023 then (
-      case
-        when date <= date("2023-01-06") then 3.18
-        else 2.81
-      end
+    WHEN EXTRACT(YEAR FROM data) = 2023 THEN (
+      CASE
+        WHEN data <= DATE("2023-01-06") THEN 3.18
+        ELSE 2.81
+      END
     )
-  end as valor_subsidio_por_km
-from unnest(GENERATE_DATE_ARRAY("2022-06-01", "2023-12-31")) data
+  END AS valor_subsidio_por_km
+FROM UNNEST(GENERATE_DATE_ARRAY("2022-06-01", "2023-12-31")) AS data
