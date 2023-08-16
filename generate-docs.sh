@@ -1,9 +1,32 @@
-sudo mkdir /credentials-dev
+sudo mkdir ./credentials-dev
 
-sudo mkdir /credentials-prod
+sudo mkdir ./credentials-prod
 
-echo $1 > /credentials-dev/dev.json
+mkdir profiles
 
-echo $1 > /credentials-prod/prod.json
+echo $1 > ./credentials-dev/dev.json
 
-dbt docs generate --profiles-dir .
+echo $1 > ./credentials-prod/prod.json
+
+echo """ 
+default:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      project: rj-smtr
+      dataset: dbt
+      location: US
+      threads: 2
+      keyfile: ./credentials-dev/dev.json
+    prod:
+      type: bigquery
+      method: service-account
+      project: rj-smtr
+      dataset: dbt
+      location: US
+      threads: 2
+      keyfile: ./credentials-prod/prod.json""" > profiles/profiles.yml
+
+dbt docs generate --profiles-dir ./profiles
