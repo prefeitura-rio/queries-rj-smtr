@@ -21,6 +21,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Setup Python version
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+
+      - run: |-
+          pip install --no-cache-dir -r requirements.txt
+
       # Setup gcloud CLI
       - name: Setup Google Cloud CLI
         uses: google-github-actions/setup-gcloud@v0.2.1

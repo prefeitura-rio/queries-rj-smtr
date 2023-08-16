@@ -1,9 +1,9 @@
-pip install --no-cache-dir -r requirements.txt
+sudo mkdir /credentials-dev
 
-mkdir /credentials
+sudo mkdir /credentials-prod
 
-echo $1 > /credentials/dev.json
+echo $1 > /credentials-dev/dev.json
 
-echo $1 > /credentials/prod.json
+echo $1 > /credentials-prod/prod.json
 
 dbt docs generate --profiles-dir .
