@@ -21,6 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      # Setup gcloud CLI
       - name: Setup Google Cloud CLI
         uses: google-github-actions/setup-gcloud@v0.2.1
         with:
@@ -29,8 +30,7 @@ jobs:
 
       # Configure Docker to use the gcloud command-line tool as a credential
       # helper for authentication
-      - name: Authentication to gcr.io
-        run: |-
+      - run: |-
           gcloud --quiet auth configure-docker
 
       # Get the GKE credentials so we can deploy to the cluster
