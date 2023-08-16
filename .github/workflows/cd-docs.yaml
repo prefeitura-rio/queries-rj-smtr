@@ -51,11 +51,13 @@ jobs:
 
       - name: Set up Kustomize
         run: |-
+          cd ./.kubernetes/docs
           curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
           chmod u+x ./kustomize
 
       - name: Deploy
         run: |-
+          cd ./.kubernetes/docs
           ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE_DBT:TAG=$IMAGE_NAME:$GITHUB_SHA
-          ./kustomize build . | kubectl apply -n dbt-docs -f -
+          ./kustomize build ./.kubernetes/docs | kubectl apply -n dbt-docs -f -
           kubectl rollout status -w -n dbt-docs deployment/dbt-docs
