@@ -1,0 +1,61 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+  GKE_CLUSTER: ${{ secrets.GKE_APP_CLUSTER_NAME }}
+  GKE_ZONE: ${{ secrets.GKE_CLUSTER_ZONE }}
+  IMAGE_NAME: gcr.io/rj-smtr/dbt-docs
+
+jobs:
+  build-container:
+    name: Build, publish and register
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@v0.2.1
+        with:
+          service_account_key: ${{ secrets.GCP_SA_KEY}}
+          project_id: ${{ secrets.GKE_PROJECT }}
+
+      # Configure Docker to use the gcloud command-line tool as a credential
+      # helper for authentication
+      - name: Authentication to gcr.io
+        run: |-
+          gcloud --quiet auth configure-docker
+
+      # Get the GKE credentials so we can deploy to the cluster
+      - uses: google-github-actions/get-gke-credentials@v0.2.1
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          location: ${{ env.GKE_ZONE }}
+          credentials: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Generate Docs Static Files
+        run: |
+          ls
+          sh generate-docs.sh ${{ secrets.GKE_SA_KEY }}
+
+      - name: Build and publish image
+        run: |
+          docker build -t $IMAGE_NAME:$GITHUB_SHA . -f Dockerfile-docs
+          docker push $IMAGE_NAME:$GITHUB_SHA
+
+      - name: Set up Kustomize
+        run: |-
+          curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
+          chmod u+x ./kustomize
+
+      - name: Deploy
+        run: |-
+          ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE_DBT:TAG=$IMAGE_NAME:$GITHUB_SHA
+          ./kustomize build . | kubectl apply -n dbt-docs -f -
+          kubectl rollout status -w -n dbt-docs deployment/dbt-docs
