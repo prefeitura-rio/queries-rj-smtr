@@ -64,7 +64,7 @@ WITH
     2,
     3 ),
   subsidio_km_tipo AS (
-  SELECT
+  SELECT DISTINCT
     v.*,
     ROUND(v.km_apurada * t.subsidio_km, 2) AS valor_subsidio_apurado
   FROM
