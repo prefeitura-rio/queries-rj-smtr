@@ -1,7 +1,0 @@
-version: 2
-
-models:
-  - name: rho_registros_sppo_view
-    description: "View para tipar e padronizar dados do RHO"
-  - name: rho_registros_sppo
-    description: "Tabela materializada para acesso geral aos dados do RHO"

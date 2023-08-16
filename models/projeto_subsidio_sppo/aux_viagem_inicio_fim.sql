@@ -54,7 +54,7 @@ inicio_fim AS (
 )
 -- 4. Filtra colunas e cria campo identificador da viagem (id_viagem)
 select distinct
-    concat(id_veiculo, "-", servico_realizado ,"-", sentido, "-", shape_id_planejado, "-", FORMAT_DATETIME("%Y%m%d%H%M%S", datetime_partida)) as id_viagem,
+    concat(id_veiculo, "-", servico_realizado ,"-", sentido, "-", FORMAT_DATETIME("%Y%m%d%H%M%S", datetime_partida)) as id_viagem,
     data,
     id_empresa,
     id_veiculo,
