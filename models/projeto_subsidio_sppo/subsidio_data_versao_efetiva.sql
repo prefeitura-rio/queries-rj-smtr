@@ -55,7 +55,7 @@ select
     )
     when extract(year from data) = 2023 then (
       case
-        when date <= date("2023-01-06") then 3.18
+        when data <= date("2023-01-06") then 3.18
         else 2.81
       end
     )
