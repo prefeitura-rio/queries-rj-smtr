@@ -1,12 +1,12 @@
-sudo mkdir ./credentials-dev
+mkdir ./credentials-dev
 
-sudo mkdir ./credentials-prod
+mkdir ./credentials-prod
 
 mkdir profiles
 
-echo $1 > ./credentials-dev/dev.json
+bash -c "echo $1 > ./credentials-dev/dev.json"
 
-echo $1 > ./credentials-prod/prod.json
+bash -c "echo $1 > ./credentials-prod/prod.json"
 
 echo """ 
 default:

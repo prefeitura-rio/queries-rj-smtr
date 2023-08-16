@@ -52,7 +52,9 @@ jobs:
       - name: Generate Docs Static Files
         run: |
           ls
-          sh generate-docs.sh ${{ secrets.GKE_SA_KEY }}
+          sh generate-docs.sh $KEY
+        env:
+          KEY: ${{ secrets.GKE_SA_KEY }}
 
       - name: Build and publish image
         run: |
