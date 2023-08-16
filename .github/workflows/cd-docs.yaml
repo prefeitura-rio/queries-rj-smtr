@@ -1,9 +1,10 @@
-name: CD
+name: CD-docs
 
 on:
   push:
     branches:
       - master
+      - devops
 
 env:
   GCP_PROJECT_ID: ${{ secrets.GKE_PROJECT }}
@@ -14,7 +15,7 @@ env:
 
 jobs:
   build-container:
-    name: Build, publish and register
+    name: Build and publish docs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
