@@ -1,5 +1,7 @@
 pip install --no-cache-dir -r requirements.txt
 
+mkdir /credentials
+
 echo $1 > /credentials/dev.json
 
 echo $1 > /credentials/prod.json
