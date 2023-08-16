@@ -52,10 +52,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - docs.cluster.mobilidade.dev
+        - docs.mobilidade.rio
       secretName: dbt-docs-tls
   rules:
-    - host: docs.cluster.mobilidade.dev
+    - host: docs.mobilidade.rio
       http:
         paths:
           - path: /
