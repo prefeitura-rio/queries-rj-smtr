@@ -1,0 +1,64 @@
+version: 2
+
+sources:   
+
+  - name: recurso_subsidio_sppo
+    database: rj-smtr-dev
+    tables:
+      - name: reprocessamento 
+      - name: bloqueio_via    
+
+  - name: dashboard_subsidio_sppo
+    database: rj-smtr-dev
+    tables:
+      - name: subsidio_parametros_atualizada 
+
+  - name: br_rj_riodejaneiro_rdo
+    database: rj-smtr
+    tables:
+      - name: rdo40_tratado   
+
+  - name: dashboard_subsidio_sppo
+    database: rj-smtr
+    tables:
+      - name: sumario_servico_dia_historico 
+      - name: sumario_servico_tipo_viagem_dia  
+
+models:
+  - name: remuneracao_servico_dia
+    description: "remuneracao_servico_dia"
+    columns:
+      - name: ano
+        description: "Ano de execução do serviço."
+      - name: data
+        description: "Data da execução do serviço."
+      - name: consorcio
+        description: "Nome do consórcio operacional."
+      - name: servico
+        description: "Nome do serviço (linha de ônibus)."
+      - name: irk
+        description: "Índice de Remuneração por Quilômetro calculado com base na tarifa de remuneração."
+      - name: irk_tarifa_publica
+        description: "Índice de Remuneração por Quilômetro calculado com base na tarifa pública."
+      - name: viagens
+        description: "Quantidade de viagens por serviço-dia."
+      - name: quilometragem
+        description: "Quilometragem apurada por serviço-dia."
+      - name: desconto_subsidio
+        description: "Valor descontado do subsídio (ex: veículo sem ar e não autuado, autuado por ar, segurança etc)."
+      - name: receita_esperada
+        description: "Receita Esperada = IRK x Quilometragem."
+      - name: subsidio_esperado
+        description: " Subsídio Esperado = (IRK - IRK_tarifa_pública) x Quilometragem."
+      - name: receita_tarifaria_esperada
+        description: "Receita Tarifária Esperada = IRK_tarifa_pública x Quilometragem."
+      - name: receita_tarifaria
+        description: "Valor da receita extraído do RDO e proveniente exclusivamente da tarifa pública por serviço-dia."
+      - name: subsidio
+        description: "Valor do subsídio que foi pago por serviço-dia."
+      - name: receita_aferida
+        description: "Receita Aferida = Remuneração Tarifária + Subsídio."
+      - name: diff_tarifario_esperado
+        description: "Diferença entre Receita Tarifária e Esperada = Receita Tarifaria - (Receita Esperada - Desconto Subsídio)."
+      - name: diff_aferido_esperado
+        description: "Diferença entre Receita Aferida e Esperada = Receita Aferida - (Receita Esperada - Desconto Subsídio)."

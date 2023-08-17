@@ -1,0 +1,196 @@
+-- Encontro de Contas
+
+WITH 
+  -- 1. Recupera serviços-dias subsidiados
+  servico_dia AS (
+  SELECT DISTINCT
+    data,
+    consorcio,
+    servico,
+    viagens,
+    valor_subsidio_pago AS subsidio  
+  FROM
+    {{ source('dashboard_subsidio_sppo', 'sumario_servico_dia_historico') }} 
+  WHERE
+    data BETWEEN DATE('{{ var('data_inicio_subsidio') }}') 
+    AND DATE('{{ var('data_fim_subsidio') }}')
+    AND data NOT IN ({{ var('datas_invalidas') }})
+    AND valor_subsidio_pago > 0),
+    
+-- 2. Remove serviços-dia pagos por recurso
+recurso AS (
+    SELECT DISTINCT
+       data_viagem AS data,
+       servico,
+    FROM
+      {{ source('recurso_subsidio_sppo', 'reprocessamento') }} 
+
+    WHERE
+      data_viagem BETWEEN DATE('{{ var('data_inicio_subsidio') }}') 
+    AND DATE('{{ var('data_fim_subsidio') }}')
+    UNION ALL (
+    SELECT DISTINCT
+       data_viagem AS data,
+       servico
+    FROM
+      {{ source('recurso_subsidio_sppo', 'bloqueio_via') }}
+    WHERE
+      data_viagem BETWEEN DATE('{{ var('data_inicio_subsidio') }}') 
+    AND DATE('{{ var('data_fim_subsidio') }}')
+    AND data_viagem NOT IN ({{ var('datas_invalidas') }})     
+    )
+),
+servico_dia_valido AS (
+    SELECT
+        s.*
+    FROM
+        servico_dia s
+    LEFT JOIN 
+        recurso r
+    USING
+        (data, servico)
+    WHERE r.data IS NULL
+),
+
+-- Receita Aferida 
+
+-- 3. Recupera receita diária do RDO para cada serviço
+  remun_tarifa AS (
+  SELECT DISTINCT
+    data,
+    CASE
+      WHEN LENGTH(linha) < 3 THEN LPAD(linha, 3, "0")
+    ELSE
+    CONCAT( IFNULL(REGEXP_EXTRACT(linha, r'[B-Z]+'), ""), IFNULL(REGEXP_EXTRACT(linha, r'[0-9]+'), "") )
+  END
+    AS servico,
+    SUM(receita_buc) + SUM(receita_buc_supervia) + SUM(receita_cartoes_perna_unica_e_demais) + SUM(receita_especie) AS remuneracao_tarifaria
+  FROM
+    {{ source('br_rj_riodejaneiro_rdo', 'rdo40_tratado') }}
+  WHERE
+    data BETWEEN DATE('{{ var('data_inicio_subsidio') }}') 
+    AND DATE('{{ var('data_fim_subsidio') }}') 
+    and data NOT IN ({{ var('datas_invalidas') }})    
+  GROUP BY
+    1,2
+),
+remun_subsidio AS (
+    SELECT
+        extract(year from data) AS ano,
+        s.data,
+        s.consorcio,
+        s.servico,
+        sum(ifnull(remuneracao_tarifaria, 0)) AS remuneracao_tarifaria,
+        sum(ifnull(subsidio, 0)) AS subsidio
+    FROM
+      servico_dia_valido s
+    LEFT JOIN
+      remun_tarifa
+    USING
+        (data, servico)
+    GROUP BY 1,2,3,4
+),
+
+-- 4. Tabela com dados da receita aferida
+receita_aferida AS (
+SELECT 
+    *,
+    ROUND(remuneracao_tarifaria + subsidio, 2) AS receita_aferida
+FROM 
+    remun_subsidio
+),
+
+
+-- Receita Esperada 
+-- 5. Calcula remuneração esperada por tipo de viagem
+   km_tipo_viagem AS (
+    SELECT DISTINCT
+      data,
+      servico,
+      tipo_viagem,
+      km_apurada AS quilometragem,
+    FROM
+       {{ source('dashboard_subsidio_sppo', 'sumario_servico_tipo_viagem_dia') }}
+    WHERE
+      data BETWEEN DATE('{{ var('data_inicio_subsidio') }}') 
+        AND DATE('{{ var('data_fim_subsidio') }}') 
+      AND data NOT IN ({{ var('datas_invalidas') }})
+    ),
+
+irk_tipo_viagem AS (
+  SELECT
+    DISTINCT data_inicio,
+    data_fim,
+    -- TODO: corrigir tipos na tabela de parametros
+    CASE
+      -- WHEN status = "Nao licenciado" THEN "Não licenciado"
+      WHEN status = "Licenciado com ar e autuado (023.II)" THEN "Autuado por ar inoperante"
+      WHEN status = "Licenciado sem ar" THEN "Licenciado sem ar e não autuado"
+      WHEN status = "Licenciado com ar e não autuado (023.II)" THEN "Licenciado com ar e não autuado"
+      ELSE status
+  END
+    AS tipo_viagem,
+    irk,
+    irk_tarifa_publica,
+    desconto_subsidio_km
+  FROM
+     {{ source('dashboard_subsidio_sppo', 'subsidio_parametros_atualizada') }}
+  WHERE
+    data_fim >= DATE('{{ var('data_inicio_subsidio') }}') 
+    AND data_inicio <= DATE('{{ var('data_fim_subsidio') }}')
+
+    -- Remove quilometragem irregular
+    AND status != "Não licenciado"
+    -- AND DATE("2023-01-18") BETWEEN data_inicio AND data_fim
+    ),
+
+  receita_esperada AS (
+    SELECT DISTINCT
+      EXTRACT(year FROM s.data) AS ano,
+      s.data,
+      s.consorcio,
+      s.servico,
+      i.irk,
+      i.irk_tarifa_publica,
+      viagens,
+      SUM(k.quilometragem) AS quilometragem,
+      SUM(i.desconto_subsidio_km * k.quilometragem) AS desconto_subsidio,
+      i.irk * SUM(k.quilometragem) AS receita_esperada
+    FROM
+      servico_dia_valido AS s
+    LEFT JOIN
+      km_tipo_viagem AS k
+    USING
+      (DATA,
+        servico)
+    INNER JOIN
+      irk_tipo_viagem AS i
+    ON
+      k.tipo_viagem = i.tipo_viagem
+      AND s.data BETWEEN i.data_inicio
+      AND i.data_fim
+    GROUP BY 1,2,3,4,5,6,7
+  )
+
+-- 6. Retorna os dados do encontro de contas
+    SELECT
+    re.ano,
+    re.data,
+    re.consorcio,
+    re.servico,
+    irk,
+    irk_tarifa_publica,
+    viagens,
+    quilometragem,
+    desconto_subsidio,
+    receita_esperada,
+    (quilometragem * (irk - irk_tarifa_publica)) AS subsidio_esperado, 
+    (quilometragem * irk_tarifa_publica) AS receita_tarifaria_esperada,  
+    remuneracao_tarifaria AS receita_tarifaria,
+    subsidio,
+    receita_aferida,
+    ROUND((remuneracao_tarifaria - (receita_esperada - desconto_subsidio)), 2) AS diff_tarifario_esperado,
+    ROUND((receita_aferida - (receita_esperada - desconto_subsidio)), 2) AS diff_aferido_esperado    
+    FROM receita_esperada AS re
+    JOIN receita_aferida AS ra 
+    ON re.data = ra.data AND re.servico = ra.servico 
