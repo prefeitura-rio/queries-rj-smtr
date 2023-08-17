@@ -1,3 +1,5 @@
+echo "Current working directory is:" && pwd
+
 echo "Creating directories..."
 
 mkdir ./credentials-dev
@@ -23,7 +25,7 @@ default:
       dataset: dbt
       location: US
       threads: 2
-      keyfile: ./credentials-dev/dev.json
+      keyfile: $PWD/credentials-dev/dev.json
     prod:
       type: bigquery
       method: service-account
@@ -31,7 +33,7 @@ default:
       dataset: dbt
       location: US
       threads: 2
-      keyfile: ./credentials-prod/prod.json""" > profiles/profiles.yml
+      keyfile: $PWD/credentials-prod/prod.json""" > profiles/profiles.yml
 
 ls ./profiles
 
