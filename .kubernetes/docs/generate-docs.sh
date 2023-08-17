@@ -1,8 +1,12 @@
+echo "Creating directories..."
+
 mkdir ./credentials-dev
 
 mkdir ./credentials-prod
 
 mkdir ./profiles
+
+echo "Mounting files from env..."
 
 bash -c "echo $1 | base64 --decode > ./credentials-dev/dev.json"
 
