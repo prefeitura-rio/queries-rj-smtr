@@ -4,10 +4,10 @@
 .github
 .gitignore
 .kubernetes/
+target/compiled/
 dbt_modules/
 Dockerfile
 kustomization.yaml
 logs/
 profiles_template.yml
 README.md
-target/
