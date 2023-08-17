@@ -52,7 +52,8 @@ jobs:
       - name: Generate Docs Static Files
         run: |
           ls
-          sh ./.kubernetes/docs/generate-docs.sh $KEY
+          cd ./.kubernetes/docs/
+          sh generate-docs.sh $KEY
         env:
           KEY: ${{ secrets.GKE_SA_KEY }}
 
