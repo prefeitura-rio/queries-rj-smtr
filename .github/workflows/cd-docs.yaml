@@ -1,9 +1,10 @@
-name: CD
+name: CD-docs
 
 on:
   push:
     branches:
       - master
+      - devops
 
 env:
   GCP_PROJECT_ID: ${{ secrets.GKE_PROJECT }}
@@ -14,35 +15,47 @@ env:
 
 jobs:
   build-container:
-    name: Build, publish and register
+    name: Build and publish docs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Setup Python version
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+
+      - run: |-
+          pip install --no-cache-dir -r requirements.txt
+
+      # Setup gcloud CLI
       - name: Setup Google Cloud CLI
         uses: google-github-actions/setup-gcloud@v0.2.1
         with:
-          service_account_key: ${{ secrets.GCP_SA_KEY}}
+          service_account_key: ${{ secrets.GKE_SA_KEY }}
           project_id: ${{ secrets.GKE_PROJECT }}
+          export_default_credentials: true
 
-      # Configure Docker to use the gcloud command-line tool as a credential
-      # helper for authentication
-      - name: Authentication to gcr.io
-        run: |-
-          gcloud --quiet auth configure-docker
-
-      # Get the GKE credentials so we can deploy to the cluster
-      - uses: google-github-actions/get-gke-credentials@v0.2.1
+      - name: Get GKE credentials
+        uses: google-github-actions/get-gke-credentials@v0.2.1
         with:
           cluster_name: ${{ env.GKE_CLUSTER }}
           location: ${{ env.GKE_ZONE }}
-          credentials: ${{ secrets.GCP_SA_KEY }}
+          credentials: ${{ secrets.GKE_SA_KEY }}
+
+      # Configure Docker to use the gcloud command-line tool as a credential
+      # helper for authentication
+      - run: |-
+          gcloud --quiet auth configure-docker
 
       - name: Generate Docs Static Files
         run: |
           ls
-          sh generate-docs.sh ${{ secrets.GKE_SA_KEY }}
+          cd ./.kubernetes/docs/
+          sh generate-docs.sh $KEY
+        env:
+          KEY: ${{ secrets.GKE_SA_KEY }}
 
       - name: Build and publish image
         run: |
@@ -59,5 +72,5 @@ jobs:
         run: |-
           cd ./.kubernetes/docs
           ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE_DBT:TAG=$IMAGE_NAME:$GITHUB_SHA
-          ./kustomize build ./.kubernetes/docs | kubectl apply -n dbt-docs -f -
+          ./kustomize build . | kubectl apply -n dbt-docs -f -
           kubectl rollout status -w -n dbt-docs deployment/dbt-docs

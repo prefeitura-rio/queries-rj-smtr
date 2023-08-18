@@ -20,14 +20,12 @@ vars:
   ### Date default variables ###
   date_range_start: "2022-01-01T00:00:00"
   date_range_end: "2022-01-01T01:00:00"
-  start_date: "YYYY-MM-DD"
-  end_date: "YYYY-MM-DD"
-  run_date: "YYYY-MM-DD"
-
+  start_date: "2022-01-01T01:00:00"
+  end_date: "2022-01-01T01:00:00"
+  run_date: "2022-01-01T01:00:00"
 
   ### Version default variable (replaced on deploy) ###
   version: ""
-
 
   ### GPS ###
   brt_terminais: "rj-smtr.br_rj_riodejaneiro_transporte.estacoes_e_terminais_brt" # aux_registros_parada
@@ -54,7 +52,6 @@ vars:
   velocidade_limiar_parado: 3
   ## Distância mínima para que o veículo seja identificado parado em um terminal ou garagem em aux_registros_parada
   distancia_limiar_parada: 250
-
 
   ### [ANTIGO] SIGMOB ###
 
@@ -92,7 +89,6 @@ vars:
   stops_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.stops"
   trips_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.trips"
 
-
   ### Subsídio SPPO (Ônibus) ###
   buffer: 500 # distância em metros para buffer
   perc_conformidade_distancia_min: 0
@@ -118,15 +114,13 @@ vars:
   recurso_timestamp_captura: "2022-11-04T14:17:00"
   perc_conformidade_distancia_recurso_min: 50
 
-
   ### Veiculos ###
   sppo_licenciamento_stu_staging: "rj-smtr-staging.veiculo_staging.sppo_licenciamento_stu"
   sppo_licenciamento_solicitacao_staging: "rj-smtr-staging.veiculo_staging.sppo_licenciamento_solicitacao"
   sppo_infracao_staging: "rj-smtr-staging.veiculo_staging.sppo_infracao"
   sppo_licenciamento_solicitacao_data_versao: "2023-02-06"
   stu_data_versao: ""
-  
-  
+
   ### RDO ###
   rho_registros_sppo_staging: "rj-smtr-staging.br_rj_riodejaneiro_rdo_staging.rho_registros_sppo"
   rho_max_processing_interval: 7
