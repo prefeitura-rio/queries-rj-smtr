@@ -1,5 +1,15 @@
 -- TABELA TEMPORÁRIA até decisão judicial final 
--- TODO: parametrizar valores do subsidio por KM de acordo com a tabela de parametros, verificar dados pré-novas regras (4/07)
+-- Valores válidos entre 16-01-2023 e 31-12-2023 (subsidio_km = 2.81)
+
+WITH
+parametros AS (
+ SELECT 
+  MAX(IF(status = 'Licenciado sem ar e não autuado', subsidio_km, NULL)) AS subsidio_km_sem_ar_n_autuado,
+  MAX(IF(status = 'Licenciado com ar e não autuado', subsidio_km, NULL)) AS subsidio_km_sem_glosa 
+ FROM `rj-smtr.dashboard_subsidio_sppo.subsidio_parametros` -- não parametrizar (dbt pega dados de rj-smtr-dev)
+ WHERE data_inicio >= '2023-07-04'
+)
+  
 SELECT
   consorcio,
   data,
@@ -12,7 +22,7 @@ SELECT
   perc_km_planejada AS perc_distancia_total_subsidio,
   -- Valor total sem glosas: quando existe subsidio (POD>80%), adiciona o valor glosado por tipo de viagem ao total
   CASE
-    WHEN perc_km_planejada >= 80 THEN ROUND(valor_subsidio_pago + COALESCE(km_apurada_autuado_ar_inoperante * 2.81, 0) + COALESCE(km_apurada_autuado_seguranca * 2.81, 0) + COALESCE(km_apurada_autuado_limpezaequipamento * 2.81, 0) + COALESCE(km_apurada_licenciado_sem_ar_n_autuado * 0.84, 0), 2)
+    WHEN perc_km_planejada >= 80 THEN ROUND(COALESCE(valor_subsidio_pago, 0) + COALESCE(km_apurada_autuado_ar_inoperante * subsidio_km_sem_glosa, 0) + COALESCE(km_apurada_autuado_seguranca * subsidio_km_sem_glosa, 0) + COALESCE(km_apurada_autuado_limpezaequipamento * subsidio_km_sem_glosa, 0) + COALESCE(km_apurada_licenciado_sem_ar_n_autuado * (subsidio_km_sem_glosa - subsidio_km_sem_ar_n_autuado), 0), 2)
   ELSE
   0
 END
@@ -30,4 +40,6 @@ END
   viagens_licenciado_com_ar_n_autuado,
   COALESCE(km_apurada_licenciado_com_ar_n_autuado, 0) AS km_apurada_licenciado_com_ar_n_autuado
 FROM
-  rj-smtr.dashboard_subsidio_sppo.sumario_servico_dia_tipo
+  rj-smtr.dashboard_subsidio_sppo.sumario_servico_dia_tipo -- não parametrizar (dbt pega dados de rj-smtr-dev)
+CROSS JOIN
+  parametros
