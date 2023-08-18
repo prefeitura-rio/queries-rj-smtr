@@ -657,11 +657,6 @@ models:
         description: "Fim do período de operação planejado"
         tests:
           # - not_null
-      - name: viagens_planejadas
-        description: "Viagens planejadas no período"
-        tests:
-          # - not_null
-          # - greater_than_zero
       - name: tempo_planejado
         description: "Tempo planejado da viagem (em minutos)"
         tests:
@@ -680,12 +675,6 @@ models:
       - name: distancia_aferida
         description: "Distância aferida da viagem (geodésia entre
         posições consecutivas do sinal de GPS)"
-        tests:
-          - not_null
-          - greater_than_zero
-      - name: n_registros_start
-        description: "Contagem de sinais de GPS emitidos no meio do
-      trajeto."
         tests:
           - not_null
           - greater_than_zero
