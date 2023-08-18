@@ -617,8 +617,16 @@ models:
         identificação do trajeto)"
         tests:
           - not_null
+      - name: vista
+        description: "Texto que aparece na sinalização identificando o destino da viagem aos passageiros"
+        tests:
+          - not_null
+      - name: trip_id
+        description: "Código identificador do itinerário operado"
+        tests:
+          - not_null
       - name: shape_id
-        description: "Código identificador do shape (trajeto) do serviço"
+        description: "Código identificador do trajeto (shape) operado"
         tests:
           - not_null
       - name: sentido
