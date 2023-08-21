@@ -108,45 +108,56 @@ models:
     description: "Sumário do subsídio dos serviços de ônibus (SPPO) por dia e tipo de viagem"
     columns:
       - name: data
-        description: "Data de emissão do sinal de GPS"
+        description: "Data de emissão do sinal de GPS."
       - name: tipo_dia
-        description: "Dia da semana considerado para o cálculo da distância planejada - categorias: Dia Útil, Sabado, Domingo"
+        description: "Dia da semana considerado para o cálculo da distância planejada - categorias: Dia Útil, Sabado, Domingo."
       - name: consorcio
-        description: "Consórcio que opera o serviço"
+        description: "Consórcio que opera o serviço."
       - name: servico
-        description: "Serviço realizado pelo veículo"
+        description: "Serviço realizado pelo veículo."
       - name: viagens
-        description: "Quantidade de viagens apuradas"
+        description: "Quantidade de viagens apuradas."
       - name: km_apurada
         description: "Distância apurada do serviço (km)
-        Distância planejada da viagem multiplicada pela quantidade de viagens"
+        Distância planejada da viagem multiplicada pela quantidade de viagens."
       - name: km_planejada
-        description: "Distância planejada para o serviço (km)"
+        description: "Distância planejada para o serviço (km)."
       - name: perc_km_planejada
-        description: "Indicador percentual de quilometragem apurada em relação à planejada da linha"
+        description: "Indicador percentual de quilometragem apurada em relação à planejada da linha."
       - name: valor_subsidio_pago
         description: "Valor de subsídio apurado (R$)
-        Distância apurada do serviço multiplicada pelos respectivos valores pela classificação do veículo"
+        Distância apurada do serviço multiplicada pelos respectivos valores pela classificação do veículo."
       - name: valor_penalidade
         description: "Valor de penalidade apurado (R$)
         Linha com operação entre 40% e 60% da quilometragem estipulada - penalidade equivalente a uma infração média prevista no Código Disciplinar do Serviço Público de Transporte de Passageiros por Meio de Ônibus do Município do Rio de Janeiro - SPPO.
         Linha com operação inferior a 40% da quilometragem estipulada - penalidade equivalente a uma infração grave prevista no Código Disciplinar do Serviço Público de Transporte de Passageiros por Meio de Ônibus do Município do Rio de Janeiro - SPPO."
       - name: viagens_n_licenciado
-        description: "Quantidade de viagens apuradas realizadas por veículo não licenciado"
+        description: "Quantidade de viagens apuradas realizadas por veículo não licenciado."
       - name: km_apurada_n_licenciado
-        description: "Distância apurada de viagens realizadas por veículo não licenciado (km)"
-      - name: viagens_licenciado_sem_ar
-        description: "Quantidade de viagens apuradas realizadas por veículo licenciado sem ar condicionado"
-      - name: km_apurada_licenciado_sem_ar
-        description: "Distância apurada de viagens realizadas por veículo licenciado sem ar condicionado (km)"
-      - name: viagens_licenciado_ar_n_autuado
-        description: "Quantidade de viagens apuradas realizadas por veículo licenciado com ar condicionado e não autuado em razão de inoperância ou mau funcionamento deste"
-      - name: km_apurada_licenciado_ar_n_autuado
-        description: "Distância apurada de viagens realizadas por veículo licenciado com ar condicionado e não autuado em razão de inoperância ou mau funcionamento deste (km)"
-      - name: viagens_licenciado_ar_autuado
-        description: "Quantidade de viagens apuradas realizadas por veículo licenciado com ar condicionado e autuado em razão de inoperância ou mau funcionamento deste"
-      - name: km_apurada_licenciado_ar_autuado
-        description: "Distância apurada de viagens realizadas por veículo licenciado com ar condicionado e autuado em razão de inoperância ou mau funcionamento deste (km)"
+        description: "Distância apurada de viagens realizadas por veículo não licenciado (km)."
+      
+      
+
+      - name: viagens_autuado_ar_inoperante
+        description: "Quantidade de viagens apuradas realizadas por veículo licenciado com ar condicionado e autuado em razão de inoperância ou mau funcionamento deste."
+      - name: km_apurada_autuado_ar_inoperante
+        description: "Distância apurada de viagens realizadas por veículo licenciado com ar condicionado e autuado em razão de inoperância ou mau funcionamento deste (km)."
+      - name: viagens_autuado_seguranca
+        description: "Quantidade de viagens apuradas realizadas por veículo licenciado e autuado em razão de segurança."
+      - name: km_apurada_autuado_seguranca
+        description: "Distância apurada de viagens realizadas por veículo licenciado e autuado em razão de segurança (km)."
+      - name: viagens_autuado_limpezaequipamento
+        description: "Quantidade de viagens apuradas realizadas por veículo licenciado e autuado em razão de limpeza e equipamento."
+      - name: km_apurada_autuado_limpezaequipamento
+        description: "Distância apurada de viagens realizadas por veículo licenciado e autuado em razão de limpeza e equipamento (km)."     
+      - name: viagens_licenciado_sem_ar_n_autuado
+        description: "Quantidade de viagens apuradas realizadas por veículo licenciado sem ar condicionado."
+      - name: km_apurada_licenciado_sem_ar_n_autuado
+        description: "Distância apurada de viagens realizadas por veículo licenciado sem ar condicionado (km)."      
+      - name: viagens_licenciado_com_ar_n_autuado
+        description: "Quantidade de viagens apuradas realizadas por veículo licenciado com ar condicionado e não autuado em razão de inoperância ou mau funcionamento deste."
+      - name: km_apurada_licenciado_com_ar_n_autuado
+        description: "Distância apurada de viagens realizadas por veículo licenciado com ar condicionado e não autuado em razão de inoperância ou mau funcionamento deste (km)."       
   - name: valor_tipo_penalidade
     description: "Valores de penalidades de subsídio"
     columns:
@@ -274,3 +285,50 @@ models:
         description: "Razão do tempo aferido da viagem pelo planejado x 100"
       - name: versao_modelo
         description: "Versão da metodologia de cálculo da respectiva linha na tabela."
+  - name: sumario_servico_dia_tipo_sem_glosa
+    description: "Tabela temporária sem as glosas e com os detalhes de viagens subsidiadas por serviço-dia."
+    columns:
+      - name: consorcio
+        description: "Consórcio que opera o serviço."
+      - name: data
+        description: "Data de emissão do sinal de GPS."
+      - name: tipo_dia
+        description: "Dia da semana considerado para o cálculo da distância planejada - categorias: Dia Útil, Sabado, Domingo."
+      - name: servico
+        description: "Serviço realizado pelo veículo."
+      - name: viagens_subsidio
+        description: "Quantidade de viagens apuradas."
+      - name: distancia_total_planejada
+        description: "Distância planejada para o serviço (km)."
+      - name: distancia_total_subsidio
+        description: "Distância apurada para o serviço (km)."
+      - name: valor_total_aferido
+        description: "."
+      - name: perc_distancia_total_subsidio
+        description: "Indicador percentual de quilometragem apurada em relação à planejada da linha."
+      - name: valor_total_subsidio
+        description: "Valor da distância apurada multiplicada pelo subsídio por quilômetro (sem glosa). É zerado quando POD < 80%."
+      - name: viagens_n_licenciado
+        description: "Quantidade de viagens de veículos não licenciados."
+      - name: km_apurada_n_licenciado
+        description: "Quilometragem apurada de viagens de veículos não licenciados."
+      - name: viagens_autuado_ar_inoperante
+        description: "Quantidade de viagens de veículos autuados por ar inoperante."
+      - name: km_apurada_autuado_ar_inoperante
+        description: "Quilometragem apurada de viagens de veículos autuados por ar inoperante."
+      - name: viagens_autuado_seguranca
+        description: "Quantidade de viagens de veículos autuados por segurança."
+      - name: km_apurada_autuado_seguranca
+        description: "Quilometragem apurada de viagens de veículos autuados por segurança."
+      - name: viagens_autuado_limpezaequipamento
+        description: "Quantidade de viagens de veículos autuados por limpeza ou equipamento."
+      - name: km_apurada_autuado_limpezaequipamento
+        description: "Quilometragem apurada de viagens de veículos autuados por limpeza ou equipamento."
+      - name: viagens_licenciado_sem_ar_n_autuado
+        description: "Quantidade de viagens de veículos sem ar e não autuados."
+      - name: km_apurada_licenciado_sem_ar_n_autuado
+        description: "Quilometragem apurada de viagens de veículos sem ar e não autuados."
+      - name: viagens_licenciado_com_ar_n_autuado
+        description: "Quantidade de viagens de veículos com ar e não autuados."
+      - name: km_apurada_licenciado_com_ar_n_autuado
+        description: "Quilometragem apurada de viagens de veículos com ar e não autuados."
