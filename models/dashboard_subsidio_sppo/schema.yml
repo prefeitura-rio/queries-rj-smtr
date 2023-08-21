@@ -307,7 +307,7 @@ models:
       - name: perc_distancia_total_subsidio
         description: "Indicador percentual de quilometragem apurada em relação à planejada da linha."
       - name: valor_total_subsidio
-        description: "Valor da distância apurada do serviço multiplicada por R$ 2,81 quando o POD >= 80%."
+        description: "Valor da distância apurada multiplicada pelo subsídio por quilômetro (sem glosa). É zerado quando POD < 80%."
       - name: viagens_n_licenciado
         description: "Quantidade de viagens de veículos não licenciados."
       - name: km_apurada_n_licenciado
