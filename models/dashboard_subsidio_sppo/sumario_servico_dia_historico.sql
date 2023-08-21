@@ -86,12 +86,14 @@ WITH
       {{ ref("sumario_servico_dia_tipo") }} 
       --`rj-smtr.dashboard_subsidio_sppo.sumario_servico_dia_tipo`
     WHERE
-      DATA >= '2023-07-16' ) v3
+      DATA >= DATE( "{{ var("DATA_SUBSIDIO_V3_INICIO") }}" ) ) v3
+
+      
   USING
     ( DATA,
       servico )
   WHERE
-    v2.data >= '2023-07-16' )
+    v2.data >= DATE( "{{ var("DATA_SUBSIDIO_V3_INICIO") }}" ) )
 SELECT
   *
 FROM
@@ -102,9 +104,9 @@ UNION ALL (
   FROM
     sumario_v2
   WHERE
-    DATA < '2023-07-16' )
+    DATA < DATE( "{{ var("DATA_SUBSIDIO_V3_INICIO") }}" ) )
 UNION ALL (
   SELECT
     *
   FROM
-    sumario_v3 )
+    sumario_v3 ) 

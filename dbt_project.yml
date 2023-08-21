@@ -106,7 +106,7 @@ vars:
   shapes_version: "YYYY-MM-DD"
   frequencies_version: "YYYY-MM-DD"
   DATA_SUBSIDIO_V2_INICIO: "2023-01-16"
-  DATA_SUBSIDIO_V2_FIM: "2023-07-03"
+  DATA_SUBSIDIO_V3_INICIO: "2023-07-16"
   # valor_subsidio: "`rj-smtr-dev.projeto_subsidio_sppo.valor_subsidio`"
 
   # Recursos #
