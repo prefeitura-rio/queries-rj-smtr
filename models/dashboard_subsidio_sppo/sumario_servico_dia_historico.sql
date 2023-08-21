@@ -25,12 +25,12 @@ WITH
       {{ ref("viagem_planejada") }} 
       --`rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada` 
     WHERE
-      DATA < DATE( "2023-01-16" )) p
+      DATA < DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )) p
   USING
     ( DATA,
       servico )
   WHERE
-    s.DATA < DATE( "2023-01-16" ) ),
+    s.DATA < DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" ) ),
   -- v2: Valor DO subsdio pós glosa por tipos de viagem
   sumario_v2 AS (
   SELECT
@@ -57,7 +57,7 @@ WITH
       {{ ref("viagem_planejada") }} 
       -- `rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada` 
     WHERE
-      DATA >= DATE( "2023-01-16" ) ) p
+      DATA >= DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" ) ) p
   USING
     (DATA,
       servico) ),
