@@ -132,13 +132,6 @@ vars:
   rho_max_processing_interval: 7
   rho_sppo_start_date: "2021-03-01"
 
-  
-  ### Dashboard Subsídio SPPO 15d
-  data_inicio_quinzena: "2023-07-01" 
-  data_fim_quinzena: "2023-07-15" 
-  valor_subsidio_com_ar: 2.81 # subsidio por km com ar
-  valor_subsidio_sem_ar: 1.97 # subsidio por km sem ar  
-
 models:
   +persist_docs:
     relation: true
@@ -168,7 +161,3 @@ models:
     br_rj_riodejaneiro_rdo:
       +materialized: view
       +schema: br_rj_riodejaneiro_rdo
-
-    dashboard_subsidio_sppo_15d:
-      +materialized: view
-      +schema: dashboard_subsidio_sppo_15d
