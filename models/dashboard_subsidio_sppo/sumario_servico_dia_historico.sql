@@ -107,6 +107,16 @@ UNION ALL (
     DATA < DATE( "{{ var("DATA_SUBSIDIO_V3_INICIO") }}" ) )
 UNION ALL (
   SELECT
-    *
+    data,
+    tipo_dia,
+    consorcio,
+    servico,
+    vista,
+    viagens,
+    km_apurada,
+    km_planejada,
+    perc_km_planejada,
+    valor_subsidio_pago,
+    valor_penalidade
   FROM
     sumario_v3 ) 
