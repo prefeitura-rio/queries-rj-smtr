@@ -64,7 +64,7 @@ WITH
   -- v3: Valor DO subsídio sem glosas a partir de 16/07/2023 (2.81/km em 2023)
   sumario_v3 AS ( 
   SELECT
-    * EXCEPT (valor_subsidio_pago,
+    v2.* EXCEPT (valor_subsidio_pago,
       valor_penalidade),
     v3.valor_subsidio_pago,
     v3.valor_penalidade
