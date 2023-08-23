@@ -126,7 +126,7 @@ WITH
       "024.X") ),
   autuacoes_agg AS (
   SELECT
-    *
+    DISTINCT *
   FROM
     autuacao_ar_condicionado
   FULL JOIN
