@@ -62,3 +62,17 @@ models:
         description: "Diferença entre Receita Tarifária e Esperada = Receita Tarifaria - (Receita Esperada - Desconto Subsídio)."
       - name: diff_aferido_esperado
         description: "Diferença entre Receita Aferida e Esperada = Receita Aferida - (Receita Esperada - Desconto Subsídio)."
+
+  - name: servico_dia
+    description: "servico_dia"
+    columns:
+      - name: data
+        description: "Data da execução do serviço."
+      - name: consorcio
+        description: "Nome do consórcio operacional."
+      - name: servico
+        description: "Nome do serviço (linha de ônibus)."     
+      - name: viagens
+        description: "Quantidade de viagens por serviço-dia."
+      - name: subsidio
+        description: "Valor do subsídio que foi pago por serviço-dia."
