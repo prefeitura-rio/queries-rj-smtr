@@ -6,28 +6,69 @@ models:
     columns:
       - name: data
         description: "Data de emissão do sinal de GPS"
+        tests:
+          - not_null
       - name: tipo_dia
         description: "Dia da semana considerado para o cálculo da distância planejada - categorias: Dia Útil, Sabado, Domingo"
+        tests:
+          - not_null
       - name: consorcio
         description: "Consórcio que opera o serviço"
+        tests:
+          - not_null
       - name: servico
         description: "Serviço realizado pelo veículo"
+        tests:
+          - not_null
       - name: viagens
         description: "Quantidade de viagens apuradas"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: '>= 0'
       - name: km_apurada
         description: "Distância apurada do serviço (km)\n
                       Distância planejada da viagem multiplicada pela quantidade de viagens"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: '>= 0'
       - name: km_planejada
         description: "Distância planejada para o serviço (km)"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: '>= 0'
       - name: perc_km_planejada
         description: "Indicador percentual de quilometragem apurada em relação à planejada da linha"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: '>= 0'
       - name: valor_subsidio_pago
         description: "Valor de subsídio apurado (R$)\n
                       Distância apurada do serviço multiplicada pelos respectivos valores pela classificação do veículo"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: '>= 0'
       - name: valor_penalidade
         description: "Valor de penalidade apurado (R$)\n
                       Linha com operação entre 40% e 60% da quilometragem estipulada - penalidade equivalente a uma infração média prevista no Código Disciplinar do Serviço Público de Transporte de Passageiros por Meio de Ônibus do Município do Rio de Janeiro - SPPO.\n
                       Linha com operação inferior a 40% da quilometragem estipulada - penalidade equivalente a uma infração grave prevista no Código Disciplinar do Serviço Público de Transporte de Passageiros por Meio de Ônibus do Município do Rio de Janeiro - SPPO."
+        tests:
+          - accepted_values:
+              values: [0, -1126.55, -563.28]
+              quote: false
+    tests:
+      - dbt_utils.expression_is_true:
+          expression: "ROUND(valor_subsidio_pago/2.81,2) <= ROUND(km_apurada+0.01,2)"
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - data
+            - servico
+
+
   - name: sumario_servico_dia_historico
     description: "Sumário histórico do subsídio dos serviços de ônibus (SPPO) por dia"
     columns:
