@@ -30,49 +30,129 @@ models:
     columns:
       - name: ano
         description: "Ano de execução do serviço."
+        tests:
+          - year_range
+
       - name: data
         description: "Data da execução do serviço."
+        tests:
+          - date_range
+
       - name: consorcio
         description: "Nome do consórcio operacional."
+        tests:
+          - accepted_values:
+              values: ['Intersul', 'Internorte', 'Santa Cruz', 'Transcarioca']
+
       - name: servico
         description: "Nome do serviço (linha de ônibus)."
+        # tests:
+          # - not_null
+
       - name: irk
         description: "Índice de Remuneração por Quilômetro calculado com base na tarifa de remuneração."
+        tests:
+          - greater_than_zero
+          # - not_null
+      
       - name: irk_tarifa_publica
         description: "Índice de Remuneração por Quilômetro calculado com base na tarifa pública."
+        tests:
+          - greater_than_zero
+          # - not_null
+      
       - name: viagens
         description: "Quantidade de viagens por serviço-dia."
+        tests:
+          - greater_than_zero
+          # - not_null
+      
       - name: quilometragem
         description: "Quilometragem apurada por serviço-dia."
+        tests:
+          - greater_than_zero
+          # - not_null
+      
       - name: desconto_subsidio
         description: "Valor descontado do subsídio (ex: veículo sem ar e não autuado, autuado por ar, segurança etc)."
+        tests:
+          - not_negative
+          # - not_null
+      
       - name: receita_esperada
         description: "Receita Esperada = IRK x Quilometragem."
+        tests:
+          - greater_than_zero
+          # - not_null
+      
       - name: subsidio_esperado
         description: " Subsídio Esperado = (IRK - IRK_tarifa_pública) x Quilometragem."
+        tests:
+          - greater_than_zero
+          # - not_null
+      
       - name: receita_tarifaria_esperada
         description: "Receita Tarifária Esperada = IRK_tarifa_pública x Quilometragem."
+        tests:
+          - greater_than_zero
+      
       - name: receita_tarifaria
         description: "Valor da receita extraído do RDO e proveniente exclusivamente da tarifa pública por serviço-dia."
+        tests:
+          - not_negative
+          # - not_null
+      
       - name: subsidio
         description: "Valor do subsídio que foi pago por serviço-dia."
+        tests:
+          - greater_than_zero
+          # - not_null
+      
       - name: receita_aferida
         description: "Receita Aferida = Remuneração Tarifária + Subsídio."
+        tests:
+          - greater_than_zero
+      
       - name: diff_tarifario_esperado
         description: "Diferença entre Receita Tarifária e Esperada = Receita Tarifaria - (Receita Esperada - Desconto Subsídio)."
+        # tests:
+          # - not_null
+      
       - name: diff_aferido_esperado
         description: "Diferença entre Receita Aferida e Esperada = Receita Aferida - (Receita Esperada - Desconto Subsídio)."
+        # tests:
+          # - not_null
+
 
   - name: servico_dia
     description: "servico_dia"
     columns:
       - name: data
         description: "Data da execução do serviço."
+        tests:
+          - date_range
+        #   - not_null: este teste só funciona em tabelas materializadas por enquanto
+        #       partition_column: data
+
       - name: consorcio
         description: "Nome do consórcio operacional."
+        tests:
+          - accepted_values:
+              values: ['Intersul', 'Internorte', 'Santa Cruz', 'Transcarioca']
+
       - name: servico
-        description: "Nome do serviço (linha de ônibus)."     
+        description: "Nome do serviço (linha de ônibus)."  
+        # tests:
+          # - not_null
+
       - name: viagens
         description: "Quantidade de viagens por serviço-dia."
+        tests:
+          - greater_than_zero
+          # - not_null
+
       - name: subsidio
         description: "Valor do subsídio que foi pago por serviço-dia."
+        tests:
+          - greater_than_zero
+          # - not_null
