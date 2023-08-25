@@ -1,60 +1,7 @@
 -- Encontro de Contas
-
-WITH 
-  -- 1. Recupera serviços-dias subsidiados
-  servico_dia AS (
-  SELECT DISTINCT
-    data,
-    consorcio,
-    servico,
-    viagens,
-    valor_subsidio_pago AS subsidio  
-  FROM
-    {{ source('dashboard_subsidio_sppo', 'sumario_servico_dia_historico') }} 
-  WHERE
-    data BETWEEN DATE('{{ var('data_inicio_subsidio') }}') 
-    AND DATE('{{ var('data_fim_subsidio') }}')
-    AND data NOT IN ({{ var('datas_invalidas') }})
-    AND valor_subsidio_pago > 0),
-    
--- 2. Remove serviços-dia pagos por recurso
-recurso AS (
-    SELECT DISTINCT
-       data_viagem AS data,
-       servico,
-    FROM
-      {{ source('recurso_subsidio_sppo', 'reprocessamento') }} 
-
-    WHERE
-      data_viagem BETWEEN DATE('{{ var('data_inicio_subsidio') }}') 
-    AND DATE('{{ var('data_fim_subsidio') }}')
-    UNION ALL (
-    SELECT DISTINCT
-       data_viagem AS data,
-       servico
-    FROM
-      {{ source('recurso_subsidio_sppo', 'bloqueio_via') }}
-    WHERE
-      data_viagem BETWEEN DATE('{{ var('data_inicio_subsidio') }}') 
-    AND DATE('{{ var('data_fim_subsidio') }}')
-    AND data_viagem NOT IN ({{ var('datas_invalidas') }})     
-    )
-),
-servico_dia_valido AS (
-    SELECT
-        s.*
-    FROM
-        servico_dia s
-    LEFT JOIN 
-        recurso r
-    USING
-        (data, servico)
-    WHERE r.data IS NULL
-),
-
--- Receita Aferida 
-
--- 3. Recupera receita diária do RDO para cada serviço
+-- 1. Receita Aferida 
+-- 1.1 Recupera receita diária do RDO para cada serviço
+WITH
   remun_tarifa AS (
   SELECT DISTINCT
     data,
@@ -83,7 +30,7 @@ remun_subsidio AS (
         sum(ifnull(remuneracao_tarifaria, 0)) AS remuneracao_tarifaria,
         sum(ifnull(subsidio, 0)) AS subsidio
     FROM
-      servico_dia_valido s
+      {{ ref("servico_dia") }} s
     LEFT JOIN
       remun_tarifa
     USING
@@ -91,7 +38,7 @@ remun_subsidio AS (
     GROUP BY 1,2,3,4
 ),
 
--- 4. Tabela com dados da receita aferida
+-- 1.2 Tabela com dados da receita aferida
 receita_aferida AS (
 SELECT 
     *,
@@ -101,8 +48,8 @@ FROM
 ),
 
 
--- Receita Esperada 
--- 5. Calcula remuneração esperada por tipo de viagem
+-- 2. Receita Esperada 
+-- 2.1 Calcula remuneração esperada por tipo de viagem
    km_tipo_viagem AS (
     SELECT DISTINCT
       data,
@@ -143,7 +90,7 @@ irk_tipo_viagem AS (
     AND status != "Não licenciado"
     -- AND DATE("2023-01-18") BETWEEN data_inicio AND data_fim
     ),
-
+-- 2.2 Tabela com dados da receita esperada
   receita_esperada AS (
     SELECT DISTINCT
       EXTRACT(year FROM s.data) AS ano,
@@ -157,7 +104,7 @@ irk_tipo_viagem AS (
       SUM(i.desconto_subsidio_km * k.quilometragem) AS desconto_subsidio,
       i.irk * SUM(k.quilometragem) AS receita_esperada
     FROM
-      servico_dia_valido AS s
+      {{ ref("servico_dia") }} s
     LEFT JOIN
       km_tipo_viagem AS k
     USING
@@ -171,8 +118,7 @@ irk_tipo_viagem AS (
       AND i.data_fim
     GROUP BY 1,2,3,4,5,6,7
   )
-
--- 6. Retorna os dados do encontro de contas
+-- 3. Tabela com os dados do encontro de contas
     SELECT
     re.ano,
     re.data,
