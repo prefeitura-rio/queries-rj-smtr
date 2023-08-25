@@ -65,6 +65,7 @@ models:
         description: "Quantidade de viagens por serviço-dia."
         tests:
           - greater_than_zero
+          - is_integer
           # - not_null
       
       - name: quilometragem
@@ -149,6 +150,7 @@ models:
         description: "Quantidade de viagens por serviço-dia."
         tests:
           - greater_than_zero
+          - is_integer
           # - not_null
 
       - name: subsidio
