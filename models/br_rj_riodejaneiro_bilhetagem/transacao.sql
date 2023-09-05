@@ -40,12 +40,9 @@ WITH
     transacao_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY data, id) AS rn
+            ROW_NUMBER() OVER (PARTITION BY id) AS rn
         FROM
             transacao
-        ORDER BY
-            data, 
-            hora
     )
 SELECT
   * EXCEPT(rn)
