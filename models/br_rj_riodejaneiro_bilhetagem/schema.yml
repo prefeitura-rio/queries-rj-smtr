@@ -50,7 +50,7 @@ models:
       - name: id
         description: "ID da transação"
       - name: timestamp_captura
-        description: "Timestamp de captura"
+        description: "Timestamp de captura (GMT-3)"
       - name: assinatura
         description: "Assinatura do chip de segurança do validador (SAM)"
       - name: cd_aplicacao
@@ -68,9 +68,9 @@ models:
       - name: cd_status_transacao
         description: "Código de status da transação"
       - name: data_processamento
-        description: "Timestamp de processamento da transação"
+        description: "Data e hora de processamento da transação (UTC)"
       - name: data_transacao
-        description: "Data da transação"
+        description: "Data e hora da transação (UTC)"
       - name: id_cliente
         description: "ID do cliente"
       - name: id_produto
@@ -113,23 +113,23 @@ models:
     description: "Tabela de transações do BRT"
     columns:
       - name: data
-        description: "Data de captura (partição)"
+        description: "Data da transação (partição)"
+      - name: datetime_transacao
+        description: "Data e hora da transação (GMT-3)"
+      - name: datetime_processamento
+        description: "Data e hora de processamento da transação (GMT-3)"
+      - name: datetime_captura
+        description: "Data e hora de captura da transação (GMT-3)"
       - name: id_veiculo
         description: "Identificador do veículo (número de ordem)"
       - name: id_transacao
         description: "ID da transação"
       - name: id_cliente
         description: "Código do cliente ou código hash do cartão/dispositivo utilizado"
-      - name: datetime_transacao
-        description: "Data e hora da transação (GMT-3)"
-      - name: indicador_cliente_registrado
-        description: "Indica se o cliente possui conta registrada no SBD"
       - name: latitude
         description: "Latitude da transação (WGS84)"
       - name: longitude
         description: "Longitude da transação (WGS84)"
-      - name: tipo_pagamento
-        description: "Tipo do pagamento utilizado na transação"
       - name: id_tipo_transacao
         description: "Tipo de transação realizada"
       - name: servico
@@ -150,6 +150,8 @@ models:
         description: "Latitude do ponto de embarque (GTFS)"
       - name: stop_lon
         description: "Longitude do ponto de embarque (GTFS)"
+      - name: id_integracao_individual
+        description: "Identificador da integração individual"
   - name: dicionario
     description: "Dicionário de dados"
     columns:
@@ -159,7 +161,7 @@ models:
         description: "Cobertura temporal"
       - name: id_tabela
         description: "Nome da tabela"
-      - name: nome_coluna
+      - name: coluna
         description: "Nome da coluna"
       - name: valor
         description: "Valor"
