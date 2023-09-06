@@ -1,3 +1,9 @@
+{{
+  config(
+    schema='br_rj_riodejaneiro_bilhetagem_staging'
+  )
+}}
+
 WITH 
     linha AS (
         SELECT
