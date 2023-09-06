@@ -9,12 +9,14 @@ SELECT
   NULL AS tarifa_cbd,
   NULL AS valor_liquido
 FROM
-  {{ ref("transacao_brt") }}
+  {{ ref("transacao") }}
 WHERE
   data_transacao >= "2023-08-01"
 GROUP BY
   1,
-  2
+  2,
+  3
 ORDER BY
   1,
-  2
+  2,
+  3
