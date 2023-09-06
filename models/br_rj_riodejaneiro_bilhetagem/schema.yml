@@ -150,4 +150,17 @@ models:
         description: "Latitude do ponto de embarque (GTFS)"
       - name: stop_lon
         description: "Longitude do ponto de embarque (GTFS)"
+  - name: dicionario
+    description: "Dicionário de dados"
+    columns:
+      - name: chave
+        description: "Chave"
+      - name: cobertura_temporal
+        description: "Cobertura temporal"
+      - name: id_tabela
+        description: "Nome da tabela"
+      - name: nome_coluna
+        description: "Nome da coluna"
+      - name: valor
+        description: "Valor"
         
