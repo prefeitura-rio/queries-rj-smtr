@@ -13,7 +13,7 @@ SELECT
     is_abt AS indicador_cliente_registrado,
     latitude_trx AS latitude,
     longitude_trx AS longitude,
-    NULL AS tipo_pagamento,
+    id_tipo_midia AS id_tipo_pagamento,
     sentido,
     NULL AS servico,
     l.nr_linha AS stop_id,

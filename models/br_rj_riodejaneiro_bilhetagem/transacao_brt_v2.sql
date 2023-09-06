@@ -10,6 +10,7 @@ SELECT
     END AS id_cliente,
     is_abt AS indicador_cliente_registrado,
     tipo_transacao AS id_tipo_transacao,
+    id_tipo_midia AS id_tipo_pagamento,
     tipo_integracao AS id_tipo_integracao,
     NULL AS id_integracao,
     data_transacao AS datetime_transacao,

@@ -142,12 +142,14 @@ models:
         description: "Identificador da integração individual"
       - name: id_tipo_integracao
         description: "Tipo da integração realizada (identificador relacionado à matriz de integração)"
+      - name: id_tipo_pagamento
+        description: "Código do tipo de mídia utilizada"
       - name: stop_id
-        description: "stop_code (GTFS) - Código identificador do ponto de embarque"
+        description: "Código identificador do ponto de embarque (stop_code - GTFS)"
       - name: stop_lat
-        description: "stop_lat (GTFS) - Latitude do ponto de embarque"
+        description: "Latitude do ponto de embarque (GTFS)"
       - name: stop_lon
-        description: "stop_lon (GTFS) - Longitude do ponto de embarque"
+        description: "Longitude do ponto de embarque (GTFS)"
   - name: transacao_brt_v2
     description: "Tabela de transações do BRT"
     columns:
