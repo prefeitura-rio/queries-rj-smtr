@@ -145,7 +145,7 @@ models:
       - name: id_tipo_pagamento
         description: "Código do tipo de mídia utilizada"
       - name: stop_id
-        description: "Código identificador do ponto de embarque (stop_code - GTFS)"
+        description: "Código identificador do ponto de embarque (GTFS)"
       - name: stop_lat
         description: "Latitude do ponto de embarque (GTFS)"
       - name: stop_lon
