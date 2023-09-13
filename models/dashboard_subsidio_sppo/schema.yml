@@ -6,6 +6,8 @@ models:
     columns:
       - name: data
         description: "Data de emissão do sinal de GPS"
+        tests:
+          - not_null
       - name: tipo_dia
         description: "Dia da semana considerado para o cálculo da distância planejada - categorias: Dia Útil, Sabado, Domingo"
       - name: consorcio
