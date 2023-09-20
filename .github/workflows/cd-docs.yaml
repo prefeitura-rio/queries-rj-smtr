@@ -1,26 +1,35 @@
-name: CD
+name: CD-docs
 
 on:
   push:
     branches:
       - master
+      - devops
 
 env:
   GCP_PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
-  GH_PAT: ${{ secrets.GH_PAT }}
-  GKE_CLUSTER: ${{ secrets.GKE_CLUSTER_NAME }}
+  GKE_CLUSTER: ${{ secrets.GKE_APP_CLUSTER_NAME }}
   GKE_ZONE: ${{ secrets.GKE_CLUSTER_ZONE }}
-  IMAGE_NAME: ghcr.io/prefeitura-rio/dbt-rpc
+  IMAGE_NAME: gcr.io/rj-smtr/dbt-docs
 
 jobs:
   build-container:
-    name: Build, publish and register
+    name: Build and publish docs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Setup Python version
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+
+      - run: |-
+          pip install --no-cache-dir -r requirements.txt
+
+      # Setup gcloud CLI
       - name: Setup Google Cloud CLI
         uses: google-github-actions/setup-gcloud@v0.2.1
         with:
@@ -35,22 +44,33 @@ jobs:
           location: ${{ env.GKE_ZONE }}
           credentials: ${{ secrets.GKE_SA_KEY }}
 
+      # Configure Docker to use the gcloud command-line tool as a credential
+      # helper for authentication
+      - run: |-
+          gcloud --quiet auth configure-docker
+
+      - name: Generate Docs Static Files
+        run: |
+          ls
+          cd ./.kubernetes/docs/
+          sh generate-docs.sh $KEY
+        env:
+          KEY: ${{ secrets.GKE_SA_KEY }}
+
       - name: Build and publish image
         run: |
-          docker build -t $IMAGE_NAME:$GITHUB_SHA .
-          echo $GH_PAT | docker login ghcr.io -u gabriel-milan --password-stdin
+          docker build -t $IMAGE_NAME:$GITHUB_SHA . -f Dockerfile-docs
           docker push $IMAGE_NAME:$GITHUB_SHA
 
       - name: Set up Kustomize
         run: |-
+          cd ./.kubernetes/docs
           curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
           chmod u+x ./kustomize
 
       - name: Deploy
         run: |-
+          cd ./.kubernetes/docs
           ./kustomize edit set image gcr.io/PROJECT_ID/IMAGE_DBT:TAG=$IMAGE_NAME:$GITHUB_SHA
-          ./kustomize build . | kubectl apply -n prefect -f -
-          kubectl rollout status -w -n prefect deployment/dbt-rpc-dev
-          kubectl rollout status -w -n prefect deployment/dbt-rpc-prod
-
-# trigger CD
+          ./kustomize build . | kubectl apply -n dbt-docs -f -
+          kubectl rollout status -w -n dbt-docs deployment/dbt-docs

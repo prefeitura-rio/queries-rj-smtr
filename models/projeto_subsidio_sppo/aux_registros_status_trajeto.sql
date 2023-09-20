@@ -2,12 +2,16 @@
 with gps as (
     select 
         g.* except(longitude, latitude, servico),
-        -- Reprocessamento: Substitui servicos noturnos por regulares, salvo exceções
+        {% if var("run_date") > "2023-01-16" %}
+        -- Substitui servicos noturnos por regulares, salvo exceções
         case
             when servico like "SN%" and servico not in ("SN006", "SN415", "SN474", "SN483")
             then REGEXP_EXTRACT(servico, r'[0-9]+')
             else servico
         end as servico,
+        {% else %}
+        servico,
+        {% endif %}
         substr(id_veiculo, 2, 3) as id_empresa,
         ST_GEOGPOINT(longitude, latitude) posicao_veiculo_geo
     from 

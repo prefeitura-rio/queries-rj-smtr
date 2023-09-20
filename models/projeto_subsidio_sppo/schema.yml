@@ -590,7 +590,7 @@ models:
         tests:
           - not_null
       - name: data
-        description: "Data de emissão do sinal de GPS"
+        description: "Data da viagem"
         tests:
           - not_null
       - name: tipo_dia
@@ -617,8 +617,16 @@ models:
         identificação do trajeto)"
         tests:
           - not_null
+      - name: vista
+        description: "Texto que aparece na sinalização identificando o destino da viagem aos passageiros"
+        tests:
+          - not_null
+      - name: trip_id
+        description: "Código identificador do itinerário operado"
+        tests:
+          - not_null
       - name: shape_id
-        description: "Código identificador do shape (trajeto) do serviço"
+        description: "Código identificador do trajeto (shape) operado"
         tests:
           - not_null
       - name: sentido
@@ -657,11 +665,6 @@ models:
         description: "Fim do período de operação planejado"
         tests:
           # - not_null
-      - name: viagens_planejadas
-        description: "Viagens planejadas no período"
-        tests:
-          # - not_null
-          # - greater_than_zero
       - name: tempo_planejado
         description: "Tempo planejado da viagem (em minutos)"
         tests:
@@ -680,12 +683,6 @@ models:
       - name: distancia_aferida
         description: "Distância aferida da viagem (geodésia entre
         posições consecutivas do sinal de GPS)"
-        tests:
-          - not_null
-          - greater_than_zero
-      - name: n_registros_start
-        description: "Contagem de sinais de GPS emitidos no meio do
-      trajeto."
         tests:
           - not_null
           - greater_than_zero
