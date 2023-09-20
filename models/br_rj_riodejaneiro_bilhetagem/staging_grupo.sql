@@ -6,7 +6,7 @@
 }}
 
 WITH 
-    linha AS (
+    grupo_linha AS (
         SELECT
             data,
             timestamp_captura,
@@ -15,14 +15,14 @@ WITH
             SAFE_CAST(JSON_VALUE(content, '$.CD_TIPO_GRUPO') AS STRING) AS cd_tipo_grupo,
             SAFE_CAST(JSON_VALUE(content, '$.DS_GRUPO') AS STRING) AS ds_grupo,
         FROM
-            {{ var("bilhetagem_linha_staging") }}
+            {{ var("bilhetagem_grupo_staging") }}
     ),
-    linha_rn AS (
+    grupo_linha_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY data, cd_linha) AS rn
+            ROW_NUMBER() OVER (PARTITION BY data, cd_grupo) AS rn
         FROM
-            linha
+            grupo_linha
         ORDER BY
             data
     )

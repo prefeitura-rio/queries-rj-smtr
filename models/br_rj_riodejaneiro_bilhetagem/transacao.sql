@@ -1,58 +1,34 @@
-{{
-  config(
-    schema='br_rj_riodejaneiro_bilhetagem_staging'
-  )
-}}
-
-WITH 
-    transacao AS (
-        SELECT
-            data,
-            hora,
-            id,
-            timestamp_captura,
-            SAFE_CAST(JSON_VALUE(content, '$.assinatura') AS STRING) AS assinatura,
-            SAFE_CAST(JSON_VALUE(content, '$.cd_aplicacao') AS STRING) AS cd_aplicacao,
-            SAFE_CAST(JSON_VALUE(content, '$.cd_emissor') AS STRING) AS cd_emissor,
-            SAFE_CAST(JSON_VALUE(content, '$.cd_linha') AS STRING) AS cd_linha,
-            SAFE_CAST(JSON_VALUE(content, '$.cd_matriz_integracao') AS STRING) AS cd_matriz_integracao,
-            SAFE_CAST(JSON_VALUE(content, '$.cd_operadora') AS STRING) AS cd_operadora,
-            SAFE_CAST(JSON_VALUE(content, '$.cd_secao') AS STRING) AS cd_secao,
-            SAFE_CAST(JSON_VALUE(content, '$.cd_status_transacao') AS STRING) AS cd_status_transacao,
-            DATETIME(PARSE_TIMESTAMP('%a, %d %b %Y %T GMT', SAFE_CAST(JSON_VALUE(content, '$.data_processamento') AS STRING)), "America/Sao_Paulo") AS data_processamento,
-            DATETIME(PARSE_TIMESTAMP('%a, %d %b %Y %T GMT', SAFE_CAST(JSON_VALUE(content, '$.data_transacao') AS STRING)), "America/Sao_Paulo") AS data_transacao,
-            SAFE_CAST(JSON_VALUE(content, '$.id_cliente') AS STRING) AS id_cliente,
-            SAFE_CAST(JSON_VALUE(content, '$.id_produto') AS STRING) AS id_produto,
-            SAFE_CAST(JSON_VALUE(content, '$.id_servico') AS STRING) AS id_servico,
-            SAFE_CAST(JSON_VALUE(content, '$.id_tipo_midia') AS STRING) AS id_tipo_midia,
-            SAFE_CAST(JSON_VALUE(content, '$.is_abt') AS BOOL) AS is_abt,
-            SAFE_CAST(JSON_VALUE(content, '$.latitude_trx') AS FLOAT64) AS latitude_trx,
-            SAFE_CAST(JSON_VALUE(content, '$.longitude_trx') AS FLOAT64) AS longitude_trx,
-            SAFE_CAST(JSON_VALUE(content, '$.nr_logico_midia_operador') AS STRING) AS nr_logico_midia_operador,
-            SAFE_CAST(JSON_VALUE(content, '$.numero_serie_validador') AS STRING) AS numero_serie_validador,
-            SAFE_CAST(JSON_VALUE(content, '$.pan_hash') AS STRING) AS pan_hash,
-            SAFE_CAST(JSON_VALUE(content, '$.posicao_validador') AS STRING) AS posicao_validador,
-            SAFE_CAST(JSON_VALUE(content, '$.sentido') AS STRING) AS sentido,
-            SAFE_CAST(JSON_VALUE(content, '$.tipo_integracao') AS STRING) AS tipo_integracao,
-            SAFE_CAST(JSON_VALUE(content, '$.tipo_transacao') AS STRING) AS tipo_transacao,
-            SAFE_CAST(JSON_VALUE(content, '$.uid_origem') AS STRING) AS uid_origem,
-            SAFE_CAST(JSON_VALUE(content, '$.valor_tarifa') AS FLOAT64) AS valor_tarifa,
-            SAFE_CAST(JSON_VALUE(content, '$.valor_transacao') AS FLOAT64) AS valor_transacao,
-            SAFE_CAST(JSON_VALUE(content, '$.veiculo_id') AS STRING) AS veiculo_id,
-            SAFE_CAST(JSON_VALUE(content, '$.vl_saldo') AS FLOAT64) AS vl_saldo
-        FROM
-            {{ var("bilhetagem_transacao_staging") }}
-    ),
-    transacao_rn AS (
-        SELECT
-            *,
-            ROW_NUMBER() OVER (PARTITION BY data_transacao, id) AS rn
-        FROM
-            transacao
-    )
-SELECT
-  * EXCEPT(rn)
+SELECT 
+    EXTRACT(DATE FROM data_transacao) AS data,
+    g.ds_grupo AS modo,
+    data_transacao AS datetime_transacao,
+    data_processamento AS datetime_processamento,
+    t.timestamp_captura AS datetime_captura,
+    id AS id_transacao,
+    NULL AS id_veiculo,
+    CASE
+        WHEN id_cliente IS NULL THEN pan_hash
+        ELSE id_cliente
+    END AS id_cliente,
+    id_tipo_midia AS id_tipo_pagamento,
+    tipo_transacao AS id_tipo_transacao,
+    tipo_integracao AS id_tipo_integracao,
+    NULL AS id_integracao,
+    NULL as id_integracao_individual,
+    NULL AS servico,
+    sentido,
+    latitude_trx AS latitude,
+    longitude_trx AS longitude,
+    l.nr_linha AS stop_id,
+    NULL AS stop_lat,
+    NULL AS stop_lon,
+    valor_transacao
 FROM
-  transacao_rn
-WHERE
-  rn = 1
+    {{ ref("staging_transacao") }} AS t
+LEFT JOIN
+    {{ ref("staging_linha") }} AS l
+LEFT JOIN
+    {{ ref("staging_grupo_linha") }} AS gl
+LEFT JOIN
+    {{ ref("staging_grupo") }} AS g
+USING (cd_linha)
