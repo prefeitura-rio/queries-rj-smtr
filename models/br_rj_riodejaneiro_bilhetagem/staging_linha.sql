@@ -10,8 +10,8 @@ WITH
         SELECT
             data,
             timestamp_captura,
-            CD_LINHA AS cd_linha,
-            DATETIME(PARSE_TIMESTAMP('%a, %d %b %Y %T GMT', SAFE_CAST(JSON_VALUE(content, '$.DT_INCLUSAO') AS STRING)), "America/Sao_Paulo") AS dt_inclusao,
+            SAFE_CAST(CD_LINHA AS STRING) AS cd_linha,
+            DATETIME(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%S%Ez', SAFE_CAST(JSON_VALUE(content, '$.DT_INCLUSAO') AS STRING)), "America/Sao_Paulo") AS datetime_inclusao,
             SAFE_CAST(JSON_VALUE(content, '$.CD_LINHA_OFICIAL') AS STRING) AS cd_linha_oficial,
             SAFE_CAST(JSON_VALUE(content, '$.CD_LOCAL_OPERACAO_LINHA') AS STRING) AS cd_local_operacao_linha,
             SAFE_CAST(JSON_VALUE(content, '$.CD_TIPO_CATEGORIA_LINHA') AS STRING) AS cd_tipo_categoria_linha,
@@ -44,3 +44,5 @@ FROM
   linha_rn
 WHERE
   rn = 1
+ORDER BY
+  datetime_inclusao

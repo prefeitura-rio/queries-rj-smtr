@@ -129,6 +129,8 @@ vars:
   ### Bilhetagem ###
   bilhetagem_transacao_staging: "rj-smtr-staging.br_rj_riodejaneiro_bilhetagem_staging.transacao"
   bilhetagem_linha_staging: "rj-smtr-staging.br_rj_riodejaneiro_bilhetagem_staging.linha"
+  bilhetagem_grupo_staging: "rj-smtr-staging.br_rj_riodejaneiro_bilhetagem_staging.grupo"
+  bilhetagem_grupo_linha_staging: "rj-smtr-staging.br_rj_riodejaneiro_bilhetagem_staging.grupo_linha"
   bilhetagem_dicionario_staging: "rj-smtr-staging.br_rj_riodejaneiro_bilhetagem_staging.dicionario"
 
 models:

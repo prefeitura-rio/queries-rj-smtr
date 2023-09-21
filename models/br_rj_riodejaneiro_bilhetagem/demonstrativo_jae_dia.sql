@@ -1,17 +1,17 @@
 -- Dado teste para comparação de valores
 SELECT
   20001 AS agency_id, -- TODO: puxar do GTFS
-  EXTRACT(DATE FROM data_transacao) AS data,
-  EXTRACT(DATE FROM data_processamento) AS data_processamento,
+  EXTRACT(DATE FROM datetime_transacao) AS data,
+  EXTRACT(DATE FROM datetime_processamento) AS datetime_processamento,
   COUNT(*) AS n_transacoes,
-  MAX(valor_tarifa) AS valor_bilhete,
+  MAX(valor_transacao) AS valor_bilhete,
   ROUND(SUM(valor_transacao), 2) AS valor_bruto,
   NULL AS tarifa_cbd,
   NULL AS valor_liquido
 FROM
   {{ ref("transacao") }}
 WHERE
-  data_transacao >= "2023-08-01"
+  datetime_transacao >= "2023-08-01"
 GROUP BY
   1,
   2,
