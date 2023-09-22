@@ -5,10 +5,7 @@ SELECT
     t.timestamp_captura AS datetime_captura,
     id AS id_transacao,
     NULL AS id_veiculo,
-    CASE
-        WHEN id_cliente IS NULL THEN pan_hash
-        ELSE id_cliente
-    END AS id_cliente,
+    COALESCE(id_cliente, pan_hash) AS id_cliente,
     id_tipo_midia AS id_tipo_pagamento,
     tipo_transacao AS id_tipo_transacao,
     tipo_integracao AS id_tipo_integracao,
