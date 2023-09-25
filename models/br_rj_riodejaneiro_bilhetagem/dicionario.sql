@@ -1,3 +1,8 @@
+{{
+  config(
+    materialized="table",
+  )
+}}
 SELECT
   SAFE_CAST(chave AS STRING) AS chave,
   SAFE_CAST(cobertura_temporal AS STRING) AS cobertura_temporal,

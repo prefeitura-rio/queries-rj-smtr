@@ -1,25 +1,38 @@
+{{
+  config(
+    materialized="incremental",
+    partition_by={
+      "field":"data",
+      "data_type":"date",
+      "granularity": "day"
+    },
+    unique_key=["id_transacao"],
+    incremental_strategy="insert_overwrite"
+  )
+}}
+
 SELECT 
     EXTRACT(DATE FROM data_transacao) AS data,
     data_transacao AS datetime_transacao,
     data_processamento AS datetime_processamento,
     t.timestamp_captura AS datetime_captura,
-    id AS id_transacao,
+    g.ds_grupo AS modo,
+    l.nr_linha AS servico,
+    sentido,
     NULL AS id_veiculo,
     COALESCE(id_cliente, pan_hash) AS id_cliente,
+    id AS id_transacao,
     id_tipo_midia AS id_tipo_pagamento,
     tipo_transacao AS id_tipo_transacao,
     tipo_integracao AS id_tipo_integracao,
     NULL AS id_integracao,
-    NULL as id_integracao_individual,
-    g.ds_grupo AS modo,
-    l.nr_linha AS servico,
-    sentido,
     latitude_trx AS latitude,
     longitude_trx AS longitude,
     NULL AS stop_id,
     NULL AS stop_lat,
     NULL AS stop_lon,
-    valor_transacao
+    valor_transacao,
+    '{{ var("version") }}' as versao
 FROM
     {{ ref("staging_transacao") }} AS t
 LEFT JOIN
@@ -38,3 +51,6 @@ LEFT JOIN
 ON 
     gl.cd_grupo = g.cd_grupo
     AND t.data_transacao >= g.datetime_inclusao
+WHERE
+    t.data_transacao BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+    AND t.data_transacao > "{{var('date_range_start')}}" AND t.data_transacao <="{{var('date_range_end')}}"

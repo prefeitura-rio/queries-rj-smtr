@@ -35,8 +35,6 @@ WITH
             ROW_NUMBER() OVER (PARTITION BY data, cd_linha) AS rn
         FROM
             linha
-        ORDER BY
-            data
     )
 SELECT
   * EXCEPT(rn)
@@ -44,5 +42,3 @@ FROM
   linha_rn
 WHERE
   rn = 1
-ORDER BY
-  datetime_inclusao

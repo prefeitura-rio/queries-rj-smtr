@@ -24,8 +24,6 @@ WITH
             ROW_NUMBER() OVER (PARTITION BY data, cd_grupo, cd_linha) AS rn
         FROM
             grupo_linha
-        ORDER BY
-            data
     )
 SELECT
   * EXCEPT(rn)
@@ -33,5 +31,3 @@ FROM
   grupo_linha_rn
 WHERE
   rn = 1
-ORDER BY
-  datetime_inclusao
