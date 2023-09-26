@@ -10,4 +10,4 @@ SELECT
   SAFE_CAST(coluna AS STRING) AS coluna,
   SAFE_CAST(valor AS STRING) AS valor
 FROM
-  {{var('bilhetagem_dicionario_staging')}}
+  {{ source("br_rj_riodejaneiro_bilhetagem_staging", "dicionario") }}
