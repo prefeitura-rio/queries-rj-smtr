@@ -1,6 +1,5 @@
 {{
   config(
-    schema='br_rj_riodejaneiro_bilhetagem_staging',
     alias='grupo_linha',
   )
 }}
@@ -16,7 +15,7 @@ WITH
             DATETIME(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%S%Ez', SAFE_CAST(JSON_VALUE(content, '$.DT_INICIO_VALIDADE') AS STRING)), "America/Sao_Paulo") AS datetime_inicio_validade,
             DATETIME(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%S%Ez', SAFE_CAST(JSON_VALUE(content, '$.DT_FIM_VALIDADE') AS STRING)), "America/Sao_Paulo") AS datetime_fim_validade
         FROM
-            {{ var("bilhetagem_grupo_linha_staging") }}
+            {{ source("br_rj_riodejaneiro_bilhetagem_staging", "grupo_linha") }}
     ),
     grupo_linha_rn AS (
         SELECT
