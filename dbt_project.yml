@@ -127,11 +127,7 @@ vars:
   rho_sppo_start_date: "2021-03-01"
 
   ### Bilhetagem ###
-  bilhetagem_transacao_staging: "rj-smtr-staging.br_rj_riodejaneiro_bilhetagem_staging.transacao"
-  bilhetagem_linha_staging: "rj-smtr-staging.br_rj_riodejaneiro_bilhetagem_staging.linha"
-  bilhetagem_grupo_staging: "rj-smtr-staging.br_rj_riodejaneiro_bilhetagem_staging.grupo"
-  bilhetagem_grupo_linha_staging: "rj-smtr-staging.br_rj_riodejaneiro_bilhetagem_staging.grupo_linha"
-  bilhetagem_dicionario_staging: "rj-smtr-staging.br_rj_riodejaneiro_bilhetagem_staging.dicionario"
+  var_percentual_tarifa_cbd: 0.04
 
 models:
   +persist_docs:
@@ -163,5 +159,9 @@ models:
       +materialized: view
       +schema: br_rj_riodejaneiro_rdo
     br_rj_riodejaneiro_bilhetagem:
-      +materialized: view
+      +materialized: incremental
       +schema: br_rj_riodejaneiro_bilhetagem
+    br_rj_riodejaneiro_bilhetagem_staging:
+      +materialized: view
+      +schema: br_rj_riodejaneiro_bilhetagem_staging
+
