@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: br_rj_riodejaneiro_bilhetagem_staging
+    database: rj-smtr-staging
+
+    tables:
+      - name: transacao
+      - name: linha
+      - name: grupo
+      - name: grupo_linha
+      - name: dicionario

@@ -1,6 +1,5 @@
 {{
   config(
-    schema='br_rj_riodejaneiro_bilhetagem_staging',
     alias='linha',
   )
 }}
@@ -27,7 +26,7 @@ WITH
             SAFE_CAST(JSON_VALUE(content, '$.NR_LINHA') AS STRING) AS nr_linha,
             SAFE_CAST(JSON_VALUE(content, '$.QUANTIDADE_SECAO') AS STRING) AS quantidade_secao
         FROM
-            {{ var("bilhetagem_linha_staging") }}
+            {{ source("br_rj_riodejaneiro_bilhetagem_staging", "linha") }}
     ),
     linha_rn AS (
         SELECT
@@ -35,8 +34,6 @@ WITH
             ROW_NUMBER() OVER (PARTITION BY data, cd_linha) AS rn
         FROM
             linha
-        ORDER BY
-            data
     )
 SELECT
   * EXCEPT(rn)
@@ -44,5 +41,3 @@ FROM
   linha_rn
 WHERE
   rn = 1
-ORDER BY
-  datetime_inclusao
