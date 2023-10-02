@@ -1,11 +1,20 @@
 WITH
-  -- v1: Valor DO subsdio pré glosa por tipos de viagem
-  sumario_v1 AS ( 
+  viagem_planejada AS (
   SELECT
-    s.`data`,
+    DISTINCT `data`,
+    servico,
+    vista
+  FROM
+    {{ ref("viagem_planejada") }}
+    --`rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada` 
+  ),
+  -- v1: Valor do subsídio pré glosa por tipos de viagem (Antes de 2023-01-16)
+  sumario_sem_glosa AS (
+  SELECT
+    `data`,
     tipo_dia,
     consorcio,
-    s.servico,
+    servico,
     vista,
     viagens_subsidio AS viagens,
     distancia_total_subsidio AS km_apurada,
@@ -14,31 +23,21 @@ WITH
     valor_total_subsidio AS valor_subsidio_pago,
     NULL AS valor_penalidade
   FROM
-    {{ ref("sumario_dia") }}  s
-    --`rj-smtr`.`dashboard_subsidio_sppo`.`sumario_dia` s
-  LEFT JOIN (
-    SELECT
-      DISTINCT DATA,
-      servico,
-      vista
-    FROM
-      {{ ref("viagem_planejada") }} 
-      --`rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada` 
-    WHERE
-      DATA < DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )) p
+    {{ ref("sumario_dia") }}
+    -- `rj-smtr`.`dashboard_subsidio_sppo`.`sumario_dia`
+  LEFT JOIN
+    viagem_planejada
   USING
-    ( DATA,
-      servico )
-  WHERE
-    s.DATA < DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" ) ),
-  -- v2: Valor DO subsdio pós glosa por tipos de viagem
-  sumario_v2 AS (
+    ( `data`,
+      servico ) ),
+  -- v2: Valor do subsídio pós glosa por tipos de viagem (2023-01-16 a 2023-07-15 e após de 2023-09-01)
+  sumario_com_glosa AS (
   SELECT
-    s.`data`,
+    `data`,
     tipo_dia,
     consorcio,
-    s.servico,
-    p.vista,
+    servico,
+    vista,
     viagens,
     km_apurada,
     km_planejada,
@@ -46,67 +45,59 @@ WITH
     valor_subsidio_pago,
     valor_penalidade
   FROM
-    {{ ref("sumario_servico_dia") }} s
-    --`rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_dia` AS s
-  LEFT JOIN (
-    SELECT
-      DISTINCT DATA,
-      servico,
-      vista
-    FROM
-      {{ ref("viagem_planejada") }} 
-      -- `rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada` 
-    WHERE
-      DATA >= DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" ) ) p
+    {{ ref("sumario_servico_dia") }}
+    -- `rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_dia`
+  LEFT JOIN
+    viagem_planejada
   USING
-    (DATA,
-      servico) ),
-  -- v3: Valor DO subsídio sem glosas a partir de 16/07/2023 (2.81/km em 2023)
-  sumario_v3 AS ( 
+    ( `data`,
+      servico )),
+  -- Valor do subsídio sem glosas - Suspenso por Decisão Judicial (Entre 2023-07-16 e 2023-08-31) (R$ 2.81/km em 2023)
+  subsidio_total_glosa_suspensa AS (
   SELECT
-    v2.* EXCEPT (valor_subsidio_pago,
-      valor_penalidade),
-    v3.valor_subsidio_pago,
-    v3.valor_penalidade
+    DATA,
+    servico,
+    CASE
+      WHEN perc_km_planejada >= 80 THEN ROUND((COALESCE(km_apurada_autuado_ar_inoperante, 0) + COALESCE(km_apurada_autuado_seguranca, 0) + COALESCE(km_apurada_autuado_limpezaequipamento, 0) + COALESCE(km_apurada_licenciado_sem_ar_n_autuado, 0) + COALESCE(km_apurada_licenciado_com_ar_n_autuado, 0)) * 2.81, 2)
+    ELSE
+    0
+  END
+    AS valor_subsidio_pago,
+    0 AS valor_penalidade
   FROM
-    sumario_v2 v2
-  -- Calcula o valor cheio DO subsidio sem veículos não licenciados
-  LEFT JOIN ( 
-    SELECT
-      DATA,
-      servico,
-      CASE
-        WHEN perc_km_planejada >= 80 THEN ROUND((COALESCE(km_apurada_autuado_ar_inoperante, 0) + COALESCE(km_apurada_autuado_seguranca, 0) + COALESCE(km_apurada_autuado_limpezaequipamento, 0) + COALESCE(km_apurada_licenciado_sem_ar_n_autuado, 0) + COALESCE(km_apurada_licenciado_com_ar_n_autuado, 0)) * 2.81, 2)
-      ELSE
-      0
-    END
-      AS valor_subsidio_pago,
-      0 AS valor_penalidade
-    FROM
-      {{ ref("sumario_servico_dia_tipo") }} 
-      --`rj-smtr.dashboard_subsidio_sppo.sumario_servico_dia_tipo`
-    WHERE
-      DATA >= DATE( "{{ var("DATA_SUBSIDIO_V3_INICIO") }}" ) ) v3
-
-      
-  USING
-    ( DATA,
-      servico )
+    {{ ref("sumario_servico_dia_tipo") }}
+    --`rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_dia_tipo`
   WHERE
-    v2.data >= DATE( "{{ var("DATA_SUBSIDIO_V3_INICIO") }}" ) )
+    DATA BETWEEN "2023-07-16"
+    AND "2023-08-31"),
+  -- v3: Sumário subsídio sem glosas - Suspenso por Decisão Judicial (Entre 2023-07-16 e 2023-08-31)
+  sumario_glosa_suspensa AS (
+  SELECT
+    s.* EXCEPT (valor_subsidio_pago,
+      valor_penalidade),
+    g.valor_subsidio_pago,
+    g.valor_penalidade
+  FROM
+    subsidio_total_glosa_suspensa AS g
+  LEFT JOIN
+    sumario_com_glosa AS s
+  USING
+    ( `data`,
+      servico ))
 SELECT
   *
 FROM
-  sumario_v1
+  sumario_sem_glosa
 UNION ALL (
   SELECT
     *
   FROM
-    sumario_v2
+    sumario_com_glosa
   WHERE
-    DATA < DATE( "{{ var("DATA_SUBSIDIO_V3_INICIO") }}" ) )
+    `data` < "2023-07-16"
+    OR `data` > "2023-08-31" )
 UNION ALL (
   SELECT
     *
   FROM
-    sumario_v3 ) 
+    sumario_glosa_suspensa )
