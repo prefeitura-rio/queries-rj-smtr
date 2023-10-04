@@ -17,6 +17,10 @@ SELECT
     data_processamento AS datetime_processamento,
     t.timestamp_captura AS datetime_captura,
     g.ds_grupo AS modo,
+    -- TODO: Automatizar busca pela permissao no banco
+    CASE
+      WHEN t.cd_operadora = "1" THEN "22.100005-0"
+    END AS permissao,
     l.nr_linha AS servico,
     sentido,
     NULL AS id_veiculo,
