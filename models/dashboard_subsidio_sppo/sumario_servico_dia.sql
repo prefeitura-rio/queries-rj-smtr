@@ -152,7 +152,7 @@ WITH
     (DATA,
       servico))
 SELECT
-  *,
+  * EXCEPT(valor_subsidio_pago),
   valor_subsidio_pago*parametro_ajuste AS valor_subsidio_pago
 FROM
   subsidio_parametro_ajuste
