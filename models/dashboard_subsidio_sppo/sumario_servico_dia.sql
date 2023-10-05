@@ -15,14 +15,20 @@ WITH
     tipo_dia,
     consorcio,
     servico,
-    distancia_total_planejada AS km_planejada
+    MAX(distancia_total_planejada) AS km_planejada,
+    ROUND(MAX(distancia_total_planejada)/SUM(distancia_planejada), 2) AS viagens_planejadas
   FROM
     {{ ref("viagem_planejada") }}
   WHERE
     DATA BETWEEN DATE("{{ var("start_date") }}")
     AND DATE( "{{ var("end_date") }}" )
     AND ( distancia_total_planejada > 0
-          OR distancia_total_planejada IS NULL )),
+      OR distancia_total_planejada IS NULL )
+  GROUP BY
+    1,
+    2,
+    3,
+    4),
   veiculos AS (
   SELECT
     DATA,
@@ -53,24 +59,24 @@ WITH
     COUNT(id_viagem) AS viagens,
     SUM(distancia_planejada) AS km_apurada
   FROM
-    viagem v
+    viagem AS v
   LEFT JOIN
-    veiculos ve
-  ON
-    ve.data = v.data
-    AND ve.id_veiculo = v.id_veiculo
+    veiculos AS ve
+  USING
+    (DATA,
+      id_veiculo)
   GROUP BY
     1,
     2,
     3 ),
   subsidio_km_tipo AS (
-  SELECT DISTINCT
-    v.*,
-    ROUND(v.km_apurada * t.subsidio_km, 2) AS valor_subsidio_apurado
+  SELECT
+    DISTINCT v.*,
+    v.km_apurada * t.subsidio_km AS valor_subsidio_apurado
   FROM
-    servico_km_tipo v
+    servico_km_tipo AS v
   LEFT JOIN
-    {{ ref("subsidio_parametros") }} t
+    {{ ref("subsidio_parametros") }} AS t
   ON
     v.data BETWEEN t.data_inicio
     AND t.data_fim
@@ -88,30 +94,17 @@ WITH
   FROM
     planejado p
   LEFT JOIN
-    servico_km_tipo v
-  ON
-    p.data = v.data
-    AND p.servico = v.servico
+    servico_km_tipo AS v
+  USING
+    (DATA,
+      servico)
   GROUP BY
     1,
     2,
     3,
     4,
-    7 )
-SELECT
-  s.*,
-  IF(p.valor IS NULL, st.valor_subsidio_apurado, 0) AS valor_subsidio_pago,
-  IFNULL(-p.valor, 0) AS valor_penalidade
-FROM
-  servico_km s
-LEFT JOIN
-  {{ ref("valor_tipo_penalidade") }} p
-ON
-  s.data BETWEEN p.data_inicio
-  AND p.data_fim
-  AND s.perc_km_planejada >= p.perc_km_inferior
-  AND s.perc_km_planejada < p.perc_km_superior
-LEFT JOIN (
+    7 ),
+  subsidio_valor_apurado AS (
   SELECT
     DATA,
     servico,
@@ -120,7 +113,46 @@ LEFT JOIN (
     subsidio_km_tipo
   GROUP BY
     1,
-    2 ) st
-ON
-  s.data = st.data
-  AND s.servico = st.servico
+    2 ),
+  subsidio_sumario AS (
+  SELECT
+    s.*,
+  IF
+    (p.valor IS NULL, st.valor_subsidio_apurado, 0) AS valor_subsidio_pago,
+    IFNULL(-p.valor, 0) AS valor_penalidade
+  FROM
+    servico_km AS s
+  LEFT JOIN
+    {{ ref("valor_tipo_penalidade") }} AS p
+  ON
+    s.data BETWEEN p.data_inicio
+    AND p.data_fim
+    AND s.perc_km_planejada >= p.perc_km_inferior
+    AND s.perc_km_planejada < p.perc_km_superior
+  LEFT JOIN
+    subsidio_valor_apurado AS st
+  USING
+    (DATA,
+      servico)),
+  subsidio_parametro_ajuste AS (
+  SELECT
+    s.*,
+    CASE
+      WHEN s.tipo_dia = "Dia Útil" AND perc_km_planejada > 120 AND viagens_planejadas > 10 THEN 120/perc_km_planejada
+      WHEN s.tipo_dia = "Dia Útil" AND perc_km_planejada > 200 AND viagens_planejadas <= 10 THEN 200/perc_km_planejada
+    ELSE
+    1
+  END
+    AS parametro_ajuste
+  FROM
+    subsidio_sumario AS s
+  LEFT JOIN
+    planejado AS p
+  USING
+    (DATA,
+      servico))
+SELECT
+  *,
+  valor_subsidio_pago*parametro_ajuste AS valor_subsidio_pago
+FROM
+  subsidio_parametro_ajuste
