@@ -134,6 +134,9 @@ models:
     projeto_subsidio_sppo:
       +materialized: view
       +schema: projeto_subsidio_sppo
+    br_rj_riodejaneiro_gtfs:
+      +materialized: view
+      +schema: br_rj_riodejaneiro_gtfs
     br_rj_riodejaneiro_sigmob:
       +materialized: view
       +schema: br_rj_riodejaneiro_sigmob

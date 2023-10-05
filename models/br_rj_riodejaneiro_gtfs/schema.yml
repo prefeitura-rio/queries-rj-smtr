@@ -1,0 +1,176 @@
+version: 2
+
+models:
+  - name: agency
+    description: Dados da tabela agency
+    columns:
+     - name: agency_id
+     - name: agency_name
+     - name: agency_url
+     - name: agency_timezone
+     - name: agency_lang
+
+  - name: calendar
+    description: Dados da tabela calendar
+    columns:
+      - name: service_id
+      - name: monday
+      - name: tuesday
+      - name: wednesday
+      - name: thursday
+      - name: friday
+      - name: saturday
+      - name: sunday
+      - name: start_date
+      - name: end_date
+
+  - name: calendar_dates
+    description: Dados da tabela calendar_dates
+    columns:
+      - name: service_id
+      - name: date
+      - name: exception_type
+
+  - name: fare_attributes
+    description: Dados da tabela fare_attributes
+    columns:
+      - name: fare_id
+      - name: price
+      - name: currency_type
+      - name: payment
+      - name: payment_method
+      - name: transfers
+      - name: agency_id
+      - name: tranfer_duration
+
+  - name: fare_rules
+    description: Dados da tabela fare_rules
+    columns:
+      - name: fare_id
+      - name: route_id
+      - name: agency_id
+
+  - name: feed_info
+    description: Dados da tabela feed_info
+    columns:
+      - name: feed_publisher_name
+      - name: feed_publisher_url
+      - name: feed_lang
+      - name: feed_start_date
+      - name: feed_end_date
+      - name: feed_contact_email
+      
+  - name: frequencies
+    description: Dados da tabela frequencies
+    columns:
+      - name: trip_id
+      - name: start_time
+      - name: end_time
+      - name: headway_secs
+      - name: exact_times
+  
+  - name: routes
+    description: Dados da tabela routes
+    columns:
+      - name: rote_id
+      - name: agency_id
+      - name: route_short_name
+      - name: route_long_name
+      - name: route_desc
+      - name: route_type
+      - name: route_color
+      - name: route_text_color
+
+  - name: shapes
+    description: Dados da tabela shapes
+    columns:
+      - name: shape_id
+      - name: shape_pt_sequende
+      - name: shape_pt_lat
+      - name: shape_pt_lon
+      - name: shape_dist_traveled
+
+  - name: stops
+    description: Dados da tabela stops 
+    columns:
+      - name: stop_id
+      - name: stop_code
+      - name: stop_name
+      - name: stop_desc
+      - name: stop_lat
+      - name: stop_lon
+      - name: zone_id
+      - name: stop_url
+      - name: location_type
+      - name: parent_station
+      - name: stop_timezone
+      - name: wheelchair_boarding
+      - name: platform_code
+
+  - name: stop_times
+    description: Dados da tabela stop_times 
+    columns:
+      - name: trip_id
+      - name: stop_sequence
+      - name: stop_id
+      - name: arrival_time
+      - name: departure_time
+      - name: stop_headsign
+      - name: shape_dist_traveled
+      - name: timepoint
+
+  - name: trips
+    description: Dados da tabela trips 
+    columns:
+      - name: trip_id
+      - name: route_id
+      - name: service_id
+      - name: trip_headsign
+      - name: trip_short_name
+      - name: direction_id
+      - name: shape_id
+
+  - name: quadro
+    description: Dados da tabela quadro 
+    columns:
+      - name: servico
+      - name: vista
+      - name: consorcio
+      - name: horario_inicial
+      - name: horario_fim
+      - name: extensao_de_ida
+      - name: extensao_de_volta
+      - name: partidas_ida_dia_util
+      - name: partidas_volta_dia_util
+      - name: viagens_dia_util
+      - name: quilometragem_dia_util
+      - name: partidas_ida_sabado
+      - name: partidas_volta_sabado
+      - name: viagens_sabado
+      - name: quilometragem_sabado
+      - name: partidas_ida_domingo
+      - name: partidas_volta_domingo
+      - name: viagens_domingo
+      - name: quilometragem_domingo
+      - name: partida_ida_ponto_facultativo
+      - name: partida_volta_ponto_facultativo
+      - name: viagens_ponto_facultativo
+      - name: quilometragem_ponto_facultativo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      -
