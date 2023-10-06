@@ -140,6 +140,9 @@ vars:
   rho_max_processing_interval: 7
   rho_sppo_start_date: "2021-03-01"
 
+  ### Bilhetagem ###
+  var_percentual_tarifa_cbd: 0.04
+
 models:
   +persist_docs:
     relation: true
@@ -172,3 +175,10 @@ models:
     br_rj_riodejaneiro_rdo:
       +materialized: view
       +schema: br_rj_riodejaneiro_rdo
+    br_rj_riodejaneiro_bilhetagem:
+      +materialized: incremental
+      +schema: br_rj_riodejaneiro_bilhetagem
+    br_rj_riodejaneiro_bilhetagem_staging:
+      +materialized: view
+      +schema: br_rj_riodejaneiro_bilhetagem_staging
+
