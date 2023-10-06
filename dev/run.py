@@ -5,5 +5,5 @@ from utils import run_dbt_model
 
 run_dbt_model(
     dataset_id="br_rj_riodejaneiro_gtfs",
-    table_id="agency",
+    table_id="agency_gtfs",
 )

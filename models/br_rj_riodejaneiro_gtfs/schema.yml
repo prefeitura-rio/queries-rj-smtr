@@ -1,178 +1,265 @@
 version: 2
-# sources:
-#   - name: br_rj_riodejaneiro_gtfs
+sources:
+  - name: "br_rj_riodejaneiro_gtfs"
 
 models:
-  - name: agency
-    description: Dados da tabela agency
+  - name: "agency"
+    description: "Agências de transporte público com serviços representados neste conjunto de dados."
     columns:
-      - name: agency_id
-      - name: agency_name
-      - name: agency_url
-      - name: agency_timezone
-      - name: agency_lang
+      - name: "agency_id"
+        description:  "Identifica uma marca de transporte público que geralmente é sinônimo de agência de transporte público."
+      - name: "agency_name"
+        description: "Nome completo da agência de trânsito."
+      - name: "agency_url"
+        description: "URL da agência de transporte público."
+      - name: "agency_timezone"
+        description: "Fuso horário onde a agência de transporte público está localizada"
+      - name: "agency_lang"
+        description: "Idioma principal usado por esta agência de transporte público."
+      - name: "data"
+        description: "Data de captura do GTFS (Versão do feed)."
 
-    # - name: calendar
-    #   description: Dados da tabela calendar
-    #   columns:
-    #     - name: service_id
-    #     - name: monday
-    #     - name: tuesday
-    #     - name: wednesday
-    #     - name: thursday
-    #     - name: friday
-    #     - name: saturday
-    #     - name: sunday
-    #     - name: start_date
-    #     - name: end_date
+  - name: "calendar"
+    description: "Datas de serviço especificadas usando uma programação semanal com datas de início e término."
+    columns:
+      - name: "service_id"
+        description: "Identifica um conjunto de datas em que o serviço está disponível para uma ou mais rotas."
+      - name: "monday"
+        description: "Indica se o serviço funciona todas as segundas-feiras no intervalo de datas especificado pelos campos start_date e end_date"
+      - name: "tuesday"
+        description: "Funciona da mesma forma que segunda-feira, exceto se aplica às terças-feiras."
+      - name: "wednesday"
+        description: "Funciona da mesma forma que segunda-feira, exceto se aplica às quartas-feiras."
+      - name: "thursday"
+        description: "Funciona da mesma forma que segunda-feira, exceto se aplica às quintas-feiras."
+      - name: "friday"
+        description: "Funciona da mesma forma que segunda-feira, exceto se aplica às sextas-feiras."
+      - name: "saturday"
+        description: "Funciona da mesma forma que segunda-feira, exceto se aplica aos sábados."
+      - name: "sunday"
+        description: "Funciona da mesma forma que segunda-feira, exceto se aplica aos domingos."
+      - name: "start_date"
+        description: "Inicie o dia de serviço para o intervalo de serviço."
+      - name: "end_date"
+        description: "Finalize o dia de serviço para o intervalo de serviço."
 
-    # - name: calendar_dates
-    #   description: Dados da tabela calendar_dates
-    #   columns:
-    #     - name: service_id
-    #     - name: date
-    #     - name: exception_type
+  - name: "calendar_dates"
+    description: "Exceções para os serviços definidos no calendar.txt."
+    columns:
+      - name: "service_id"
+        description: "Identifica um conjunto de datas quando ocorre uma exceção de serviço para uma ou mais rotas"
+      - name: date
+        description: "Data em que ocorre a exceção de serviço."
+      - name: exception_type
+        description: "Indica se o serviço está disponível na data especificada no campo de data."
 
-    # - name: fare_attributes
-    #   description: Dados da tabela fare_attributes
-    #   columns:
-    #     - name: fare_id
-    #     - name: price
-    #     - name: currency_type
-    #     - name: payment
-    #     - name: payment_method
-    #     - name: transfers
-    #     - name: agency_id
-    #     - name: tranfer_duration
+  - name: "fare_attributes"
+    description: "Informações sobre tarifas para rotas de uma agência de transporte público."
+    columns:
+      - name: "fare_id"
+        description: "Identifica uma classe de tarifa."
+      - name: "price"
+        description: "Preço da tarifa, na unidade especificada por currency_type."
+      - name: "currency_type"
+        description: "Moeda usada para pagar a tarifa."
+      - name: "payment_method"
+        description: "Indica quando a tarifa deve ser paga."
+      - name: "transfers"
+        description: "Indica o número de transferências permitidas nesta tarifa"
+      - name: "agency_id"
+        description: "Identifica a agência relevante para uma tarifa."
+      - name: "tranfer_duration"
+        description: "Período de tempo em segundos antes que uma transferência expire."
 
-    # - name: fare_rules
-    #   description: Dados da tabela fare_rules
-    #   columns:
-    #     - name: fare_id
-    #     - name: route_id
-    #     - name: agency_id
+  - name: "fare_rules"
+    description: Dados da tabela fare_rules
+    columns:
+      - name: "fare_id"
+        description:
+      - name: "route_id"
+        description:
+      - name: "agency_id"
+        description:
 
-    # - name: feed_info
-    #   description: Dados da tabela feed_info
-    #   columns:
-    #     - name: feed_publisher_name
-    #     - name: feed_publisher_url
-    #     - name: feed_lang
-    #     - name: feed_start_date
-    #     - name: feed_end_date
-    #     - name: feed_contact_email
+  - name: "feed_info"
+    description: Dados da tabela feed_info
+    columns:
+      - name: "feed_publisher_name"
+        description:
+      - name: "feed_publisher_url"
+        description:
+      - name: "feed_lang"
+        description:
+      - name: "feed_start_date"
+        description:
+      - name: "feed_end_date"
+        description:
+      - name: "feed_contact_email"
+        description:
 
-    # - name: frequencies
-    #   description: Dados da tabela frequencies
-    #   columns:
-    #     - name: trip_id
-    #     - name: start_time
-    #     - name: end_time
-    #     - name: headway_secs
-    #     - name: exact_times
+  - name: "frequencies"
+    description: Dados da tabela frequencies
+    columns:
+      - name: "trip_id"
+        description:
+      - name: "start_time"
+        description:
+      - name: "end_time"
+        description:
+      - name: "headway_secs"
+        description:
+      - name: "exact_times"
+        description:
 
-    # - name: routes
-    #   description: Dados da tabela routes
-    #   columns:
-    #     - name: rote_id
-    #     - name: agency_id
-    #     - name: route_short_name
-    #     - name: route_long_name
-    #     - name: route_desc
-    #     - name: route_type
-    #     - name: route_color
-    #     - name: route_text_color
+  - name: "routes"
+    description: Dados da tabela routes
+    columns:
+      - name: "rote_id"
+        description:
+      - name: "agency_id"
+        description:
+      - name: "route_short_name"
+        description:
+      - name: "route_long_name"
+        description:
+      - name: "route_desc"
+        description:
+      - name: "route_type"
+        description:
+      - name: "route_color"
+        description:
+      - name: "route_text_color"
+        description:
 
-    # - name: shapes
-    #   description: Dados da tabela shapes
-    #   columns:
-    #     - name: shape_id
-    #     - name: shape_pt_sequende
-    #     - name: shape_pt_lat
-    #     - name: shape_pt_lon
-    #     - name: shape_dist_traveled
+  - name: "shapes"
+    description: Dados da tabela shapes
+    columns:
+      - name: "shape_id"
+        description:
+      - name: "shape_pt_sequende"
+        description:
+      - name: "shape_pt_lat"
+        description:
+      - name: "shape_pt_lon"
+        description:
+      - name: "shape_dist_traveled"
+        description:
 
-    # - name: stops
-    #   description: Dados da tabela stops
-    #   columns:
-    #     - name: stop_id
-    #     - name: stop_code
-    #     - name: stop_name
-    #     - name: stop_desc
-    #     - name: stop_lat
-    #     - name: stop_lon
-    #     - name: zone_id
-    #     - name: stop_url
-    #     - name: location_type
-    #     - name: parent_station
-    #     - name: stop_timezone
-    #     - name: wheelchair_boarding
-    #     - name: platform_code
+  - name: "stops"
+    description: Dados da tabela stops
+    columns:
+      - name: "stop_id"
+        description:
+      - name: "stop_code"
+        description:
+      - name: "stop_name"
+        description:
+      - name: "stop_desc"
+        description:
+      - name: "stop_lat"
+        description:
+      - name: "stop_lon"
+        description:
+      - name: "zone_id"
+        description:
+      - name: "stop_url"
+        description:
+      - name: "location_type"
+        description:
+      - name: "parent_station"
+        description:
+      - name: "stop_timezone"
+        description:
+      - name: "wheelchair_boarding"
+        description:
+      - name: "platform_code"
+        description:
 
-    # - name: stop_times
-    #   description: Dados da tabela stop_times
-    #   columns:
-    #     - name: trip_id
-    #     - name: stop_sequence
-    #     - name: stop_id
-    #     - name: arrival_time
-    #     - name: departure_time
-    #     - name: stop_headsign
-    #     - name: shape_dist_traveled
-    #     - name: timepoint
+  - name: "stop_times"
+    description: Dados da tabela stop_times
+    columns:
+      - name: "trip_id"
+        description:
+      - name: "stop_sequence"
+        description:
+      - name: "stop_id"
+        description:
+      - name: "arrival_time"
+        description:
+      - name: "departure_time"
+        description:
+      - name: "stop_headsign"
+        description:
+      - name: "shape_dist_traveled"
+        description:
+      - name: "timepoint"
+        description:
 
-    # - name: trips
-    #   description: Dados da tabela trips
-    #   columns:
-    #     - name: trip_id
-    #     - name: route_id
-    #     - name: service_id
-    #     - name: trip_headsign
-    #     - name: trip_short_name
-    #     - name: direction_id
-    #     - name: shape_id
+  - name: "trips"
+    description: Dados da tabela trips
+    columns:
+      - name: "trip_id"
+        description:
+      - name: "route_id"
+        description:
+      - name: "service_id"
+        description:
+      - name: "trip_headsign"
+        description:
+      - name: "trip_short_name"
+        description:
+      - name: "direction_id"
+        description:
+      - name: "shape_id"
+        description:
 
-    # # - name: quadro
-    # #   description: Dados da tabela quadro
-    # #   columns:
-    # #     - name: servico
-    # #     - name: vista
-    # #     - name: consorcio
-    # #     - name: horario_inicial
-    # #     - name: horario_fim
-    # #     - name: extensao_de_ida
-    # #     - name: extensao_de_volta
-    # #     - name: partidas_ida_dia_util
-    # #     - name: partidas_volta_dia_util
-    # #     - name: viagens_dia_util
-    # #     - name: quilometragem_dia_util
-    # #     - name: partidas_ida_sabado
-    # #     - name: partidas_volta_sabado
-    # #     - name: viagens_sabado
-    # #     - name: quilometragem_sabado
-    # #     - name: partidas_ida_domingo
-    # #     - name: partidas_volta_domingo
-    # #     - name: viagens_domingo
-    # #     - name: quilometragem_domingo
-    # #     - name: partida_ida_ponto_facultativo
-    # #     - name: partida_volta_ponto_facultativo
-    # #     - name: viagens_ponto_facultativo
-    # #     - name: quilometragem_ponto_facultativo
-#   - name: br_rj_riodejaneiro_gtfs
-#     description: Dados do GTFS
-#     columns:
-#       - name: agency
-#       - name: calendar
-#       - name: calendar_dates
-#       - name: fare_attributes
-#       - name: fare_rules
-#       - name: feed_info
-#       - name: frequencies
-#       - name: routes
-#       - name: shapes
-#       - name: stops
-#       - name: stop_times
-#       - name: trips
-#       - name: quadro
+  - name: "quadro"
+    description: Dados da tabela quadro
+    columns:
+      - name: "servico"
+        description:
+      - name: "vista"
+        description:
+      - name: "consorcio"
+        description:
+      - name: "horario_inicial"
+        description:
+      - name: "horario_fim"
+        description:
+      - name: "extensao_de_ida"
+        description:
+      - name: "extensao_de_volta"
+        description:
+      - name: "partidas_ida_dia_util"
+        description:
+      - name: "partidas_volta_dia_util"
+        description:
+      - name: "viagens_dia_util"
+        description:
+      - name: "quilometragem_dia_util"
+        description:
+      - name: "partidas_ida_sabado"
+        description:
+      - name: "partidas_volta_sabado"
+        description:
+      - name: "viagens_sabado"
+        description:
+      - name: "quilometragem_sabado"
+        description:
+      - name: "partidas_ida_domingo"
+        description:
+      - name: "partidas_volta_domingo"
+        description:
+      - name: "viagens_domingo"
+        description:
+      - name: "quilometragem_domingo"
+        description:
+      - name: "partida_ida_ponto_facultativo"
+        description:
+      - name: "partida_volta_ponto_facultativo"
+        description:
+      - name: "viagens_ponto_facultativo"
+        description:
+      - name: "quilometragem_ponto_facultativo"
+        description:
 
-# #     -
