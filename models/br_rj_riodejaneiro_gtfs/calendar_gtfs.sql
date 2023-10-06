@@ -2,7 +2,7 @@ WITH t AS (
     SELECT SAFE_CAST(service_id AS STRING) service_id,
         REPLACE(content, "None", "") content,
         --    SAFE_CAST(data_versao AS DATE) data_versao
-    FROM { { var('calendar_staging') } }
+    FROM { { var('calendar_gtfs') } }
 )
 SELECT service_id,
     JSON_VALUE(content, "$.monday") monday,

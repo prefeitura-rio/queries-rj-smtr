@@ -2,9 +2,9 @@ WITH t AS (
     SELECT SAFE_CAST(stop_id AS STRING) stop_id,
         REPLACE(content, "None", "") content,
         --    SAFE_CAST(data_versao AS DATE) data_versao
-    FROM { { var('stops_staging') } }
+    FROM { { var('stops_gtfs') } }
 )
-SELECT service_id,
+SELECT stop_id,
     JSON_VALUE(content, "$.stop_code") stop_code,
     JSON_VALUE(content, "$.stop_name") stop_name,
     JSON_VALUE(content, "$.stop_desc") stop_desc,

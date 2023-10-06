@@ -89,6 +89,20 @@ vars:
   stops_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.stops"
   trips_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.trips"
 
+  agency_gtfs: "rj-smtr-dev.br_rj_riodejaneiro_gtfs.agency"
+  calendar_dates_gtfs: "rj-smtr-dev.staging.br_rj_riodejaneiro_gtfs.calendar_dates"
+  # calendar_gtfs: "rj-smtr-staging.br_rj_riodejaneiro_gtfs.calendar"
+  # fare_attributes_gtfs: "rj-smtr-staging.br_rj_riodejaneiro_gtfs.fare_attributes"
+  # fare_rules_gtfs: "rj-smtr-staging.br_rj_riodejaneiro_gtfs.fare_rules"
+  # feed_info_gtfs: "rj-smtr-staging.br_rj_riodejaneiro_gtfs.feed_info"
+  # frequencies_gtfs: "rj-smtr-staging.br_rj_riodejaneiro_gtfs.frequencies"
+  # quadro_gtfs: "rj-smtr-staging.br_rj_riodejaneiro_gtfs.quadro"
+  # routes_gtfs: "rj-smtr-staging.br_rj_riodejaneiro_gtfs.routes"
+  # shapes_gtfs: "rj-smtr-staging.br_rj_riodejaneiro_gtfs.shapes"
+  # stop_times_gtfs: "rj-smtr-staging.br_rj_riodejaneiro_gtfs.stop_times"
+  # stops_gtfs: "rj-smtr-staging.br_rj_riodejaneiro_gtfs.stops"
+  # trips_gtfs:  "rj-smtr-staging.br_rj_riodejaneiro_gtfs.trips"
+
   ### Subsídio SPPO (Ônibus) ###
   buffer: 500 # distância em metros para buffer
   perc_conformidade_distancia_min: 0

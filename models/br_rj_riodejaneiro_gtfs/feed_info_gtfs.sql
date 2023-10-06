@@ -2,9 +2,9 @@ WITH t AS (
     SELECT SAFE_CAST(feed_publisher_name AS STRING) feed_publisher_name,
         REPLACE(content, "None", "") content,
         --    SAFE_CAST(data_versao AS DATE) data_versao
-    FROM { { var('feed_info_staging') } }
+    FROM { { var('feed_info_gtfs') } }
 )
-SELECT service_id,
+SELECT feed_publisher_name,
     JSON_VALUE(content, "$.feed_publisher_url") feed_publisher_url,
     JSON_VALUE(content, "$.feed_lang") feed_lang,
     JSON_VALUE(content, "$.feed_start_date") feed_start_date,

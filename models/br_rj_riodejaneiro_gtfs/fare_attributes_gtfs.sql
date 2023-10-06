@@ -2,9 +2,9 @@ WITH t AS (
     SELECT SAFE_CAST(fare_id AS STRING) fare_id,
         REPLACE(content, "None", "") content,
         --    SAFE_CAST(data_versao AS DATE) data_versao
-    FROM { { var('fare_attributes_staging') } }
+    FROM { { var('fare_attributes_gtfs') } }
 )
-SELECT service_id,
+SELECT fare_id,
     JSON_VALUE(content, "$.price") price,
     JSON_VALUE(content, "$.currency_type") currency_type,
     JSON_VALUE(content, "$.payment_method") payment_method,
