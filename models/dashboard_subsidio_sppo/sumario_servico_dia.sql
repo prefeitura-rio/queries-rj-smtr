@@ -30,7 +30,9 @@ WITH
     data_versao,
     servico,
     tipo_dia,
-    viagens_planejadas
+    viagens_planejadas,
+    partidas_ida,
+    partidas_volta
   FROM
       {{ ref("subsidio_ordem_servico") }}
   WHERE
@@ -51,7 +53,7 @@ WITH
   viagem_planejada AS (
   SELECT
     p.*,
-    v.viagens_planejadas
+    v.partidas_ida + v.partidas_volta AS viagens_planejadas
   FROM
     planejado AS p
   LEFT JOIN
@@ -62,7 +64,7 @@ WITH
     viagens_planejadas AS v
   ON
     d.data_versao = v.data_versao
-    AND v.tipo_dia = v.tipo_dia
+    AND p.tipo_dia = v.tipo_dia
     AND p.servico = v.servico
   ),
 -- 2. Status dos veículos
@@ -97,7 +99,7 @@ WITH
     status,
     subsidio_km
   FROM
-    `rj-smtr`.`dashboard_subsidio_sppo`.`subsidio_parametros` ),
+    {{ ref("subsidio_parametros") }} ),
 -- 5. Viagens com tipo e valor de subsídio por km
   viagem_km_tipo AS (
   SELECT
