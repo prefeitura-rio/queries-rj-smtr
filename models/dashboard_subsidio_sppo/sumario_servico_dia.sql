@@ -16,8 +16,7 @@ WITH
     tipo_dia,
     consorcio,
     servico,
-    MAX(distancia_total_planejada) AS km_planejada,
-    ROUND(MAX(distancia_total_planejada)/SUM(distancia_planejada), 2)*COUNT(sentido) AS viagens_planejadas
+    distancia_total_planejada AS km_planejada,
   FROM
     {{ ref("viagem_planejada") }}
   WHERE
@@ -25,11 +24,47 @@ WITH
     AND DATE( "{{ var("end_date") }}" )
     AND ( distancia_total_planejada > 0
       OR distancia_total_planejada IS NULL )
-  GROUP BY
-    1,
-    2,
-    3,
-    4),
+  ),
+  viagens_planejadas AS (
+  SELECT
+    data_versao,
+    servico,
+    tipo_dia,
+    viagens_planejadas
+  FROM
+      {{ ref("subsidio_ordem_servico") }}
+  WHERE
+    data_versao BETWEEN DATE("{{ var("start_date") }}")
+    AND DATE( "{{ var("end_date") }}" )
+  ),
+  data_versao_efetiva AS (
+  SELECT
+    data,
+    tipo_dia,
+    COALESCE(data_versao_trips, data_versao_shapes, data_versao_frequencies) AS data_versao
+  FROM
+      {{ ref("subsidio_data_versao_efetiva") }}
+  WHERE
+    data BETWEEN DATE("{{ var("start_date") }}")
+    AND DATE( "{{ var("end_date") }}" )
+  ),
+  viagem_planejada AS (
+  SELECT
+    p.*,
+    v.viagens_planejadas
+  FROM
+    planejado AS p
+  LEFT JOIN
+    data_versao_efetiva AS d
+  USING
+    (data, tipo_dia)
+  LEFT JOIN
+    viagens_planejadas AS v
+  ON
+    d.data_versao = v.data_versao
+    AND v.tipo_dia = v.tipo_dia
+    AND p.servico = v.servico
+  ),
 -- 2. Status dos veículos
   veiculos AS (
   SELECT
@@ -97,7 +132,7 @@ WITH
     COALESCE(SUM(v.distancia_planejada), 0) AS km_apurada,
     COALESCE(ROUND(100 * SUM(v.distancia_planejada) / p.km_planejada,2), 0) AS perc_km_planejada
   FROM
-    planejado p
+    viagem_planejada AS p
   LEFT JOIN
     viagem_km_tipo AS v
   USING
@@ -123,7 +158,7 @@ WITH
     FROM
       viagem_km_tipo ) AS v
   LEFT JOIN
-    planejado AS p
+    viagem_planejada AS p
   USING
     (DATA,
       servico)
