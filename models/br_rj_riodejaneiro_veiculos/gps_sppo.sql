@@ -74,7 +74,7 @@ SELECT
   extract(time from r.timestamp_gps) hora, 
   r.id_veiculo,
   -- corrigir o código do serviço caso servico_apurado seja diferente de serviço
-  {% if var("id_veiculo_amostra") is not none %} 
+  {% if var("id_veiculo_amostra") is not none and var("reprocessed_service") == True %} 
     CASE
       WHEN r.linha = "{{ var("servico_apurado") }}" 
         OR concat( ifnull(REGEXP_EXTRACT(r.linha, r'[A-Z]+'), ""), 
@@ -148,6 +148,6 @@ ON
   AND r.timestamp_gps > "{{var('date_range_start')}}" and r.timestamp_gps <="{{var('date_range_end')}}"
 {%- endif -%}
 -- Filtrar apenas o veículo reprocessado
-{% if var("id_veiculo_amostra") is not none %}
+{% if var("id_veiculo_amostra") is not none and var("reprocessed_service") == True %}
   AND r.id_veiculo = "{{var('id_veiculo_amostra')}}"
 {%- endif -%}
