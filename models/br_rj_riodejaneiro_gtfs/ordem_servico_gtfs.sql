@@ -12,7 +12,7 @@
 WITH
   ordem_servico AS (
   SELECT
-    SAFE_CAST(data_versao AS DATE) AS data_versao,
+    SAFE_CAST(data AS DATE) AS data,
     timestamp_captura,
     servico,
     SAFE_CAST(JSON_VALUE(content, "$.vista") AS STRING) AS vista,
@@ -38,7 +38,8 @@ WITH
     SAFE_CAST(NULL AS FLOAT64) AS viagens_domingo,
     SAFE_CAST(JSON_VALUE(content, "$.km_domingo") AS FLOAT64) AS km_domingo
   FROM
-    {{ var("subsidio_ordem_servico") }} )
+    {{ source("br_rj_riodejaneiro_gtfs_staging", "ordem_servico") }} )
+WHERE data = "{{ var('data_versao_gtfs') }}"
 SELECT
   *
 FROM

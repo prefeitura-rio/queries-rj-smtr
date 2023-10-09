@@ -27,4 +27,4 @@ sources:
       - name: stops
       - name: stop_times
       - name: trips
-      - name: quadro
+      - name: ordem_servico
