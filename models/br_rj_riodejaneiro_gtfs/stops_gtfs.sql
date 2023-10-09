@@ -1,9 +1,21 @@
+{ { config(
+    materialized = "incremental",
+    partition_by = { "field" :"data_versao_gtfs",
+    "data_versao_gtfs_type" :"date",
+    "granularity": "day" },
+    unique_key = ["stop_id", "data_versao_gtfs"],
+    incremental_strategy = "insert_overwrite",
+    alias = 'stops',
+) } } 
+
 WITH t AS (
     SELECT SAFE_CAST(stop_id AS STRING) stop_id,
         REPLACE(content, "None", "") content,
-        --    SAFE_CAST(data_versao AS DATE) data_versao
-    FROM { { var('stops_gtfs') } }
+        SAFE_CAST(data_versao_gtfs AS DATE) data_versao_gtfs
+    FROM { { source('br_rj_riodejaneiro_gtfs_staging', 'stops') } }
 )
+
+
 SELECT stop_id,
     JSON_VALUE(content, "$.stop_code") stop_code,
     JSON_VALUE(content, "$.stop_name") stop_name,
@@ -17,5 +29,5 @@ SELECT stop_id,
     JSON_VALUE(content, "$.stop_timezone") stop_timezone,
     JSON_VALUE(content, "$.wheelchair_boarding") wheelchair_boarding,
     JSON_VALUE(content, "$.platform_code") platform_code,
-    -- DATE(data_versao) data_versao
+    DATE(data_versao_gtfs) data_versao_gtfs
 FROM t

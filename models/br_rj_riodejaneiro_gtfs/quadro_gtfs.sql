@@ -1,9 +1,23 @@
+{ { config(
+    materialized = "incremental",
+    partition_by = { "field" :"data_versao_gtfs",
+    "data_versao_gtfs_type" :"date",
+    "granularity": "day" },
+    unique_key = ["servico", "data_versao_gtfs"],
+    incremental_strategy = "insert_overwrite",
+    alias = 'quadro',
+) } } 
+
 WITH t AS (
     SELECT SAFE_CAST(servico AS STRING) servico,
         REPLACE(content, "None", "") content,
-        --    SAFE_CAST(data_versao AS DATE) data_versao
-    FROM { { var('quadro_gtfs') } }
+        SAFE_CAST(data_versao_gtfs AS DATE) data_versao_gtfs
+    FROM { { source(
+            'br_rj_riodejaneiro_gtfs_staging',
+            'quadro'
+        ) } }
 )
+
 SELECT servico,
     JSON_VALUE(content, "$.vista") vista,
     JSON_VALUE(content, "$.consorcio") consorcio,
@@ -27,5 +41,5 @@ SELECT servico,
     JSON_VALUE(content, "$.partida_volta_ponto_facultativo") partida_volta_ponto_facultativo,
     JSON_VALUE(content, "$.viagem_ponto_facultativo") viagem_ponto_facultativo,
     JSON_VALUE(content, "$.quilometragem_ponto_facultativo") quilometragem_ponto_facultativo,
-    --   DATE(data_versao) data_versao
+    DATE(data_versao_gtfs) data_versao_gtfs
 FROM t

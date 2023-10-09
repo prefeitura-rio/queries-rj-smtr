@@ -1,8 +1,21 @@
+{ { config(
+    materialized = "incremental",
+    partition_by = { "field" :"data_versao_gtfs_gtfs",
+    "data_versao_gtfs_gtfs_type" :"date",
+    "granularity": "day" },
+    unique_key = ["service_id", "data_versao_gtfs_gtfs"],
+    incremental_strategy = "insert_overwrite",
+    alias = 'calendar_dates',
+) } } 
+
 WITH t AS (
     SELECT SAFE_CAST(service_id AS STRING) service_id,
         REPLACE(content, "None", "") content,
-        --    SAFE_CAST(data_versao AS DATE) data_versao
-    FROM { { var('calendar_dates_gtfs') } }
+        SAFE_CAST(data_versao_gtfs_gtfs AS DATE) data_versao_gtfs_gtfs
+    FROM { { source(
+            'br_rj_riodejaneiro_gtfs_staging',
+            'calendar_dates'
+        ) } }
 )
 SELECT service_id,
     JSON_VALUE(content, "$.monday") monday,
@@ -14,5 +27,5 @@ SELECT service_id,
     JSON_VALUE(content, "$.sunday") sunday,
     JSON_VALUE(content, "$.start_date") start_date,
     JSON_VALUE(content, "$.end_date") end_date,
-    -- DATE(data_versao) data_versao
+    DATE(data_versao_gtfs_gtfs) data_versao_gtfs_gtfs
 FROM t
