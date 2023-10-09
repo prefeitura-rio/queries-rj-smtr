@@ -1,157 +1,141 @@
 version: 2
 
 models:
-  - name: linha
-    description: "Tabela de serviços"
-    columns:
-      - name: data
-        description: "data"
-      - name: timestamp_captura
-        description: "timestamp_captura"
-      - name: cd_linha
-        description: "cd_linha"
-      - name: dt_inclusao
-        description: "dt_inclusao"
-      - name: cd_linha_oficial
-        description: "cd_linha_oficial"
-      - name: cd_local_operacao_linha
-        description: "cd_local_operacao_linha"
-      - name: cd_tipo_categoria_linha
-        description: "cd_tipo_categoria_linha"
-      - name: cd_tipo_linha
-        description: "cd_tipo_linha"
-      - name: cd_tipo_matriz_calculo_subsidio
-        description: "cd_tipo_matriz_calculo_subsidio"
-      - name: in_situacao_atividade
-        description: "in_situacao_atividade"
-      - name: km_linha
-        description: "km_linha"
-      - name: latitude_destino
-        description: "latitude_destino"
-      - name: latitude_origem
-        description: "latitude_origem"
-      - name: longitude_destino
-        description: "longitude_destino"
-      - name: longitude_origem
-        description: "longitude_origem"
-      - name: nm_linha
-        description: "nm_linha"
-      - name: nr_linha
-        description: "nr_linha"
-      - name: quantidade_secao
-        description: "quantidade_secao"
+  # - name: linha
+  #   description: "Tabela de serviços"
+  #   columns:
+  #     - name: data
+  #       description: "data"
+  #     - name: timestamp_captura
+  #       description: "timestamp_captura"
+  #     - name: cd_linha
+  #       description: "cd_linha"
+  #     - name: dt_inclusao
+  #       description: "dt_inclusao"
+  #     - name: cd_linha_oficial
+  #       description: "cd_linha_oficial"
+  #     - name: cd_local_operacao_linha
+  #       description: "cd_local_operacao_linha"
+  #     - name: cd_tipo_categoria_linha
+  #       description: "cd_tipo_categoria_linha"
+  #     - name: cd_tipo_linha
+  #       description: "cd_tipo_linha"
+  #     - name: cd_tipo_matriz_calculo_subsidio
+  #       description: "cd_tipo_matriz_calculo_subsidio"
+  #     - name: in_situacao_atividade
+  #       description: "in_situacao_atividade"
+  #     - name: km_linha
+  #       description: "km_linha"
+  #     - name: latitude_destino
+  #       description: "latitude_destino"
+  #     - name: latitude_origem
+  #       description: "latitude_origem"
+  #     - name: longitude_destino
+  #       description: "longitude_destino"
+  #     - name: longitude_origem
+  #       description: "longitude_origem"
+  #     - name: nm_linha
+  #       description: "nm_linha"
+  #     - name: nr_linha
+  #       description: "nr_linha"
+  #     - name: quantidade_secao
+  #       description: "quantidade_secao"
   - name: transacao
     description: "Tabela de transações"
     columns:
       - name: data
-        description: "Data de captura (partição)"
+        description: "Data de processamento da transação (partição)"
       - name: hora
-        description: "Hora de captura (partição)"
+        description: "Hora de processamento da transação"
       - name: id
         description: "ID da transação"
+      - name: datetime_transacao
+        description: 
+        "Data e hora da transação (UTC)"
+      - name: datetime_processamento
+        description: 
+        "Data e hora de processamento da transação (UTC)"
       - name: timestamp_captura
         description: "Timestamp de captura (GMT-3)"
-      - name: assinatura
-        description: "Assinatura do chip de segurança do validador (SAM)"
-      - name: cd_aplicacao
-        description: "Número da aplicação"
-      - name: cd_emissor
-        description: "Número do emissor da aplicação"
-      - name: cd_linha
-        description: "Código da linha"
-      - name: cd_matriz_integracao
-        description: "Código da matriz de integração"
-      - name: cd_operadora
-        description: "Código da operadora"
-      - name: cd_secao
-        description: "Código da seção"
-      - name: cd_status_transacao
-        description: "Código de status da transação"
-      - name: data_processamento
-        description: "Data e hora de processamento da transação (UTC)"
-      - name: data_transacao
-        description: "Data e hora da transação (UTC)"
-      - name: id_cliente
-        description: "ID do cliente"
-      - name: id_produto
-        description: "ID do produto"
-      - name: id_servico
-        description: "ID do serviço"
-      - name: id_tipo_midia
-        description: "ID do tipo de mídia"
-      - name: is_abt
-        description: "Indica se o cartão está associado a alguma conta (ABT = account based ticketing)"
-      - name: latitude_trx
-        description: "Latitude da transação (WGS84)"
-      - name: longitude_trx
-        description: "Longitude da transação (WGS84)"
-      - name: nr_logico_midia_operador
-        description: "Número de série do operador da mídia"
-      - name: numero_serie_validador
-        description: "Número de série do validador"
-      - name: pan_hash
-        description: "Código hash do cartão/dispositivo utilizado"
-      - name: posicao_validador
-        description: "Posição do validador (entrada/saída)"
+      - name: modo
+        description: "Modo do transporte"
+      - name: permissao
+        description: "Número da permissão do operador"
+      - name: servico
+        description: "Serviço operado pelo veículo"
       - name: sentido
         description: "Sentido de operação do serviço"
-      - name: tipo_integracao
-        description: "Tipo de integração"
-      - name: tipo_transacao
-        description: "Tipo de transação"
-      - name: uid_origem
-        description: "ID da transação de origem"
-      - name: valor_tarifa
-        description: "Valor da tarifa configurado no equipamento (R$)"
-      - name: valor_transacao
-        description: "Valor debitado na transação atual (R$)"
-      - name: veiculo_id
-        description: "ID do veículo"
-      - name: vl_saldo
-        description: "Saldo remanescente do cliente após o débito"
-  - name: transacao_brt
-    description: "Tabela de transações do BRT"
-    columns:
-      - name: data
-        description: "Data da transação (partição)"
-      - name: datetime_transacao
-        description: "Data e hora da transação (GMT-3)"
-      - name: datetime_processamento
-        description: "Data e hora de processamento da transação (GMT-3)"
-      - name: datetime_captura
-        description: "Data e hora de captura da transação (GMT-3)"
       - name: id_veiculo
-        description: "Identificador do veículo (número de ordem)"
+        description: "Identificador do veículo"
+      - name: id_cliente
+        description: "ID do cliente"
       - name: id_transacao
         description: "ID da transação"
-      - name: id_cliente
-        description: "Código do cliente ou código hash do cartão/dispositivo utilizado"
+      - name: id_tipo_pagamento
+        description: "Código do tipo de pagamento utilizado"
+      - name: id_tipo_transacao
+        description: "Tipo de transação realizada"
+      - name: id_tipo_integracao
+        description: "Tipo da integração realizada (identificador relacionado à matriz de integração)"
+      - name: id_integracao
+        description: "Identificador da integração"
       - name: latitude
         description: "Latitude da transação (WGS84)"
       - name: longitude
         description: "Longitude da transação (WGS84)"
-      - name: id_tipo_transacao
-        description: "Tipo de transação realizada"
-      - name: servico
-        description: "Serviço operado pelo veículo"
-      - name: sentido
-        description: "Sentido do serviço operado pelo veículo"
-      - name: valor_transacao
-        description: "Valor da transação para o usuário"
-      - name: id_integracao
-        description: "Identificador da integração individual"
-      - name: id_tipo_integracao
-        description: "Tipo da integração realizada (identificador relacionado à matriz de integração)"
-      - name: id_tipo_pagamento
-        description: "Código do tipo de mídia utilizada"
       - name: stop_id
         description: "Código identificador do ponto de embarque (GTFS)"
       - name: stop_lat
         description: "Latitude do ponto de embarque (GTFS)"
       - name: stop_lon
         description: "Longitude do ponto de embarque (GTFS)"
-      - name: id_integracao_individual
-        description: "Identificador da integração individual"
+      - name: valor_transacao
+        description: "Valor debitado na transação atual (R$)"
+      - name: versao
+        description: "SHA da branch no Github"
+  # - name: transacao_brt
+  #   description: "Tabela de transações do BRT"
+  #   columns:
+  #     - name: data
+  #       description: "Data da transação (partição)"
+  #     - name: datetime_transacao
+  #       description: "Data e hora da transação (GMT-3)"
+  #     - name: datetime_processamento
+  #       description: "Data e hora de processamento da transação (GMT-3)"
+  #     - name: datetime_captura
+  #       description: "Data e hora de captura da transação (GMT-3)"
+  #     - name: id_veiculo
+  #       description: "Identificador do veículo (número de ordem)"
+  #     - name: id_transacao
+  #       description: "ID da transação"
+  #     - name: id_cliente
+  #       description: "Código do cliente ou código hash do cartão/dispositivo utilizado"
+  #     - name: latitude
+  #       description: "Latitude da transação (WGS84)"
+  #     - name: longitude
+  #       description: "Longitude da transação (WGS84)"
+  #     - name: id_tipo_transacao
+  #       description: "Tipo de transação realizada"
+  #     - name: servico
+  #       description: "Serviço operado pelo veículo"
+  #     - name: sentido
+  #       description: "Sentido do serviço operado pelo veículo"
+  #     - name: valor_transacao
+  #       description: "Valor da transação para o usuário"
+  #     - name: id_integracao
+  #       description: "Identificador da integração individual"
+  #     - name: id_tipo_integracao
+  #       description: "Tipo da integração realizada (identificador relacionado à matriz de integração)"
+  #     - name: id_tipo_pagamento
+  #       description: "Código do tipo de mídia utilizada"
+  #     - name: stop_id
+  #       description: "Código identificador do ponto de embarque (GTFS)"
+  #     - name: stop_lat
+  #       description: "Latitude do ponto de embarque (GTFS)"
+  #     - name: stop_lon
+  #       description: "Longitude do ponto de embarque (GTFS)"
+  #     - name: id_integracao_individual
+  #       description: "Identificador da integração individual"
   - name: dicionario
     description: "Dicionário de dados"
     columns:
