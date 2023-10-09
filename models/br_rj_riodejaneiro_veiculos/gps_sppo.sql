@@ -32,8 +32,8 @@ WITH
       velocidade,
       linha,
       latitude,
-      longitude,
-    FROM {{ ref('sppo_aux_registros_filtrada') }}
+      longitude
+    FROM {{ var('sppo_aux_registros_filtrada') }} 
     {% if is_incremental() -%}
     WHERE
       data between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
@@ -44,14 +44,14 @@ WITH
     -- 2. velocidades
     SELECT
       id_veiculo, timestamp_gps, linha, velocidade, distancia, flag_em_movimento
-    FROM
-      {{ ref('sppo_aux_registros_velocidade') }}
+    FROM {{ ref('sppo_aux_registros_velocidade') }}       
   ),
   paradas as (
     -- 3. paradas
     SELECT 
       id_veiculo, timestamp_gps, linha, tipo_parada,
-    FROM {{ ref('sppo_aux_registros_parada') }}
+    FROM 
+      {{ ref('sppo_aux_registros_parada') }} 
   ),
   flags AS (
     -- 4. flag_trajeto_correto
@@ -64,7 +64,7 @@ WITH
       flag_trajeto_correto, 
       flag_trajeto_correto_hist
     FROM
-      {{ ref('sppo_aux_registros_flag_trajeto_correto') }}
+      {{ ref('sppo_aux_registros_flag_trajeto_correto') }} 
   )
 -- 5. Junção final
 SELECT
@@ -73,7 +73,17 @@ SELECT
   date(r.timestamp_gps) data,
   extract(time from r.timestamp_gps) hora, 
   r.id_veiculo,
-  r.linha as servico,
+  -- corrigir o código do serviço caso servico_apurado seja diferente de serviço
+  {% if var("id_veiculo_amostra") is not none %} 
+    CASE
+      WHEN r.linha = "{{ var("servico_apurado") }}" 
+        OR concat( ifnull(REGEXP_EXTRACT(r.linha, r'[A-Z]+'), ""), 
+          ifnull(REGEXP_EXTRACT(r.linha, r'[0-9]+'), "") ) = "{{ var("servico_amostra") }}"
+      THEN "{{ var("servico_amostra") }}"
+      ELSE r.linha
+  END AS servico,
+  {{ log("servico_apurado: " ~ var("servico_apurado") ~ ", servico_amostra: " ~ var("servico_amostra"), info=True) }}
+  {% endif %}
   r.latitude,
   r.longitude,
   CASE 
@@ -136,4 +146,8 @@ ON
   WHERE
   date(r.timestamp_gps) between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
   AND r.timestamp_gps > "{{var('date_range_start')}}" and r.timestamp_gps <="{{var('date_range_end')}}"
+{%- endif -%}
+-- Filtrar apenas o veículo reprocessado
+{% if var("id_veiculo_amostra") is not none %}
+  AND r.id_veiculo = "{{var('id_veiculo_amostra')}}"
 {%- endif -%}

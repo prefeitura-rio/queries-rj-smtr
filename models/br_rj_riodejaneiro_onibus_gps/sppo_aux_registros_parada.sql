@@ -49,8 +49,7 @@ WITH
         data, 
         linha, 
         posicao_veiculo_geo
-      FROM  
-        {{ ref('sppo_aux_registros_filtrada') }}
+      FROM {{ var('sppo_aux_registros_filtrada') }}      
       {%if not flags.FULL_REFRESH %}
       WHERE
         data between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")

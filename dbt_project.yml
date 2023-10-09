@@ -37,6 +37,14 @@ vars:
   sppo_registros_staging: "rj-smtr-staging.br_rj_riodejaneiro_onibus_gps_staging.registros"
   sppo_realocacao_staging: "rj-smtr-staging.br_rj_riodejaneiro_onibus_gps_staging.realocacao"
   data_inicio_realocacao: "2022-11-15"
+  sppo_aux_registros_filtrada: "rj-smtr.br_rj_riodejaneiro_onibus_gps.sppo_aux_registros_filtrada"
+  reprocessed_service: False # Set to 'true' to utilize the reprocessed gps table in dev
+  gps_sppo_reprocessado: "rj-smtr-dev.br_rj_riodejaneiro_veiculos_recursos_reprocessado.gps_sppo"
+  gps_sppo: "rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo"
+  viagem_planejada: "rj-smtr.projeto_subsidio_sppo.viagem_planejada"
+  servico_amostra: null
+  servico_apurado: null
+  id_veiculo_amostra: null
 
   # Parametros de intersecção do ônibus com rota
   ## Tamanho do buffer da rota
@@ -133,7 +141,7 @@ models:
   rj_smtr:
     projeto_subsidio_sppo:
       +materialized: view
-      +schema: projeto_subsidio_sppo
+      +schema: projeto_subsidio_sppo_recursos_reprocessado
     br_rj_riodejaneiro_sigmob:
       +materialized: view
       +schema: br_rj_riodejaneiro_sigmob
@@ -145,7 +153,7 @@ models:
       +schema: br_rj_riodejaneiro_brt_gps
     br_rj_riodejaneiro_veiculos:
       +materialized: view
-      +schema: br_rj_riodejaneiro_veiculos
+      +schema: br_rj_riodejaneiro_veiculos_recursos_reprocessado
     dashboard_subsidio_sppo:
       +materialized: view
       +schema: dashboard_subsidio_sppo
@@ -155,3 +163,5 @@ models:
     br_rj_riodejaneiro_rdo:
       +materialized: view
       +schema: br_rj_riodejaneiro_rdo
+
+      

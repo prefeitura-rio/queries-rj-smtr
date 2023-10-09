@@ -31,8 +31,7 @@ WITH
       data, 
       posicao_veiculo_geo, 
       timestamp_gps
-    FROM
-      {{ ref('sppo_aux_registros_filtrada') }} r 
+    FROM {{ var('sppo_aux_registros_filtrada') }} r 
     {% if not flags.FULL_REFRESH -%}
     WHERE
       data between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
@@ -66,7 +65,7 @@ WITH
     FROM registros r
     LEFT JOIN (
       SELECT * 
-      FROM {{ ref('shapes_geom') }}
+      FROM `rj-smtr.br_rj_riodejaneiro_sigmob.shapes_geom` --{{ ref('shapes_geom') }}
       WHERE id_modal_smtr in ({{ var('sppo_id_modal_smtr')|join(', ') }})
       AND data_versao = "{{ var('versao_fixa_sigmob')}}"
     ) s
