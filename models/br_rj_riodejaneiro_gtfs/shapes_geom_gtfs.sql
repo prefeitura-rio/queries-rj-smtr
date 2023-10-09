@@ -2,13 +2,13 @@
   config(
     materialized="incremental",
     partition_by={
-      "field":"data_versao_gtfs",
-      "data_versao_gtfs_type":"date",
+      "field":"data",
+      "data_type":"date",
       "granularity": "day"
     },
-    unique_key=["shape_id", "data_versao_gtfs"],
+    unique_key=["shape_id", "data"],
     incremental_strategy="insert_overwrite",
-    alias='shapes_geom',
+    alias='shapes_geom'
   )
 }}
 
@@ -18,9 +18,9 @@ with
                      trip_id,
                      shape_id,
                      route_id,
-                     data_versao_gtfs
+                     data
               FROM {{ ref('trips') }} t
-              WHERE data_versao_gtfs = {{var('data_versao_gtfs_gtfs')}} 
+              WHERE data = {{var('data_gtfs')}} 
        ),
        contents as (
        -- EXTRACTS VALUES FROM JSON STRING FIELD 'content' 
@@ -31,24 +31,24 @@ with
                            shape_pt_lat
                      ) ponto_shape,
                      shape_pt_sequence,
-                     data_versao_gtfs,
+                     data,
               FROM {{ ref('shapes') }} s
-              WHERE data_versao_gtfs = {{var('data_versao_gtfs_gtfs')}}
+              WHERE data = {{var('data_gtfs')}}
        ),
        pts as (
               select 
                      *, 
                      max(shape_pt_sequence) over(
-                            partition by data_versao_gtfs, shape_id
+                            partition by data, shape_id
                      ) final_pt_sequence
               from contents c
-              order by data_versao_gtfs, shape_id, shape_pt_sequence
+              order by data, shape_id, shape_pt_sequence
        ),
        shapes as (
               -- BUILD LINESTRINGS OVER SHAPE POINTS
               SELECT 
                      shape_id, 
-                     data_versao_gtfs,
+                     data,
                      st_makeline(ARRAY_AGG(ponto_shape)) as shape
               FROM pts
               GROUP BY 1,2
@@ -59,20 +59,20 @@ with
                      c1.shape_id,
                      c1.ponto_shape start_pt,
                      c2.ponto_shape end_pt,
-                     c1.data_versao_gtfs
+                     c1.data
               FROM (select * from pts where shape_pt_sequence = 1) c1
               JOIN (select * from pts where shape_pt_sequence = final_pt_sequence) c2
-              ON c1.shape_id = c2.shape_id and c1.data_versao_gtfs = c2.data_versao_gtfs
+              ON c1.shape_id = c2.shape_id and c1.data = c2.data
        ),
        merged as (
               -- JOIN SHAPES AND BOUNDARY POINTS
               SELECT 
                      s.*,
-                     b.* except(data_versao_gtfs, shape_id),
+                     b.* except(data, shape_id),
                      round(ST_LENGTH(shape),1) shape_distance,
               FROM shapes s
               JOIN boundary b
-              ON s.shape_id = b.shape_id and s.data_versao_gtfs = b.data_versao_gtfs
+              ON s.shape_id = b.shape_id and s.data = b.data
        ),
        ids as (
               SELECT 
@@ -85,14 +85,14 @@ with
                      shape_distance, 
                      start_pt, 
                      end_pt,
-                     m.data_versao_gtfs,
+                     m.data,
                      row_number() over(
-                            partition by m.data_versao_gtfs, m.shape_id, l.trip_id
+                            partition by m.data, m.shape_id, l.trip_id
                      ) rn
               FROM merged m 
               JOIN linhas l
               ON m.shape_id = l.shape_id
-              AND m.data_versao_gtfs = l.data_versao_gtfs
+              AND m.data = l.data
               -- mudar join para o route_id em todas as dependencias
        )
 SELECT
