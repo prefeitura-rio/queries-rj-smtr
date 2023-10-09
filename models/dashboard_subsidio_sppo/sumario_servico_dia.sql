@@ -145,10 +145,7 @@ WITH
     2,
     3,
     4,
-    5
-  ORDER BY
-    DATA,
-    servico ),
+    5 ),
 -- 7. Filtro de viagens que serão consideradas para fins de apuração de valor de subsídio
   viagem_subsidio_apuracao AS (
   SELECT
