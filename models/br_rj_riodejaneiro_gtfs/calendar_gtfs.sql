@@ -8,22 +8,20 @@
     alias = 'calendar'
 )}} 
 
-WITH t AS (
-    SELECT SAFE_CAST(service_id AS STRING) service_id,
-        REPLACE(content, "None", "") content,
-        SAFE_CAST(data AS DATE) data
-    FROM {{ source('br_rj_riodejaneiro_gtfs_staging', 'calendar') }}
-)
 
-SELECT service_id,
-    JSON_VALUE(content, "$.monday") monday,
-    JSON_VALUE(content, "$.tuesday") tuesday,
-    JSON_VALUE(content, "$.wednesday") wednesday,
-    JSON_VALUE(content, "$.thursday") thursday,
-    JSON_VALUE(content, "$.friday") friday,
-    JSON_VALUE(content, "$.saturday") saturday,
-    JSON_VALUE(content, "$.sunday") sunday,
-    JSON_VALUE(content, "$.start_date") start_date,
-    JSON_VALUE(content, "$.end_date") end_date,
-    DATE(data) data
-FROM t
+SELECT SAFE_CAST(service_id AS STRING) service_id,
+    SAFE_CAST(data AS DATE) data,
+    SAFE_CAST(JSON_VALUE(content, "$.monday") AS STRING) monday,
+    SAFE_CAST(JSON_VALUE(content, "$.tuesday") AS STRING) tuesday,
+    SAFE_CAST(JSON_VALUE(content, "$.wednesday") AS STRING) wednesday,
+    SAFE_CAST(JSON_VALUE(content, "$.thursday") AS STRING) thursday,
+    SAFE_CAST(JSON_VALUE(content, "$.friday") AS STRING) friday,
+    SAFE_CAST(JSON_VALUE(content, "$.saturday") AS STRING) saturday,
+    SAFE_CAST(JSON_VALUE(content, "$.sunday") AS STRING) sunday,
+    SAFE_CAST(JSON_VALUE(content, "$.start_date") AS STRING) start_date,
+    SAFE_CAST(JSON_VALUE(content, "$.end_date") AS STRING) end_date,
+FROM {{ source(
+            'br_rj_riodejaneiro_gtfs_staging',
+            'calendar'
+        ) }}
+WHERE data = "{{ var('data_versao_gtfs') }}"

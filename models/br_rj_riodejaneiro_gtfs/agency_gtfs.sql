@@ -8,16 +8,11 @@
   alias = 'agency',
 ) }} 
 
-WITH t AS (
-  SELECT SAFE_CAST(agency_id AS STRING) agency_id,
-    REPLACE(content, "None", "") content,
-    SAFE_CAST(data AS DATE) data
+SELECT SAFE_CAST(agency_id AS STRING) agency_id,
+  SAFE_CAST(data AS DATE) data,
+  SAFE_CAST(JSON_VALUE(content, "$.agency_name") AS STRING) agency_name,
+  SAFE_CAST(JSON_VALUE(content, "$.agency_url") AS STRING) agency_url,
+  SAFE_CAST(JSON_VALUE(content, "$.agency_timezone") AS STRING) agency_timezone,
+  SAFE_CAST(JSON_VALUE(content, "$.agency_lang") AS STRING) agency_lang,
   FROM {{ source('br_rj_riodejaneiro_gtfs_staging', 'agency') }}
-)
-SELECT agency_id,
-  JSON_VALUE(content, "$.agency_name") agency_name,
-  JSON_VALUE(content, "$.agency_url") agency_url,
-  JSON_VALUE(content, "$.agency_timezone") agency_timezone,
-  JSON_VALUE(content, "$.agency_lang") agency_lang,
-  DATE(data) data
-FROM t
+ WHERE data = "{{ var('data_versao_gtfs') }}"

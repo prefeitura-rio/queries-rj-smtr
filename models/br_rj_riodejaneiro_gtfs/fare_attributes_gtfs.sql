@@ -8,22 +8,17 @@
     alias = 'fare_attributes'
 )}} 
 
-WITH t AS (
-    SELECT SAFE_CAST(fare_id AS STRING) fare_id,
-        REPLACE(content, "None", "") content,
-        SAFE_CAST(data AS DATE) data
-    FROM {{ source(
+
+SELECT SAFE_CAST(fare_id AS STRING) fare_id,
+    SAFE_CAST(data AS DATE) data
+    SAFE_CAST(JSON_VALUE(content, "$.price") AS STRING) price,
+    SAFE_CAST(JSON_VALUE(content, "$.currency_type") AS STRING) currency_type,
+    SAFE_CAST(JSON_VALUE(content, "$.payment_method") AS STRING) payment_method,
+    SAFE_CAST(SON_VALUE(content, "$.transfers") AS STRING) transfers,
+    SAFE_CAST(JSON_VALUE(content, "$.agency_id") AS STRING) agency_id,
+    SAFE_CAST(JSON_VALUE(content, "$.transfer_duration") AS STRING) transfer_duration,
+FROM {{ source(
             'br_rj_riodejaneiro_gtfs_staging',
             'fare_attributes'
         ) }}
-)
-
-SELECT fare_id,
-    JSON_VALUE(content, "$.price") price,
-    JSON_VALUE(content, "$.currency_type") currency_type,
-    JSON_VALUE(content, "$.payment_method") payment_method,
-    JSON_VALUE(content, "$.transfers") transfers,
-    JSON_VALUE(content, "$.agency_id") agency_id,
-    JSON_VALUE(content, "$.transfer_duration") transfer_duration,
-    DATE(data) data
-FROM t
+WHERE data = "{{ var('data_versao_gtfs') }}"

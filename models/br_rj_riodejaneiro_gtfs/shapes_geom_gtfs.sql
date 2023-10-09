@@ -20,7 +20,7 @@ with
                      route_id,
                      data
               FROM {{ ref('trips') }} t
-              WHERE data = {{var('data_gtfs')}} 
+              WHERE data = {{var('data_versao_gtfs')}} 
        ),
        contents as (
        -- EXTRACTS VALUES FROM JSON STRING FIELD 'content' 
@@ -33,7 +33,7 @@ with
                      shape_pt_sequence,
                      data,
               FROM {{ ref('shapes') }} s
-              WHERE data = {{var('data_gtfs')}}
+              WHERE data = {{var('data_versao_gtfs')}}
        ),
        pts as (
               select 

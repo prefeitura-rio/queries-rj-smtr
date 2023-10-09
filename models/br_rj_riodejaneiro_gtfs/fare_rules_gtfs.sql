@@ -8,14 +8,12 @@
     alias = 'fare_rules'
 )}} 
 
-WITH t AS (
-    SELECT SAFE_CAST(fare_id AS STRING) fare_id,
-        REPLACE(content, "None", "") content,
-        SAFE_CAST(data AS DATE) data
-    FROM {{ source('br_rj_riodejaneiro_gtfs_staging', 'fare_rules') }}
-)
-SELECT fare_id,
-    JSON_VALUE(content, "$.route_id") route_id,
-    JSON_VALUE(content, "$.agency_id") agency_id,
-    DATE(data) data
-FROM t
+SELECT SAFE_CAST(fare_id AS STRING) fare_id,
+    SAFE_CAST(data AS DATE) data,
+    SAFE_CAST(JSON_VALUE(content, "$.route_id") AS STRING) route_id,
+    SAFE_CAST(JSON_VALUE(content, "$.agency_id") AS STRING) agency_id,
+FROM {{ source(
+            'br_rj_riodejaneiro_gtfs_staging',
+            'fare_rules'
+        ) }}
+WHERE data = "{{ var('data_versao_gtfs') }}"

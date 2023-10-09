@@ -6,23 +6,18 @@
     "data"],
     incremental_strategy = "insert_overwrite",
     alias = 'trips' )}}
-WITH
-  t AS (
-  SELECT
-    SAFE_CAST(trip_id AS STRING) trip_id,
-    REPLACE(content, "None", "") content,
-    SAFE_CAST(data AS DATE) data
-  FROM
-    {{ source('br_rj_riodejaneiro_gtfs_staging',
-      'trips') }})
+
 SELECT
-  trip_id,
-  JSON_VALUE(content, "$.route_id") route_id,
-  JSON_VALUE(content, "$.service_id") service_id,
-  JSON_VALUE(content, "$.trip_headsign") trip_headsign,
-  JSON_VALUE(content, "$.trip_short_name") trip_short_name,
-  JSON_VALUE(content, "$.direction_id") direction_id,
-  JSON_VALUE(content, "$.shape_id") shape_id,
-  DATE(data) data
-FROM
-  t
+  SAFE_CAST(trip_id AS STRING) trip_id,
+  SAFE_CAST(data AS DATE) data,
+  SAFE_CAST(JSON_VALUE(content, "$.route_id") AS STRING) route_id,
+  SAFE_CAST(JSON_VALUE(content, "$.service_id") AS STRING) service_id,
+  SAFE_CAST(JSON_VALUE(content, "$.trip_headsign") AS STRING) trip_headsign,
+  SAFE_CAST(JSON_VALUE(content, "$.trip_short_name") AS STRING) trip_short_name,
+  SAFE_CAST(JSON_VALUE(content, "$.direction_id") AS STRING) direction_id,
+  SAFE_CAST(JSON_VALUE(content, "$.shape_id") AS STRING) shape_id,
+FROM {{ source(
+            'br_rj_riodejaneiro_gtfs_staging',
+            'trips'
+        ) }}
+WHERE data = "{{ var('data_versao_gtfs') }}"

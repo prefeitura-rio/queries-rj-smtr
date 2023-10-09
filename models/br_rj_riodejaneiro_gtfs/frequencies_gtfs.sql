@@ -8,17 +8,15 @@
     alias = 'frequencies'
 )}} 
 
-WITH t AS (
-    SELECT SAFE_CAST(trip_id AS STRING) trip_id,
-        REPLACE(content, "None", "") content,
-        SAFE_CAST(data AS DATE) data
-    FROM {{ source('br_rj_riodejaneiro_gtfs_staging', 'frequencies') }}
-)
 
-SELECT trip_id,
-    JSON_VALUE(content, "$.start_time") start_time,
-    JSON_VALUE(content, "$.end_time") end_time,
-    JSON_VALUE(content, "$.headway_secs") headway_secs,
-    JSON_VALUE(content, "$.exact_times") exact_times,
-    DATE(data) data
-FROM t
+SELECT SAFE_CAST(trip_id AS STRING) trip_id,
+    SAFE_CAST(data AS DATE) data,
+    SAFE_CAST(JSON_VALUE(content, "$.start_time") AS STRING) start_time,
+    SAFE_CAST(JSON_VALUE(content, "$.end_time") AS STRING) end_time,
+    SAFE_CAST(JSON_VALUE(content, "$.headway_secs") AS STRING) headway_secs,
+    SAFE_CAST(JSON_VALUE(content, "$.exact_times") AS STRING) exact_times,
+FROM {{ source(
+            'br_rj_riodejaneiro_gtfs_staging',
+            'frequencies'
+        ) }}
+WHERE data = "{{ var('data_versao_gtfs') }}"

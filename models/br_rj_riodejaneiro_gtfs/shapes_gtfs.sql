@@ -9,17 +9,15 @@
 )}} 
 
 
-WITH t AS (
-    SELECT SAFE_CAST(shape_id AS STRING) shape_id,
-        REPLACE(content, "None", "") content,
-        SAFE_CAST(data AS DATE) data
-    FROM {{ source('br_rj_riodejaneiro_gtfs_staging', 'shapes') }}
-)
+SELECT SAFE_CAST(shape_id AS STRING) shape_id,
 
-SELECT shape_id,
-    JSON_VALUE(content, "$.shape_pt_sequence") shape_pt_sequence,
-    JSON_VALUE(content, "$.shape_pt_lat") shape_pt_lat,
-    JSON_VALUE(content, "$.shape_pt_lon") shape_pt_lon,
-    JSON_VALUE(content, "$.shape_dist_traveled") shape_dist_traveled,
-    DATE(data) data
-FROM t
+    SAFE_CAST(data AS DATE) data
+    SAFE_CAST(JSON_VALUE(content, "$.shape_pt_sequence") AS STRING) shape_pt_sequence,
+    SAFE_CAST(JSON_VALUE(content, "$.shape_pt_lat") AS STRING) shape_pt_lat,
+    SAFE_CAST(JSON_VALUE(content, "$.shape_pt_lon") AS STRING) shape_pt_lon,
+    SAFE_CAST(JSON_VALUE(content, "$.shape_dist_traveled") AS STRING) shape_dist_traveled,
+FROM {{ source(
+            'br_rj_riodejaneiro_gtfs_staging',
+            'shapes'
+        ) }}
+WHERE data = "{{ var('data_versao_gtfs') }}"

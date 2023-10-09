@@ -8,26 +8,22 @@
     alias = 'stops'
 )}} 
 
-WITH t AS (
-    SELECT SAFE_CAST(stop_id AS STRING) stop_id,
-        REPLACE(content, "None", "") content,
-        SAFE_CAST(data AS DATE) data
-    FROM {{ source('br_rj_riodejaneiro_gtfs_staging', 'stops') }}
-)
-
-
-SELECT stop_id,
-    JSON_VALUE(content, "$.stop_code") stop_code,
-    JSON_VALUE(content, "$.stop_name") stop_name,
-    JSON_VALUE(content, "$.stop_desc") stop_desc,
-    JSON_VALUE(content, "$.stop_lat") stop_lat,
-    JSON_VALUE(content, "$.stop_lon") stop_lon,
-    JSON_VALUE(content, "$.zone_id") zone_id,
-    JSON_VALUE(content, "$.stop_url") stop_url,
-    JSON_VALUE(content, "$.location_type") location_type,
-    JSON_VALUE(content, "$.parent_station") parent_station,
-    JSON_VALUE(content, "$.stop_timezone") stop_timezone,
-    JSON_VALUE(content, "$.wheelchair_boarding") wheelchair_boarding,
-    JSON_VALUE(content, "$.platform_code") platform_code,
-    DATE(data) data
-FROM t
+SELECT SAFE_CAST(stop_id AS STRING) stop_id,
+    SAFE_CAST(data AS DATE) data,
+    SAFE_CAST(JSON_VALUE(content, "$.stop_code") AS STRING) stop_code,
+    SAFE_CAST(JSON_VALUE(content, "$.stop_name") AS STRING) stop_name,
+    SAFE_CAST(JSON_VALUE(content, "$.stop_desc") AS STRING) stop_desc,
+    SAFE_CAST(JSON_VALUE(content, "$.stop_lat") AS STRING) stop_lat,
+    SAFE_CAST(JSON_VALUE(content, "$.stop_lon") AS STRING) stop_lon,
+    SAFE_CAST(JSON_VALUE(content, "$.zone_id") AS STRING) zone_id,
+    SAFE_CAST(JSON_VALUE(content, "$.stop_url") AS STRING) stop_url,
+    SAFE_CAST(JSON_VALUE(content, "$.location_type") AS STRING) location_type,
+    SAFE_CAST(JSON_VALUE(content, "$.parent_station") AS STRING) parent_station,
+    SAFE_CAST(JSON_VALUE(content, "$.stop_timezone") AS STRING) stop_timezone,
+    SAFE_CAST(JSON_VALUE(content, "$.wheelchair_boarding") AS STRING) wheelchair_boarding,
+    SAFE_CAST(JSON_VALUE(content, "$.platform_code") AS STRING) platform_code,
+FROM {{ source(
+            'br_rj_riodejaneiro_gtfs_staging',
+            'stops'
+        ) }}
+WHERE data = "{{ var('data_versao_gtfs') }}"
