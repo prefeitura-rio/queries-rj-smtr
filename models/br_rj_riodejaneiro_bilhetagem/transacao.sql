@@ -12,7 +12,8 @@
 }}
 
 SELECT 
-    EXTRACT(DATE FROM data_transacao) AS data,
+    EXTRACT(DATE FROM data_processamento) AS data,
+    EXTRACT(HOUR FROM data_processamento) AS hour,
     data_transacao AS datetime_transacao,
     data_processamento AS datetime_processamento,
     t.timestamp_captura AS datetime_captura,
@@ -55,6 +56,7 @@ LEFT JOIN
 ON 
     gl.cd_grupo = g.cd_grupo
     AND t.data_transacao >= g.datetime_inclusao
-WHERE
-    t.data_transacao BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
-    AND t.data_transacao > "{{var('date_range_start')}}" AND t.data_transacao <="{{var('date_range_end')}}"
+{% if is_incremental() -%}
+WHERE 
+    t.timestamp_captura BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+{%- endif %}
