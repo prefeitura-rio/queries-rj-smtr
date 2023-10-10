@@ -47,8 +47,6 @@ models:
         description: "Data de processamento da transação (partição)"
       - name: hora
         description: "Hora de processamento da transação"
-      - name: id
-        description: "ID da transação"
       - name: datetime_transacao
         description: 
         "Data e hora da transação (UTC)"
