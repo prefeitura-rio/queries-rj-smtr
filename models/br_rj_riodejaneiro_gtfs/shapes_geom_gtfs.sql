@@ -11,8 +11,8 @@
 WITH contents AS (
        -- EXTRACTS VALUES FROM JSON STRING FIELD 'content'
        SELECT shape_id,
-       	      CAST(shape_pt_lon AS FLOAT64) shape_pt_lon,
-       	      CAST(shape_pt_lat AS FLOAT64) shape_pt_lat,
+       	      --CAST(shape_pt_lon AS FLOAT64) shape_pt_lon,
+       	      --CAST(shape_pt_lat AS FLOAT64) shape_pt_lat,
               ST_GEOGPOINT(shape_pt_lon, shape_pt_lat) AS ponto_shape,
               shape_pt_sequence,
               data,
