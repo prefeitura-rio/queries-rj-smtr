@@ -11,10 +11,10 @@
 
 SELECT SAFE_CAST(trip_id AS STRING) trip_id,
     SAFE_CAST(data AS DATE) data,
-    SAFE_CAST(JSON_VALUE(content, "$.start_time") AS STRING) start_time,
-    SAFE_CAST(JSON_VALUE(content, "$.end_time") AS STRING) end_time,
-    SAFE_CAST(JSON_VALUE(content, "$.headway_secs") AS STRING) headway_secs,
-    SAFE_CAST(JSON_VALUE(content, "$.exact_times") AS STRING) exact_times,
+    SAFE_CAST(JSON_VALUE(content, "$.start_time") AS DATETIME) start_time,
+    SAFE_CAST(JSON_VALUE(content, "$.end_time") AS DATETIME) end_time,
+    SAFE_CAST(JSON_VALUE(content, "$.headway_secs") AS FLOAT64) headway_secs,
+    SAFE_CAST(JSON_VALUE(content, "$.exact_times") AS DATETIME) exact_times,
 FROM {{ source(
             'br_rj_riodejaneiro_gtfs_staging',
             'frequencies'

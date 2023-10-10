@@ -1,4 +1,4 @@
-{ { config(
+{{ config(
   materialized = "ephemeral",
   partition_by = { "field" :"data",
   "data_type" :"date",
@@ -6,7 +6,9 @@
   unique_key = ["servico", "data"],
   incremental_strategy = "insert_overwrite",
   alias = 'ordem_servico'
-) } } WITH ordem_servico AS (
+) }} 
+
+WITH ordem_servico AS (
   SELECT SAFE_CAST(data AS DATE) AS data,
     timestamp_captura,
     servico,
@@ -44,7 +46,7 @@
     NULL AS partidas_volta_domingo,
     SAFE_CAST(NULL AS FLOAT64) AS viagens_domingo,
     SAFE_CAST(JSON_VALUE(content, "$.km_domingo") AS FLOAT64) AS km_domingo
-  FROM { { var("subsidio_ordem_servico_gtfs") } }
+  FROM {{ var("subsidio_ordem_servico_gtfs") }}
   WHERE data = "{{ var('data_versao_gtfs') }}"
 )
 SELECT *
