@@ -1,14 +1,8 @@
-{{ config(
-  materialized = "ephemeral",
-  partition_by = { "field" :"data",
-  "data_type" :"date",
-  "granularity": "day" },
+{ { config(
+  materialized = "view",
   unique_key = ["servico", "data"],
-  incremental_strategy = "insert_overwrite",
-  alias = 'ordem_servico'
-) }} 
-
-WITH ordem_servico AS (
+  alias = "ordem_servico"
+) } } WITH ordem_servico AS (
   SELECT SAFE_CAST(data AS DATE) AS data,
     timestamp_captura,
     servico,
@@ -46,8 +40,11 @@ WITH ordem_servico AS (
     NULL AS partidas_volta_domingo,
     SAFE_CAST(NULL AS FLOAT64) AS viagens_domingo,
     SAFE_CAST(JSON_VALUE(content, "$.km_domingo") AS FLOAT64) AS km_domingo
-  FROM {{ var("subsidio_ordem_servico_gtfs") }}
-  WHERE data = "{{ var('data_versao_gtfs') }}"
+  FROM { { source(
+      "br_rj_riodejaneiro_gtfs_staging",
+      "ordem_servico"
+    ) } }
+  WHERE data = "{{ var(' data_versao_gtfs ') }}"
 )
 SELECT *
 FROM ordem_servico UNPIVOT (

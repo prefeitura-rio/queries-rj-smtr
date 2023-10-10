@@ -5,39 +5,32 @@
        "granularity": "day" },
        unique_key = ["shape_id", "data"],
        incremental_strategy = "insert_overwrite",
-       alias = 'shapes_geom'
+       alias = "shapes_geom"
 ) }} 
 
-
-WITH trips AS (
-       SELECT trip_id,
-              shape_id,
-              route_id,
-              DATA,
-              FROM {{ ref('trips_gtfs') }} t
-       WHERE data = "{{ var('data_versao_gtfs') }}"
-),
-contents AS (
+WITH contents AS (
        -- EXTRACTS VALUES FROM JSON STRING FIELD 'content'
        SELECT shape_id,
-              ST_GEOGPOINT(shape_pt_lon, shape_pt_lat) ponto_shape,
+       	      CAST(shape_pt_lon AS FLOAT64) shape_pt_lon,
+       	      CAST(shape_pt_lat AS FLOAT64) shape_pt_lat,
+              ST_GEOGPOINT(shape_pt_lon, shape_pt_lat) AS ponto_shape,
               shape_pt_sequence,
-              DATA,
-              FROM {{ ref('shapes_gtfs') }} s
+              data,
+              FROM {{ref("shapes_gtfs")}} s
        WHERE data = "{{ var('data_versao_gtfs') }}"
 ),
 pts AS (
        SELECT *,
-              MAX(shape_pt_sequence) OVER(PARTITION BY DATA, shape_id) final_pt_sequence
+              MAX(shape_pt_sequence) OVER(PARTITION BY data, shape_id) final_pt_sequence
        FROM contents c
-       ORDER BY DATA,
+       ORDER BY data,
               shape_id,
               shape_pt_sequence
 ),
 shapes AS (
        -- BUILD LINESTRINGS OVER SHAPE POINTS
        SELECT shape_id,
-              DATA,
+              data,
               ST_MAKELINE(ARRAY_AGG(ponto_shape)) AS shape
        FROM pts
        GROUP BY 1,
@@ -72,11 +65,9 @@ merged AS (
               AND s.data = b.data
 ),
 ids AS (
-       SELECT trip_id,
-              m.shape_id,
-              route_id,
+       SELECT m.shape_id,
               m.data,
-              ROW_NUMBER() OVER(PARTITION BY m.data, m.shape_id, l.trip_id) rn
+              ROW_NUMBER() OVER(PARTITION BY m.data, m.shape_id) rn
        FROM merged m
 )
 SELECT *
