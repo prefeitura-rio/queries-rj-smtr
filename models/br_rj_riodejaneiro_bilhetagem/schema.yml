@@ -48,25 +48,25 @@ models:
       - name: hora
         description: "Hora de processamento da transação"
       - name: datetime_transacao
-        description: "Data e hora da transação (UTC)"
+        description: "Data e hora da transação em GMT-3 (formato YYYY-MM-ddTHH:mm:ss.ssssss)"
       - name: datetime_processamento
-        description: "Data e hora de processamento da transação (UTC)"
-      - name: timestamp_captura
-        description: "Timestamp de captura (GMT-3)"
+        description: "Data e hora de processamento da transação em GMT-3 (formato YYYY-MM-ddTHH:mm:ss.ssssss)"
+      - name: datetime_captura
+        description: "Timestamp de captura em GMT-3 (formato YYYY-MM-dd HH:mm:ssTZD)"
       - name: modo
-        description: "Modo do transporte"
+        description: "Tipo de transporte (SPPO = ônibus, STPL = van, BRT) "
       - name: permissao
         description: "Número da permissão do operador"
       - name: servico
-        description: "Serviço operado pelo veículo"
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...)"
       - name: sentido
-        description: "Sentido de operação do serviço"
+        description: "Sentido de operação do serviço (0 = ida, 1 = volta)"
       - name: id_veiculo
-        description: "Identificador do veículo"
+        description: "Identificador único do veículo"
       - name: id_cliente
-        description: "ID do cliente"
+        description: "Identificador único do cliente"
       - name: id_transacao
-        description: "ID da transação"
+        description: "Identificador único da transação"
       - name: id_tipo_pagamento
         description: "Código do tipo de pagamento utilizado"
       - name: id_tipo_transacao
@@ -74,7 +74,7 @@ models:
       - name: id_tipo_integracao
         description: "Tipo da integração realizada (identificador relacionado à matriz de integração)"
       - name: id_integracao
-        description: "Identificador da integração"
+        description: "Identificador único da integração"
       - name: latitude
         description: "Latitude da transação (WGS84)"
       - name: longitude
@@ -88,7 +88,7 @@ models:
       - name: valor_transacao
         description: "Valor debitado na transação atual (R$)"
       - name: versao
-        description: "SHA da branch no Github"
+        description: "Código de controle de versão do dado (SHA Github)"
   # - name: transacao_brt
   #   description: "Tabela de transações do BRT"
   #   columns:
