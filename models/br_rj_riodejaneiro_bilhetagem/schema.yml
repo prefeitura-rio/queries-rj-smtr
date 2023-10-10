@@ -48,11 +48,9 @@ models:
       - name: hora
         description: "Hora de processamento da transação"
       - name: datetime_transacao
-        description: 
-        "Data e hora da transação (UTC)"
+        description: "Data e hora da transação (UTC)"
       - name: datetime_processamento
-        description: 
-        "Data e hora de processamento da transação (UTC)"
+        description: "Data e hora de processamento da transação (UTC)"
       - name: timestamp_captura
         description: "Timestamp de captura (GMT-3)"
       - name: modo
