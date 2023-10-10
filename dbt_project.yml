@@ -91,7 +91,7 @@ vars:
 
   ## GTFS
   data_versao_gtfs: "YYYY-MM-DD"
-
+  subsidio_ordem_servico_gtfs: "rj-smtr-staging.projeto_subsidio_sppo_staging.ordem_servico"
   ### Subsídio SPPO (Ônibus) ###
   buffer: 500 # distância em metros para buffer
   perc_conformidade_distancia_min: 0
