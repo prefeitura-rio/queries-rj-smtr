@@ -1,45 +1,6 @@
 version: 2
 
 models:
-  # - name: linha
-  #   description: "Tabela de serviços"
-  #   columns:
-  #     - name: data
-  #       description: "data"
-  #     - name: timestamp_captura
-  #       description: "timestamp_captura"
-  #     - name: cd_linha
-  #       description: "cd_linha"
-  #     - name: dt_inclusao
-  #       description: "dt_inclusao"
-  #     - name: cd_linha_oficial
-  #       description: "cd_linha_oficial"
-  #     - name: cd_local_operacao_linha
-  #       description: "cd_local_operacao_linha"
-  #     - name: cd_tipo_categoria_linha
-  #       description: "cd_tipo_categoria_linha"
-  #     - name: cd_tipo_linha
-  #       description: "cd_tipo_linha"
-  #     - name: cd_tipo_matriz_calculo_subsidio
-  #       description: "cd_tipo_matriz_calculo_subsidio"
-  #     - name: in_situacao_atividade
-  #       description: "in_situacao_atividade"
-  #     - name: km_linha
-  #       description: "km_linha"
-  #     - name: latitude_destino
-  #       description: "latitude_destino"
-  #     - name: latitude_origem
-  #       description: "latitude_origem"
-  #     - name: longitude_destino
-  #       description: "longitude_destino"
-  #     - name: longitude_origem
-  #       description: "longitude_origem"
-  #     - name: nm_linha
-  #       description: "nm_linha"
-  #     - name: nr_linha
-  #       description: "nr_linha"
-  #     - name: quantidade_secao
-  #       description: "quantidade_secao"
   - name: transacao
     description: "Tabela de transações"
     columns:
@@ -89,49 +50,6 @@ models:
         description: "Valor debitado na transação atual (R$)"
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)"
-  # - name: transacao_brt
-  #   description: "Tabela de transações do BRT"
-  #   columns:
-  #     - name: data
-  #       description: "Data da transação (partição)"
-  #     - name: datetime_transacao
-  #       description: "Data e hora da transação (GMT-3)"
-  #     - name: datetime_processamento
-  #       description: "Data e hora de processamento da transação (GMT-3)"
-  #     - name: datetime_captura
-  #       description: "Data e hora de captura da transação (GMT-3)"
-  #     - name: id_veiculo
-  #       description: "Identificador do veículo (número de ordem)"
-  #     - name: id_transacao
-  #       description: "ID da transação"
-  #     - name: id_cliente
-  #       description: "Código do cliente ou código hash do cartão/dispositivo utilizado"
-  #     - name: latitude
-  #       description: "Latitude da transação (WGS84)"
-  #     - name: longitude
-  #       description: "Longitude da transação (WGS84)"
-  #     - name: id_tipo_transacao
-  #       description: "Tipo de transação realizada"
-  #     - name: servico
-  #       description: "Serviço operado pelo veículo"
-  #     - name: sentido
-  #       description: "Sentido do serviço operado pelo veículo"
-  #     - name: valor_transacao
-  #       description: "Valor da transação para o usuário"
-  #     - name: id_integracao
-  #       description: "Identificador da integração individual"
-  #     - name: id_tipo_integracao
-  #       description: "Tipo da integração realizada (identificador relacionado à matriz de integração)"
-  #     - name: id_tipo_pagamento
-  #       description: "Código do tipo de mídia utilizada"
-  #     - name: stop_id
-  #       description: "Código identificador do ponto de embarque (GTFS)"
-  #     - name: stop_lat
-  #       description: "Latitude do ponto de embarque (GTFS)"
-  #     - name: stop_lon
-  #       description: "Longitude do ponto de embarque (GTFS)"
-  #     - name: id_integracao_individual
-  #       description: "Identificador da integração individual"
   - name: dicionario
     description: "Dicionário de dados"
     columns:
