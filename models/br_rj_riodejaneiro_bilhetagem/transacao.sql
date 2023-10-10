@@ -13,7 +13,7 @@
 
 SELECT 
     EXTRACT(DATE FROM data_processamento) AS data,
-    EXTRACT(HOUR FROM data_processamento) AS hour,
+    EXTRACT(HOUR FROM data_processamento) AS hora,
     data_transacao AS datetime_transacao,
     data_processamento AS datetime_processamento,
     t.timestamp_captura AS datetime_captura,
