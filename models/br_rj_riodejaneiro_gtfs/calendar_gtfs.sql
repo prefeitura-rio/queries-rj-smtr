@@ -20,8 +20,10 @@ SELECT SAFE_CAST(service_id AS STRING) service_id,
     SAFE_CAST(JSON_VALUE(content, '$.sunday') AS STRING) sunday,
     SAFE_CAST(JSON_VALUE(content, '$.start_date') AS STRING) start_date,
     SAFE_CAST(JSON_VALUE(content, '$.end_date') AS STRING) end_date,
-FROM {{ source(
+    
+ FROM {{ source(
             'br_rj_riodejaneiro_gtfs_staging',
             'calendar'
         ) }}
+        
 WHERE data = '{{ var("data_versao_gtfs") }}'

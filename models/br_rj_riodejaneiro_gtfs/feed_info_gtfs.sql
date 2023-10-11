@@ -16,8 +16,10 @@ SELECT SAFE_CAST(feed_publisher_name AS STRING) feed_publisher_name,
     SAFE_CAST(JSON_VALUE(content, '$.feed_start_date') AS DATE) feed_start_date,
     SAFE_CAST(JSON_VALUE(content, '$.feed_end_date') AS DATE) feed_end_date,
     SAFE_CAST(JSON_VALUE(content, '$.feed_contact_email') AS STRING) feed_contact_email,
-FROM {{ source(
+    
+ FROM {{ source(
             'br_rj_riodejaneiro_gtfs_staging',
             'feed_info'
         ) }}
+        
 WHERE data = '{{ var("data_versao_gtfs") }}'

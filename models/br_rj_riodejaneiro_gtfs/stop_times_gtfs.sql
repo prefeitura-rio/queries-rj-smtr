@@ -17,8 +17,10 @@ SELECT SAFE_CAST(trip_id AS STRING) trip_id,
     SAFE_CAST(JSON_VALUE(content, '$.stop_headsign') AS STRING) stop_headsign,
     SAFE_CAST(JSON_VALUE(content, '$.shape_dist_traveled') AS FLOAT64) shape_dist_traveled,
     SAFE_CAST(JSON_VALUE(content, '$.timepoint') AS FLOAT64) timepoint,
-FROM {{ source(
+    
+ FROM {{ source(
             'br_rj_riodejaneiro_gtfs_staging',
             'stop_times'
         ) }}
+        
 WHERE data = '{{ var("data_versao_gtfs") }}'

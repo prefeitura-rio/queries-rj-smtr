@@ -3,7 +3,9 @@
   unique_key = ['servico', 'data'],
   alias = 'ordem_servico'
 ) }}
+
 WITH ordem_servico AS (
+
   SELECT SAFE_CAST(data AS DATE) AS data,
     timestamp_captura,
     servico,
@@ -40,14 +42,18 @@ WITH ordem_servico AS (
     NULL AS partidas_ida_domingo,
     NULL AS partidas_volta_domingo,
     SAFE_CAST(NULL AS FLOAT64) AS viagens_domingo,
-    SAFE_CAST(JSON_VALUE(content, '$.km_domingo') AS FLOAT64) AS km_domingo
+    SAFE_CAST(JSON_VALUE(content, '$.km_domingo') AS FLOAT64) AS km_domingo,
+    
   FROM {{ source(
       'br_rj_riodejaneiro_gtfs_staging',
       'ordem_servico'
     ) }}
+    
   WHERE data = '{{ var("data_versao_gtfs") }}'
 )
+
 SELECT *
+
 FROM ordem_servico UNPIVOT (
     (
       partidas_ida,

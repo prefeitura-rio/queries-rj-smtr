@@ -22,8 +22,10 @@ SELECT SAFE_CAST(stop_id AS STRING) stop_id,
     SAFE_CAST(JSON_VALUE(content, '$.stop_timezone') AS STRING) stop_timezone,
     SAFE_CAST(JSON_VALUE(content, '$.wheelchair_boarding') AS STRING) wheelchair_boarding,
     SAFE_CAST(JSON_VALUE(content, '$.platform_code') AS STRING) platform_code,
-FROM {{ source(
+    
+ FROM {{ source(
             'br_rj_riodejaneiro_gtfs_staging',
             'stops'
         ) }}
+        
 WHERE data = '{{ var("data_versao_gtfs") }}'

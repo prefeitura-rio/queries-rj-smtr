@@ -9,6 +9,7 @@
 )}} 
 
 SELECT SAFE_CAST(route_id AS STRING) route_id,
+
     SAFE_CAST(data AS DATE) data,
     SAFE_CAST(JSON_VALUE(content, '$.agency_id') AS STRING) agency_id,
     SAFE_CAST(JSON_VALUE(content, '$.route_short_name') AS STRING) route_short_name,
@@ -17,8 +18,10 @@ SELECT SAFE_CAST(route_id AS STRING) route_id,
     SAFE_CAST(JSON_VALUE(content, '$.route_type') AS STRING) route_type,
     SAFE_CAST(JSON_VALUE(content, '$.route_color') AS STRING) route_color,
     SAFE_CAST(JSON_VALUE(content, '$.route_text_color') AS STRING) route_text_color,
-FROM {{ source(
+    
+ FROM {{ source(
             'br_rj_riodejaneiro_gtfs_staging',
             'routes'
         ) }}
+        
 WHERE data = '{{ var("data_versao_gtfs") }}'

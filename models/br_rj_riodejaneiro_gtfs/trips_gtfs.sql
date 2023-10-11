@@ -16,8 +16,10 @@ SELECT
   SAFE_CAST(JSON_VALUE(content, '$.trip_short_name') AS STRING) trip_short_name,
   SAFE_CAST(JSON_VALUE(content, '$.direction_id') AS STRING) direction_id,
   SAFE_CAST(JSON_VALUE(content, '$.shape_id') AS STRING) shape_id,
-FROM {{ source(
+  
+ FROM {{ source(
             'br_rj_riodejaneiro_gtfs_staging',
             'trips'
         ) }}
+        
 WHERE data = '{{ var("data_versao_gtfs") }}'

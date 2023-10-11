@@ -72,5 +72,5 @@ ids AS (
 )
 SELECT *
 EXCEPT(rn)
-FROM ids
+ FROM ids
 WHERE rn = 1

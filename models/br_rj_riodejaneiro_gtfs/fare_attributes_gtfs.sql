@@ -17,8 +17,10 @@ SELECT SAFE_CAST(fare_id AS STRING) fare_id,
     SAFE_CAST(JSON_VALUE(content, '$.transfers') AS STRING) transfers,
     SAFE_CAST(JSON_VALUE(content, '$.agency_id') AS STRING) agency_id,
     SAFE_CAST(JSON_VALUE(content, '$.transfer_duration') AS FLOAT64) transfer_duration,
+    
 FROM {{source(
             'br_rj_riodejaneiro_gtfs_staging',
             'fare_attributes'
         )}}
+        
 WHERE data = '{{ var("data_versao_gtfs") }}'
