@@ -58,5 +58,5 @@ ON
     AND t.data_transacao >= g.datetime_inclusao
 {% if is_incremental() -%}
 WHERE 
-    t.timestamp_captura BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+    DATE(t.timestamp_captura) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
 {%- endif %}
