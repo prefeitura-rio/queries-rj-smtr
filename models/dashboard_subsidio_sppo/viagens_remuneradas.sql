@@ -136,7 +136,7 @@ WITH
     3,
     4,
     5 )
--- 7. Filtro de viagens que serão consideradas para fins de remuneração (apuração de valor de subsídio) - RESOLUÇÃO SMTR Nº 3645/2023
+-- 7. Flag de viagens que serão consideradas ou não para fins de remuneração (apuração de valor de subsídio) - RESOLUÇÃO SMTR Nº 3645/2023
 SELECT
 v.* EXCEPT(rn),
 CASE
