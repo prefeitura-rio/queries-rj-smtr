@@ -1,9 +1,3 @@
-{{ 
-config(
-    materialized='ephemeral'
-)
-}}
-
 WITH
   ordem_servico AS (
   SELECT
