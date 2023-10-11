@@ -1,11 +1,11 @@
 {{ config(
-       materialized = "incremental",
-       partition_by = { "field" :"data",
-       "data_type" :"date",
-       "granularity": "day" },
-       unique_key = ["shape_id", "data"],
-       incremental_strategy = "insert_overwrite",
-       alias = "shapes_geom"
+       materialized = 'incremental',
+       partition_by = { 'field' :'data',
+       'data_type' :'date',
+       'granularity': 'day' },
+       unique_key = ['shape_id', 'data'],
+       incremental_strategy = 'insert_overwrite',
+       alias = 'shapes_geom'
 ) }} 
 
 WITH contents AS (
@@ -16,8 +16,8 @@ WITH contents AS (
               ST_GEOGPOINT(shape_pt_lon, shape_pt_lat) AS ponto_shape,
               shape_pt_sequence,
               data,
-              FROM {{ref("shapes_gtfs")}} s
-       WHERE data = "{{ var('data_versao_gtfs') }}"
+              FROM {{ref('shapes_gtfs')}} s
+       WHERE data = '{{ var("data_versao_gtfs") }}'
 ),
 pts AS (
        SELECT *,
