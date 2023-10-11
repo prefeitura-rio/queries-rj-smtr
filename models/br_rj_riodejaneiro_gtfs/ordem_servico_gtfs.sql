@@ -1,8 +1,9 @@
-{ { config(
+{{ config(
   materialized = "view",
   unique_key = ["servico", "data"],
   alias = "ordem_servico"
-) } } WITH ordem_servico AS (
+) }}
+WITH ordem_servico AS (
   SELECT SAFE_CAST(data AS DATE) AS data,
     timestamp_captura,
     servico,
@@ -40,10 +41,10 @@
     NULL AS partidas_volta_domingo,
     SAFE_CAST(NULL AS FLOAT64) AS viagens_domingo,
     SAFE_CAST(JSON_VALUE(content, "$.km_domingo") AS FLOAT64) AS km_domingo
-  FROM { { source(
+  FROM {{ source(
       "br_rj_riodejaneiro_gtfs_staging",
       "ordem_servico"
-    ) } }
+    ) }}
   WHERE data = "{{ var(' data_versao_gtfs ') }}"
 )
 SELECT *

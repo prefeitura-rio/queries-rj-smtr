@@ -9,8 +9,8 @@
 )}} 
 
 SELECT SAFE_CAST(trip_id AS STRING) trip_id,
+    SAFE_CAST(stop_sequence AS STRING) stop_sequence,
     SAFE_CAST(data AS DATE) data,
-    SAFE_CAST(JSON_VALUE(content, "$.stop_sequence") AS STRING) stop_sequence,
     SAFE_CAST(JSON_VALUE(content, "$.stop_id") AS STRING) stop_id,
     SAFE_CAST(JSON_VALUE(content, "$.arrival_time") AS DATETIME) arrival_time,
     SAFE_CAST(JSON_VALUE(content, "$.departure_time") AS DATETIME) departure_time,
