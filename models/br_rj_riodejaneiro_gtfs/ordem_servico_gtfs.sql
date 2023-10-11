@@ -45,7 +45,7 @@ WITH ordem_servico AS (
       "br_rj_riodejaneiro_gtfs_staging",
       "ordem_servico"
     ) }}
-  WHERE data = "{{ var(' data_versao_gtfs ') }}"
+  WHERE data = "{{ var('data_versao_gtfs') }}"
 )
 SELECT *
 FROM ordem_servico UNPIVOT (

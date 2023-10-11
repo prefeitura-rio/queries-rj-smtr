@@ -48,9 +48,9 @@ models:
     columns:
       - name: "service_id"
         description: "Identifica um conjunto de datas quando ocorre uma exceção de serviço para uma ou mais rotas"
-      - name: date
+      - name: "date"
         description: "Data em que ocorre a exceção de serviço."
-      - name: exception_type
+      - name: "exception_type"
         description: "Indica se o serviço está disponível na data especificada no campo de data."
 
   - name: "fare_attributes"

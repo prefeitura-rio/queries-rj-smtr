@@ -3,12 +3,12 @@
     partition_by = { "field" :"data",
     "data_type" :"date",
     "granularity": "day" },
-    unique_key = ["service_id", "data"],
+    unique_key = ["service_id", "date", "data"],
     incremental_strategy = "insert_overwrite",
     alias = 'calendar_dates'
 ) }}
 SELECT SAFE_CAST(service_id AS STRING) service_id,
-    SAFE_CAST (date AS DATE) date,
+    SAFE_CAST (date AS STRING) date,
     SAFE_CAST(data AS DATE) data,
     SAFE_CAST(JSON_VALUE(content, "$.monday") AS STRING) monday,
     SAFE_CAST(JSON_VALUE(content, "$.tuesday") AS STRING) tuesday,
@@ -17,7 +17,7 @@ SELECT SAFE_CAST(service_id AS STRING) service_id,
     SAFE_CAST(JSON_VALUE(content, "$.friday") AS STRING) friday,
     SAFE_CAST(JSON_VALUE(content, "$.saturday") AS STRING) saturday,
     SAFE_CAST(JSON_VALUE(content, "$.sunday") AS STRING) sunday,
-    SAFE_CAST(SON_VALUE(content, "$.start_date") AS STRING) start_date,
+    SAFE_CAST(JSON_VALUE(content, "$.start_date") AS STRING) start_date,
     SAFE_CAST(JSON_VALUE(content, "$.end_date") AS STRING) end_date,
     FROM {{ source(
         'br_rj_riodejaneiro_gtfs_staging',
