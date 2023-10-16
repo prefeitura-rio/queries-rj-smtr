@@ -73,16 +73,17 @@ SELECT
   date(r.timestamp_gps) data,
   extract(time from r.timestamp_gps) hora, 
   r.id_veiculo,
-  -- corrigir o código do serviço caso servico_apurado seja diferente de serviço
-  {% if var("id_veiculo_amostra") is not none and var("reprocessed_service") == True %} 
-    CASE
-      WHEN r.linha = "{{ var("servico_apurado") }}" 
-        OR concat( ifnull(REGEXP_EXTRACT(r.linha, r'[A-Z]+'), ""), 
-          ifnull(REGEXP_EXTRACT(r.linha, r'[0-9]+'), "") ) = "{{ var("servico_amostra") }}"
-      THEN "{{ var("servico_amostra") }}"
-      ELSE r.linha
+  -- corrigir o código do serviço nos casos de reprocessamento
+  {% if var("id_veiculo_amostra") is not none and var("servico_amostra") is not none 
+  and var("reprocessed_service") == True %}
+  CASE 
+    WHEN r.linha != 'GARAGEM' AND SUBSTRING(r.id_veiculo, 2) = '{{ var("id_veiculo_amostra") }}'
+    THEN '{{ var("servico_amostra") }}'
+    ELSE r.linha
   END AS servico,
-  {{ log("servico_apurado: " ~ var("servico_apurado") ~ ", servico_amostra: " ~ var("servico_amostra"), info=True) }}
+  {{ log("servico_amostra: " ~ var("servico_amostra"), info=True) }}
+  {% else %}
+    r.linha AS servico,
   {% endif %}
   r.latitude,
   r.longitude,
@@ -149,5 +150,5 @@ ON
 {%- endif -%}
 -- Filtrar apenas o veículo reprocessado
 {% if var("id_veiculo_amostra") is not none and var("reprocessed_service") == True %}
-  AND r.id_veiculo = "{{var('id_veiculo_amostra')}}"
+  AND SUBSTRING(r.id_veiculo, 2)  = "{{var('id_veiculo_amostra')}}"
 {%- endif -%}

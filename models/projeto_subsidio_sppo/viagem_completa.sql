@@ -32,7 +32,7 @@ with viagem_periodo as (
             inicio_periodo,
             fim_periodo
         from
-            {{ ref("viagem_planejada") }}
+            {{ var("viagem_planejada") }}
         {% if is_incremental() %}
         WHERE
             data = date_sub(date("{{ var("run_date") }}"), interval 1 day)

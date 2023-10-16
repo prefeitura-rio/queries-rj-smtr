@@ -43,7 +43,6 @@ vars:
   gps_sppo: "rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo"
   viagem_planejada: "rj-smtr.projeto_subsidio_sppo.viagem_planejada"
   servico_amostra: null
-  servico_apurado: null
   id_veiculo_amostra: null
 
   # Parametros de intersecção do ônibus com rota

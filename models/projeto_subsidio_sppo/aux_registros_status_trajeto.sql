@@ -30,13 +30,6 @@ with gps as (
         and datetime_add(datetime_trunc("{{ var("run_date") }}", day), interval 3 hour)
     )
     and status != "Parado garagem"
-
-    {% if var("servico_apurado") is not none and var("servico_amostra") is not none and 
-    var("date_range_start") != '2022-01-01T01:00:00' and var("date_range_end") != '2022-01-01T01:00:00'
-    and var("reprocessed_service") == True%}
-    and (servico = "{{ var("servico_amostra") }}") 
-    and timestamp_gps between "{{ var("date_range_start") }}" and "{{ var("date_range_end") }}"
-    {% endif %}
 ),
 -- 2. Classifica a posição do veículo em todos os shapes possíveis de
 --    serviços de uma mesma empresa
