@@ -12,11 +12,16 @@
 }}
 
 SELECT 
-    EXTRACT(DATE FROM data_transacao) AS data,
+    EXTRACT(DATE FROM data_processamento) AS data,
+    EXTRACT(HOUR FROM data_processamento) AS hora,
     data_transacao AS datetime_transacao,
     data_processamento AS datetime_processamento,
     t.timestamp_captura AS datetime_captura,
     g.ds_grupo AS modo,
+    -- TODO: Automatizar busca pela permissao no banco
+    CASE
+      WHEN t.cd_operadora = "1" THEN "22.100005-0"
+    END AS permissao,
     l.nr_linha AS servico,
     sentido,
     NULL AS id_veiculo,
@@ -51,6 +56,7 @@ LEFT JOIN
 ON 
     gl.cd_grupo = g.cd_grupo
     AND t.data_transacao >= g.datetime_inclusao
-WHERE
-    t.data_transacao BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
-    AND t.data_transacao > "{{var('date_range_start')}}" AND t.data_transacao <="{{var('date_range_end')}}"
+{% if is_incremental() -%}
+WHERE 
+    DATE(t.timestamp_captura) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+{%- endif %}
