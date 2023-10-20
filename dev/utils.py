@@ -13,13 +13,18 @@ def run_dbt_model(
     upstream: bool = None,
     downstream: bool = None,
     exclude: str = None,
-    flags: str = "-x --profiles-dir ./dev",
+    flags: str = None,
     _vars: Union[dict, List[Dict]] = None,
 ):
     """
     Run a DBT model.
     """
     run_command = "dbt run"
+
+    if not flags:
+        flags = "-x --profiles-dir ./dev"
+    else:
+        flags = "-x --profiles-dir ./dev " + flags
 
     if not model:
         model = f"{dataset_id}"
