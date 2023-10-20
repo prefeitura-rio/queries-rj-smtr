@@ -9,7 +9,7 @@ models:
       - name: agency_id
         description:  "Identifica uma marca de transporte público que geralmente é sinônimo de agência de transporte público."
       - name: agency_name
-        description: "Nome completo da agência de trânsito."
+        description: "Nome completo da agência de transporte público."
       - name: agency_url
         description: "URL da agência de transporte público."
       - name: agency_timezone
