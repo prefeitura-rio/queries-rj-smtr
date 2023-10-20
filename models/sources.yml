@@ -12,7 +12,7 @@ sources:
       - name: dicionario
 
   - name: br_rj_riodejaneiro_gtfs_staging
-    database: rj-smtr-dev
+    database: rj-smtr-staging
 
     tables:
       - name: agency
