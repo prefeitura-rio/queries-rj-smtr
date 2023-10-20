@@ -61,8 +61,9 @@ merged AS (
               AND s.data_versao = b.data_versao
 ),
 ids AS (
-       SELECT m.shape_id,
-              m.data_versao,
+       SELECT data_versao,
+              shape_id,              
+              shape,
               ROW_NUMBER() OVER(PARTITION BY m.data_versao, m.shape_id) rn
        FROM merged m
 )
