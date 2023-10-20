@@ -15,4 +15,3 @@ dbt-env/
 # DEV
 scripts/
 *dev/
-profiles.yml
