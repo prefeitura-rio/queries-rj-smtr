@@ -23,6 +23,7 @@ SELECT SAFE_CAST(data_versao AS DATE) data_versao,
     SAFE_CAST(JSON_VALUE(content, '$.wheelchair_boarding') AS STRING) wheelchair_boarding,
     SAFE_CAST(JSON_VALUE(content, '$.level_id') AS STRING) level_id,
     SAFE_CAST(JSON_VALUE(content, '$.platform_code') AS STRING) platform_code,
+    '{{ var("version") }}' as versao_modelo
 FROM {{ source(
             'br_rj_riodejaneiro_gtfs_staging',
             'stops'

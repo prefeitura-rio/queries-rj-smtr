@@ -67,7 +67,8 @@ ids AS (
               ROW_NUMBER() OVER(PARTITION BY m.data_versao, m.shape_id) rn
        FROM merged m
 )
-SELECT *
-EXCEPT(rn)
+SELECT 
+       * EXCEPT(rn),
+       '{{ var("version") }}' as versao_modelo
 FROM ids
 WHERE rn = 1

@@ -21,6 +21,7 @@ SELECT SAFE_CAST(data_versao AS DATE) data_versao,
     SAFE_CAST(JSON_VALUE(content, '$.continuous_pickup') AS STRING) continuous_pickup,
     SAFE_CAST(JSON_VALUE(content, '$.continuous_drop_off') AS STRING) continuous_drop_off,
     SAFE_CAST(JSON_VALUE(content, '$.network_id') AS STRING) network_id,
+    '{{ var("version") }}' as versao_modelo
  FROM {{ source(
             'br_rj_riodejaneiro_gtfs_staging',
             'routes'

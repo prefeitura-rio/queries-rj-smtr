@@ -14,6 +14,7 @@ SELECT
     SAFE_CAST(JSON_VALUE(content, '$.origin_id') AS STRING) origin_id,
     SAFE_CAST(JSON_VALUE(content, '$.destination_id') AS STRING) destination_id,
     SAFE_CAST(JSON_VALUE(content, '$.contains_id') AS STRING) contains_id,
+    '{{ var("version") }}' as versao_modelo
  FROM {{ source(
             'br_rj_riodejaneiro_gtfs_staging',
             'fare_rules'

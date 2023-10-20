@@ -15,6 +15,7 @@ SELECT SAFE_CAST(data_versao AS DATE) data_versao,
         SAFE_CAST(JSON_VALUE(content, '$.transfers') AS STRING) transfers,
         SAFE_CAST(JSON_VALUE(content, '$.agency_id') AS STRING) agency_id,
         SAFE_CAST(JSON_VALUE(content, '$.transfer_duration') AS INT64) transfer_duration,
+        '{{ var("version") }}' as versao_modelo
 FROM {{source(
             'br_rj_riodejaneiro_gtfs_staging',
             'fare_attributes'
