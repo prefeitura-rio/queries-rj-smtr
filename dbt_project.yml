@@ -143,6 +143,7 @@ models:
       +schema: projeto_subsidio_sppo
     br_rj_riodejaneiro_gtfs:
       +materialized: incremental
+      +incremental_strategy: insert_overwrite
       +schema: br_rj_riodejaneiro_gtfs
     br_rj_riodejaneiro_sigmob:
       +materialized: view
