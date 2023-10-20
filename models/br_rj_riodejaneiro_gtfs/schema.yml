@@ -3,7 +3,7 @@ sources:
   - name: "br_rj_riodejaneiro_gtfs"
 
 models:
-  - name: "agency"
+  - name: agency_gtfs
     description: "Agência de transporte público com serviços representados neste conjunto de dados."
     columns:
       - name: "agency_id"
@@ -16,10 +16,10 @@ models:
         description: "Fuso horário onde a agência de transporte público está localizada"
       - name: "agency_lang"
         description: "Idioma principal usado por esta agência de transporte público."
-      - name: "data"
-        description: "Data de captura do GTFS (Versão do feed)."
+      - name: data_versao
+        description: "Data de captura do GTFS (versão do feed)."
 
-  - name: "calendar"
+  - name: calendar_gtfs
     description: "Datas de serviço especificadas usando uma programação semanal com datas de início e término."
     columns:
       - name: "service_id"
