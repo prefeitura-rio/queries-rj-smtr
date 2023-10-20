@@ -32,6 +32,7 @@ WITH ordem_servico AS (
     NULL partidas_volta_domingo,
     SAFE_CAST(NULL AS FLOAT64) viagens_domingo,
     SAFE_CAST(JSON_VALUE(content, '$.km_domingo') AS FLOAT64) km_domingo,
+    '{{ var("version") }}' as versao_modelo
   FROM {{ source(
       'br_rj_riodejaneiro_gtfs_staging',
       'ordem_servico'

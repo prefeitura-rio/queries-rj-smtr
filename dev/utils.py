@@ -21,10 +21,12 @@ def run_dbt_model(
     """
     run_command = "dbt run"
 
+    common_flags = "-x --profiles-dir ./dev"
+
     if not flags:
-        flags = "-x --profiles-dir ./dev"
+        flags = common_flags
     else:
-        flags = "-x --profiles-dir ./dev " + flags
+        flags = common_flags + " " + flags
 
     if not model:
         model = f"{dataset_id}"

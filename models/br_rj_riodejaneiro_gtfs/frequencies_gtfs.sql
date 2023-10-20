@@ -13,5 +13,6 @@ SELECT SAFE_CAST(data_versao AS DATE) data_versao,
        SAFE_CAST(JSON_VALUE(content, '$.end_time') AS STRING) end_time,
        SAFE_CAST(JSON_VALUE(content, '$.headway_secs') AS INT64) headway_secs,
        SAFE_CAST(JSON_VALUE(content, '$.exact_times') AS STRING) exact_times,
+       '{{ var("version") }}' as versao_modelo
  FROM {{source('br_rj_riodejaneiro_gtfs_staging', 'frequencies')}}
 WHERE data_versao = '{{ var("data_versao_gtfs") }}'

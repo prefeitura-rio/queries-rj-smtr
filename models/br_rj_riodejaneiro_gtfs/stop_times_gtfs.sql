@@ -20,6 +20,7 @@ SELECT SAFE_CAST(data_versao AS DATE) data_versao,
     SAFE_CAST(JSON_VALUE(content, '$.continuous_drop_off') AS STRING) continuous_drop_off,
     SAFE_CAST(JSON_VALUE(content, '$.shape_dist_traveled') AS FLOAT64) shape_dist_traveled,
     SAFE_CAST(JSON_VALUE(content, '$.timepoint') AS STRING) timepoint,
+    '{{ var("version") }}' as versao_modelo
 FROM {{ source(
             'br_rj_riodejaneiro_gtfs_staging',
             'stop_times'
