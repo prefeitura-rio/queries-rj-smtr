@@ -1,16 +1,15 @@
 {{config(
-    materialized = 'incremental',
-    partition_by = { 'field' :'data',
+    materialized = 'table',
+    partition_by = { 'field' :'data_versao',
     'data_type' :'date',
     'granularity': 'day' },
-    unique_key = ['route_id', 'data'],
-    incremental_strategy = 'insert_overwrite',
+    unique_key = ['route_id', 'data_versao'],
     alias = 'routes'
 )}} 
 
 SELECT SAFE_CAST(route_id AS STRING) route_id,
 
-    SAFE_CAST(data AS DATE) data,
+    SAFE_CAST(data AS DATE) data_versao,
     SAFE_CAST(JSON_VALUE(content, '$.agency_id') AS STRING) agency_id,
     SAFE_CAST(JSON_VALUE(content, '$.route_short_name') AS STRING) route_short_name,
     SAFE_CAST(JSON_VALUE(content, '$.route_long_name') AS STRING) route_long_name,
@@ -24,4 +23,4 @@ SELECT SAFE_CAST(route_id AS STRING) route_id,
             'routes'
         ) }}
         
-WHERE data = '{{ var("data_versao_gtfs") }}'
+WHERE data_versao = '{{ var("data_versao_gtfs") }}'

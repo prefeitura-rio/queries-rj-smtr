@@ -1,12 +1,15 @@
 {{ config(
-  materialized = 'view',
-  unique_key = ['servico', 'data'],
+  materialized = 'table',
+  partition_by = { 'field' :'data_versao',
+    'data_type' :'date',
+    'granularity': 'day' },
+  unique_key = ['servico', 'data_versao'],
   alias = 'ordem_servico'
 ) }}
 
 WITH ordem_servico AS (
 
-  SELECT SAFE_CAST(data AS DATE) AS data,
+  SELECT SAFE_CAST(data AS DATE) AS data_versao,
     timestamp_captura,
     servico,
     SAFE_CAST(JSON_VALUE(content, '$.vista') AS STRING) AS vista,
@@ -49,7 +52,7 @@ WITH ordem_servico AS (
       'ordem_servico'
     ) }}
     
-  WHERE data = '{{ var("data_versao_gtfs") }}'
+  WHERE data_versao = '{{ var("data_versao_gtfs") }}'
 )
 
 SELECT *

@@ -13,4 +13,6 @@ dbt-env/
 __pycache__/
 # DEV
 scripts/
-dev/
+*dev/
+dev/run.py
+dev/profiles.yml

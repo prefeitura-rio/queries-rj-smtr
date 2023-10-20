@@ -1,15 +1,14 @@
 {{config(
-    materialized = 'incremental',
-    partition_by = { 'field' :'data',
+    materialized = 'table',
+    partition_by = { 'field' :'data_versao',
     'data_type' :'date',
     'granularity': 'day' },
-    unique_key = ['stop_id', 'data'],
-    incremental_strategy = 'insert_overwrite',
+    unique_key = ['stop_id', 'data_versao'],
     alias = 'stops'
 )}} 
 
 SELECT SAFE_CAST(stop_id AS STRING) stop_id,
-    SAFE_CAST(data AS DATE) data,
+    SAFE_CAST(data AS DATE) data_versao,
     SAFE_CAST(JSON_VALUE(content, '$.stop_code') AS STRING) stop_code,
     SAFE_CAST(JSON_VALUE(content, '$.stop_name') AS STRING) stop_name,
     SAFE_CAST(JSON_VALUE(content, '$.stop_desc') AS STRING) stop_desc,
@@ -28,4 +27,4 @@ SELECT SAFE_CAST(stop_id AS STRING) stop_id,
             'stops'
         ) }}
         
-WHERE data = '{{ var("data_versao_gtfs") }}'
+WHERE data_versao = '{{ var("data_versao_gtfs") }}'

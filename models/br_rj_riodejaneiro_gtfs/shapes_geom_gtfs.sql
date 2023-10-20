@@ -1,36 +1,32 @@
 {{ config(
-       materialized = 'incremental',
-       partition_by = { 'field' :'data',
+       materialized = 'table',
+       partition_by = { 'field' :'data_versao',
        'data_type' :'date',
        'granularity': 'day' },
-       unique_key = ['shape_id', 'data'],
-       incremental_strategy = 'insert_overwrite',
+       unique_key = ['shape_id', 'data_versao'],
        alias = 'shapes_geom'
 ) }} 
 
 WITH contents AS (
-       -- EXTRACTS VALUES FROM JSON STRING FIELD 'content'
        SELECT shape_id,
-       	      --CAST(shape_pt_lon AS FLOAT64) shape_pt_lon,
-       	      --CAST(shape_pt_lat AS FLOAT64) shape_pt_lat,
               ST_GEOGPOINT(shape_pt_lon, shape_pt_lat) AS ponto_shape,
               shape_pt_sequence,
               data,
               FROM {{ref('shapes_gtfs')}} s
-       WHERE data = '{{ var("data_versao_gtfs") }}'
+       WHERE data_versao = '{{ var("data_versao_gtfs") }}'
 ),
 pts AS (
        SELECT *,
               MAX(shape_pt_sequence) OVER(PARTITION BY data, shape_id) final_pt_sequence
        FROM contents c
-       ORDER BY data,
+       ORDER BY data_versao,
               shape_id,
               shape_pt_sequence
 ),
 shapes AS (
        -- BUILD LINESTRINGS OVER SHAPE POINTS
        SELECT shape_id,
-              data,
+              data_versao,
               ST_MAKELINE(ARRAY_AGG(ponto_shape)) AS shape
        FROM pts
        GROUP BY 1,

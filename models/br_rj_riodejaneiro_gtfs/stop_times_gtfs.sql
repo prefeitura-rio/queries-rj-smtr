@@ -1,16 +1,15 @@
 {{config(
-    materialized = 'incremental',
-    partition_by = { 'field' :'data',
+    materialized = 'table',
+    partition_by = { 'field' :'data_versao',
     'data_type' :'date',
     'granularity': 'day' },
-    unique_key = ['trip_id', 'data'],
-    incremental_strategy = 'insert_overwrite',
+    unique_key = ['trip_id', 'data_versao'],
     alias = 'stop_times'
 )}} 
 
 SELECT SAFE_CAST(trip_id AS STRING) trip_id,
     SAFE_CAST(stop_sequence AS STRING) stop_sequence,
-    SAFE_CAST(data AS DATE) data,
+    SAFE_CAST(data AS DATE) data_versao,
     SAFE_CAST(JSON_VALUE(content, '$.stop_id') AS STRING) stop_id,
     SAFE_CAST(JSON_VALUE(content, '$.arrival_time') AS DATETIME) arrival_time,
     SAFE_CAST(JSON_VALUE(content, '$.departure_time') AS DATETIME) departure_time,
@@ -23,4 +22,4 @@ SELECT SAFE_CAST(trip_id AS STRING) trip_id,
             'stop_times'
         ) }}
         
-WHERE data = '{{ var("data_versao_gtfs") }}'
+WHERE data_versao = '{{ var("data_versao_gtfs") }}'

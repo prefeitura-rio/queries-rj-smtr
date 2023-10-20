@@ -1,15 +1,14 @@
-{{config( MATERIALIZED = 'incremental',
-    partition_by = { 'field' :'data',
+{{config( MATERIALIZED = 'table',
+    partition_by = { 'field' :'data_versao',
     'data_type' :'date',
     'granularity': 'day' },
     unique_key = ['trip_id',
-    'data'],
-    incremental_strategy = 'insert_overwrite',
+    'data_versao'],
     alias = 'trips' )}}
 
 SELECT
   SAFE_CAST(trip_id AS STRING) trip_id,
-  SAFE_CAST(data AS DATE) data,
+  SAFE_CAST(data AS DATE) data_versao,
   SAFE_CAST(JSON_VALUE(content, '$.route_id') AS STRING) route_id,
   SAFE_CAST(JSON_VALUE(content, '$.service_id') AS STRING) service_id,
   SAFE_CAST(JSON_VALUE(content, '$.trip_headsign') AS STRING) trip_headsign,
@@ -22,4 +21,4 @@ SELECT
             'trips'
         ) }}
         
-WHERE data = '{{ var("data_versao_gtfs") }}'
+WHERE data_versao = '{{ var("data_versao_gtfs") }}'
