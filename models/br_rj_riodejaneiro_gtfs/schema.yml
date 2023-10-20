@@ -4,7 +4,7 @@ sources:
 
 models:
   - name: "agency"
-    description: "Agências de transporte público com serviços representados neste conjunto de dados."
+    description: "Agência de transporte público com serviços representados neste conjunto de dados."
     columns:
       - name: "agency_id"
         description:  "Identifica uma marca de transporte público que geralmente é sinônimo de agência de transporte público."
