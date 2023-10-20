@@ -15,4 +15,5 @@ dbt-env/
 scripts/
 *dev/
 dev/run.py
-dev/profiles.yml
+
+profiles.yml
