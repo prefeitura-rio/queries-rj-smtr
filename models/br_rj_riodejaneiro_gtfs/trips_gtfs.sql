@@ -16,8 +16,8 @@ SELECT SAFE_CAST(data_versao AS DATE) data_versao,
     SAFE_CAST(JSON_VALUE(content, '$.direction_id') AS STRING) direction_id,
     SAFE_CAST(JSON_VALUE(content, '$.block_id') AS STRING) block_id,
     SAFE_CAST(JSON_VALUE(content, '$.shape_id') AS STRING) shape_id,
-    SAFE_CAST(JSON_VALUE(content, '$.wheelchair_accessible') AS STRING) wheelchair_accessible
-    SAFE_CAST(JSON_VALUE(content, '$.bikes_alloweds') AS STRING) bikes_alloweds
+    SAFE_CAST(JSON_VALUE(content, '$.wheelchair_accessible') AS STRING) wheelchair_accessible,
+    -- SAFE_CAST(JSON_VALUE(content, '$.bikes_allowed') AS STRING) bikes_allowed,
     '{{ var("version") }}' as versao_modelo
 FROM {{ source(
             'br_rj_riodejaneiro_gtfs_staging',
