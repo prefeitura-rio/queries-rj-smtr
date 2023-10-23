@@ -206,6 +206,8 @@ models:
         description: "Data de referência do feed (versão)."
       - name: timestamp_captura
         description: "Carimbo de data e hora da captura."
+      - name: shape
+        description: "Dado geográfico construído com a query."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
