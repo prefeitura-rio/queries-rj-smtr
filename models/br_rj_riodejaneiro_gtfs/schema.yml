@@ -18,6 +18,8 @@ models:
         description: "Idioma principal usado por esta agência de transporte público."
       - name: data_versao
         description: "Data de captura do GTFS (versão do feed)."
+      - name: versao_modelo 
+        description: "Versão do modelo GTFS."
 
   - name: calendar_gtfs
     description: "Datas de serviço especificadas usando uma programação semanal com datas de início e término."
@@ -44,6 +46,8 @@ models:
         description: "Finalize o dia de serviço para o intervalo de serviço."
       - name: data_versao
         description: "Data de captura do GTFS (versão do feed)."
+      - name: versao_modelo 
+        description: "Versão do modelo GTFS."
 
   - name: calendar_dates_gtfs
     description: "Exceções para os serviços definidos no calendar.txt."
@@ -56,6 +60,8 @@ models:
         description: "Indica se o serviço está disponível na data especificada no campo de data."
       - name: data_versao
         description: "Data de captura do GTFS (versão do feed)."
+      - name: versao_modelo 
+        description: "Versão do modelo GTFS."
 
   - name: fare_attributes_gtfs
     description: "Informações sobre tarifas para rotas de uma agência de transporte público."
@@ -76,6 +82,8 @@ models:
         description: "Período de tempo em segundos antes que uma transferência expire."
       - name: data_versao
         description: "Data de captura do GTFS (versão do feed)."
+      - name: versao_modelo 
+        description: "Versão do modelo GTFS."
 
   - name: fare_rules_gtfs
     description: "Regras para aplicação de tarifas de itinerários."
@@ -92,6 +100,8 @@ models:
         description: "Identifica as zonas nas quais um passageiro entrará ao usar uma determinada classe de tarifa."
       - name: data_versao
         description: "Data de captura do GTFS (versão do feed)."
+      - name: versao_modelo 
+        description: "Versão do modelo GTFS."
 
   - name: feed_info_gtfs
     description: "Metadados do conjunto de dados, incluindo informações sobre editor, versão e expiração."
@@ -116,6 +126,8 @@ models:
         description: "n, um formulário web, suporte técnico ou outras ferramentas para comunicação sobre o conjunto de dados GTFS e práticas de publicação de dados."
       - name: data_versao
         description: "Data de captura do GTFS (versão do feed)."
+      - name: versao_modelo 
+        description: "Versão do modelo GTFS."
 
   - name: frequencies_gtfs
     description: "Intervalo (tempo entre viagens) para serviço baseado em intervalo ou uma representação compactada de serviço com horário fixo."
@@ -132,6 +144,8 @@ models:
         description: "Indica o tipo de serviço para uma viagem."
       - name: data_versao
         description: "Data de captura do GTFS (versão do feed)."
+      - name: versao_modelo 
+        description: "Versão do modelo GTFS."
 
   - name: routes_gtfs
     description: "Rotas de trânsito. Uma rota é um grupo de viagens exibidas aos passageiros como um único serviço."
@@ -164,6 +178,8 @@ models:
         description: "Identifica um grupo de rotas. Várias linhas em rotas.txt podem ter o mesmo network_id."
       - name: data_versao
         description: "Data de captura do GTFS (versão do feed)."
+      - name: versao_modelo 
+        description: "Versão do modelo GTFS."
 
   - name: shapes_geom_gtfs
     description: "Tabela com os shapes dos serviços."
@@ -172,6 +188,8 @@ models:
         description: "Identifica uma forma."
       - name: data_versao
         description: "Data de captura do GTFS (versão do feed)."
+      - name: versao_modelo 
+        description: "Versão do modelo GTFS."
 
   - name: shapes_gtfs
     description: "Regras para mapear caminhos de deslocamento de veículos, às vezes chamados de alinhamentos de rotas."
@@ -188,6 +206,8 @@ models:
         description: "Distância real percorrida ao longo da forma desde o primeiro ponto da forma até o ponto especificado neste registro."
       - name: data_versao
         description: "Data de captura do GTFS (versão do feed)."
+      - name: versao_modelo 
+        description: "Versão do modelo GTFS."
 
   - name: stops_gtfs
     description: "Paradas onde os veículos pegam ou deixam os passageiros. Também define estações e entradas de estação."
@@ -224,6 +244,8 @@ models:
         description: "Identificador de plataforma para uma parada de plataforma (uma parada pertencente a uma estação)."
       - name: data_versao
         description: "Data de captura do GTFS (versão do feed)."
+      - name: versao_modelo 
+        description: "Versão do modelo GTFS."
 
   - name: stop_times_gtfs
     description: "Horários em que um veículo chega e sai das paradas de cada viagem."
@@ -254,6 +276,8 @@ models:
         description: "Indica se os horários de chegada e saída de uma parada são rigorosamente respeitados pelo veículo ou se são horários aproximados e/ou interpolados."
       - name: data_versao
         description: "Data de captura do GTFS (versão do feed)."
+      - name: versao_modelo 
+        description: "Versão do modelo GTFS."
 
   - name: trips_gtfs
     description: "Viagens para cada rota."
@@ -280,6 +304,8 @@ models:
         description: "Indica se bicicletas são permitidas."
       - name: data_versao
         description: "Data de captura do GTFS (versão do feed)."
+      - name: versao_modelo 
+        description: "Versão do modelo GTFS."
 
   - name: ordem_servico_gtfs
     description: "Dados das linhas presentes no município."
@@ -312,3 +338,5 @@ models:
         description: "Tipo de dia, se dia útil, sábado, domingo ou ponto facultativo."
       - name: data_versao
         description: "Data de captura do GTFS (versão do feed)."
+      - name: versao_modelo 
+        description: "Versão do modelo GTFS."
