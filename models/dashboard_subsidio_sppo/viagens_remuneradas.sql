@@ -43,7 +43,8 @@ WITH
   viagem_planejada AS (
   SELECT
     p.*,
-    v.partidas_ida + v.partidas_volta AS viagens_planejadas
+    viagens_planejadas,
+    v.partidas_ida + v.partidas_volta AS viagens_planejadas_ida_volta
   FROM
     planejado AS p
   LEFT JOIN
@@ -140,21 +141,21 @@ WITH
 SELECT
 v.* EXCEPT(rn),
 CASE
-        WHEN data >= "2023-09-16"
-             AND p.tipo_dia = "Dia Útil"
-             AND viagens_planejadas > 10
-             AND perc_km_planejada > 120
-             AND rn > viagens_planejadas*1.2
-             THEN FALSE
-        WHEN data >= "2023-09-16"
-             AND p.tipo_dia = "Dia Útil"
-             AND viagens_planejadas <= 10
-             AND perc_km_planejada > 200
-             AND rn > viagens_planejadas*2
-             THEN FALSE
+    WHEN data >= "2023-09-16"
+        AND p.tipo_dia = "Dia Útil"
+        AND viagens_planejadas > 10
+        AND perc_km_planejada > 120
+        AND rn > viagens_planejadas_ida_volta*1.2
+        THEN FALSE
+    WHEN data >= "2023-09-16"
+        AND p.tipo_dia = "Dia Útil"
+        AND viagens_planejadas <= 10
+        AND perc_km_planejada > 200
+        AND rn > viagens_planejadas_ida_volta*2
+        THEN FALSE
     ELSE
         TRUE
-    END AS viagem_remunerada
+    END AS indicador_viagem_remunerada
 FROM (
 SELECT
     *,
