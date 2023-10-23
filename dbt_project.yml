@@ -89,6 +89,9 @@ vars:
   stops_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.stops"
   trips_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.trips"
 
+  ## GTFS
+  data_versao_gtfs: "YYYY-MM-DD"
+
   ### Subsídio SPPO (Ônibus) ###
   buffer: 500 # distância em metros para buffer
   perc_conformidade_distancia_min: 0
@@ -138,6 +141,10 @@ models:
     projeto_subsidio_sppo:
       +materialized: view
       +schema: projeto_subsidio_sppo
+    br_rj_riodejaneiro_gtfs:
+      +materialized: incremental
+      +incremental_strategy: insert_overwrite
+      +schema: br_rj_riodejaneiro_gtfs
     br_rj_riodejaneiro_sigmob:
       +materialized: view
       +schema: br_rj_riodejaneiro_sigmob
