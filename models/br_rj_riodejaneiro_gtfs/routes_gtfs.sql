@@ -8,7 +8,6 @@
 
 
 SELECT SAFE_CAST(data_versao AS DATE) data_versao,
-    SAFE_CAST(timestamp_captura AS DATETIME) timestamp_captura,
     SAFE_CAST(route_id AS STRING) route_id,
     SAFE_CAST(JSON_VALUE(content, '$.agency_id') AS STRING) agency_id,
     SAFE_CAST(JSON_VALUE(content, '$.route_short_name') AS STRING) route_short_name,

@@ -8,7 +8,6 @@
 
 WITH ordem_servico AS (
   SELECT SAFE_CAST(data_versao AS DATE) data_versao,
-    SAFE_CAST(timestamp_captura AS DATETIME) timestamp_captura,
     SAFE_CAST(servico AS STRING) servico,
     SAFE_CAST(JSON_VALUE(content, '$.vista') AS STRING) vista,
     SAFE_CAST(JSON_VALUE(content, '$.consorcio') AS STRING) consorcio,

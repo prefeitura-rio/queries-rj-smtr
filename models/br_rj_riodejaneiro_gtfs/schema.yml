@@ -18,8 +18,6 @@ models:
         description: "Idioma principal usado por esta agência de transporte público."
       - name: data_versao
         description: "Data de referência do feed (versão)."
-      - name: timestamp_captura
-        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -48,8 +46,6 @@ models:
         description: "Finalize o dia de serviço para o intervalo de serviço."
       - name: data_versao
         description: "Data de referência do feed (versão)."
-      - name: timestamp_captura
-        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -64,8 +60,6 @@ models:
         description: "Indica se o serviço está disponível na data especificada no campo de data."
       - name: data_versao
         description: "Data de referência do feed (versão)."
-      - name: timestamp_captura
-        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -88,8 +82,6 @@ models:
         description: "Período de tempo em segundos antes que uma transferência expire."
       - name: data_versao
         description: "Data de referência do feed (versão)."
-      - name: timestamp_captura
-        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -108,8 +100,6 @@ models:
         description: "Identifica as zonas nas quais um passageiro entrará ao usar uma determinada classe de tarifa."
       - name: data_versao
         description: "Data de referência do feed (versão)."
-      - name: timestamp_captura
-        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -136,8 +126,6 @@ models:
         description: "n, um formulário web, suporte técnico ou outras ferramentas para comunicação sobre o conjunto de dados GTFS e práticas de publicação de dados."
       - name: data_versao
         description: "Data de referência do feed (versão)."
-      - name: timestamp_captura
-        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -156,8 +144,6 @@ models:
         description: "Indica o tipo de serviço para uma viagem."
       - name: data_versao
         description: "Data de referência do feed (versão)."
-      - name: timestamp_captura
-        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -192,8 +178,6 @@ models:
         description: "Identifica um grupo de rotas. Várias linhas em rotas.txt podem ter o mesmo network_id."
       - name: data_versao
         description: "Data de referência do feed (versão)."
-      - name: timestamp_captura
-        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -204,8 +188,6 @@ models:
         description: "Identifica uma forma."
       - name: data_versao
         description: "Data de referência do feed (versão)."
-      - name: timestamp_captura
-        description: "Carimbo de data e hora da captura."
       - name: shape
         description: "Dado geográfico construído com a query."
       - name: versao_modelo 
@@ -226,8 +208,6 @@ models:
         description: "Distância real percorrida ao longo da forma desde o primeiro ponto da forma até o ponto especificado neste registro."
       - name: data_versao
         description: "Data de referência do feed (versão)."
-      - name: timestamp_captura
-        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -266,8 +246,6 @@ models:
         description: "Identificador de plataforma para uma parada de plataforma (uma parada pertencente a uma estação)."
       - name: data_versao
         description: "Data de referência do feed (versão)."
-      - name: timestamp_captura
-        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -300,8 +278,6 @@ models:
         description: "Indica se os horários de chegada e saída de uma parada são rigorosamente respeitados pelo veículo ou se são horários aproximados e/ou interpolados."
       - name: data_versao
         description: "Data de referência do feed (versão)."
-      - name: timestamp_captura
-        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -330,8 +306,6 @@ models:
         description: "Indica se bicicletas são permitidas."
       - name: data_versao
         description: "Data de referência do feed (versão)."
-      - name: timestamp_captura
-        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -366,7 +340,5 @@ models:
         description: "Tipo de dia, se dia útil, sábado, domingo ou ponto facultativo."
       - name: data_versao
         description: "Data de referência do feed (versão)."
-      - name: timestamp_captura
-        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."

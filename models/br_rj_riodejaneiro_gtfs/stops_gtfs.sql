@@ -8,7 +8,6 @@
 
 
 SELECT SAFE_CAST(data_versao AS DATE) data_versao,
-    SAFE_CAST(timestamp_captura AS DATETIME) timestamp_captura,
     SAFE_CAST(stop_id AS STRING) stop_id,
     SAFE_CAST(JSON_VALUE(content, '$.stop_code') AS STRING) stop_code,
     SAFE_CAST(JSON_VALUE(content, '$.stop_name') AS STRING) stop_name,

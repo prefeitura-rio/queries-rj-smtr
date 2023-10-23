@@ -8,7 +8,6 @@
 
 
 SELECT SAFE_CAST(data_versao AS DATE) data_versao,
-  SAFE_CAST(timestamp_captura AS DATETIME) timestamp_captura,
   SAFE_CAST(shape_id AS STRING) shape_id,
   SAFE_CAST(JSON_VALUE(content, '$.shape_pt_lat') AS FLOAT64) shape_pt_lat,
   SAFE_CAST(JSON_VALUE(content, '$.shape_pt_lon') AS FLOAT64) shape_pt_lon,

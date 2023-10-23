@@ -8,7 +8,6 @@
 
 
 SELECT SAFE_CAST(data_versao AS DATE) data_versao,
-        SAFE_CAST(timestamp_captura AS DATETIME) timestamp_captura,
         SAFE_CAST(service_id AS STRING) service_id,
         PARSE_DATE('%Y%m%d', SAFE_CAST(date AS STRING)) date,
         SAFE_CAST(JSON_VALUE(content, '$.exception_type') AS STRING) exception_type,
