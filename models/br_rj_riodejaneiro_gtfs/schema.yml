@@ -17,9 +17,11 @@ models:
       - name: agency_lang
         description: "Idioma principal usado por esta agência de transporte público."
       - name: data_versao
-        description: "Data de captura do GTFS (versão do feed)."
+        description: "Data de referência do feed (versão)."
+      - name: timestamp_captura
+        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
-        description: "Versão do modelo GTFS."
+        description: "Código de controle de versão (SHA do GitHub)."
 
   - name: calendar_gtfs
     description: "Datas de serviço especificadas usando uma programação semanal com datas de início e término."
@@ -45,9 +47,11 @@ models:
       - name: end_date
         description: "Finalize o dia de serviço para o intervalo de serviço."
       - name: data_versao
-        description: "Data de captura do GTFS (versão do feed)."
+        description: "Data de referência do feed (versão)."
+      - name: timestamp_captura
+        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
-        description: "Versão do modelo GTFS."
+        description: "Código de controle de versão (SHA do GitHub)."
 
   - name: calendar_dates_gtfs
     description: "Exceções para os serviços definidos no calendar.txt."
@@ -59,9 +63,11 @@ models:
       - name: exception_type
         description: "Indica se o serviço está disponível na data especificada no campo de data."
       - name: data_versao
-        description: "Data de captura do GTFS (versão do feed)."
+        description: "Data de referência do feed (versão)."
+      - name: timestamp_captura
+        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
-        description: "Versão do modelo GTFS."
+        description: "Código de controle de versão (SHA do GitHub)."
 
   - name: fare_attributes_gtfs
     description: "Informações sobre tarifas para rotas de uma agência de transporte público."
@@ -81,9 +87,11 @@ models:
       - name: transfer_duration
         description: "Período de tempo em segundos antes que uma transferência expire."
       - name: data_versao
-        description: "Data de captura do GTFS (versão do feed)."
+        description: "Data de referência do feed (versão)."
+      - name: timestamp_captura
+        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
-        description: "Versão do modelo GTFS."
+        description: "Código de controle de versão (SHA do GitHub)."
 
   - name: fare_rules_gtfs
     description: "Regras para aplicação de tarifas de itinerários."
@@ -99,9 +107,11 @@ models:
       - name: contains_id
         description: "Identifica as zonas nas quais um passageiro entrará ao usar uma determinada classe de tarifa."
       - name: data_versao
-        description: "Data de captura do GTFS (versão do feed)."
+        description: "Data de referência do feed (versão)."
+      - name: timestamp_captura
+        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
-        description: "Versão do modelo GTFS."
+        description: "Código de controle de versão (SHA do GitHub)."
 
   - name: feed_info_gtfs
     description: "Metadados do conjunto de dados, incluindo informações sobre editor, versão e expiração."
@@ -125,9 +135,11 @@ models:
       - name: feed_contact_url
         description: "n, um formulário web, suporte técnico ou outras ferramentas para comunicação sobre o conjunto de dados GTFS e práticas de publicação de dados."
       - name: data_versao
-        description: "Data de captura do GTFS (versão do feed)."
+        description: "Data de referência do feed (versão)."
+      - name: timestamp_captura
+        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
-        description: "Versão do modelo GTFS."
+        description: "Código de controle de versão (SHA do GitHub)."
 
   - name: frequencies_gtfs
     description: "Intervalo (tempo entre viagens) para serviço baseado em intervalo ou uma representação compactada de serviço com horário fixo."
@@ -143,9 +155,11 @@ models:
       - name: exact_times
         description: "Indica o tipo de serviço para uma viagem."
       - name: data_versao
-        description: "Data de captura do GTFS (versão do feed)."
+        description: "Data de referência do feed (versão)."
+      - name: timestamp_captura
+        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
-        description: "Versão do modelo GTFS."
+        description: "Código de controle de versão (SHA do GitHub)."
 
   - name: routes_gtfs
     description: "Rotas de trânsito. Uma rota é um grupo de viagens exibidas aos passageiros como um único serviço."
@@ -177,9 +191,11 @@ models:
       - name: network_id
         description: "Identifica um grupo de rotas. Várias linhas em rotas.txt podem ter o mesmo network_id."
       - name: data_versao
-        description: "Data de captura do GTFS (versão do feed)."
+        description: "Data de referência do feed (versão)."
+      - name: timestamp_captura
+        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
-        description: "Versão do modelo GTFS."
+        description: "Código de controle de versão (SHA do GitHub)."
 
   - name: shapes_geom_gtfs
     description: "Tabela com os shapes dos serviços."
@@ -187,9 +203,11 @@ models:
       - name: shape_id
         description: "Identifica uma forma."
       - name: data_versao
-        description: "Data de captura do GTFS (versão do feed)."
+        description: "Data de referência do feed (versão)."
+      - name: timestamp_captura
+        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
-        description: "Versão do modelo GTFS."
+        description: "Código de controle de versão (SHA do GitHub)."
 
   - name: shapes_gtfs
     description: "Regras para mapear caminhos de deslocamento de veículos, às vezes chamados de alinhamentos de rotas."
@@ -205,9 +223,11 @@ models:
       - name: shape_dist_traveled
         description: "Distância real percorrida ao longo da forma desde o primeiro ponto da forma até o ponto especificado neste registro."
       - name: data_versao
-        description: "Data de captura do GTFS (versão do feed)."
+        description: "Data de referência do feed (versão)."
+      - name: timestamp_captura
+        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
-        description: "Versão do modelo GTFS."
+        description: "Código de controle de versão (SHA do GitHub)."
 
   - name: stops_gtfs
     description: "Paradas onde os veículos pegam ou deixam os passageiros. Também define estações e entradas de estação."
@@ -243,9 +263,11 @@ models:
       - name: platform_code
         description: "Identificador de plataforma para uma parada de plataforma (uma parada pertencente a uma estação)."
       - name: data_versao
-        description: "Data de captura do GTFS (versão do feed)."
+        description: "Data de referência do feed (versão)."
+      - name: timestamp_captura
+        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
-        description: "Versão do modelo GTFS."
+        description: "Código de controle de versão (SHA do GitHub)."
 
   - name: stop_times_gtfs
     description: "Horários em que um veículo chega e sai das paradas de cada viagem."
@@ -275,9 +297,11 @@ models:
       - name: timepoint
         description: "Indica se os horários de chegada e saída de uma parada são rigorosamente respeitados pelo veículo ou se são horários aproximados e/ou interpolados."
       - name: data_versao
-        description: "Data de captura do GTFS (versão do feed)."
+        description: "Data de referência do feed (versão)."
+      - name: timestamp_captura
+        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
-        description: "Versão do modelo GTFS."
+        description: "Código de controle de versão (SHA do GitHub)."
 
   - name: trips_gtfs
     description: "Viagens para cada rota."
@@ -303,9 +327,11 @@ models:
       - name: bikes_allowed
         description: "Indica se bicicletas são permitidas."
       - name: data_versao
-        description: "Data de captura do GTFS (versão do feed)."
+        description: "Data de referência do feed (versão)."
+      - name: timestamp_captura
+        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
-        description: "Versão do modelo GTFS."
+        description: "Código de controle de versão (SHA do GitHub)."
 
   - name: ordem_servico_gtfs
     description: "Dados das linhas presentes no município."
@@ -337,6 +363,8 @@ models:
       - name: tipo_dia
         description: "Tipo de dia, se dia útil, sábado, domingo ou ponto facultativo."
       - name: data_versao
-        description: "Data de captura do GTFS (versão do feed)."
+        description: "Data de referência do feed (versão)."
+      - name: timestamp_captura
+        description: "Carimbo de data e hora da captura."
       - name: versao_modelo 
-        description: "Versão do modelo GTFS."
+        description: "Código de controle de versão (SHA do GitHub)."

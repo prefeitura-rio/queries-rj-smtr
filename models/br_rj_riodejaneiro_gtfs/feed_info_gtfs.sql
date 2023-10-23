@@ -8,6 +8,7 @@
 
 
 SELECT SAFE_CAST(data_versao AS DATE) data_versao,
+    SAFE_CAST(timestamp_captura AS DATETIME) timestamp_captura,
     SAFE_CAST(feed_publisher_name AS STRING) feed_publisher_name,
     SAFE_CAST(JSON_VALUE(content, '$.feed_publisher_url') AS STRING) feed_publisher_url,
     SAFE_CAST(JSON_VALUE(content, '$.feed_lang') AS STRING) feed_lang,

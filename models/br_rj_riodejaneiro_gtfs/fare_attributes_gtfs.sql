@@ -8,6 +8,7 @@
 
 
 SELECT SAFE_CAST(data_versao AS DATE) data_versao,
+        SAFE_CAST(timestamp_captura AS DATETIME) timestamp_captura,
         SAFE_CAST(fare_id AS STRING) fare_id,
         SAFE_CAST(JSON_VALUE(content, '$.price') AS FLOAT64) price,
         SAFE_CAST(JSON_VALUE(content, '$.currency_type') AS STRING) currency_type,
