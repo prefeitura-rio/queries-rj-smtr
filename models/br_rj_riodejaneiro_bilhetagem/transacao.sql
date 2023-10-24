@@ -22,7 +22,7 @@ SELECT
     CASE
       WHEN t.cd_operadora = "1" THEN "22.100005-0"
     END AS permissao,
-    l.nr_linha AS servico,
+    l.nr_linha AS servico
     sentido,
     NULL AS id_veiculo,
     COALESCE(id_cliente, pan_hash) AS id_cliente,
