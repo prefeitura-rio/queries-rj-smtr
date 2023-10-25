@@ -24,7 +24,7 @@ WITH
     partidas_ida,
     partidas_volta
   FROM
-      {{ ref("subsidio_ordem_servico") }}
+      {{ ref("ordem_servico_gtfs") }}
   WHERE
     data_versao BETWEEN DATE("{{ var("start_date") }}")
     AND DATE( "{{ var("end_date") }}" )
