@@ -44,6 +44,9 @@ vars:
   viagem_planejada: "rj-smtr.projeto_subsidio_sppo.viagem_planejada"
   servico_amostra: null
   id_veiculo_amostra: null
+  gps_sql_conditions: null
+  gps_sql_conditions_servico: null
+
 
   # Parametros de intersecção do ônibus com rota
   ## Tamanho do buffer da rota

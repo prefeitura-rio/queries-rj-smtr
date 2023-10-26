@@ -39,6 +39,15 @@ WITH
       data between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
       AND timestamp_gps > "{{var('date_range_start')}}" and timestamp_gps <="{{var('date_range_end')}}"
     {%- endif -%}
+
+    -- Filtrar apenas os veículos e intervalos que devem ser reprocessados
+
+    {% if var("reprocessed_service") == True %}
+    AND (
+      {{ filter_veiculo_datetime(var("id_veiculo_amostra"), var("datetime_partida_amostra"), var("datetime_chegada_amostra")) | replace('OR', '', 1) }}
+      )
+    {% endif %}
+
   ),
   velocidades AS (
     -- 2. velocidades
@@ -73,18 +82,27 @@ SELECT
   date(r.timestamp_gps) data,
   extract(time from r.timestamp_gps) hora, 
   r.id_veiculo,
+
+
+
   -- corrigir o código do serviço nos casos de reprocessamento
-  {% if var("id_veiculo_amostra") is not none and var("servico_amostra") is not none 
-  and var("reprocessed_service") == True %}
-  CASE 
-    WHEN r.linha != 'GARAGEM' AND SUBSTRING(r.id_veiculo, 2) = '{{ var("id_veiculo_amostra") }}'
-    THEN '{{ var("servico_amostra") }}'
+  {% if var("reprocessed_service") == True %}
+  CASE
+    {{ filter_servico(var("id_veiculo_amostra"), var("datetime_partida_amostra"), var("datetime_chegada_amostra"), var("servico_amostra")) }}
     ELSE r.linha
   END AS servico,
-  {{ log("servico_amostra: " ~ var("servico_amostra"), info=True) }}
-  {% else %}
-    r.linha AS servico,
+  -- CASE
+  --   WHEN r.linha != 'GARAGEM' AND SUBSTRING(r.id_veiculo, 2) = '{{ var("id_veiculo_amostra") }}' AND
+  --   timestamp_gps BETWEEN datetime_partida_amostra AND datetime_chegada_amostra
+  --   THEN '{{ var("servico_amostra") }}'
+  --   ELSE r.linha
+  -- END AS servico,
+  -- {% else %}
+  --   r.linha AS servico,
   {% endif %}
+
+
+
   r.latitude,
   r.longitude,
   CASE 
@@ -147,8 +165,4 @@ ON
   WHERE
   date(r.timestamp_gps) between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
   AND r.timestamp_gps > "{{var('date_range_start')}}" and r.timestamp_gps <="{{var('date_range_end')}}"
-{%- endif -%}
--- Filtrar apenas o veículo reprocessado
-{% if var("id_veiculo_amostra") is not none and var("reprocessed_service") == True %}
-  AND SUBSTRING(r.id_veiculo, 2)  = "{{var('id_veiculo_amostra')}}"
 {%- endif -%}
