@@ -13,3 +13,4 @@ dbt-env/
 # DEV
 scripts/
 dev/
+!dev/run_algoritmo_recursos.py
