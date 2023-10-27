@@ -47,7 +47,6 @@ WITH
     {% endif %}
 
 
-
     {% if is_incremental() %}
     WHERE
       r.data between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
