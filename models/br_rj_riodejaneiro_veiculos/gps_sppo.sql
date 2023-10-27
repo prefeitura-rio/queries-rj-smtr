@@ -23,31 +23,36 @@ com o traçado da linha informada.
 5. As junções (joins) são feitas sobre o id_veículo e a timestamp_gps.
 */
 WITH
-  registros as (
+  registros AS (
   -- 1. registros_filtrada
     SELECT 
-      id_veiculo,
-      timestamp_gps,
-      timestamp_captura,
-      velocidade,
-      linha,
-      latitude,
-      longitude
-    FROM {{ var('sppo_aux_registros_filtrada') }} 
-    {% if is_incremental() -%}
-    WHERE
-      data between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
-      AND timestamp_gps > "{{var('date_range_start')}}" and timestamp_gps <="{{var('date_range_end')}}"
-    {%- endif -%}
+      r.id_veiculo,
+      r.timestamp_gps,
+      r.timestamp_captura,
+      r.velocidade,
+      r.linha,
+      r.latitude,
+      r.longitude,
+      COALESCE(rep.servico_amostra, r.linha) as servico
+    FROM {{ var('sppo_aux_registros_filtrada') }} r
 
-    -- Filtrar apenas os veículos e intervalos que devem ser reprocessados
 
-    {% if var("reprocessed_service") == True %}
-    AND (
-      {{ filter_veiculo_datetime(var("id_veiculo_amostra"), var("datetime_partida_amostra"), var("datetime_chegada_amostra")) | replace('OR', '', 1) }}
-      )
+    {% if var('reprocessed_service') == True %}
+
+    INNER JOIN {{ ref('seed_viagens') }} rep
+    ON SUBSTRING(r.id_veiculo, 2) = CAST(rep.id_veiculo_amostra AS STRING)
+    AND r.timestamp_gps BETWEEN rep.datetime_partida_amostra AND rep.datetime_chegada_amostra
+    AND r.linha != 'GARAGEM'
+
     {% endif %}
 
+
+
+    {% if is_incremental() %}
+    WHERE
+      r.data between DATE("{{var('date_range_start')}}") and DATE("{{var('date_range_end')}}")
+      AND r.timestamp_gps > "{{var('date_range_start')}}" and r.timestamp_gps <="{{var('date_range_end')}}"
+    {% endif %}
   ),
   velocidades AS (
     -- 2. velocidades
@@ -82,27 +87,7 @@ SELECT
   date(r.timestamp_gps) data,
   extract(time from r.timestamp_gps) hora, 
   r.id_veiculo,
-
-
-
-  -- corrigir o código do serviço nos casos de reprocessamento
-  {% if var("reprocessed_service") == True %}
-  CASE
-    {{ filter_servico(var("id_veiculo_amostra"), var("datetime_partida_amostra"), var("datetime_chegada_amostra"), var("servico_amostra")) }}
-    ELSE r.linha
-  END AS servico,
-  -- CASE
-  --   WHEN r.linha != 'GARAGEM' AND SUBSTRING(r.id_veiculo, 2) = '{{ var("id_veiculo_amostra") }}' AND
-  --   timestamp_gps BETWEEN datetime_partida_amostra AND datetime_chegada_amostra
-  --   THEN '{{ var("servico_amostra") }}'
-  --   ELSE r.linha
-  -- END AS servico,
-  -- {% else %}
-  --   r.linha AS servico,
-  {% endif %}
-
-
-
+  r.servico,
   r.latitude,
   r.longitude,
   CASE 

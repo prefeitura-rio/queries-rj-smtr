@@ -53,3 +53,19 @@ def run_dbt_model(
 
     print(f"\n>>> RUNNING: {run_command}\n")
     os.system(run_command)
+
+
+
+def dbt_seed(flags: str = "--profiles-dir ./dev"):
+    """
+    Run DBT seed command to load data from CSV files to the database.
+    
+    :param flags: Additional flags to pass to the dbt command.
+    """
+    seed_command = "dbt seed"
+
+    if flags:
+        seed_command += f" {flags}"
+
+    print(f"\n>>> RUNNING: {seed_command}\n")
+    os.system(seed_command)
