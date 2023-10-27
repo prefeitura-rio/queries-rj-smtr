@@ -17,13 +17,17 @@ with gps as (
     FROM 
         -- seleciona a tabela com o serviço do GPS reprocessado
         {% if var("reprocessed_service") == True %}
-        {{ var('gps_sppo_reprocessado') }} g
+        {{ var('gps_sppo_reprocessado') }} 
         {% else %}
-        {{ var('gps_sppo') }} g
-        {%- endif -%}     
-    where (
-        data between date_sub(date("{{ var("run_date") }}"), interval 1 day) and date("{{ var("run_date") }}")
-    )
+        {{ var('gps_sppo') }} 
+        {%- endif -%}
+        {{ " " }} -- Força um espaço 
+        g
+
+    WHERE 
+        (data between date_sub(date("{{ var("run_date") }}"), interval 1 day) and date("{{ var("run_date") }}") 
+        )
+    
     -- Limita range de busca do gps de D-2 às 00h até D-1 às 3h
     and (
         timestamp_gps between datetime_sub(datetime_trunc("{{ var("run_date") }}", day), interval 1 day)
