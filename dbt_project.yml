@@ -160,7 +160,7 @@ models:
       +schema: br_rj_riodejaneiro_veiculos_recursos_reprocessado
     dashboard_subsidio_sppo:
       +materialized: view
-      +schema: dashboard_subsidio_sppo
+      +schema: dashboard_subsidio_sppo_recursos_reprocessado
     veiculo:
       +materialized: view
       +schema: veiculo

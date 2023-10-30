@@ -17,7 +17,7 @@ dados = pd.read_csv('./data/reprocessar.csv')
 dados['datetime_partida_amostra'] = pd.to_datetime(dados['datetime_partida_amostra'])
 dados['datetime_chegada_amostra'] = pd.to_datetime(dados['datetime_chegada_amostra'])
 dados['diferenca_minutos'] = (dados['datetime_chegada_amostra'] - dados['datetime_partida_amostra']).dt.total_seconds() / 60
-dados['diferenca_minutos'] = dados['diferenca_minutos'] * 1.5
+dados['diferenca_minutos'] = dados['diferenca_minutos'] * 1.25
 dados['datetime_chegada_amostra'] = dados['datetime_chegada_amostra'] + pd.to_timedelta(dados['diferenca_minutos'], unit='m')
 dados['datetime_partida_amostra'] = dados['datetime_partida_amostra'] - pd.to_timedelta(dados['diferenca_minutos'], unit='m')
 dados = dados.drop(columns='diferenca_minutos')
@@ -34,13 +34,8 @@ for date in dates:
 
     dados_filtrados.to_csv('./data/seed_viagens.csv', index=False)
     dbt_seed() # preciso rodar o dbt seed a cada iteração após a linha acima
-    
-    date = pd.to_datetime(date).date()
-    date = date + timedelta(days=1)
-    date = date.strftime('%Y-%m-%d')
-    
+        
     #  1 - Rodar o modelo gps_sppo
-    
     #  Dataset com dados de GPS reprocessados `rj-smtr-dev.br_rj_riodejaneiro_veiculos_recursos_reprocessado`
     print('Executando modelo gps_sppo para o dia ' + date)
 
@@ -59,6 +54,11 @@ for date in dates:
     # Dados disponíveis em: `rj-smtr-dev.projeto_subsidio_sppo_recursos_reprocessado.viagem_completa` 
     print('Executando modelos de viagens para o dia ' + date)
         
+    date = pd.to_datetime(date).date()
+    date = date + timedelta(days=1)
+    date = date.strftime('%Y-%m-%d')  
+               
+        
     run_dbt_model(
         dataset_id="projeto_subsidio_sppo",
         table_id="viagem_completa",
@@ -68,4 +68,20 @@ for date in dates:
                 "version": ""}, 
     )
     
+    
+
+# 3 - Rodar os modelos para saber o valor devido do subsídio
+# Dados disponíveis em: `rj-smtr-dev.dashboard_subsidio_sppo_recursos_reprocessado` 
+
+# print('Executando modelos do valor devido do subsídio para o dia ' + date)
+# date = date - timedelta(days=1)
+
+# run_dbt_model(
+# dataset_id="dashboard_subsidio_sppo",
+# _vars={"start_date": "2023-09-01",   # incluir data inicial da amostra
+#         "end_date": "2023-09-30",    # incluir data final da amostra
+#         "version": ""}, # id_veiculo, linha etc passar aqui
+# )
+
 print('Reprocessamento finalizado.')
+ 
