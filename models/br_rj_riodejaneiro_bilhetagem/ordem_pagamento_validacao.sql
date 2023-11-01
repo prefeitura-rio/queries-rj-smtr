@@ -14,7 +14,7 @@
 WITH
   transacao_agg AS (
   SELECT
-    DATETIME(data),
+    data,
     DATE_ADD(data, INTERVAL 1 DAY) AS data_ordem,
     consorcio,
     permissao,
