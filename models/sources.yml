@@ -15,3 +15,21 @@ sources:
       - name: operadora_transporte
       - name: ordem_pagamento
       - name: ordem_ressarcimento
+
+  - name: br_rj_riodejaneiro_gtfs_staging
+    database: rj-smtr-staging
+
+    tables:
+      - name: agency
+      - name: calendar
+      - name: calendar_dates
+      - name: fare_attributes
+      - name: fare_rules
+      - name: feed_info
+      - name: frequencies
+      - name: routes
+      - name: shapes
+      - name: stops
+      - name: stop_times
+      - name: trips
+      - name: ordem_servico
