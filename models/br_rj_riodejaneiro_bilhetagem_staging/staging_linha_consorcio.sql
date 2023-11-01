@@ -20,7 +20,7 @@ WITH
     linha_consorcio_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY cd_consorcio, cd_linha) AS rn
+            ROW_NUMBER() OVER (PARTITION BY cd_consorcio, cd_linha order by timestamp_captura desc) AS rn
         FROM
             linha_consorcio
     )

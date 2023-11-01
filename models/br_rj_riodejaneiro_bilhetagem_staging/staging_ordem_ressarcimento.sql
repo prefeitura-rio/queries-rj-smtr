@@ -8,7 +8,7 @@ WITH
     ordem_ressarcimento AS (
         SELECT
             data,
-            SAFE_CAST(id, AS STRING) AS id_ordem_ressarcimento,
+            SAFE_CAST(id AS STRING) AS id_ordem_ressarcimento,
             timestamp_captura,
             DATETIME(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%E*S%Ez', SAFE_CAST(JSON_VALUE(content, '$.data_inclusao') AS STRING)), "America/Sao_Paulo") AS datetime_inclusao,
             PARSE_DATE('%Y-%m-%d', SAFE_CAST(JSON_VALUE(content, '$.data_ordem') AS STRING)) AS data_ordem,
@@ -40,7 +40,7 @@ WITH
     ordem_ressarcimento_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY id_ordem_ressarcimento) AS rn
+            ROW_NUMBER() OVER (PARTITION BY id_ordem_ressarcimento order by timestamp_captura desc) AS rn
         FROM
             ordem_ressarcimento
     )

@@ -8,7 +8,7 @@ WITH
     ordem_pagamento AS (
         SELECT
             data,
-            SAFE_CAST(id, AS STRING) AS id_ordem_pagamento,
+            SAFE_CAST(id AS STRING) AS id_ordem_pagamento,
             timestamp_captura,
             DATETIME(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%E*S%Ez', SAFE_CAST(JSON_VALUE(content, '$.data_inclusao') AS STRING)), "America/Sao_Paulo") AS datetime_inclusao,
             PARSE_DATE('%Y-%m-%d', SAFE_CAST(JSON_VALUE(content, '$.data_ordem') AS STRING)) AS data_ordem,
@@ -35,7 +35,7 @@ WITH
     ordem_pagamento_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY id_ordem_pagamento) AS rn
+            ROW_NUMBER() OVER (PARTITION BY id_ordem_pagamento order by timestamp_captura desc) AS rn
         FROM
             ordem_pagamento
     )

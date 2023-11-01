@@ -8,7 +8,7 @@ WITH
     consorcio AS (
         SELECT
             data,
-            SAFE_CAST(CD_CONSORCIO, AS STRING) AS cd_consorcio,
+            SAFE_CAST(CD_CONSORCIO AS STRING) AS cd_consorcio,
             timestamp_captura,
             DATETIME(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%S%Ez', SAFE_CAST(JSON_VALUE(content, '$.DT_INCLUSAO') AS STRING)), "America/Sao_Paulo") AS datetime_inclusao,
             SAFE_CAST(JSON_VALUE(content, '$.NM_CONSORCIO') AS STRING) AS nm_consorcio
@@ -18,7 +18,7 @@ WITH
     consorcio_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY cd_consorcio) AS rn
+            ROW_NUMBER() OVER (PARTITION BY cd_consorcio order by timestamp_captura desc) AS rn
         FROM
             consorcio
     )

@@ -8,7 +8,7 @@ WITH
     pessoa_juridica AS (
         SELECT
             data,
-            SAFE_CAST(CD_CLIENTE, AS STRING) AS cd_cliente,
+            SAFE_CAST(CD_CLIENTE AS STRING) AS cd_cliente,
             timestamp_captura,
             SAFE_CAST(JSON_VALUE(content, '$.NM_RAZAO_SOCIAL') AS STRING) AS nm_razao_social,
             SAFE_CAST(JSON_VALUE(content, '$.NM_FANTASIA') AS STRING) AS nm_fantasia,
@@ -20,7 +20,7 @@ WITH
     pessoa_juridica_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY cd_cliente) AS rn
+            ROW_NUMBER() OVER (PARTITION BY cd_cliente order by timestamp_captura desc) AS rn
         FROM
             pessoa_juridica
     )
