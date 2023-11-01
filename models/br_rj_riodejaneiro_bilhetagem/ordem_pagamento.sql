@@ -14,12 +14,11 @@
 SELECT
     r.data_ordem AS data,
     p.data_pagamento,
-    r.id_ordem_pagamento,
     c.nm_consorcio AS consorcio,
-    pj.nm_fantasia AS empresa,
     CASE
         WHEN r.id_operadora = "1" THEN "22.100005-0"
     END AS permissao,
+    pj.nm_fantasia AS empresa,
     l.nr_linha AS servico,
     r.qtd_debito AS quantidade_transacao_debito,
     r.valor_debito,
@@ -36,7 +35,8 @@ SELECT
     r.qtd_debito +  r.qtd_vendaabordo +  r.qtd_gratuidade + r.qtd_integracao + r.qtd_rateio_credito + r.qtd_rateio_debito AS quantidade_total_transacao,
     r.valor_bruto AS valor_total_transacao,
     r.valor_taxa AS valor_desconto_taxa,
-    r.valor_liquido AS valor_total_liquido
+    r.valor_liquido AS valor_total_liquido,
+    '{{ var("version") }}' as versao
 FROM 
     {{ ref("staging_ordem_ressarcimento") }} r
 LEFT JOIN
@@ -59,3 +59,7 @@ LEFT JOIN
     {{ ref("staging_pessoa_juridica") }} AS pj
 ON
     o.cd_cliente = pj.cd_cliente
+{% if is_incremental() -%}
+  WHERE
+    r.data_ordem = DATE_SUB(date("{{ var("run_date") }}"), INTERVAL 1 DAY)
+{%- endif %}
