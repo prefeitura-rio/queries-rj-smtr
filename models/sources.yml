@@ -15,6 +15,7 @@ sources:
       - name: operadora_transporte
       - name: ordem_pagamento
       - name: ordem_ressarcimento
+      - name: linha_consorcio
 
   - name: br_rj_riodejaneiro_gtfs_staging
     database: rj-smtr-staging
