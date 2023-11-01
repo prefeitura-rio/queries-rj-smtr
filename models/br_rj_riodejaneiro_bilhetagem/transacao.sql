@@ -59,9 +59,15 @@ ON
     gl.cd_grupo = g.cd_grupo
     AND t.data_transacao >= g.datetime_inclusao
 LEFT JOIN
+    {{ ref("staging_linha_consorcio") }} AS lc
+ON 
+    t.cd_linha = lc.cd_linha
+    AND t.data_transacao >= lc.datetime_inicio_validade
+    AND (t.data_transacao <= lc.datetime_fim_validade OR lc.datetime_fim_validade IS NULL)
+LEFT JOIN
     {{ ref("staging_consorcio") }} AS c
 ON 
-    t.cd_consorcio = c.cd_consorcio
+    lc.cd_consorcio = c.cd_consorcio
     AND t.data_transacao >= g.datetime_inclusao
 LEFT JOIN
     {{ ref("staging_operadora_transporte") }} AS o
