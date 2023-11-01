@@ -19,7 +19,7 @@ WITH
     grupo_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY data, cd_grupo) AS rn
+            ROW_NUMBER() OVER (PARTITION BY cd_grupo) AS rn
         FROM
             grupo
     )

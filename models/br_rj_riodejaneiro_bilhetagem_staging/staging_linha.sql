@@ -31,7 +31,7 @@ WITH
     linha_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY data, cd_linha) AS rn
+            ROW_NUMBER() OVER (PARTITION BY cd_linha) AS rn
         FROM
             linha
     )
