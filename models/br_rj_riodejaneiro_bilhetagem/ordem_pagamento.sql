@@ -61,5 +61,5 @@ ON
     o.cd_cliente = pj.cd_cliente
 {% if is_incremental() -%}
   WHERE
-    r.data_ordem = DATE_SUB(date("{{ var("run_date") }}"), INTERVAL 1 DAY)
+    r.timestamp_captura BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
 {%- endif %}

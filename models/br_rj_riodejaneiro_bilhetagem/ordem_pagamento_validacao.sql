@@ -14,19 +14,19 @@
 WITH
   transacao_agg AS (
   SELECT
-    data,
+    DATETIME(data),
     DATE_ADD(data, INTERVAL 1 DAY) AS data_ordem,
     consorcio,
     permissao,
     empresa,
     servico,
     COUNT(*) AS quantidade_total_captura,
-    SUM(valor_transacao) AS valor_total_captura
+    SUM(valor_transacao) AS valor_total_captura,
   FROM
     {{ ref("transacao") }}
   {% if is_incremental() -%}
   WHERE
-    data = DATE_SUB(date("{{ var("run_date") }}"), INTERVAL 1 DAY)
+    data = BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
   {%- endif %}
   GROUP BY
     data,
