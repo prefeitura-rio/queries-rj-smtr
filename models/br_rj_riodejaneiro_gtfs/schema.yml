@@ -314,8 +314,6 @@ models:
     columns:
       - name: servico
         description: "Número da linha de ônibus."
-      - name: timestamp_captura
-        description: "Carimbo de data e hora da captura."
       - name: vista
         description: "Letreiro do ônibus."
       - name: consorcio
