@@ -74,7 +74,7 @@ WITH
     WHERE
       DATA BETWEEN DATE("{{ var("start_date") }}")
       AND DATE( "{{ var("end_date") }}" )
-      AND viagem_remunerada IS TRUE),
+      AND indicador_viagem_remunerada IS TRUE),
   servico_subsidio_apuracao AS (
   SELECT
     DATA,
