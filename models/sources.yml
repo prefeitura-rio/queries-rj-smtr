@@ -1,8 +1,8 @@
 version: 2
 
 sources:
-  - name: br_rj_riodejaneiro_bilhetagem_staging
-    database: rj-smtr-staging
+  - name: br_rj_riodejaneiro_bilhetagem_staging_dbt
+    database: rj-smtr-dev
 
     tables:
       - name: transacao
@@ -10,3 +10,8 @@ sources:
       - name: grupo
       - name: grupo_linha
       - name: dicionario
+      - name: consorcio
+      - name: pessoa_juridica
+      - name: operadora_transporte
+      - name: ordem_pagamento
+      - name: ordem_ressarcimento
