@@ -68,7 +68,6 @@ LEFT JOIN
     {{ ref("staging_consorcio") }} AS c
 ON 
     lc.cd_consorcio = c.cd_consorcio
-    AND t.data_transacao >= g.datetime_inclusao
 LEFT JOIN
     {{ ref("staging_operadora_transporte") }} AS o
 ON
