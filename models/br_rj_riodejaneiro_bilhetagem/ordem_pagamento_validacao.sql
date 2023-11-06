@@ -36,16 +36,16 @@ WITH
     servico
 )
 SELECT
-  transacao_agg.data,
-  transacao_agg.data_ordem,
-  transacao_agg.consorcio,
-  transacao_agg.permissao,
-  transacao_agg.empresa,
-  transacao_agg.servico,
+  transacao_agg.data AS data,
+  transacao_agg.data_ordem AS data_ordem,
+  transacao_agg.consorcio AS consorcio,
+  transacao_agg.permissao AS permissao,
+  transacao_agg.empresa AS empresa,
+  transacao_agg.servico AS servico,
   o.quantidade_total_transacao AS quantidade_total_ordem,
-  o.valor_total_transacao AS valor_total_ordem,
-  transacao_agg.quantidade_total_captura,
-  transacao_agg,valor_total_captura,
+  o.valor_total_transacao AS valor_total_ordem AS valor_total_ordem,
+  transacao_agg.quantidade_total_captura AS quantidade_total_captura,
+  transacao_agg.valor_total_captura AS valor_total_captura,
   '{{ var("version") }}' as versao
 FROM
   transacao_agg
