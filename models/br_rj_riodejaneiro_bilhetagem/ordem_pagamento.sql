@@ -14,16 +14,16 @@
 SELECT
     r.data_ordem AS data,
     p.data_pagamento,
-    r.id_ordem_ressarcimento as id_ordem_ressarcimento,
-    r.id_ordem_pagamento as id_ordem_pagamento,
     c.nm_consorcio AS consorcio,
-    r.id_operadora,
+    r.id_operadora AS cd_operadora,
     CASE
         WHEN r.id_operadora = "1" THEN "22.100005-0"
     END AS permissao,
     pj.nm_fantasia AS empresa,
-    r.id_linha,
+    r.id_linha AS cd_linha,
     l.nr_linha AS servico,
+    r.id_ordem_pagamento AS id_ordem_pagamento,
+    r.id_ordem_ressarcimento AS id_ordem_ressarcimento,
     r.qtd_debito AS quantidade_transacao_debito,
     r.valor_debito,
     r.qtd_vendaabordo AS quantidade_transacao_especie,
@@ -40,7 +40,7 @@ SELECT
     r.valor_bruto AS valor_total_transacao,
     r.valor_taxa AS valor_desconto_taxa,
     r.valor_liquido AS valor_total_liquido,
-    '{{ var("version") }}' as versao
+    '{{ var("version") }}' AS versao
 FROM 
     {{ ref("staging_ordem_ressarcimento") }} r
 LEFT JOIN

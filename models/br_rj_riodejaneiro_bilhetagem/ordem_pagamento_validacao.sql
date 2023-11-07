@@ -42,12 +42,12 @@ WITH
 SELECT
   transacao_agg.data AS data,
   COALESCE(transacao_agg.data_ordem, o.data) AS data_ordem,
-  o.id_ordem_pagamento as id_ordem_pagamento,
-  o.id_ordem_ressarcimento as id_ordem_ressarcimento,
   COALESCE(transacao_agg.consorcio, o.consorcio) AS consorcio,
   COALESCE(transacao_agg.permissao, o.permissao) AS permissao,
   COALESCE(transacao_agg.empresa, o.empresa) AS empresa,
   COALESCE(transacao_agg.servico, o.servico) AS servico,
+  o.id_ordem_pagamento as id_ordem_pagamento,
+  o.id_ordem_ressarcimento as id_ordem_ressarcimento,
   o.quantidade_total_transacao AS quantidade_total_ordem,
   o.valor_total_transacao AS valor_total_ordem,
   transacao_agg.quantidade_total_captura AS quantidade_total_captura,
@@ -59,5 +59,5 @@ FULL OUTER JOIN
     {{ ref("ordem_pagamento") }} o
 ON
     (transacao_agg.data_ordem = o.data)
-    AND (transacao_agg.cd_linha = o.id_linha)
-    AND (transacao_agg.cd_operadora = o.id_operadora)
+    AND (transacao_agg.cd_linha = o.cd_linha)
+    AND (transacao_agg.cd_operadora = o.cd_operadora)

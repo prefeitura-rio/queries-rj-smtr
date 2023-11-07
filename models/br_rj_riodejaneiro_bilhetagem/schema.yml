@@ -18,10 +18,14 @@ models:
         description: "Tipo de transporte (SPPO = ônibus, STPL = van, BRT)"
       - name: consorcio
         description: "Nome do consorcio"
+      - name: cd_operadora
+        desciption: "Identificador da operadora no banco da Jaé"
       - name: permissao
         description: "Número da permissão do operador"
       - name: empresa
         description: "Nome da empresa operadora"
+      - name: cd_linha
+        description: "Identificador da linha no banco da Jaé"
       - name: servico
         description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...)"
       - name: sentido
@@ -63,12 +67,20 @@ models:
         description: "Data de pagamento da ordem"
       - name: consorcio
         description: "Nome do consorcio"
+      - name: cd_operadora
+        desciption: "Identificador da operadora no banco da Jaé"
       - name: permissao
         description: "Número da permissão do operador"
       - name: empresa
         description: "Nome da empresa operadora"
+      - name: cd_linha
+        description: "Identificador da linha no banco da Jaé"
       - name: servico
         description: "Nome curto da linha operada com variação de serviço (ex: 010, 011SN, ...)"
+      - name: id_ordem_pagamento
+        description: "Identificador da ordem pagamento no banco da Jaé"
+      - name: id_ordem_ressarcimento
+        description: "Identificador da ordem ressarcimento no banco da Jaé"
       - name: quantidade_transacao_debito
         description: "Quantidade de transações feitas na modalidade débito"
       - name: valor_debito
@@ -116,6 +128,10 @@ models:
         description: "Número da permissão do operador"
       - name: empresa
         description: "Nome da empresa operadora"
+      - name: id_ordem_pagamento
+        description: "Identificador da ordem pagamento no banco da Jaé"
+      - name: id_ordem_ressarcimento
+        description: "Identificador da ordem ressarcimento no banco da Jaé"
       - name: quantidade_total_ordem
         description: "Quantidade total de transações realizadas segundo tabela ordem_pagamento da Jaé"
       - name: valor_total_ordem
