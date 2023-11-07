@@ -20,7 +20,10 @@ WITH
     linha_consorcio_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY cd_consorcio, cd_linha order by timestamp_captura desc) AS rn
+            CASE
+              WHEN datetime_fim_validade IS NULL THEN ROW_NUMBER() OVER (PARTITION BY cd_linha ORDER BY timestamp_captura DESC)
+              ELSE ROW_NUMBER() OVER (PARTITION BY cd_consorcio, cd_linha ORDER BY timestamp_captura DESC)
+            END AS rn
         FROM
             linha_consorcio
     )
