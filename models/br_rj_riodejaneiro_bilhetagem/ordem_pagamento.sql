@@ -17,10 +17,12 @@ SELECT
     r.id_ordem_ressarcimento as id_ordem_ressarcimento,
     r.id_ordem_pagamento as id_ordem_pagamento,
     c.nm_consorcio AS consorcio,
+    r.id_operadora,
     CASE
         WHEN r.id_operadora = "1" THEN "22.100005-0"
     END AS permissao,
     pj.nm_fantasia AS empresa,
+    r.id_linha,
     l.nr_linha AS servico,
     r.qtd_debito AS quantidade_transacao_debito,
     r.valor_debito,

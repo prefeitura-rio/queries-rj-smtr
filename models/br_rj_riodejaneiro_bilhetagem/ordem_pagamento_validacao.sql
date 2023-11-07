@@ -17,7 +17,7 @@ WITH
     data,
     DATE_ADD(data, INTERVAL 1 DAY) AS data_ordem,
     consorcio,
-    cd_cliente,
+    cd_operadora,
     permissao,
     empresa,
     cd_linha,
@@ -33,7 +33,7 @@ WITH
   GROUP BY
     data,
     consorcio,
-    cd_cliente,
+    cd_operadora,
     permissao,
     empresa,
     cd_linha,
@@ -60,4 +60,4 @@ FULL OUTER JOIN
 ON
     (transacao_agg.data_ordem = o.data)
     AND (transacao_agg.cd_linha = o.id_linha)
-    AND (transacao_agg.cd_cliente = o.cd_cliente)
+    AND (transacao_agg.cd_operadora = o.id_operadora)
