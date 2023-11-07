@@ -14,6 +14,8 @@
 SELECT
     r.data_ordem AS data,
     p.data_pagamento,
+    r.id_ordem_ressarcimento as id_ordem_ressarcimento,
+    r.id_ordem_pagamento as id_ordem_pagamento,
     c.nm_consorcio AS consorcio,
     CASE
         WHEN r.id_operadora = "1" THEN "22.100005-0"
