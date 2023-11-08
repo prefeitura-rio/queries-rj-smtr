@@ -39,7 +39,7 @@ SELECT
     r.qtd_debito +  r.qtd_vendaabordo +  r.qtd_gratuidade + r.qtd_integracao + r.qtd_rateio_credito + r.qtd_rateio_debito AS quantidade_transacao_total,
     r.valor_bruto AS valor_transacao_total_bruto,
     r.valor_taxa AS valor_desconto_taxa,
-    r.valor_liquido AS valor_total_liquido,
+    r.valor_liquido AS valor_transacao_total_liquido,
     '{{ var("version") }}' AS versao
 FROM 
     {{ ref("staging_ordem_ressarcimento") }} r
