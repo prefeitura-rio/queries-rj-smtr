@@ -21,7 +21,7 @@ models:
       - name: cd_operadora
         description: "Identificador da operadora no banco de dados da Jaé"
       - name: permissao
-        description: "Número da permissão do operador"
+        description: "Número da permissão, autorização, concessão ou outro tipo de delegação ao operador"
       - name: empresa
         description: "Nome da empresa operadora"
       - name: cd_linha
@@ -70,7 +70,7 @@ models:
       - name: cd_operadora
         description: "Identificador da operadora no banco de dados da Jaé"
       - name: permissao
-        description: "Número da permissão do operador"
+        description: "Número da permissão, autorização, concessão ou outro tipo de delegação ao operador"
       - name: empresa
         description: "Nome da empresa operadora"
       - name: cd_linha
@@ -127,7 +127,7 @@ models:
       - name: consorcio
         description: "Nome do consorcio"
       - name: permissao
-        description: "Número da permissão do operador"
+        description: "Número da permissão, autorização, concessão ou outro tipo de delegação ao operador"
       - name: empresa
         description: "Nome da empresa operadora"
       - name: id_ordem_pagamento
