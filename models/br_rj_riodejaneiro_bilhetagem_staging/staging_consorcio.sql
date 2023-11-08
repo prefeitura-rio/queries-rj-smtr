@@ -18,7 +18,7 @@ WITH
     consorcio_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY cd_consorcio order by timestamp_captura desc) AS rn
+            ROW_NUMBER() OVER (PARTITION BY cd_consorcio ORDER BY timestamp_captura DESC) AS rn
         FROM
             consorcio
     )

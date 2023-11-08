@@ -31,7 +31,7 @@ WITH
     linha_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY cd_linha order by timestamp_captura desc) AS rn
+            ROW_NUMBER() OVER (PARTITION BY cd_linha ORDER BY timestamp_captura DESC) AS rn
         FROM
             linha
     )
