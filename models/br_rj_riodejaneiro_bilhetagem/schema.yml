@@ -17,7 +17,7 @@ models:
       - name: modo
         description: "Tipo de transporte (SPPO = ônibus, STPL = van, BRT)"
       - name: consorcio
-        description: "Nome do consorcio"
+        description: "Nome do consórcio"
       - name: cd_operadora
         description: "Identificador da operadora no banco de dados da Jaé"
       - name: permissao
@@ -66,7 +66,7 @@ models:
       - name: data_pagamento
         description: "Data de pagamento da ordem"
       - name: consorcio
-        description: "Nome do consorcio"
+        description: "Nome do consórcio"
       - name: cd_operadora
         description: "Identificador da operadora no banco de dados da Jaé"
       - name: permissao
@@ -125,7 +125,7 @@ models:
       - name: servico
         description: "Nome curto da linha operada com variação de serviço (ex: 010, 011SN, ...)"
       - name: consorcio
-        description: "Nome do consorcio"
+        description: "Nome do consórcio"
       - name: permissao
         description: "Número da permissão, autorização, concessão ou outro tipo de delegação ao operador"
       - name: empresa
