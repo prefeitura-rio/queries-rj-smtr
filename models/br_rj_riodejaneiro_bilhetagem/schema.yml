@@ -107,7 +107,7 @@ models:
         description: ""
       - name: quantidade_transacao_total
         description: "Quantidade total de transações realizadas"
-      - name: valor_transacao_total
+      - name: valor_transacao_total_bruto
         description: "Valor total das transações realizadas (R$)"
       - name: valor_desconto_taxa
         description: "Valor da taxa descontado do valor total (R$)"

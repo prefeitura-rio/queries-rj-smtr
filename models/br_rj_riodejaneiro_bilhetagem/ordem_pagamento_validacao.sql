@@ -49,7 +49,7 @@ SELECT
   o.id_ordem_pagamento,
   o.id_ordem_ressarcimento,
   o.quantidade_transacao_total AS quantidade_total_ordem,
-  o.valor_transacao_total AS valor_total_ordem,
+  o.valor_transacao_total_bruto AS valor_total_ordem,
   t.quantidade_total_captura,
   t.valor_total_captura,
   '{{ var("version") }}' AS versao
