@@ -2,7 +2,7 @@
   config(
     materialized="incremental",
     partition_by={
-      "field":"data",
+      "field":"data_ordem",
       "data_type":"date",
       "granularity": "day"
     },
@@ -40,24 +40,24 @@ WITH
     servico
 )
 SELECT
-  transacao_agg.data AS data,
-  COALESCE(transacao_agg.data_ordem, o.data) AS data_ordem,
-  COALESCE(transacao_agg.consorcio, o.consorcio) AS consorcio,
-  COALESCE(transacao_agg.permissao, o.permissao) AS permissao,
-  COALESCE(transacao_agg.empresa, o.empresa) AS empresa,
-  COALESCE(transacao_agg.servico, o.servico) AS servico,
-  o.id_ordem_pagamento as id_ordem_pagamento,
-  o.id_ordem_ressarcimento as id_ordem_ressarcimento,
-  o.quantidade_total_transacao AS quantidade_total_ordem,
-  o.valor_total_transacao AS valor_total_ordem,
-  transacao_agg.quantidade_total_captura AS quantidade_total_captura,
-  transacao_agg.valor_total_captura AS valor_total_captura,
-  '{{ var("version") }}' as versao
+  COALESCE(t.data_ordem, o.data_ordem) AS data_ordem,
+  t.data AS data_processamento_transacao,
+  COALESCE(t.consorcio, o.consorcio) AS consorcio,
+  COALESCE(t.permissao, o.permissao) AS permissao,
+  COALESCE(t.empresa, o.empresa) AS empresa,
+  COALESCE(t.servico, o.servico) AS servico,
+  o.id_ordem_pagamento,
+  o.id_ordem_ressarcimento,
+  o.quantidade_transacao_total AS quantidade_total_ordem,
+  o.valor_transacao_total AS valor_total_ordem,
+  t.quantidade_total_captura,
+  t.valor_total_captura,
+  '{{ var("version") }}' AS versao
 FROM
-  transacao_agg
+  transacao_agg AS t
 FULL OUTER JOIN
     {{ ref("ordem_pagamento") }} o
 ON
-    (transacao_agg.data_ordem = o.data)
-    AND (transacao_agg.cd_linha = o.cd_linha)
-    AND (transacao_agg.cd_operadora = o.cd_operadora)
+    (t.data_ordem = o.data_ordem)
+    AND (t.cd_linha = o.cd_linha)
+    AND (t.cd_operadora = o.cd_operadora)

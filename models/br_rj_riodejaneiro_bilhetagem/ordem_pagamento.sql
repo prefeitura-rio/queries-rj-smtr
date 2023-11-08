@@ -2,7 +2,7 @@
   config(
     materialized="incremental",
     partition_by={
-      "field":"data",
+      "field":"data_ordem",
       "data_type":"date",
       "granularity": "day"
     },
@@ -12,7 +12,7 @@
 }}
 
 SELECT
-    r.data_ordem AS data,
+    r.data_ordem,
     p.data_pagamento,
     c.nm_consorcio AS consorcio,
     r.id_operadora AS cd_operadora,
@@ -36,8 +36,8 @@ SELECT
     r.valor_rateio_credito,
     r.qtd_rateio_debito AS quantidade_transacao_rateio_debito,
     r.valor_rateio_debito,
-    r.qtd_debito +  r.qtd_vendaabordo +  r.qtd_gratuidade + r.qtd_integracao + r.qtd_rateio_credito + r.qtd_rateio_debito AS quantidade_total_transacao,
-    r.valor_bruto AS valor_total_transacao,
+    r.qtd_debito +  r.qtd_vendaabordo +  r.qtd_gratuidade + r.qtd_integracao + r.qtd_rateio_credito + r.qtd_rateio_debito AS quantidade_transacao_total,
+    r.valor_bruto AS valor_transacao_total,
     r.valor_taxa AS valor_desconto_taxa,
     r.valor_liquido AS valor_total_liquido,
     '{{ var("version") }}' AS versao
