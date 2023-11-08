@@ -46,7 +46,7 @@ WITH
     transacao_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY id order by timestamp_captura desc) AS rn
+            ROW_NUMBER() OVER (PARTITION BY id ORDER BY timestamp_captura DESC) AS rn
         FROM
             transacao
     )
