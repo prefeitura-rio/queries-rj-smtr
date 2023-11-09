@@ -28,7 +28,7 @@ WITH
     {{ ref("transacao") }}
   {% if is_incremental() -%}
   WHERE
-    data BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+    data BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 1 DAY) AND DATE("{{var('date_range_end')}}")
   {%- endif %}
   GROUP BY
     data,
@@ -38,7 +38,27 @@ WITH
     empresa,
     cd_linha,
     servico
-)
+  ),
+  ordem_pagamento AS (
+    SELECT
+      data_ordem,
+      consorcio,
+      permissao,
+      empresa,
+      servico,
+      id_ordem_pagamento,
+      id_ordem_ressarcimento,
+      quantidade_transacao_total,
+      valor_transacao_total_bruto,
+      cd_linha,
+      cd_operadora
+    FROM
+      {{ ref("ordem_pagamento") }}
+    {% if is_incremental() -%}
+    WHERE
+      data_ordem BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+    {%- endif %}
+  )
 SELECT
   COALESCE(t.data_ordem, o.data_ordem) AS data_ordem,
   t.data AS data_processamento_transacao,
@@ -56,7 +76,7 @@ SELECT
 FROM
   transacao_agg AS t
 FULL OUTER JOIN
-    {{ ref("ordem_pagamento") }} o
+  ordem_pagamento AS o
 ON
     (t.data_ordem = o.data_ordem)
     AND (t.cd_linha = o.cd_linha)
