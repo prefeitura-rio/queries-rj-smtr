@@ -15,9 +15,17 @@ models:
       - name: datetime_captura
         description: "Timestamp de captura em GMT-3 (formato YYYY-MM-dd HH:mm:ssTZD)"
       - name: modo
-        description: "Tipo de transporte (SPPO = ônibus, STPL = van, BRT) "
+        description: "Tipo de transporte (SPPO = ônibus, STPL = van, BRT)"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: cd_operadora
+        description: "Identificador da operadora no banco de dados da Jaé"
       - name: permissao
-        description: "Número da permissão do operador"
+        description: "Número da permissão, autorização, concessão ou outro tipo de delegação ao operador"
+      - name: empresa
+        description: "Nome da empresa operadora"
+      - name: cd_linha
+        description: "Identificador da linha no banco de dados da Jaé"
       - name: servico
         description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...)"
       - name: sentido
@@ -48,6 +56,92 @@ models:
         description: "Longitude do ponto de embarque (GTFS)"
       - name: valor_transacao
         description: "Valor debitado na transação atual (R$)"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: ordem_pagamento
+    description: "Tabela de ordem de pagamento do banco de dados de dados da Jaé"
+    columns:
+      - name: data_ordem
+        description: "Data da ordem de pagamento (partição)"
+      - name: data_pagamento
+        description: "Data de pagamento da ordem"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: cd_operadora
+        description: "Identificador da operadora no banco de dados da Jaé"
+      - name: permissao
+        description: "Número da permissão, autorização, concessão ou outro tipo de delegação ao operador"
+      - name: empresa
+        description: "Nome da empresa operadora"
+      - name: cd_linha
+        description: "Identificador da linha no banco de dados da Jaé"
+      - name: servico
+        description: "Nome curto da linha operada com variação de serviço (ex: 010, 011SN, ...)"
+      - name: id_ordem_pagamento
+        description: "Identificador da ordem pagamento no banco de dados da Jaé"
+      - name: id_ordem_ressarcimento
+        description: "Identificador da ordem ressarcimento no banco de dados da Jaé"
+      - name: quantidade_transacao_debito
+        description: "Quantidade de transações feitas na modalidade débito"
+      - name: valor_debito
+        description: "Valor total das transações feitas na modalidade débito (R$)"
+      - name: quantidade_transacao_especie
+        description: "Quantidade de transações feitas em espécie"
+      - name: valor_especie
+        description: "Valor total das transações feitas em espécie (R$)"
+      - name: quantidade_transacao_gratuidade
+        description: "Quantidade de transações feitas com gratuidade"
+      - name: valor_gratuidade
+        description: "Valor total das transações feitas com gratuidade (R$)"
+      - name: quantidade_transacao_integracao
+        description: "Quantidade de transações feitas com integração"
+      - name: valor_integracao
+        description: "Valor total das transações feitas com integração (R$)"
+      - name: quantidade_transacao_rateio_credito
+        description: ""
+      - name: valor_rateio_credito
+        description: ""
+      - name: quantidade_transacao_rateio_debito
+        description: ""
+      - name: valor_rateio_debito
+        description: ""
+      - name: quantidade_transacao_total
+        description: "Quantidade total de transações realizadas"
+      - name: valor_transacao_total_bruto
+        description: "Valor total das transações realizadas (R$)"
+      - name: valor_desconto_taxa
+        description: "Valor da taxa descontado do valor total (R$)"
+      - name: valor_transacao_total_liquido
+        description: "Valor total das transações menos o valor_desconto_taxa (R$)"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: ordem_pagamento_validacao
+    description: "Tabela de validação da ordem de pagamento, calculada usando as transações capturadas"
+    columns:
+      - name: data_ordem
+        description: "Dia seguinte da processamento na tabela transação (partição)"
+      - name: data_processamento_transacao
+        description: "Data de processamento na tabela transação"
+      - name: servico
+        description: "Nome curto da linha operada com variação de serviço (ex: 010, 011SN, ...)"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: permissao
+        description: "Número da permissão, autorização, concessão ou outro tipo de delegação ao operador"
+      - name: empresa
+        description: "Nome da empresa operadora"
+      - name: id_ordem_pagamento
+        description: "Identificador da ordem pagamento no banco de dados da Jaé"
+      - name: id_ordem_ressarcimento
+        description: "Identificador da ordem ressarcimento no banco de dados da Jaé"
+      - name: quantidade_total_ordem
+        description: "Quantidade total de transações realizadas segundo tabela ordem_pagamento da Jaé"
+      - name: valor_total_ordem
+        description: "Valor total das transações realizadas segundo tabela ordem_pagamento da Jaé (R$)"
+      - name: quantidade_total_captura
+        description: "Quantidade total de transações calculada pela captura de transações"
+      - name: valor_total_captura
+        description: "Valor total das transações realizadas calculada pela captura de transações (R$)"
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)"
   - name: dicionario
