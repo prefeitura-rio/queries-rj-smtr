@@ -28,7 +28,7 @@ WITH
     {{ ref("transacao") }}
   {% if is_incremental() -%}
   WHERE
-    data BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+    data BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 1 DAY) AND DATE("{{var('date_range_end')}}")
   {%- endif %}
   GROUP BY
     data,
