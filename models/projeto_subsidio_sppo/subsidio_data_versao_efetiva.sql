@@ -21,6 +21,7 @@ SELECT
       WHEN data = "2023-06-09" THEN "Sabado" -- Ponto Facultativo - DECRETO RIO Nº 52584/2023
       WHEN data = "2023-09-08" THEN "Ponto Facultativo" -- Ponto Facultativo - DECRETO RIO Nº 53137/2023
       WHEN data = "2023-10-13" THEN "Ponto Facultativo" -- Ponto Facultativo - DECRETO RIO Nº 53296/2023
+      WHEN data = "2023-10-16" THEN "Ponto Facultativo" -- Dia do Comércio - OS Outubro/Q2
       WHEN data = "2023-11-03" THEN "Ponto Facultativo" -- Ponto Facultativo - DECRETO RIO Nº 53417/2023
       WHEN data = "2023-11-05" THEN "Sabado" -- Domingo Atípico - OS Novembro/Q1
       WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 1 THEN "Domingo" -- Dia de São Sebastião -- Art. 8°, I - Lei Municipal nº 5146/2010
