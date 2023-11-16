@@ -65,5 +65,5 @@ ON
     o.cd_cliente = pj.cd_cliente
 {% if is_incremental() -%}
   WHERE
-    r.timestamp_captura BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+    DATE(r.timestamp_captura) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
 {%- endif %}

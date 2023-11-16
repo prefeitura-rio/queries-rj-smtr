@@ -26,9 +26,12 @@ WITH
     SUM(valor_transacao) AS valor_total_captura,
   FROM
     {{ ref("transacao") }}
-  {% if is_incremental() -%}
   WHERE
-    data BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 1 DAY) AND DATE("{{var('date_range_end')}}")
+    consorcio = 'MobiRio'
+  {% if is_incremental() -%}
+    AND data BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 1 DAY) AND DATE_SUB(DATE("{{var('date_range_end')}}"), INTERVAL 1 DAY)
+  {% else %}
+    AND data < CURRENT_DATE("America/Sao_Paulo")
   {%- endif %}
   GROUP BY
     data,
