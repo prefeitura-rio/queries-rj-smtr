@@ -31,7 +31,7 @@ WITH
   {% if is_incremental() -%}
     AND data BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 1 DAY) AND DATE_SUB(DATE("{{var('date_range_end')}}"), INTERVAL 1 DAY)
   {% else %}
-    AND data < current_date("America/Sao_Paulo")
+    AND data < CURRENT_DATE("America/Sao_Paulo")
   {%- endif %}
   GROUP BY
     data,
