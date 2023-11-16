@@ -171,4 +171,6 @@ models:
     br_rj_riodejaneiro_bilhetagem_staging:
       +materialized: view
       +schema: br_rj_riodejaneiro_bilhetagem_staging
-
+    data_quality:
+      +materialized: view
+      +schema: data_quality
