@@ -7,6 +7,11 @@
     )
 }}
 
+{%- if execute %}
+  {% set infracao_date = run_query("SELECT MIN(data) FROM " ~ ref("sppo_infracao") ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 7 DAY)").columns[0].values()[0] %}
+  {% set licenciamento_date = run_query("SELECT MIN(data) FROM " ~ ref("sppo_licenciamento") ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 5 DAY)").columns[0].values()[0] %}
+{% endif -%}
+
 WITH
   licenciamento AS (
   SELECT
@@ -18,16 +23,12 @@ WITH
     TRUE AS indicador_licenciado
   FROM
     {{ ref("sppo_licenciamento") }} --`rj-smtr`.`veiculo`.`sppo_licenciamento`
-  {%- if var("stu_data_versao") != "" %}
   WHERE 
+  {% if var("stu_data_versao") != "" %}
     data = DATE("{{ var('stu_data_versao') }}")
-  {% else -%}
-    {%- if execute %}
-        {% set licenciamento_date = run_query("SELECT MIN(data) FROM " ~ ref("sppo_licenciamento") ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 5 DAY)").columns[0].values()[0] %}
-    {% endif -%}
-  WHERE 
+  {% else %}
     data = DATE("{{ licenciamento_date }}")
-  {% endif -%}  
+  {% endif %}  
   ),
   gps AS (
   SELECT
@@ -45,9 +46,6 @@ WITH
   FROM
     {{ ref("sppo_infracao") }}
   WHERE
-  {%- if execute %}
-    {% set infracao_date = run_query("SELECT MIN(data) FROM " ~ ref("sppo_infracao") ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 7 DAY)").columns[0].values()[0] %}
-  {% endif -%}
     data = DATE("{{ infracao_date }}")
     AND data_infracao = DATE("{{ var('run_date') }}")
     AND modo = "ONIBUS"),

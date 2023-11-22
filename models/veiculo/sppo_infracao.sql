@@ -10,6 +10,11 @@
        incremental_strategy='insert_overwrite'
 )
 }}
+
+{%- if execute %}
+  {% set infracao_date = run_query("SELECT MIN(data) FROM " ~ this ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 7 DAY)").columns[0].values()[0] %}
+{% endif -%}
+
 WITH 
   infracao AS (
     SELECT
@@ -27,6 +32,8 @@ WITH
       IF(JSON_VALUE(content,'$.data_pagamento') = "", NULL, PARSE_DATE("%d/%m/%Y", JSON_VALUE(content,'$.data_pagamento'))) data_pagamento
     FROM
       {{ var('sppo_infracao_staging') }} as t
+    WHERE
+      data = "{{ infracao_date }}"
   ),
   infracao_rn AS (
     SELECT
