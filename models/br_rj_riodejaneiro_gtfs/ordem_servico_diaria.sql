@@ -42,20 +42,12 @@ SELECT
       WHEN sentido {% if key_s == "ida" %} IN {{ value_s }} {% else %} = "{{ value_s }}" {% endif %} AND tipo_dia = "{{ key_td }}" THEN {% if key_td in ["Sabado", "Domingo"] %} ROUND(SAFE_DIVIDE((partidas_{{ key_s }}_du * km_{{ value_td }}), km_du)) {% else %} partidas_{{ key_s }}_{{ value_td }} {% endif %}
     {% endfor -%}
   {% endfor -%}
-    -- WHEN sentido IN ("I", "C") AND tipo_dia = "Dia Útil" THEN partidas_ida_du
-    -- WHEN sentido IN ("I", "C") AND tipo_dia = "Ponto Facultativo" THEN partidas_ida_pf
-    -- WHEN sentido IN ("I", "C") AND tipo_dia = "Sabado" THEN ROUND(SAFE_DIVIDE((partidas_ida_du*km_sab), km_du))
-    -- WHEN sentido IN ("I", "C") AND tipo_dia = "Domingo" THEN ROUND(SAFE_DIVIDE((partidas_ida_du*km_dom), km_du))
-    -- WHEN sentido = "V" AND tipo_dia = "Dia Útil" THEN partidas_volta_du
-    -- WHEN sentido = "V" AND tipo_dia = "Ponto Facultativo" THEN partidas_volta_pf
-    -- WHEN sentido = "V" AND tipo_dia = "Sabado" THEN ROUND(SAFE_DIVIDE((partidas_volta_du*km_sab), km_du))
-    -- WHEN sentido = "V" AND tipo_dia = "Domingo" THEN ROUND(SAFE_DIVIDE((partidas_volta_du*km_dom), km_du))
 END
   AS viagens_planejadas,
   horario_inicio AS inicio_periodo,
   horario_fim AS fim_periodo
 FROM
-  UNNEST(GENERATE_DATE_ARRAY("2023-05-01", "2023-10-31")) AS DATA
+  UNNEST(GENERATE_DATE_ARRAY((SELECT MIN(data_inicio) FROM data_versao), (SELECT MAX(data_fim) FROM data_versao))) AS DATA
 LEFT JOIN
   data_versao AS d
 ON
