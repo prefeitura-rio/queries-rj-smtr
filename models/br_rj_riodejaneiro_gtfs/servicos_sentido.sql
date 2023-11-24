@@ -3,16 +3,19 @@
 ) }} 
 
 WITH
+  -- TODO: (1) Generalizar para qualquer tipo_dia
   servicos_exclusivos_sabado AS (
   SELECT
     DISTINCT servico
   FROM
     {{ ref("ordem_servico_gtfs") }}
   WHERE
+    -- TODO: (2) Aprimorar critério
     tipo_dia = "Dia Útil"
     AND viagens_planejadas = 0),
   servicos AS (
   SELECT
+    -- TODO: (3) Otimizar para apenas as colunas necessárias
     * EXCEPT(versao_modelo,
       shape)
   FROM
@@ -23,18 +26,11 @@ WITH
     (data_versao,
       shape_id)
   WHERE
-    (data_versao >= "2023-06-01" AND
-      ( trip_short_name NOT IN (SELECT * FROM servicos_exclusivos_sabado)
-        AND (service_id LIKE "U_R%"
-          OR service_id LIKE "U_O%") )
-      OR ( trip_short_name IN (SELECT * FROM servicos_exclusivos_sabado)
-        AND (service_id LIKE "S_R%"
-          OR service_id LIKE "S_O%")))
-    OR
-    (data_versao < "2023-06-01" AND
-      ( trip_short_name NOT IN (SELECT * FROM servicos_exclusivos_sabado)
-      OR ( trip_short_name IN (SELECT * FROM servicos_exclusivos_sabado)
-        AND service_id = "S")))
+    -- TODO: Considerar (1)
+    (( trip_short_name NOT IN (SELECT * FROM servicos_exclusivos_sabado)
+      AND (service_id LIKE "U%" AND service_id NOT LIKE "U_D%" AND service_id != "U_CP"))
+    OR ( trip_short_name IN (SELECT * FROM servicos_exclusivos_sabado)
+      AND (service_id LIKE "S%" AND service_id NOT LIKE "S_D%" AND service_id != "S_CP")))
     AND shape_distance IS NOT NULL),
   servicos_rn AS (
   SELECT

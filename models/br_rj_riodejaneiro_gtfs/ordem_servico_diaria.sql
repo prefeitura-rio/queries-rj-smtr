@@ -3,6 +3,8 @@
 ) }} 
 
 WITH
+  -- TODO: (1) Usar redis para controle de data_versao e passar via parâmetro (otimizar recursos e não precisar percorrer a tabela inteira)
+  --       (2) Criar tabela a parte para controle de data_versao e materializar com o parâmetro data_versao_gtfs
   data_versao AS (
   SELECT
     data_versao,
@@ -23,6 +25,7 @@ WITH
       MAX(viagens_planejadas) AS viagens_planejadas,
       MAX(distancia_total_planejada) AS km FOR 
       tipo_dia IN ( 
+      -- TODO: (3) Usar Jinja para gerar lista independentemente da quantidade de tipo_dia
         'Dia Útil' AS du,
         'Ponto Facultativo' AS pf,
         'Sabado' AS sab,
@@ -35,6 +38,7 @@ SELECT
   consorcio,
   sentido,
   CASE
+  -- TODO: Considerar (3)
   {% set tipo_dia = {"Dia Útil": "du", "Ponto Facultativo": "pf", "Sabado": "sab", "Domingo": "dom"} %}
   {% set sentido = {"ida": ("I", "C"), "volta": "V"} %}
   {%- for key_s, value_s in sentido.items() %}
@@ -47,6 +51,7 @@ END
   horario_inicio AS inicio_periodo,
   horario_fim AS fim_periodo
 FROM
+  -- TODO: (4) É possível otimizar?
   UNNEST(GENERATE_DATE_ARRAY((SELECT MIN(data_inicio) FROM data_versao), (SELECT MAX(data_fim) FROM data_versao))) AS DATA
 LEFT JOIN
   data_versao AS d
@@ -54,6 +59,7 @@ ON
   DATA BETWEEN d.data_inicio
   AND d.data_fim
 LEFT JOIN
+  -- TODO: (5) Trocar referência para calendar_dates
   {{ ref("subsidio_data_versao_efetiva") }} AS sd
 USING
   (DATA)
