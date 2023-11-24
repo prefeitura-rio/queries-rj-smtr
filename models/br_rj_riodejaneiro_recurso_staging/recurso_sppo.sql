@@ -7,11 +7,10 @@
 )}}
 
 
-SELECT SAFE_CAST(protocol AS STRING) AS protocol,
-  SAFE_CAST(
-    JSON_EXTRACT_SCALAR(content, '$.createdDate') AS DATE
-  ) AS data_ticket,
-  SAFE_CAST(JSON_EXTRACT_SCALAR(content, '$.id') AS DATE) AS id_ticket,
+SELECT
+  SAFE_CAST(protocol AS STRING) AS protocol,
+  SAFE_CAST(JSON_EXTRACT_SCALAR(content, '$.createdDate') AS DATE) AS data_ticket,
+  SAFE_CAST(JSON_EXTRACT_SCALAR(content, '$.id') AS STRING) AS id_ticket,
   SAFE_CAST(
     JSON_EXTRACT_SCALAR(
       content,
@@ -65,7 +64,8 @@ SELECT SAFE_CAST(protocol AS STRING) AS protocol,
       content,
       '$.customFieldValues[0].items[0].customFieldId == 111869'
     ) AS STRING
-  ) AS hora_fim_viagem,
+  ) AS hora_fim_viagem
+
 
   FROM {{source(
     'br_rj_riodejaneiro_recurso',
