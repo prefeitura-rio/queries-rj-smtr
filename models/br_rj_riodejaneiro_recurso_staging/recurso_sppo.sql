@@ -6,6 +6,7 @@
   alias = 'recurso_sppo',
 )}}
 
+
 SELECT SAFE_CAST(protocol AS STRING) AS protocol,
   SAFE_CAST(
     JSON_EXTRACT_SCALAR(content, '$.createdDate') AS DATE
