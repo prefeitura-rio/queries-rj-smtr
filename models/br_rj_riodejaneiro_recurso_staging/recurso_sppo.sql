@@ -1,15 +1,16 @@
 {{config(
   partition_by = { 'field' :'data',
-  'data_type' :'date',
-  'granularity': 'day' },
-  unique_key = ['protocol', 'data'],
-  alias = 'recurso_sppo',
+   'data_type' :'date',
+   'granularity': 'day' },
+    unique_key = ['protocol', 'data'],
+    alias = 'recurso_sppo',
 )}}
-
 
 SELECT
   SAFE_CAST(protocol AS STRING) AS protocol,
-  SAFE_CAST(JSON_EXTRACT_SCALAR(content, '$.createdDate') AS DATE) AS data_ticket,
+  SAFE_CAST(
+    JSON_EXTRACT_SCALAR(content, '$.createdDate') AS DATE
+  ) AS data_ticket,
   SAFE_CAST(JSON_EXTRACT_SCALAR(content, '$.id') AS STRING) AS id_ticket,
   SAFE_CAST(
     JSON_EXTRACT_SCALAR(
@@ -66,8 +67,7 @@ SELECT
     ) AS STRING
   ) AS hora_fim_viagem
 
-
   FROM {{source(
-    'br_rj_riodejaneiro_recurso',
-    'recurso_sppo'
+     'br_rj_riodejaneiro_recurso',
+     'recurso_sppo'
   )}}
