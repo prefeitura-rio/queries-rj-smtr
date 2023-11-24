@@ -1,0 +1,32 @@
+version: 2
+sources:
+  - name: "br_rj_riodejaneiro_recurso"
+
+models:
+  - name: recurso_sppo
+    description: "Tickets registrados na plataforma movidesk"
+    columns:
+     - name: data_ticket
+       description:  "Data de criação do ticket no Movidesk"
+     - name: protocol
+       description:  "Número de protocolo do ticket"
+     - name: id_servico
+       description:  "Número identificador do serviço"
+     - name: servico
+       description: "Tipo do serviço"
+     - name: consorcio
+       description:  "Nome do consórcio"
+     - name: linha
+       description:  "Número da linha"
+     - name: numero_ordem_veiculo
+       description:  "Número de ordem do veículo (Somente números)"
+     - name: dia_viagem
+       description:  "Dia da viagem do ticket"
+     - name: hora_inicio_viagem
+       description: "Horário de início da viagem" 
+     - name: hora_fim_viagem
+       description: "Horário de fim da viagem" 
+     - name: motivo
+       description: "Motivo para criação do recurso" 
+
+    
