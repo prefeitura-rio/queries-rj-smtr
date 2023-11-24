@@ -14,6 +14,8 @@ models:
        description:  "Número identificador do serviço"
      - name: servico
        description: "Tipo do serviço"
+     - name: _direcao_servico
+       description: "Direção do serviço"
      - name: consorcio
        description:  "Nome do consórcio"
      - name: linha
@@ -28,5 +30,7 @@ models:
        description: "Horário de fim da viagem" 
      - name: motivo
        description: "Motivo para criação do recurso" 
+     - name: timestamp_captura
+       description: "Time tsamp de captura dos dados"
 
     
