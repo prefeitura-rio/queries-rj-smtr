@@ -6,15 +6,17 @@ models:
   - name: recurso_sppo
     description: "Tickets registrados na plataforma movidesk"
     columns:
+     - name: data
+       description: "Data de extração dos dados"
      - name: data_ticket
        description:  "Data de criação do ticket no Movidesk"
      - name: protocol
        description:  "Número de protocolo do ticket"
-     - name: id_servico
-       description:  "Número identificador do serviço"
+     - name: id_ticket
+       description:  "Número identificador do ticket"
      - name: servico
        description: "Tipo do serviço"
-     - name: _direcao_servico
+     - name: direcao_servico
        description: "Direção do serviço"
      - name: consorcio
        description:  "Nome do consórcio"
@@ -30,6 +32,12 @@ models:
        description: "Horário de fim da viagem" 
      - name: motivo
        description: "Motivo para criação do recurso" 
+     - name: julgamento
+       description: "Julgamento do recurso"
+     - name: motivo_indeferido
+       description: "Motivos para indeferimento"
+     - name: observacao
+       description: "Observação do Recurso"
      - name: timestamp_captura
        description: "Time tsamp de captura dos dados"
 
