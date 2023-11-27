@@ -18,7 +18,7 @@ WITH recurso_sppo AS (
    )}}
   {% if is_incremental() -%}
   WHERE 
-    DATE(timestamp_captura) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+    date(data)  BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
   {%- endif %} 
 ),
 exploded AS (
