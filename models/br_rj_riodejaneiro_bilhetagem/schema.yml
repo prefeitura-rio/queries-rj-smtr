@@ -113,6 +113,12 @@ models:
         description: "Valor da taxa descontado do valor total (R$)"
       - name: valor_transacao_total_liquido
         description: "Valor total das transações menos o valor_desconto_taxa (R$)"
+      - name: quantidade_total_captura
+        description: "Quantidade total de transações calculada pela captura de transações"
+      - name: valor_total_captura
+        description: "Valor total das transações realizadas calculada pela captura de transações (R$)"
+      - name: flag_valido
+        description: "Validação se a quantidade e valor total de transaçoes presentes na ordem de pagamento foram encontradas na captura de transações"
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)"
   - name: ordem_pagamento_validacao
