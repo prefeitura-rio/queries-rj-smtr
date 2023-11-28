@@ -6,7 +6,6 @@
       "data_type":"date",
       "granularity": "day"
     },
-    unique_key=["id_ordem_pagamento"],
     incremental_strategy="insert_overwrite"
   )
 }}
