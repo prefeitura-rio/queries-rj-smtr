@@ -41,6 +41,7 @@ SELECT
     r.valor_taxa AS valor_desconto_taxa,
     r.valor_liquido AS valor_transacao_total_liquido,
     '{{ var("version") }}' AS versao
+
 FROM 
     {{ ref("staging_ordem_ressarcimento") }} r
 LEFT JOIN

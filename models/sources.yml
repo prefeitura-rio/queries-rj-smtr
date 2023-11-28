@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: br_rj_riodejaneiro_bilhetagem_staging
-    database: rj-smtr-staging
+    database: rj-smtr-dev
 
     tables:
       - name: transacao
@@ -40,3 +40,4 @@ sources:
 
     tables:
       - name: recurso_sppo
+

@@ -2,6 +2,7 @@
   config(
     materialized="incremental",
     partition_by={
+
       "field":"data_ordem",
       "data_type":"date",
       "granularity": "day"
@@ -29,6 +30,7 @@ WITH
   {% if is_incremental() -%}
   WHERE
     data BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+
   {%- endif %}
   GROUP BY
     data,
@@ -61,3 +63,4 @@ ON
     (t.data_ordem = o.data_ordem)
     AND (t.cd_linha = o.cd_linha)
     AND (t.cd_operadora = o.cd_operadora)
+

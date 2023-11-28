@@ -41,6 +41,7 @@ WITH
         SELECT
             *,
             ROW_NUMBER() OVER (PARTITION BY id_ordem_ressarcimento ORDER BY timestamp_captura DESC) AS rn
+
         FROM
             ordem_ressarcimento
     )

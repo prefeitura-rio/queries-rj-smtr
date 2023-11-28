@@ -25,7 +25,6 @@ SELECT
       WHEN t.cd_operadora = "1" THEN "22.100005-0"
     END AS permissao,
     pj.nm_fantasia AS empresa,
-    t.cd_linha,
     l.nr_linha AS servico,
     sentido,
     NULL AS id_veiculo,
