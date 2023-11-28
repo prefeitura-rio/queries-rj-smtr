@@ -45,8 +45,7 @@ WITH transacao_aberta AS (
         SAFE_CAST(JSON_VALUE(content, '$.veiculo_id') AS STRING) AS veiculo_id,
         SAFE_CAST(JSON_VALUE(content, '$.vl_saldo') AS FLOAT64) AS vl_saldo
     FROM
-        -- {{ source("br_rj_riodejaneiro_bilhetagem_staging", "transacao") }}
-        `rj-smtr-staging.br_rj_riodejaneiro_bilhetagem_staging.transacao`
+        {{ source("br_rj_riodejaneiro_bilhetagem_staging", "transacao") }}
     {% if is_incremental() -%}
     WHERE
         DATE(data) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
