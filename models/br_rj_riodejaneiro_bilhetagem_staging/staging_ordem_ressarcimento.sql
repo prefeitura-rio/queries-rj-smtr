@@ -40,7 +40,8 @@ WITH
     ordem_ressarcimento_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY id_ordem_ressarcimento order by timestamp_captura desc) AS rn
+            ROW_NUMBER() OVER (PARTITION BY id_ordem_ressarcimento ORDER BY timestamp_captura DESC) AS rn
+
         FROM
             ordem_ressarcimento
     )

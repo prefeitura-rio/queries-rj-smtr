@@ -19,7 +19,7 @@ WITH
     grupo_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY cd_grupo order by timestamp_captura desc) AS rn
+            ROW_NUMBER() OVER (PARTITION BY cd_grupo ORDER BY timestamp_captura DESC) AS rn
         FROM
             grupo
     )

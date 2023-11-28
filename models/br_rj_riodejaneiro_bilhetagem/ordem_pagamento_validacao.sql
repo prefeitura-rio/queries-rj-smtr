@@ -2,7 +2,8 @@
   config(
     materialized="incremental",
     partition_by={
-      "field":"data",
+
+      "field":"data_ordem",
       "data_type":"date",
       "granularity": "day"
     },
@@ -17,8 +18,10 @@ WITH
     data,
     DATE_ADD(data, INTERVAL 1 DAY) AS data_ordem,
     consorcio,
+    cd_operadora,
     permissao,
     empresa,
+    cd_linha,
     servico,
     COUNT(*) AS quantidade_total_captura,
     SUM(valor_transacao) AS valor_total_captura,
@@ -26,34 +29,38 @@ WITH
     {{ ref("transacao") }}
   {% if is_incremental() -%}
   WHERE
-    data = BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+    data BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+
   {%- endif %}
   GROUP BY
     data,
     consorcio,
+    cd_operadora,
     permissao,
     empresa,
+    cd_linha,
     servico
 )
 SELECT
-  transacao_agg.data,
-  transacao_agg.data_ordem,
-  transacao_agg.consorcio,
-  transacao_agg.permissao,
-  transacao_agg.empresa,
-  transacao_agg.servico,
-  o.quantidade_total_transacao AS quantidade_total_ordem,
-  o.valor_total_transacao AS valor_total_ordem,
-  transacao_agg.quantidade_total_captura,
-  transacao_agg,valor_total_captura,
-  '{{ var("version") }}' as versao
+  COALESCE(t.data_ordem, o.data_ordem) AS data_ordem,
+  t.data AS data_processamento_transacao,
+  COALESCE(t.consorcio, o.consorcio) AS consorcio,
+  COALESCE(t.permissao, o.permissao) AS permissao,
+  COALESCE(t.empresa, o.empresa) AS empresa,
+  COALESCE(t.servico, o.servico) AS servico,
+  o.id_ordem_pagamento,
+  o.id_ordem_ressarcimento,
+  o.quantidade_transacao_total AS quantidade_total_ordem,
+  o.valor_transacao_total_bruto AS valor_total_ordem,
+  t.quantidade_total_captura,
+  t.valor_total_captura,
+  '{{ var("version") }}' AS versao
 FROM
-  transacao_agg
-LEFT JOIN
+  transacao_agg AS t
+FULL OUTER JOIN
     {{ ref("ordem_pagamento") }} o
 ON
-    (transacao_agg.data_ordem = o.data)
-    AND (transacao_agg.servico = o.servico)
-    AND (transacao_agg.consorcio = o.consorcio)
-    AND (transacao_agg.permissao = o.permissao)
-    AND (transacao_agg.empresa = o.empresa)
+    (t.data_ordem = o.data_ordem)
+    AND (t.cd_linha = o.cd_linha)
+    AND (t.cd_operadora = o.cd_operadora)
+

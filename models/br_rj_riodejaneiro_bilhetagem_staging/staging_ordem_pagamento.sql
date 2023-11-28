@@ -35,7 +35,7 @@ WITH
     ordem_pagamento_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY id_ordem_pagamento order by timestamp_captura desc) AS rn
+            ROW_NUMBER() OVER (PARTITION BY id_ordem_pagamento ORDER BY timestamp_captura DESC) AS rn
         FROM
             ordem_pagamento
     )

@@ -20,6 +20,7 @@ SELECT
     g.ds_grupo AS modo,
     c.nm_consorcio AS consorcio,
     -- TODO: Automatizar busca pela permissao no banco
+    t.cd_operadora,
     CASE
       WHEN t.cd_operadora = "1" THEN "22.100005-0"
     END AS permissao,
@@ -68,7 +69,6 @@ LEFT JOIN
     {{ ref("staging_consorcio") }} AS c
 ON 
     lc.cd_consorcio = c.cd_consorcio
-    AND t.data_transacao >= g.datetime_inclusao
 LEFT JOIN
     {{ ref("staging_operadora_transporte") }} AS o
 ON

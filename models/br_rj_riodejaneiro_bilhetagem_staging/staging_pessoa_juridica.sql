@@ -20,7 +20,7 @@ WITH
     pessoa_juridica_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY cd_cliente order by timestamp_captura desc) AS rn
+            ROW_NUMBER() OVER (PARTITION BY cd_cliente ORDER BY timestamp_captura DESC) AS rn
         FROM
             pessoa_juridica
     )
