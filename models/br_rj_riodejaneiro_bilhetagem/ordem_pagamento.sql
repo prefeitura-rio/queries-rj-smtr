@@ -20,7 +20,7 @@ WITH transacao_agg AS (
         ANY_VALUE(permissao) AS permissao,
         ANY_VALUE(empresa) AS empresa,
         ANY_VALUE(servico) AS servico,
-        COUNT(*) AS quantidade_transacao_total_captura,
+        COUNT(*) AS quantidade_total_transacao_captura,
         ROUND(SUM(valor_transacao), 1) AS valor_total_transacao_captura
     FROM
         {{ ref("transacao") }}
@@ -61,10 +61,10 @@ ordem_pagamento AS (
         r.valor_rateio_credito,
         r.qtd_rateio_debito AS quantidade_transacao_rateio_debito,
         r.valor_rateio_debito,
-        r.qtd_debito +  r.qtd_vendaabordo +  r.qtd_gratuidade + r.qtd_integracao + r.qtd_rateio_credito + r.qtd_rateio_debito AS quantidade_transacao_total,
-        ROUND(r.valor_bruto, 1) AS valor_transacao_total_bruto,
+        r.qtd_debito +  r.qtd_vendaabordo +  r.qtd_gratuidade + r.qtd_integracao + r.qtd_rateio_credito + r.qtd_rateio_debito AS quantidade_total_transacao,
+        ROUND(r.valor_bruto, 1) AS valor_total_transacao_bruto,
         r.valor_taxa AS valor_desconto_taxa,
-        r.valor_liquido AS valor_transacao_total_liquido
+        r.valor_liquido AS valor_total_transacao_liquido
     FROM 
         {{ ref("staging_ordem_ressarcimento") }} r
     LEFT JOIN
@@ -115,14 +115,14 @@ SELECT
     op.valor_rateio_credito,
     op.quantidade_transacao_rateio_debito,
     op.valor_rateio_debito,
-    op.quantidade_transacao_total,
-    op.valor_transacao_total_bruto,
+    op.quantidade_total_transacao,
+    op.valor_total_transacao_bruto,
     op.valor_desconto_taxa,
-    op.valor_transacao_total_liquido,
-    t.quantidade_transacao_total_captura,
+    op.valor_total_transacao_liquido,
+    t.quantidade_total_transacao_captura,
     t.valor_total_transacao_captura,
     COALESCE(
-        (t.quantidade_total_captura = op.quantidade_transacao_total AND t.valor_total_captura = op.valor_transacao_total_bruto),
+        (t.quantidade_total_transacao_captura = op.quantidade_total_transacao AND t.valor_total_transacao_captura = op.valor_total_transacao_bruto),
         false
     ) AS flag_ordem_valida,
     '{{ var("version") }}' AS versao
