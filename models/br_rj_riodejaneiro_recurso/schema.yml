@@ -4,18 +4,18 @@ sources:
 
 models:
   - name: recurso_sppo
-    description: "Tickets registrados na plataforma movidesk"
+    description: "Recursos abertos na plataforma MoviDesk para pagamento de subsídio de viagens individuais de ônibus"
     columns:
-     - name: data
+     - name: data_extracao
        description: "Data de extração dos dados"
-     - name: data_ticket
-       description:  "Data de criação do ticket no Movidesk"
+     - name: data_recurso
+       description:  "Data de criação do ticket para pedido de recurso no Movidesk"
      - name: protocol
        description:  "Número de protocolo do ticket"
      - name: id_ticket
        description:  "Número identificador do ticket"
      - name: servico
-       description: "Tipo do serviço"
+       description: "Tipo do serviço de ônibus"
      - name: direcao_servico
        description: "Direção do serviço"
      - name: consorcio
@@ -37,7 +37,7 @@ models:
      - name: motivo_indeferido
        description: "Motivos para indeferimento"
      - name: observacao
-       description: "Observação do Recurso"
+       description: "Observações acerca do julgamentodo recurso"
 
 
     

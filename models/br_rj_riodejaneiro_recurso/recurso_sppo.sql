@@ -1,10 +1,10 @@
-{{config(
-  partition_by = { "field" :"data",
-   "data_type" :"date",
-   "granularity": "day" },
-    unique_key = ["protocol", "data"],
-    alias = "recurso_sppo",
-)}}
+{{ config(
+  partition_by = { "field" :"data_extracao",
+    "data_type" :"date",
+    "granularity": "day" },
+      unique_key = ["protocol", "data_extracao"],
+      alias = "recurso_sppo",
+) }}
 
 
 WITH recurso_sppo AS (
@@ -24,8 +24,8 @@ WITH recurso_sppo AS (
 exploded AS (
   SELECT
     SAFE_CAST(protocol AS STRING) AS protocol,
-    SAFE_CAST(data AS DATE) AS data,
-    DATE(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%E*S', SAFE_CAST(JSON_VALUE(content, '$.createdDate') AS STRING)), "America/Sao_Paulo") AS data_ticket,
+    SAFE_CAST(data AS DATE) AS data_extracao,
+    DATE(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%E*S', SAFE_CAST(JSON_VALUE(content, '$.createdDate') AS STRING)), "America/Sao_Paulo") AS data_recurso,
     SAFE_CAST(JSON_VALUE(content, "$.id") AS STRING) AS id_ticket,
     SAFE_CAST(COALESCE(JSON_VALUE(items, '$.value'), JSON_VALUE(items, '$.items[0].customFieldItem')) AS STRING) AS value,
     SAFE_CAST(JSON_EXTRACT(items, '$.customFieldId') AS STRING) AS field_id,
@@ -37,24 +37,22 @@ pivotado AS (
   SELECT
     *
   FROM
-    exploded 
-    PIVOT(ANY_VALUE(value) FOR field_id IN ('111870',
-                                            '111871',
-                                            '111872',
-                                            '111873',
-                                            '111901',
-                                            '111865',
-                                            '111867',
-                                            '111868',
-                                            '111869',
-                                            '111866',
-                                            '111904',
-                                            '125615')) 
-)
+    exploded PIVOT(ANY_VALUE(value) FOR field_id IN ('111870',
+        '111871',
+        '111872',
+        '111873',
+        '111901',
+        '111865',
+        '111867',
+        '111868',
+        '111869',
+        '111866',
+        '111904',
+        '125615')) )
 SELECT
   protocol,
-  data,
-  data_ticket,
+  data_extracao,
+  data_recurso,
   id_ticket,
   SAFE_CAST(p.111865 AS STRING) AS julgamento,
   SAFE_CAST(p.111870 AS STRING) AS consorcio,
