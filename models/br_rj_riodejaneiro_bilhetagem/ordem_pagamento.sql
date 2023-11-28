@@ -20,8 +20,8 @@ WITH transacao_agg AS (
         ANY_VALUE(permissao) AS permissao,
         ANY_VALUE(empresa) AS empresa,
         ANY_VALUE(servico) AS servico,
-        COUNT(*) AS quantidade_total_captura,
-        ROUND(SUM(valor_transacao), 1) AS valor_total_captura
+        COUNT(*) AS quantidade_transacao_total_captura,
+        ROUND(SUM(valor_transacao), 1) AS valor_total_transacao_captura
     FROM
         {{ ref("transacao") }}
     WHERE
@@ -119,12 +119,12 @@ SELECT
     op.valor_transacao_total_bruto,
     op.valor_desconto_taxa,
     op.valor_transacao_total_liquido,
-    t.quantidade_total_captura,
-    t.valor_total_captura,
+    t.quantidade_transacao_total_captura,
+    t.valor_total_transacao_captura,
     COALESCE(
         (t.quantidade_total_captura = op.quantidade_transacao_total AND t.valor_total_captura = op.valor_transacao_total_bruto),
         false
-    ) AS flag_valido,
+    ) AS flag_ordem_valida,
     '{{ var("version") }}' AS versao
 FROM
     ordem_pagamento op
