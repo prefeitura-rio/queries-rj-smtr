@@ -105,14 +105,20 @@ models:
         description: ""
       - name: valor_rateio_debito
         description: ""
-      - name: quantidade_transacao_total
+      - name: quantidade_total_transacao
         description: "Quantidade total de transações realizadas"
-      - name: valor_transacao_total_bruto
+      - name: valor_total_transacao_bruto
         description: "Valor total das transações realizadas (R$)"
       - name: valor_desconto_taxa
         description: "Valor da taxa descontado do valor total (R$)"
-      - name: valor_transacao_total_liquido
+      - name: valor_total_transacao_liquido
         description: "Valor total das transações menos o valor_desconto_taxa (R$)"
+      - name: quantidade_total_transacao_captura
+        description: "Quantidade total de transações calculada pela captura de transações"
+      - name: valor_total_transacao_captura
+        description: "Valor total das transações realizadas calculada pela captura de transações (R$)"
+      - name: flag_ordem_valida
+        description: "Indicador de validação da ordem de pagamento i.e. se a quantidade e valor total informados são encontrados na captura de transações individuais"
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)"
   - name: ordem_pagamento_validacao
