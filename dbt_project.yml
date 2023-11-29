@@ -179,4 +179,7 @@ models:
       +schema: br_rj_riodejaneiro_stu
     br_rj_riodejaneiro_diretorio:
       +schema: br_rj_riodejaneiro_diretorio
-
+    br_rj_riodejaneiro_recurso:
+      +materialized: incremental
+      +incremental_strategy: insert_overwrite
+      +schema: br_rj_riodejaneiro_recurso
