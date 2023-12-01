@@ -177,8 +177,8 @@ models:
     br_rj_riodejaneiro_stu:
       +materialized: view
       +schema: br_rj_riodejaneiro_stu
-    br_rj_riodejaneiro_diretorio:
-      +schema: br_rj_riodejaneiro_diretorio
+    br_rj_riodejaneiro_diretorios:
+      +schema: br_rj_riodejaneiro_diretorios
     br_rj_riodejaneiro_recurso:
       +materialized: incremental
       +incremental_strategy: insert_overwrite
