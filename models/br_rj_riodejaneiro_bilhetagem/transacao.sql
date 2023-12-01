@@ -75,13 +75,6 @@ SELECT
     g.ds_grupo AS modo,
     dc.id_consorcio AS id_diretorio_consorcio,
     do.id_operadora AS id_diretorio_operadora,
-    -- c.nm_consorcio AS consorcio,
-    -- TODO: Automatizar busca pela permissao no banco
-    -- t.cd_operadora,
-    -- CASE
-    --   WHEN t.cd_operadora = "1" THEN "22.100005-0"
-    -- END AS permissao,
-    -- pj.nm_fantasia AS empresa,
     t.cd_linha,
     l.nr_linha AS servico,
     sentido,
