@@ -1,3 +1,10 @@
+{{
+  config(
+    materialized="table",
+    alias='consorcios'
+  )
+}}
+
 WITH stu AS (
   SELECT 
       perm_autor AS id_consorcio,

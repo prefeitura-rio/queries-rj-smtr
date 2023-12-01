@@ -1,6 +1,7 @@
 {{
   config(
     materialized="table",
+    alias='operadoras'
   )
 }}
 
@@ -41,7 +42,6 @@ stu_pessoa_juridica AS (
     tipo_permissao,
     data_registro,
     razao_social AS nome_operadora,
-    CAST(NULL AS STRING) AS placa,
     "CNPJ" AS tipo_documento
   FROM
     {{ ref("staging_operadora_empresa") }}
@@ -56,7 +56,6 @@ stu_pessoa_fisica AS (
     tipo_permissao,
     data_registro,
     nome AS nome_operadora,
-    placa,
     "CPF" AS tipo_documento
   FROM
     {{ ref("staging_operadora_pessoa_fisica") }}
@@ -81,9 +80,8 @@ SELECT
   COALESCE(s.documento, j.nr_documento) AS documento,
   COALESCE(s.tipo_documento, j.tipo_documento) AS tipo_documento,
   s.processo AS processo_stu,
-  s.placa,
   s.data_registro,
-  COALESCE(s.nome_operadora, j.nm_cliente) AS operadora,
+  UPPER(REGEXP_REPLACE(NORMALIZE(COALESCE(s.nome_operadora, j.nm_cliente), NFD), r"\pM", '')) AS operadora,
   COALESCE(s.modo, j.ds_tipo_modal) AS modo,
   s.tipo_permissao,
   j.in_situacao_atividade AS situacao_atividade,
