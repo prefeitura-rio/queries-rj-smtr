@@ -8,7 +8,6 @@
 WITH stu AS (
   SELECT 
       perm_autor AS id_consorcio,
-      j.cd_consorcio AS cd_consorcio_jae
       cnpj,
       processo,
       data_registro,
@@ -24,7 +23,7 @@ WITH stu AS (
     {{ ref("staging_operadora_empresa") }} AS stu
 )
 SELECT
-  COALESCE(s.id_consorcio, j.cd_consorcio_jae) AS id_consorcio,
+  COALESCE(s.id_consorcio, j.cd_consorcio) AS id_consorcio,
   s.id_consorcio AS permissao,
   j.cd_consorcio AS id_consorcio_jae,
   s.cnpj,
