@@ -96,3 +96,4 @@ FULL OUTER JOIN
   operadora_jae AS j
 ON
   s.documento = j.nr_documento
+  AND s.modo = j.ds_tipo_modal
