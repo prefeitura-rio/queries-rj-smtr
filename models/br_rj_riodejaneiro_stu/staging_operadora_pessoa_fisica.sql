@@ -11,6 +11,7 @@ WITH
             SAFE_CAST(Perm_Autor AS STRING) AS perm_autor,
             SAFE_CAST(CPF AS STRING) AS cpf,
             timestamp_captura,
+            SAFE_CAST(JSON_VALUE(content, '$.CPF') AS STRING) AS cpf,
             PARSE_DATE('%d/%m/%Y', LEFT(SAFE_CAST(JSON_VALUE(content, '$.Data') AS STRING), 10)) AS data_registro,
             SAFE_CAST(JSON_VALUE(content, '$.Ratr') AS STRING) AS ratr,
             SAFE_CAST(JSON_VALUE(content, '$.Processo') AS STRING) AS processo,
@@ -24,7 +25,7 @@ WITH
     operadora_pessoa_fisica_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY perm_autor, cpf ORDER BY timestamp_captura DESC) AS rn
+            ROW_NUMBER() OVER (PARTITION BY perm_autor ORDER BY timestamp_captura DESC) AS rn
         FROM
             operadora_pessoa_fisica
     )
