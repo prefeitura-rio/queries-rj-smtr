@@ -9,8 +9,8 @@ WITH
         SELECT
             data,
             SAFE_CAST(Perm_Autor AS STRING) AS perm_autor,
-            SAFE_CAST(CNPJ AS STRING) AS cnpj,
             timestamp_captura,
+            SAFE_CAST(JSON_VALUE(content, '$.CNPJ') AS STRING) AS cnpj,
             DATE(PARSE_TIMESTAMP('%d/%m/%Y', SAFE_CAST(JSON_VALUE(content, '$.Data') AS STRING)), "America/Sao_Paulo") AS data_registro,
             SAFE_CAST(JSON_VALUE(content, '$.Processo') AS STRING) AS processo,
             SAFE_CAST(JSON_VALUE(content, '$.Razao_Social') AS STRING) AS razao_social,
@@ -22,7 +22,7 @@ WITH
     operadora_empresa_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY perm_autor, cnpj ORDER BY timestamp_captura DESC) AS rn
+            ROW_NUMBER() OVER (PARTITION BY perm_autor ORDER BY timestamp_captura DESC) AS rn
         FROM
             operadora_empresa
     )
