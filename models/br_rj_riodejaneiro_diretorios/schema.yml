@@ -13,7 +13,7 @@ models:
       - name: documento
         description: "Documento do operador (CPF ou CNPJ)"
         policy_tags:
-          - 'projects/rj-smtr-dev/locations/us/taxonomies/stpl/policyTags/permissionarios'
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
       - name: tipo_documento
         description: "Tipo do documento do operador (CPF ou CNPJ)"
       - name: processo_stu
@@ -23,7 +23,7 @@ models:
       - name: operadora
         description: "Nome do operador"
         policy_tags:
-          - 'projects/rj-smtr-dev/locations/us/taxonomies/stpl/policyTags/permissionarios'
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
       - name: modo
         description: "Tipo de transporte (ônibus, van, BRT)"
       - name: tipo_permissao
@@ -33,23 +33,23 @@ models:
       - name: agencia
         description: "Número da agência bancária do operador"
         policy_tags:
-          - 'projects/rj-smtr-dev/locations/us/taxonomies/stpl/policyTags/permissionarios'
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
       - name: tipo_conta
         description: "Tipo da conta bancária do operador"
         policy_tags:
-          - 'projects/rj-smtr-dev/locations/us/taxonomies/stpl/policyTags/permissionarios'
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
       - name: banco
         description: "Nome do banco"
         policy_tags:
-          - 'projects/rj-smtr-dev/locations/us/taxonomies/stpl/policyTags/permissionarios'
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
       - name: codigo_banco
         description: "Código do banco (COMPE)"
         policy_tags:
-          - 'projects/rj-smtr-dev/locations/us/taxonomies/stpl/policyTags/permissionarios'
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
       - name: conta
         description: "Número da conta bancária do operador"
         policy_tags:
-          - 'projects/rj-smtr-dev/locations/us/taxonomies/stpl/policyTags/permissionarios'
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
   - name: operadora_contato
     description: "Tabela de contatos das operadoras de transporte"
     columns:
@@ -58,16 +58,16 @@ models:
       - name: contato
         description: "Nome do contato"
         policy_tags:
-          - 'projects/rj-smtr-dev/locations/us/taxonomies/stpl/policyTags/permissionarios'
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
       - name: ramal
         description: "Ramal do telefone"
         policy_tags:
-          - 'projects/rj-smtr-dev/locations/us/taxonomies/stpl/policyTags/permissionarios'
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
       - name: telefone
         description: "Número de telefone"
         policy_tags:
-          - 'projects/rj-smtr-dev/locations/us/taxonomies/stpl/policyTags/permissionarios'
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
       - name: email
         description: "Endereço de E-Mail"
         policy_tags:
-          - 'projects/rj-smtr-dev/locations/us/taxonomies/stpl/policyTags/permissionarios'
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
