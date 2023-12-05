@@ -1,16 +1,18 @@
 {{ config(
-  partition_by = { "field" :"data_extracao",
+  materialized = "incremental",
+  partition_by = { "field" :"data_recurso",
     "data_type" :"date",
     "granularity": "day" },
-      unique_key = ["protocol", "data_extracao"],
+      unique_key = ["protocol", "data_recurso"],
       alias = "recurso_sppo",
+  incremental_strategy = 'insert_overwrite',
 ) }}
 
 
 WITH recurso_sppo AS (
   SELECT
-    *,
-    JSON_EXTRACT_ARRAY(content, '$.customFieldValues') AS items
+    DISTINTCT *,
+     JSON_EXTRACT_ARRAY(content, '$.customFieldValues') AS items
   FROM
     {{source(
       "br_rj_riodejaneiro_recurso_staging",
@@ -23,8 +25,9 @@ WITH recurso_sppo AS (
 ),
 exploded AS (
   SELECT
-    SAFE_CAST(protocol AS STRING) AS protocol,
-    SAFE_CAST(data AS DATE) AS data_extracao,
+    DISTINCT 
+    SAFE_CAST(protocol AS STRING) AS id_recurso,
+    SAFE_CAST(timestamp_captura AS DATETIME) AS timestamp_captura,
     DATE(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%E*S', SAFE_CAST(JSON_VALUE(content, '$.createdDate') AS STRING)), "America/Sao_Paulo") AS data_recurso,
     SAFE_CAST(JSON_VALUE(content, "$.id") AS STRING) AS id_ticket,
     SAFE_CAST(COALESCE(JSON_VALUE(items, '$.value'), JSON_VALUE(items, '$.items[0].customFieldItem')) AS STRING) AS value,
@@ -35,7 +38,7 @@ exploded AS (
 ),
 pivotado AS (
   SELECT
-    *
+    DISTINCT *
   FROM
     exploded PIVOT(ANY_VALUE(value) FOR field_id IN ('111870',
         '111871',
@@ -48,23 +51,26 @@ pivotado AS (
         '111869',
         '111866',
         '111904',
-        '125615')) )
+        '125615',
+        '111900')) )
 SELECT
-  protocol,
-  data_extracao,
+  DISTINCT
+  id_recurso,
+  timestamp_captura,
   data_recurso,
   id_ticket,
   SAFE_CAST(p.111865 AS STRING) AS julgamento,
   SAFE_CAST(p.111870 AS STRING) AS consorcio,
   SAFE_CAST(p.111871 AS STRING) AS linha,
-  SAFE_CAST(p.111872 AS STRING) AS servico,
-  SAFE_CAST(p.111873 AS STRING) AS numero_ordem_veiculo,
-  SAFE_CAST(p.111901 AS STRING) AS direcao_servico,
-  SAFE_CAST(p.111867 AS STRING) AS dia_viagem,
-  SAFE_CAST(p.111868 AS STRING) AS hora_inicio_viagem,
-  SAFE_CAST(p.111869 AS STRING) AS hora_fim_viagem,
+  SAFE_CAST(p.111872 AS STRING) AS tipo_servico,
+  SAFE_CAST(p.111873 AS STRING) AS id_veiculo,
+  SAFE_CAST(p.111901 AS STRING) AS sentido,
+  PARSE_DATE('%Y%m%d', SAFE_CAST(p.111867 AS STRING)) AS data_viagem, # date
+  PARSE_DATETIME('%Y-%m-%dT%H:%M:%E*S', SAFE_CAST(p.111868 AS STRING), 'America/Sao_Paulo') AS hora_inicio_viagem,
+  PARSE_DATETIME('%Y-%m-%dT%H:%M:%E*S', SAFE_CAST(p.111869 AS STRING), 'America/Sao_Paulo') hora_fim_viagem, # datetime
   SAFE_CAST(p.111866 AS STRING) AS motivo,
   SAFE_CAST(p.111904 AS STRING) AS motivo_indeferido,
+  SAFE_CAST(p.111900 AS STRING) AS motivo_deferido,
   SAFE_CAST(p.125615 AS STRING) AS observacao
 FROM
   pivotado p
