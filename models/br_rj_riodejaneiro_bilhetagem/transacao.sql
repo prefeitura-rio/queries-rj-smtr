@@ -73,13 +73,8 @@ SELECT
     data_processamento AS datetime_processamento,
     t.timestamp_captura AS datetime_captura,
     g.ds_grupo AS modo,
-    c.nm_consorcio AS consorcio,
-    -- TODO: Automatizar busca pela permissao no banco
-    t.cd_operadora,
-    CASE
-      WHEN t.cd_operadora = "1" THEN "22.100005-0"
-    END AS permissao,
-    pj.nm_fantasia AS empresa,
+    dc.id_consorcio AS id_diretorio_consorcio,
+    do.id_operadora AS id_diretorio_operadora,
     t.cd_linha,
     l.nr_linha AS servico,
     sentido,
@@ -130,6 +125,15 @@ LEFT JOIN
 ON
     t.cd_operadora = o.cd_operadora_transporte
 LEFT JOIN
-    {{ ref("staging_pessoa_juridica") }} AS pj
+    {{ ref("diretorio_operadora") }} AS do
 ON
-    o.cd_cliente = pj.cd_cliente
+    t.cd_operadora = do.id_operadora_transporte_jae
+LEFT JOIN
+    {{ ref("diretorio_consorcio") }} AS dc
+ON
+
+-- LEFT JOIN
+--     {{ ref("staging_pessoa_juridica") }} AS pj
+-- ON
+--     o.cd_cliente = pj.cd_cliente
+

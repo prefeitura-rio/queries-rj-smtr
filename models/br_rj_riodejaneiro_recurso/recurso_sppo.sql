@@ -6,6 +6,7 @@
       unique_key = ["protocol", "data_recurso"],
       alias = "recurso_sppo",
   incremental_strategy = 'insert_overwrite',
+
 ) }}
 
 

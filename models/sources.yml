@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: br_rj_riodejaneiro_bilhetagem_staging
-    database: rj-smtr-staging
+    database: rj-smtr-dev
 
     tables:
       - name: transacao
@@ -16,6 +16,9 @@ sources:
       - name: ordem_pagamento
       - name: ordem_ressarcimento
       - name: linha_consorcio
+      - name: conta_bancaria
+      - name: contato_pessoa_juridica
+      - name: cliente
 
   - name: br_rj_riodejaneiro_gtfs_staging
     database: rj-smtr-staging
@@ -40,3 +43,4 @@ sources:
 
     tables:
       - name: recurso_sppo
+

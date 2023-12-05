@@ -1,0 +1,73 @@
+version: 2
+
+models:
+  - name: diretorio_operadora
+    description: "Tabela de operadoras de transporte"
+    columns:
+      - name: id_operadora
+        description: "Identificador único do operador, podendo ser o código de permissionário ou código da Jaé"
+      - name: id_operadora_stu
+        description: "Código de permissionário vindo do STU"
+      - name: id_operadora_transporte_jae
+        description: "Código do operador no sistema da Jaé"
+      - name: documento
+        description: "Documento do operador (CPF ou CNPJ)"
+        policy_tags:
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
+      - name: tipo_documento
+        description: "Tipo do documento do operador (CPF ou CNPJ)"
+      - name: processo_stu
+        description: ""
+      - name: data_registro
+        description: ""
+      - name: operadora
+        description: "Nome do operador"
+        policy_tags:
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
+      - name: modo
+        description: "Tipo de transporte (ônibus, van, BRT)"
+      - name: tipo_permissao
+        description: "Tipo de permissionário (Exemplos: autônomo, empresa, cooperativa)"
+      - name: situacao_atividade
+        description: "Indicador de atividade do operador no sistema da Jaé"
+      - name: agencia
+        description: "Número da agência bancária do operador"
+        policy_tags:
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
+      - name: tipo_conta
+        description: "Tipo da conta bancária do operador"
+        policy_tags:
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
+      - name: banco
+        description: "Nome do banco"
+        policy_tags:
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
+      - name: codigo_banco
+        description: "Código do banco (COMPE)"
+        policy_tags:
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
+      - name: conta
+        description: "Número da conta bancária do operador"
+        policy_tags:
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
+  - name: operadora_contato
+    description: "Tabela de contatos das operadoras de transporte"
+    columns:
+      - name: id_operadora
+        description: "Identificador único da tabela de operador (diretorios)"
+      - name: contato
+        description: "Nome do contato"
+        policy_tags:
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
+      - name: ramal
+        description: "Ramal do telefone"
+        policy_tags:
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
+      - name: telefone
+        description: "Número de telefone"
+        policy_tags:
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
+      - name: email
+        description: "Endereço de E-Mail"
+        policy_tags:
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
