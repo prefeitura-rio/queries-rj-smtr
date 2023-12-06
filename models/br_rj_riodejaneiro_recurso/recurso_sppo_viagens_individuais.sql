@@ -8,7 +8,7 @@
   incremental_strategy = 'insert_overwrite',
 
 ) }}
-
+--comentário para triggar os checks
 
 WITH recurso_sppo AS (
   SELECT 
