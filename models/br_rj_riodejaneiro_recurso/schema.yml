@@ -2,7 +2,7 @@ version: 2
 sources:
 - name: br_rj_riodejaneiro_recurso
 models:
-  - name: recurso_sppo
+  - name: recurso_sppo_viagens_individuais
     description: Recursos abertos na plataforma Movidesk para pagamento de subsídio de viagens individuais de ônibus
     columns:
       - name: timestamp_captura
@@ -13,14 +13,14 @@ models:
         description: Número de id do recurso
       - name: id_ticket
         description: Número identificador do ticket
-      - name: tipo_servico
+      - name: servico
         description: Tipo do serviço de ônibus
       - name: sentido
         description: Sentido do ônibus
       - name: consorcio
         description: Nome do consórcio
-      - name: linha
-        description: Número da linha
+      # - name: linha
+      #   description: Número da linha
       - name: id_veiculo
         description: Número de identificação do veículo (Somente números)
       - name: data_viagem
