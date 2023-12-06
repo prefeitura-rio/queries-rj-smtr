@@ -131,9 +131,9 @@ ON
 LEFT JOIN
     {{ ref("diretorio_consorcio") }} AS dc
 ON
-    lc.cd_consorcio = dc.id_consorcio_jae
 
 -- LEFT JOIN
 --     {{ ref("staging_pessoa_juridica") }} AS pj
 -- ON
 --     o.cd_cliente = pj.cd_cliente
+
