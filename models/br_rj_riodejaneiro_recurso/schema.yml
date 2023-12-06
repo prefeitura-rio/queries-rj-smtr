@@ -19,8 +19,6 @@ models:
         description: Sentido do ônibus
       - name: consorcio
         description: Nome do consórcio
-      # - name: linha
-      #   description: Número da linha
       - name: id_veiculo
         description: Número de identificação do veículo (Somente números)
       - name: data_viagem

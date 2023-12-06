@@ -25,11 +25,11 @@ WITH recurso_sppo AS (
 ), 
 exploded AS (
   SELECT 
-    DISTINCT SAFE_CAST(protocol AS STRING) AS id_recurso, 
-    SAFE_CAST(timestamp_captura AS DATETIME) AS timestamp_captura, 
-    DATE(
+    DISTINCT  DATE(
       PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%E*S', SAFE_CAST(JSON_VALUE(content, '$.createdDate') AS STRING )),'America/Sao_Paulo'
-    ) AS data_recurso, 
+    ) AS data_recurso
+    SAFE_CAST(protocol AS STRING) AS id_recurso, 
+    SAFE_CAST(timestamp_captura AS DATETIME) AS timestamp_captura, 
     SAFE_CAST(COALESCE(JSON_VALUE(items, '$.value'), JSON_VALUE(items, '$.items[0].customFieldItem')) AS STRING
     ) AS value, 
     SAFE_CAST(JSON_EXTRACT(items, '$.customFieldId') AS STRING ) AS field_id, 
