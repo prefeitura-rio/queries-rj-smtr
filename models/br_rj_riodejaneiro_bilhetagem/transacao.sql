@@ -73,8 +73,8 @@ SELECT
     data_processamento AS datetime_processamento,
     t.timestamp_captura AS datetime_captura,
     g.ds_grupo AS modo,
-    dc.id_consorcio AS id_diretorio_consorcio,
-    do.id_operadora AS id_diretorio_operadora,
+    lc.cd_consorcio AS id_consorcio_jae,
+    t.cd_operadora AS id_operadora_jae,
     t.cd_linha,
     l.nr_linha AS servico,
     sentido,
@@ -124,16 +124,3 @@ LEFT JOIN
     {{ ref("staging_operadora_transporte") }} AS o
 ON
     t.cd_operadora = o.cd_operadora_transporte
-LEFT JOIN
-    {{ ref("diretorio_operadora") }} AS do
-ON
-    t.cd_operadora = do.id_operadora_transporte_jae
-LEFT JOIN
-    {{ ref("diretorio_consorcio") }} AS dc
-ON
-
--- LEFT JOIN
---     {{ ref("staging_pessoa_juridica") }} AS pj
--- ON
---     o.cd_cliente = pj.cd_cliente
-
