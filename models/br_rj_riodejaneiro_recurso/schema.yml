@@ -5,6 +5,8 @@ models:
   - name: recurso_sppo_viagens_individuais
     description: Recursos abertos na plataforma Movidesk para pagamento de subsídio de viagens individuais de ônibus
     columns:
+      - name: datetime_captura
+        description: Data de captura dos dados
       - name: timestamp_captura
         description: Data e hora de captura dos dados
       - name: data_recurso
