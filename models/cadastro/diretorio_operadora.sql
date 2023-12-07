@@ -63,10 +63,7 @@ stu_pessoa_fisica AS (
 stu AS (
   SELECT
     *,
-    CASE 
-      WHEN modo = 'Complementar (cabritinho)' THEN 'Van'
-      ELSE modo
-    END AS modo_join
+    modo AS modo_join
   FROM
     stu_pessoa_juridica
 
@@ -74,7 +71,10 @@ stu AS (
 
   SELECT
     *,
-    modo as modo_join
+    CASE 
+      WHEN modo = 'Complementar (cabritinho)' THEN 'Van'
+      ELSE modo
+    END AS modo_join
   FROM
     stu_pessoa_fisica
 )
