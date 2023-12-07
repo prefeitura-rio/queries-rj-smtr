@@ -62,14 +62,19 @@ stu_pessoa_fisica AS (
 ),
 stu AS (
   SELECT
-    *
+    *,
+    CASE 
+      WHEN modo = 'Complementar (cabritinho)' THEN 'Van'
+      ELSE modo
+    END AS modo_join
   FROM
     stu_pessoa_juridica
 
   UNION ALL
 
   SELECT
-    *
+    *,
+    modo as modo_join
   FROM
     stu_pessoa_fisica
 )
@@ -77,7 +82,8 @@ SELECT
   COALESCE(s.perm_autor, j.cd_operadora_transporte) AS id_operadora,
   UPPER(REGEXP_REPLACE(NORMALIZE(COALESCE(s.nome_operadora, j.nm_cliente), NFD), r"\pM", '')) AS operadora,
   s.tipo_permissao AS tipo_operadora,
-  COALESCE(s.modo, j.ds_tipo_modal) AS modo,
+  s.modo AS tipo_modal_stu,
+  j.ds_tipo_modal AS tipo_modal_jae,
   s.processo AS id_processo,
   s.data_registro AS data_processo,
   COALESCE(s.documento, j.nr_documento) AS documento,
@@ -96,4 +102,4 @@ FULL OUTER JOIN
   operadora_jae AS j
 ON
   s.documento = j.nr_documento
-  AND s.modo = j.ds_tipo_modal
+  AND s.modo_join = j.ds_tipo_modal

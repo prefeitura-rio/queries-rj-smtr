@@ -24,13 +24,13 @@ WITH stu AS (
 )
 SELECT
   COALESCE(s.id_consorcio, j.cd_consorcio) AS id_consorcio,
-  s.id_consorcio AS permissao,
-  j.cd_consorcio AS id_consorcio_jae,
-  s.cnpj,
-  s.processo,
-  s.data_registro,
   s.razao_social,
-  j.nm_consorcio AS consorcio
+  j.nm_consorcio AS consorcio,
+  s.processo AS id_processo,
+  s.data_registro AS data_processo,
+  s.cnpj,
+  s.id_consorcio AS id_consorcio_stu,
+  j.cd_consorcio AS id_consorcio_jae,
 FROM {{ ref("staging_consorcio") }} AS j
 LEFT JOIN
   stu AS s
