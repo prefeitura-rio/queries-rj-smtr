@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: br_rj_riodejaneiro_bilhetagem_staging
-    database: rj-smtr-dev
+    database: rj-smtr-staging
 
     tables:
       - name: transacao
@@ -39,7 +39,7 @@ sources:
       - name: ordem_servico
 
   - name: br_rj_riodejaneiro_stu_staging
-    database: rj-smtr-dev
+    database: rj-smtr-staging
     
     tables:
       - name: operadora_empresa
