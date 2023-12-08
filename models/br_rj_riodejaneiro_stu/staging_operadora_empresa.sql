@@ -22,7 +22,7 @@ WITH
     operadora_empresa_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY perm_autor ORDER BY timestamp_captura DESC) AS rn
+            ROW_NUMBER() OVER (PARTITION BY COALESCE(cnpj, perm_autor), modo ORDER BY timestamp_captura DESC, data_registro DESC) AS rn
         FROM
             operadora_empresa
     )

@@ -6,29 +6,31 @@ models:
     columns:
       - name: id_operadora
         description: "Identificador único do operador, podendo ser o código de permissionário ou código da Jaé"
-      - name: id_operadora_stu
-        description: "Código de permissionário vindo do STU"
-      - name: id_operadora_transporte_jae
-        description: "Código do operador no sistema da Jaé"
+      - name: operadora
+        description: "Nome do operador"
+        policy_tags:
+          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
+      - name: tipo_operadora
+        description: "Tipo de permissionário (Exemplos: autônomo, empresa, cooperativa)"
+      - name: tipo_modal_stu
+        description: "Tipo de transporte no STU (ônibus, van, BRT)"
+      - name: tipo_modal_jae
+        description: "Tipo de transporte na Jaé (ônibus, van, BRT)"
+      - name: id_processo
+        description: "Número do processo no STU"
+      - name: data_processo
+        description: "Data do processo no STU"
       - name: documento
         description: "Documento do operador (CPF ou CNPJ)"
         policy_tags:
           - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
       - name: tipo_documento
         description: "Tipo do documento do operador (CPF ou CNPJ)"
-      - name: processo_stu
-        description: ""
-      - name: data_registro
-        description: ""
-      - name: operadora
-        description: "Nome do operador"
-        policy_tags:
-          - 'projects/rj-smtr-dev/locations/us/taxonomies/5679169361175754777/policyTags/6167858506427912139'
-      - name: modo
-        description: "Tipo de transporte (ônibus, van, BRT)"
-      - name: tipo_permissao
-        description: "Tipo de permissionário (Exemplos: autônomo, empresa, cooperativa)"
-      - name: situacao_atividade
+      - name: id_operadora_stu
+        description: "Código de permissionário vindo do STU"
+      - name: id_operadora_jae
+        description: "Código do operador no sistema da Jaé"
+      - name: situacao_operadora_jae
         description: "Indicador de atividade do operador no sistema da Jaé"
       - name: agencia
         description: "Número da agência bancária do operador"

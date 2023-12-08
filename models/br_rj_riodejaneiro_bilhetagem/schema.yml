@@ -5,9 +5,9 @@ models:
     description: "Tabela de transações"
     columns:
       - name: data
-        description: "Data de processamento da transação (partição)"
+        description: "Data da transação (partição)"
       - name: hora
-        description: "Hora de processamento da transação"
+        description: "Hora da transação"
       - name: datetime_transacao
         description: "Data e hora da transação em GMT-3 (formato YYYY-MM-ddTHH:mm:ss.ssssss)"
       - name: datetime_processamento
@@ -16,16 +16,10 @@ models:
         description: "Timestamp de captura em GMT-3 (formato YYYY-MM-dd HH:mm:ssTZD)"
       - name: modo
         description: "Tipo de transporte (SPPO = ônibus, STPL = van, BRT)"
-      - name: consorcio
-        description: "Nome do consórcio"
-      - name: cd_operadora
-        description: "Identificador da operadora no banco de dados da Jaé"
-      - name: permissao
-        description: "Número da permissão, autorização, concessão ou outro tipo de delegação ao operador"
-      - name: empresa
-        description: "Nome da empresa operadora"
-      - name: cd_linha
-        description: "Identificador da linha no banco de dados da Jaé"
+      - name: id_consorcio
+        description: "Identificador do consórcio na tabela cadastro.consorcios"
+      - name: id_operadora
+        description: "Identificador da operadora na tabela cadastro.operadoras"
       - name: servico
         description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...)"
       - name: sentido
@@ -65,16 +59,10 @@ models:
         description: "Data da ordem de pagamento (partição)"
       - name: data_pagamento
         description: "Data de pagamento da ordem"
-      - name: consorcio
-        description: "Nome do consórcio"
-      - name: cd_operadora
-        description: "Identificador da operadora no banco de dados da Jaé"
-      - name: permissao
-        description: "Número da permissão, autorização, concessão ou outro tipo de delegação ao operador"
-      - name: empresa
-        description: "Nome da empresa operadora"
-      - name: cd_linha
-        description: "Identificador da linha no banco de dados da Jaé"
+      - name: id_consorcio
+        description: "Identificador do consórcio na tabela cadastro.consorcios"
+      - name: id_operadora
+        description: "Identificador da operadora na tabela cadastro.operadoras"
       - name: servico
         description: "Nome curto da linha operada com variação de serviço (ex: 010, 011SN, ...)"
       - name: id_ordem_pagamento
@@ -117,7 +105,7 @@ models:
         description: "Quantidade total de transações calculada pela captura de transações"
       - name: valor_total_transacao_captura
         description: "Valor total das transações realizadas calculada pela captura de transações (R$)"
-      - name: flag_ordem_valida
+      - name: indicador_ordem_valida
         description: "Indicador de validação da ordem de pagamento i.e. se a quantidade e valor total informados são encontrados na captura de transações individuais"
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)"

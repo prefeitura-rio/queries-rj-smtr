@@ -67,15 +67,14 @@ transacao_deduplicada AS (
         rn = 1
 )
 SELECT 
-    EXTRACT(DATE FROM data_processamento) AS data,
-    EXTRACT(HOUR FROM data_processamento) AS hora,
+    EXTRACT(DATE FROM data_transacao) AS data,
+    EXTRACT(HOUR FROM data_transacao) AS hora,
     data_transacao AS datetime_transacao,
     data_processamento AS datetime_processamento,
     t.timestamp_captura AS datetime_captura,
     g.ds_grupo AS modo,
-    dc.id_consorcio AS id_diretorio_consorcio,
-    do.id_operadora AS id_diretorio_operadora,
-    t.cd_linha,
+    dc.id_consorcio AS id_consorcio,
+    do.id_operadora AS id_operadora,
     l.nr_linha AS servico,
     sentido,
     NULL AS id_veiculo,
@@ -127,13 +126,8 @@ ON
 LEFT JOIN
     {{ ref("diretorio_operadora") }} AS do
 ON
-    t.cd_operadora = do.id_operadora_transporte_jae
+    t.cd_operadora = do.id_operadora_jae
 LEFT JOIN
     {{ ref("diretorio_consorcio") }} AS dc
 ON
-
--- LEFT JOIN
---     {{ ref("staging_pessoa_juridica") }} AS pj
--- ON
---     o.cd_cliente = pj.cd_cliente
-
+    lc.cd_consorcio = dc.id_consorcio_jae
