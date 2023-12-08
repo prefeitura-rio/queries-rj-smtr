@@ -93,7 +93,17 @@ SELECT
     t.id_veiculo,
     t.sentido,
     DATETIME(EXTRACT(date FROM TIMESTAMP(data_viagem)), EXTRACT(time FROM TIMESTAMP_SUB(hora_inicio_viagem, INTERVAL 2 HOUR)) ) AS datetime_partida,
-    DATETIME(EXTRACT(date FROM TIMESTAMP(data_viagem)), EXTRACT(time FROM TIMESTAMP_SUB(hora_fim_viagem, INTERVAL 2 HOUR)) ) AS datetime_chegada,
+    CASE 
+      WHEN 
+        EXTRACT(time FROM TIMESTAMP_SUB(hora_inicio_viagem, INTERVAL 2 HOUR)) > EXTRACT(time FROM TIMESTAMP_SUB(hora_fim_viagem, INTERVAL 2 HOUR)) 
+        
+      THEN 
+        DATETIME(EXTRACT(date FROM TIMESTAMP_ADD(data_viagem, INTERVAL 1 DAY)), EXTRACT(time FROM TIMESTAMP_SUB(hora_fim_viagem, INTERVAL 2 HOUR))) 
+      ELSE 
+        DATETIME(EXTRACT(date FROM TIMESTAMP(data_viagem)), 
+          EXTRACT(time FROM TIMESTAMP_SUB(hora_fim_viagem, INTERVAL 2 HOUR))
+        )
+    END AS datetime_chegada,
     t.motivo,
     t.motivo_julgamento,
     t.observacao,
