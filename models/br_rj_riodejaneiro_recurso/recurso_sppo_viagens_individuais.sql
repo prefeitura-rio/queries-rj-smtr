@@ -18,7 +18,7 @@ WITH recurso_sppo AS (
     
   FROM 
     {{source('br_rj_riodejaneiro_recurso_staging', 
-      'recurso_sppo_viagens_individuais')}} 
+      'recurso_sppo')}} 
   {% if is_incremental() -%}
     WHERE
         DATE(data) BETWEEN DATE("{{var('date_range_start')}}") 
