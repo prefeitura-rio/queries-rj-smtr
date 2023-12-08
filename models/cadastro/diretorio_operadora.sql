@@ -21,7 +21,7 @@ WITH operadora_jae AS (
     cb.cd_tipo_conta,
     cb.nm_banco,
     cb.nr_banco,
-    cb.nr_conta,
+    cb.nr_conta
   FROM
     {{ ref("staging_operadora_transporte") }} AS ot
   JOIN
