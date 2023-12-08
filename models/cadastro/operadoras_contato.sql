@@ -22,5 +22,5 @@ JOIN
 ON
   ot.cd_cliente = c.cd_cliente
 JOIN
-  {{ ref("diretorio_operadora") }} d
+  {{ ref("diretorio_operadoras") }} d
 ON d.id_operadora_jae = ot.cd_operadora_transporte

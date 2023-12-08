@@ -39,9 +39,6 @@ ordem_pagamento AS (
         p.data_pagamento,
         dc.id_consorcio,
         do.id_operadora,
-        -- c.nm_consorcio AS consorcio,
-        -- r.id_operadora AS cd_operadora,
-        -- r.id_linha AS cd_linha,
         l.nr_linha AS servico,
         r.id_ordem_pagamento AS id_ordem_pagamento,
         r.id_ordem_ressarcimento AS id_ordem_ressarcimento,
@@ -80,11 +77,11 @@ ordem_pagamento AS (
     ON
         r.id_operadora = o.cd_operadora_transporte
     LEFT JOIN
-        {{ ref("diretorio_operadora") }} AS do
+        {{ ref("diretorio_operadoras") }} AS do
     ON
         r.id_operadora = do.id_operadora_jae
     LEFT JOIN
-        {{ ref("diretorio_consorcio") }} AS dc
+        {{ ref("diretorio_consorcios") }} AS dc
     ON
         r.id_consorcio = dc.id_consorcio_jae
     {% if is_incremental() -%}
