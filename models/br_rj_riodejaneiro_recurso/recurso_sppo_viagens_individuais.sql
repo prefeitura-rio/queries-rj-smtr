@@ -72,9 +72,9 @@ tratado AS (
       WHEN SAFE_CAST(p.111901 AS STRING) = "Circular" THEN "C"
   END
     AS sentido,
-  PARSE_DATE('%Y%m%d', SAFE_CAST(p.111867 AS STRING)) AS data_viagem, 
-  -- PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%E*S', SAFE_CAST(p.111868 AS STRING), 'America/Sao_Paulo') AS hora_inicio_viagem, 
-  -- PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%E*S', SAFE_CAST(p.111869 AS STRING), 'America/Sao_Paulo') AS hora_fim_viagem, 
+  PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%E*S%Ez',SAFE_CAST(p.111867 AS STRING), 'America/Sao_Paulo') AS data_viagem, 
+  PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%E*S%Ez', SAFE_CAST(p.111868 AS STRING), 'America/Sao_Paulo') AS hora_inicio_viagem, 
+  PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%E*S%Ez', SAFE_CAST(p.111869 AS STRING), 'America/Sao_Paulo') AS hora_fim_viagem, 
   SAFE_CAST(p.111866 AS STRING) AS motivo, 
   COALESCE(SAFE_CAST(p.111904 AS STRING), SAFE_CAST(p.111900 AS STRING)) AS motivo_julgamento, 
   SAFE_CAST(p.125615 AS STRING) AS observacao,
@@ -92,58 +92,12 @@ SELECT
     t.servico,
     t.id_veiculo,
     t.sentido,
-    -- DATETIME(DATE(data_viagem), EXTRACT(time FROM hora_inicio_viagem)) AS datetime_partida,
-    -- DATETIME(DATE(data_viagem), EXTRACT(time FROM hora_fim_viagem)) AS datetime_chegada,
+    DATETIME(EXTRACT(date FROM TIMESTAMP(data_viagem)), EXTRACT(time FROM TIMESTAMP_SUB(hora_inicio_viagem, INTERVAL 2 HOUR)) ) AS datetime_partida,
+    DATETIME(EXTRACT(date FROM TIMESTAMP(data_viagem)), EXTRACT(time FROM TIMESTAMP_SUB(hora_fim_viagem, INTERVAL 2 HOUR)) ) AS datetime_chegada,
     t.motivo,
     t.motivo_julgamento,
     t.observacao,
-    -- DATE(datetime_recurso) AS data,
+    DATE(datetime_recurso) AS data,
   
 FROM
     tratado t
-
-
-
-
-  
-
--- WITH
---   recurso_sppo AS (
---   SELECT
---     SAFE_CAST(protocol AS STRING) AS id_recurso,
---     DATETIME(timestamp_captura) AS datetime_captura,
---     data_recurso AS data,
---     consorcio,
---     CASE
---       WHEN servico = "SR - Regular" THEN linha
---     ELSE
---     CONCAT(REPLACE(SPLIT(servico, "-")[
---       OFFSET
---         (0)], " ", ""), linha)
---   END
---     servico,
---     CASE
---       WHEN direcao_servico = "Ida" THEN "I"
---       WHEN direcao_servico = "Volta" THEN "V"
---       WHEN direcao_servico = "Circular" THEN "C"
---   END
---     AS sentido,
---     numero_ordem_veiculo AS id_veiculo,
---     DATETIME(DATE(dia_viagem), EXTRACT(time
---       FROM
---         TIMESTAMP(hora_inicio_viagem))) AS datetime_partida,
---     DATETIME(DATE(dia_viagem), EXTRACT(time
---       FROM
---         TIMESTAMP(hora_fim_viagem))) AS datetime_chegada,
---     motivo AS motivo,
---     julgamento,
---     COALESCE(motivo_indeferido, motivo_deferido) AS motivo_julgamento, 
---     ROW_NUMBER() OVER(PARTITION BY protocol ORDER BY data_extracao DESC) AS rn
---   FROM
---     `rj-smtr.br_rj_riodejaneiro_recurso.recurso_sppo` )
--- SELECT
---   * EXCEPT(rn)
--- FROM
---   t
--- WHERE
---   rn = 1
