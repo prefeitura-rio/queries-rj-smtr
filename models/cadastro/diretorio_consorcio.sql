@@ -30,7 +30,7 @@ SELECT
   s.data_registro AS data_processo,
   s.cnpj,
   s.id_consorcio AS id_consorcio_stu,
-  j.cd_consorcio AS id_consorcio_jae,
+  j.cd_consorcio AS id_consorcio_jae
 FROM {{ ref("staging_consorcio") }} AS j
 LEFT JOIN
   stu AS s
