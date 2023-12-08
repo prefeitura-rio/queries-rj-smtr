@@ -1,3 +1,4 @@
+-- depends_on: {{ ref('operadoras_contato') }}
 {{
   config(
     materialized="incremental",
@@ -124,10 +125,10 @@ LEFT JOIN
 ON
     t.cd_operadora = o.cd_operadora_transporte
 LEFT JOIN
-    {{ ref("diretorio_operadora") }} AS do
+    {{ ref("diretorio_operadoras") }} AS do
 ON
     t.cd_operadora = do.id_operadora_jae
 LEFT JOIN
-    {{ ref("diretorio_consorcio") }} AS dc
+    {{ ref("diretorio_consorcios") }} AS dc
 ON
     lc.cd_consorcio = dc.id_consorcio_jae
