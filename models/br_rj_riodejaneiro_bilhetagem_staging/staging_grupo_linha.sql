@@ -20,7 +20,7 @@ WITH
     grupo_linha_rn AS (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY data, cd_grupo, cd_linha) AS rn
+            ROW_NUMBER() OVER (PARTITION BY cd_grupo, cd_linha ORDER BY timestamp_captura DESC) AS rn
         FROM
             grupo_linha
     )

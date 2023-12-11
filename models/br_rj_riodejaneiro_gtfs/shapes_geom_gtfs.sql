@@ -62,9 +62,12 @@ merged AS (
 ),
 ids AS (
        SELECT data_versao,
-              shape_id,              
+              shape_id,
               shape,
-              ROW_NUMBER() OVER(PARTITION BY m.data_versao, m.shape_id) rn
+              shape_distance,
+              start_pt,
+              end_pt,
+              ROW_NUMBER() OVER(PARTITION BY data_versao, shape_id) rn
        FROM merged m
 )
 SELECT 

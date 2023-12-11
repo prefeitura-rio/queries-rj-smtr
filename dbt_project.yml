@@ -102,7 +102,6 @@ vars:
   subsidio_shapes: "`rj-smtr-staging.projeto_subsidio_sppo_staging.shapes`"
   subsidio_trips: "`rj-smtr-staging.projeto_subsidio_sppo_staging.trips`"
   subsidio_parametros: "`rj-smtr-staging.dashboard_subsidio_sppo_staging.subsidio_parametros`"
-  subsidio_ordem_servico: "`rj-smtr-staging.projeto_subsidio_sppo_staging.ordem_servico`"
   shapes_version: "YYYY-MM-DD"
   frequencies_version: "YYYY-MM-DD"
   DATA_SUBSIDIO_V2_INICIO: "2023-01-16"
@@ -172,4 +171,7 @@ models:
     br_rj_riodejaneiro_bilhetagem_staging:
       +materialized: view
       +schema: br_rj_riodejaneiro_bilhetagem_staging
-
+    br_rj_riodejaneiro_recurso:
+      +materialized: incremental
+      +incremental_strategy: insert_overwrite
+      +schema: br_rj_riodejaneiro_recurso
