@@ -49,5 +49,5 @@ sources:
     database: rj-smtr-dev
 
     tables:
-      - name: recurso_sppo
+      - name: recurso_sppo_viagens_individuais
 
