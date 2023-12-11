@@ -16,7 +16,6 @@ WITH transacao_agg AS (
         DATE_ADD(data, INTERVAL 1 DAY) AS data_ordem,
         ANY_VALUE(id_consorcio) AS id_consorcio,
         id_operadora,
-        -- cd_linha,
         servico,
         COUNT(*) AS quantidade_total_transacao_captura,
         ROUND(SUM(valor_transacao), 1) AS valor_total_transacao_captura
