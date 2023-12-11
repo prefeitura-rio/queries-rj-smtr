@@ -4,7 +4,7 @@
     'data_type' :'date',
     'granularity': 'day' },
       unique_key = 'protocol',
-      alias = 'recurso_sppo',
+      alias = 'recurso_sppo_viagens_individuais',
 ) }}
 
 
