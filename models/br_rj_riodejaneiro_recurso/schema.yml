@@ -2,7 +2,7 @@ version: 2
 sources:
 - name: br_rj_riodejaneiro_recurso
 models:
-  - name: recurso_sppo_viagens_individuais
+  - name: recurso_sppo
     description: Recursos abertos na plataforma Movidesk para pagamento de subsídio de viagens individuais de ônibus
     columns:
       - name: datetime_captura
