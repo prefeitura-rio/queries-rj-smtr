@@ -45,7 +45,7 @@ stu_pessoa_juridica AS (
     "CNPJ" AS tipo_documento
   FROM
     {{ ref("staging_operadora_empresa") }}
-  WHERE perm_autor NOT IN ({{ var('ids_consorcios')|join(', ') }})
+  WHERE perm_autor NOT IN ({{ var("ids_consorcios").keys()|join(", ") }})
 ),
 stu_pessoa_fisica AS (
   SELECT

@@ -13,11 +13,9 @@ WITH stu AS (
       data_registro,
       razao_social,
       CASE
-        WHEN perm_autor = "221000050" THEN "1"
-        WHEN perm_autor = "221000032" THEN "3"
-        WHEN perm_autor = "221000023" THEN "4"
-        WHEN perm_autor = "221000041" THEN "5"
-        WHEN perm_autor = "221000014" THEN "6"
+        {% for id_stu, id_jae in var("ids_consorcios").items() %}
+          WHEN perm_autor = {{ id_stu }} THEN {{ id_jae }}
+        {% endfor %}
       END AS cd_consorcio_jae
   FROM
     {{ ref("staging_operadora_empresa") }} AS stu
