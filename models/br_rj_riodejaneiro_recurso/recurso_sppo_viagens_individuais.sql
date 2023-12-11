@@ -3,8 +3,8 @@
   partition_by = { 'field' :'data',
     'data_type' :'date',
     'granularity': 'day' },
-      unique_key = ['protocol'],
-      alias = 'recurso_sppo',
+      unique_key = 'protocol',
+      alias = 'recurso_sppo_viagens_individuais',
 ) }}
 
 
@@ -18,7 +18,7 @@ WITH recurso_sppo AS (
     --DATETIME(TIMESTAMP(timestamp_captura), "America/Sao_Paulo") AS datetime_captura
   FROM 
     {{source('br_rj_riodejaneiro_recurso_staging', 
-      'recurso_sppo')}} 
+      'recurso_sppo_viagens_individuais')}} 
   {% if is_incremental() -%}
     WHERE
         DATE(data) BETWEEN DATE("{{var('date_range_start')}}") 
@@ -58,7 +58,7 @@ tratado AS (
   SELECT 
   id_recurso, 
   datetime_captura, 
-  datetime_recurso, 
+  datetime_recurso,
   SAFE_CAST(p.111865 AS STRING) AS julgamento, 
   SAFE_CAST(p.111870 AS STRING) AS consorcio,
   CASE
