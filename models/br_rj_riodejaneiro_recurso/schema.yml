@@ -37,6 +37,6 @@ models:
      - name: motivo_indeferido
        description: "Motivos para indeferimento"
      - name: observacao
-       description: "Observações acerca do julgamentodo recurso"
+       description: "Observações acerca do julgamento do recurso"
 
 
