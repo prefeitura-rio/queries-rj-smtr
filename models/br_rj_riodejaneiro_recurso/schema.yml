@@ -9,8 +9,6 @@ models:
         description: Data de captura dos dados
       - name: datetime_recurso
         description: Data de criação do ticket para pedido de recurso no Movidesk
-      - name: datetime_update_recurso
-        description: Data de atualização do ticket para pedido de recurso no Movidesk
       - name: id_recurso
         description: Número de id do recurso
       - name: servico
