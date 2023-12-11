@@ -13,7 +13,6 @@ WITH recurso_sppo AS (
     ROW_NUMBER() OVER(PARTITION BY protocol ORDER BY timestamp_captura DESC) AS rn,    
     JSON_EXTRACT_ARRAY(content, '$.customFieldValues') AS items,
     DATETIME(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%S', REGEXP_REPLACE(JSON_VALUE(content, '$.createdDate'), r'(\.\d+)?$', '')), 'America/Sao_Paulo') AS datetime_recurso,
-    DATETIME(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%S', REGEXP_REPLACE(JSON_VALUE(content, '$.lastUpdate'), r'(\.\d+)?$', '')), 'America/Sao_Paulo') AS datetime_update_recurso,
     SAFE_CAST(protocol AS STRING) AS id_recurso,
     DATETIME(PARSE_TIMESTAMP('%Y-%m-%d %H:%M:%S%Ez', timestamp_captura), 'America/Sao_Paulo') AS datetime_captura
     --DATETIME(TIMESTAMP(timestamp_captura), "America/Sao_Paulo") AS datetime_captura
@@ -33,7 +32,6 @@ exploded AS (
   SELECT 
     id_recurso,
     datetime_recurso,
-    datetime_update_recurso,
     datetime_captura, 
     SAFE_CAST(COALESCE(JSON_VALUE(items, '$.value'), JSON_VALUE(items, '$.items[0].customFieldItem')) AS STRING
     ) AS value, 
@@ -61,7 +59,6 @@ tratado AS (
   id_recurso, 
   datetime_captura, 
   datetime_recurso,
-  datetime_update_recurso, 
   SAFE_CAST(p.111865 AS STRING) AS julgamento, 
   SAFE_CAST(p.111870 AS STRING) AS consorcio,
   CASE
@@ -90,7 +87,6 @@ SELECT
     t.id_recurso,
     t.datetime_captura,
     t.datetime_recurso,
-    t.datetime_update_recurso,
     t.julgamento,
     t.consorcio,
     t.servico,
