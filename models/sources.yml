@@ -46,7 +46,7 @@ sources:
       - name: operadora_pessoa_fisica
 
   - name: br_rj_riodejaneiro_recurso_staging
-    database: rj-smtr-dev
+    database: rj-smtr-staging
 
     tables:
       - name: recurso_sppo_viagens_individuais
