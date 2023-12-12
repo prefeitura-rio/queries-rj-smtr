@@ -26,7 +26,7 @@ WITH
   FROM
       {{ ref("ordem_servico_gtfs") }}
   WHERE
-    data_versao BETWEEN DATE("{{ var("start_date") }}")
+    data_versao BETWEEN DATE_TRUNC(DATE("{{ var("start_date") }}"), MONTH)
     AND DATE( "{{ var("end_date") }}" )
   ),
   data_versao_efetiva AS (
