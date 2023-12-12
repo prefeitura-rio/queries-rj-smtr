@@ -1,43 +1,35 @@
 version: 2
 sources:
-  - name: "br_rj_riodejaneiro_recurso"
-
+- name: br_rj_riodejaneiro_recurso
 models:
-  - name: recurso_sppo
-    description: "Recursos abertos na plataforma MoviDesk para pagamento de subsídio de viagens individuais de ônibus"
+  - name: recurso_sppo_viagens_individuais
+    description: Recursos abertos na plataforma Movidesk para pagamento de subsídio de viagens individuais de ônibus
     columns:
-     - name: data_extracao
-       description: "Data de extração dos dados"
-     - name: data_recurso
-       description:  "Data de criação do ticket para pedido de recurso no Movidesk"
-     - name: protocol
-       description:  "Número de protocolo do ticket"
-     - name: id_ticket
-       description:  "Número identificador do ticket"
-     - name: servico
-       description: "Tipo do serviço de ônibus"
-     - name: direcao_servico
-       description: "Direção do serviço"
-     - name: consorcio
-       description:  "Nome do consórcio"
-     - name: linha
-       description:  "Número da linha"
-     - name: numero_ordem_veiculo
-       description:  "Número de ordem do veículo (Somente números)"
-     - name: dia_viagem
-       description:  "Dia da viagem do ticket"
-     - name: hora_inicio_viagem
-       description: "Horário de início da viagem" 
-     - name: hora_fim_viagem
-       description: "Horário de fim da viagem" 
-     - name: motivo
-       description: "Motivo para criação do recurso" 
-     - name: julgamento
-       description: "Julgamento do recurso"
-     - name: motivo_indeferido
-       description: "Motivos para indeferimento"
-     - name: observacao
-       description: "Observações acerca do julgamentodo recurso"
-
-
-    
+      - name: datetime_captura
+        description: Data de captura dos dados
+      - name: datetime_recurso
+        description: Data de criação do ticket para pedido de recurso no Movidesk
+      - name: id_recurso
+        description: Número de id do recurso
+      - name: servico
+        description: Tipo do serviço de ônibus
+      - name: sentido
+        description: Sentido do ônibus
+      - name: consorcio
+        description: Nome do consórcio
+      - name: id_veiculo
+        description: Número de identificação do veículo (Somente números)
+      - name: datetime_partida
+        description: "Datetime da partida da viagem"
+      - name: datetime_chegada
+        description: "Datetime da chegada da viagem"
+      - name: motivo
+        description: Motivo para criação do recurso
+      - name: julgamento
+        description: Julgamento do recurso
+      - name: motivo_julgamento
+        description: Motivos para julgamento
+      - name: observacao
+        description: Observações acerca do julgamentodo recurso
+      - name: data
+        description: Data do recurso (partição da tabela)
