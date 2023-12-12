@@ -2,7 +2,7 @@
 with gps as (
     select 
         g.* except(longitude, latitude, servico),
-        {% if var("run_date") > "2023-01-16" %}
+        {% if var("run_date") > "2023-01-16" and var("run_date") < "2023-12-02" %}
         -- Substitui servicos noturnos por regulares, salvo exceções
         case
             when servico like "SN%" and servico not in ("SN006", "SN415", "SN474", "SN483")

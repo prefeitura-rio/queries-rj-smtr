@@ -181,6 +181,5 @@ models:
       +schema: cadastro
     br_rj_riodejaneiro_recurso:
       +materialized: incremental
-      +incremental_strategy: insert_overwrite
       +schema: br_rj_riodejaneiro_recurso
 

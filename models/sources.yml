@@ -49,5 +49,4 @@ sources:
     database: rj-smtr-staging
 
     tables:
-      - name: recurso_sppo
-
+      - name: recurso_sppo_viagens_individuais
