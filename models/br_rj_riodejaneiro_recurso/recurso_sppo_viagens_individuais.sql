@@ -3,7 +3,7 @@
   partition_by = { 'field' :'data',
     'data_type' :'date',
     'granularity': 'day' },
-      unique_key = 'protocol',
+      unique_key = 'id_recurso',
       alias = 'recurso_sppo_viagens_individuais',
 ) }}
 
@@ -15,7 +15,6 @@ WITH recurso_sppo AS (
     DATETIME(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%S', REGEXP_REPLACE(JSON_VALUE(content, '$.createdDate'), r'(\.\d+)?$', '')), 'America/Sao_Paulo') AS datetime_recurso,
     SAFE_CAST(protocol AS STRING) AS id_recurso,
     DATETIME(PARSE_TIMESTAMP('%Y-%m-%d %H:%M:%S%Ez', timestamp_captura), 'America/Sao_Paulo') AS datetime_captura
-    --DATETIME(TIMESTAMP(timestamp_captura), "America/Sao_Paulo") AS datetime_captura
   FROM 
     {{source('br_rj_riodejaneiro_recurso_staging', 
       'recurso_sppo_viagens_individuais')}} 

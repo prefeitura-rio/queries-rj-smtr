@@ -14,12 +14,9 @@ WITH transacao_agg AS (
     SELECT
         data,
         DATE_ADD(data, INTERVAL 1 DAY) AS data_ordem,
-        ANY_VALUE(consorcio) AS consorcio,
-        cd_operadora,
-        cd_linha,
-        ANY_VALUE(permissao) AS permissao,
-        ANY_VALUE(empresa) AS empresa,
-        ANY_VALUE(servico) AS servico,
+        ANY_VALUE(id_consorcio) AS id_consorcio,
+        id_operadora,
+        servico,
         COUNT(*) AS quantidade_total_transacao_captura,
         ROUND(SUM(valor_transacao), 1) AS valor_total_transacao_captura
     FROM
@@ -32,20 +29,15 @@ WITH transacao_agg AS (
         {%- endif %}
     GROUP BY
         data,
-        cd_operadora,
-        cd_linha
+        id_operadora,
+        servico
 ),
 ordem_pagamento AS (
     SELECT
         r.data_ordem,
         p.data_pagamento,
-        c.nm_consorcio AS consorcio,
-        r.id_operadora AS cd_operadora,
-        CASE
-            WHEN r.id_operadora = "1" THEN "22.100005-0"
-        END AS permissao,
-        pj.nm_fantasia AS empresa,
-        r.id_linha AS cd_linha,
+        dc.id_consorcio,
+        do.id_operadora,
         l.nr_linha AS servico,
         r.id_ordem_pagamento AS id_ordem_pagamento,
         r.id_ordem_ressarcimento AS id_ordem_ressarcimento,
@@ -84,9 +76,13 @@ ordem_pagamento AS (
     ON
         r.id_operadora = o.cd_operadora_transporte
     LEFT JOIN
-        {{ ref("staging_pessoa_juridica") }} AS pj
+        {{ ref("diretorio_operadoras") }} AS do
     ON
-        o.cd_cliente = pj.cd_cliente
+        r.id_operadora = do.id_operadora_jae
+    LEFT JOIN
+        {{ ref("diretorio_consorcios") }} AS dc
+    ON
+        r.id_consorcio = dc.id_consorcio_jae
     {% if is_incremental() -%}
     WHERE
         DATE(r.data) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
@@ -95,11 +91,8 @@ ordem_pagamento AS (
 SELECT
     COALESCE(op.data_ordem, t.data_ordem) AS data_ordem,
     op.data_pagamento,
-    COALESCE(op.consorcio, t.consorcio) AS consorcio,
-    COALESCE(op.cd_operadora, t.cd_operadora) AS cd_operadora,
-    COALESCE(op.permissao, t.permissao) AS permissao,
-    COALESCE(op.empresa, t.empresa) AS empresa,
-    COALESCE(op.cd_linha, t.cd_linha) AS cd_linha,
+    COALESCE(op.id_consorcio, t.id_consorcio) AS id_consorcio,
+    COALESCE(op.id_operadora, t.id_operadora) AS id_operadora,
     COALESCE(op.servico, t.servico) AS servico,
     op.id_ordem_pagamento,
     op.id_ordem_ressarcimento,
@@ -132,5 +125,5 @@ FULL OUTER JOIN
     transacao_agg t
 ON
     t.data_ordem = op.data_ordem
-    AND t.cd_linha = op.cd_linha
-    AND t.cd_operadora = op.cd_operadora
+    AND t.servico = op.servico
+    AND t.id_operadora = op.id_operadora

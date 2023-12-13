@@ -133,7 +133,7 @@ vars:
   var_percentual_tarifa_cbd: 0.04
 
   ### Diretorios ###
-  ids_consorcios: ["'221000014'", "'221000023'", "'221000032'", "'221000041'", "'221000050'"] 
+  ids_consorcios: {"'221000014'": "'6'", "'221000023'": "'4'", "'221000032'": "'3'", "'221000041'": "'5'", "'221000050'": "'1'"}
 
 models:
   +persist_docs:
@@ -174,6 +174,12 @@ models:
     br_rj_riodejaneiro_bilhetagem_staging:
       +materialized: view
       +schema: br_rj_riodejaneiro_bilhetagem_staging
-    br_rj_riodejaneiro_recursos:
+    br_rj_riodejaneiro_stu:
+      +materialized: view
+      +schema: br_rj_riodejaneiro_stu
+    cadastro:
+      +schema: cadastro
+    br_rj_riodejaneiro_recurso:
       +materialized: incremental
-      +schema: br_rj_riodejaneiro_recursos
+      +schema: br_rj_riodejaneiro_recurso
+
