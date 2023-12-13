@@ -117,10 +117,6 @@ ON
     AND t.data_transacao >= lc.datetime_inicio_validade
     AND (t.data_transacao <= lc.datetime_fim_validade OR lc.datetime_fim_validade IS NULL)
 LEFT JOIN
-    {{ ref("staging_consorcio") }} AS c
-ON 
-    lc.cd_consorcio = c.cd_consorcio
-LEFT JOIN
     {{ ref("staging_operadora_transporte") }} AS o
 ON
     t.cd_operadora = o.cd_operadora_transporte
