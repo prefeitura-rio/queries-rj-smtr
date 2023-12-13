@@ -1,8 +1,17 @@
+{{
+    config(
+        materialized="incremental",
+        partition_by={"field": "data", "data_type": "date", "granularity": "day"},
+        unique_key=["data", "id_viagem"],
+        incremental_strategy="insert_overwrite",
+    )
+}}
+
 WITH
 -- 1. Viagens planejadas (agrupadas por data e serviço)
   planejado AS (
   SELECT
-    DISTINCT DATA,
+    DISTINCT data,
     tipo_dia,
     consorcio,
     servico,
@@ -10,7 +19,7 @@ WITH
   FROM
     {{ ref("viagem_planejada") }}
   WHERE
-    DATA BETWEEN DATE("{{ var("start_date") }}")
+    data BETWEEN DATE("{{ var("start_date") }}")
     AND DATE( "{{ var("end_date") }}" )
     AND ( distancia_total_planejada > 0
       OR distancia_total_planejada IS NULL )
@@ -61,7 +70,7 @@ WITH
 -- 2. Viagens realizadas
   viagem AS (
   SELECT
-    DATA,
+    data,
     servico_realizado AS servico,
     id_veiculo,
     id_viagem,
@@ -69,18 +78,18 @@ WITH
  FROM
     {{ ref("viagem_completa") }}
   WHERE
-    DATA BETWEEN DATE("{{ var("start_date") }}")
+    data BETWEEN DATE("{{ var("start_date") }}")
     AND DATE( "{{ var("end_date") }}" ) ),
 -- 3. Status dos veículos
   veiculos AS (
   SELECT
-    DATA,
+    data,
     id_veiculo,
     status
   FROM
     {{ ref("sppo_veiculo_dia") }}
   WHERE
-    DATA BETWEEN DATE("{{ var("start_date") }}")
+    data BETWEEN DATE("{{ var("start_date") }}")
     AND DATE("{{ var("end_date") }}") ),
 -- 4. Parâmetros de subsídio
   subsidio_parametros AS (
@@ -94,7 +103,7 @@ WITH
 -- 5. Viagens com tipo e valor de subsídio por km
   viagem_km_tipo AS (
   SELECT
-    v.DATA,
+    v.data,
     v.servico,
     ve.status AS tipo_viagem,
     id_viagem,
@@ -105,7 +114,7 @@ WITH
   LEFT JOIN
     veiculos AS ve
   USING
-    (DATA,
+    (data,
       id_veiculo)
   LEFT JOIN
     subsidio_parametros AS t
@@ -129,7 +138,7 @@ WITH
   LEFT JOIN
     viagem_km_tipo AS v
   USING
-    (DATA,
+    (data,
       servico)
   GROUP BY
     1,
@@ -159,16 +168,16 @@ CASE
 FROM (
 SELECT
     *,
-    ROW_NUMBER() OVER(PARTITION BY DATA, servico ORDER BY subsidio_km*distancia_planejada DESC) AS rn
+    ROW_NUMBER() OVER(PARTITION BY data, servico ORDER BY subsidio_km*distancia_planejada DESC) AS rn
 FROM
     viagem_km_tipo ) AS v
 LEFT JOIN
     viagem_planejada AS p
 USING
-    (DATA,
+    (data,
         servico)
 LEFT JOIN
     servico_km_apuracao AS s
 USING
-    (DATA,
+    (data,
         servico)
