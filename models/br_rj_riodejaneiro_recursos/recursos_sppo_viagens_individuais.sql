@@ -89,7 +89,7 @@ SELECT
     t.servico,
     t.sentido,
     t.consorcio,
-        DATETIME(EXTRACT(date FROM TIMESTAMP(data_viagem)), EXTRACT(time FROM TIMESTAMP_SUB(hora_inicio_viagem, INTERVAL 2 HOUR)) ) AS datetime_partida,
+    DATETIME(EXTRACT(date FROM TIMESTAMP(data_viagem)), EXTRACT(time FROM TIMESTAMP_SUB(hora_inicio_viagem, INTERVAL 2 HOUR)) ) AS datetime_partida,
     CASE 
       WHEN 
         EXTRACT(time FROM TIMESTAMP_SUB(hora_inicio_viagem, INTERVAL 2 HOUR)) > EXTRACT(time FROM TIMESTAMP_SUB(hora_fim_viagem, INTERVAL 2 HOUR)) 
