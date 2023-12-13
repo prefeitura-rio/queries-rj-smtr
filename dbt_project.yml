@@ -171,6 +171,6 @@ models:
     br_rj_riodejaneiro_bilhetagem_staging:
       +materialized: view
       +schema: br_rj_riodejaneiro_bilhetagem_staging
-    br_rj_riodejaneiro_recurso:
+    br_rj_riodejaneiro_recursos:
       +materialized: incremental
-      +schema: br_rj_riodejaneiro_recurso
+      +schema: br_rj_riodejaneiro_recursos

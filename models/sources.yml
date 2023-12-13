@@ -36,8 +36,8 @@ sources:
       - name: ordem_servico
 
 
-  - name: br_rj_riodejaneiro_recurso_staging
+  - name: br_rj_riodejaneiro_recursos_staging
     database: rj-smtr-staging
 
     tables:
-      - name: recurso_sppo_viagens_individuais
+      - name: recursos_sppo_viagens_individuais
