@@ -17,7 +17,7 @@ WITH recurso_sppo AS (
     DATETIME(PARSE_TIMESTAMP('%Y-%m-%d %H:%M:%S%Ez', timestamp_captura), 'America/Sao_Paulo') AS datetime_captura
 
   FROM 
-    {{source('br_rj_riodejaneiro_recurso_staging', 
+    {{source('br_rj_riodejaneiro_recursos_staging', 
       'recursos_sppo_viagens_individuais')}} 
   {% if is_incremental() -%}
     WHERE

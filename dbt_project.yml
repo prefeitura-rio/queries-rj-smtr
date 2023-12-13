@@ -179,7 +179,7 @@ models:
       +schema: br_rj_riodejaneiro_stu
     cadastro:
       +schema: cadastro
-    br_rj_riodejaneiro_recurso:
+    br_rj_riodejaneiro_recursos:
       +materialized: incremental
-      +schema: br_rj_riodejaneiro_recurso
+      +schema: br_rj_riodejaneiro_recursos
 
