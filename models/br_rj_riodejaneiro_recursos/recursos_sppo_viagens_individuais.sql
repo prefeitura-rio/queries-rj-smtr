@@ -85,10 +85,13 @@ FROM
 
 SELECT
     t.id_recurso,
-    t.id_veiculo,
+    DATE(datetime_recurso) AS data,
+    t.datetime_captura,
+    t.datetime_recurso,
+    t.consorcio,
     t.servico,
     t.sentido,
-    t.consorcio,
+    t.id_veiculo AS id_veiculo_numeral,
     DATETIME(EXTRACT(date FROM TIMESTAMP(data_viagem)), EXTRACT(time FROM TIMESTAMP_SUB(hora_inicio_viagem, INTERVAL 2 HOUR)) ) AS datetime_partida,
     CASE 
       WHEN 
@@ -101,13 +104,11 @@ SELECT
           EXTRACT(time FROM TIMESTAMP_SUB(hora_fim_viagem, INTERVAL 2 HOUR))
         )
     END AS datetime_chegada,
-    t.datetime_captura,
-    t.datetime_recurso, 
-    t.motivo_recurso,
+    t.motivo AS motivo_recurso,
     t.julgamento,
     t.motivo_julgamento,
-    t.observacao_julgamento,
-    DATE(datetime_recurso) AS data,
+    t.observacao AS observacao_julgamento
+
   
 FROM
     tratado t
