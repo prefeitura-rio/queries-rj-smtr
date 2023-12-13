@@ -133,7 +133,6 @@ ordem_pagamento_validacao AS (
             (t.quantidade_total_transacao_captura = op.quantidade_total_transacao AND t.valor_total_transacao_captura = op.valor_total_transacao_bruto),
             false
         ) AS flag_ordem_valida,
-        '{{ var("version") }}' AS versao
     FROM
         ordem_pagamento op
     FULL OUTER JOIN
@@ -170,6 +169,7 @@ SELECT
     o.quantidade_total_transacao_captura,
     o.valor_total_transacao_captura,
     o.flag_ordem_valida,
+    '{{ var("version") }}' AS versao
 FROM
     ordem_pagamento_validacao o
 LEFT JOIN
@@ -184,4 +184,4 @@ LEFT JOIN
     {{ ref("staging_linha") }} AS l
 ON
     o.id_linha = l.cd_linha 
-    AND (o.data_processamento) >= l.datetime_inclusao
+    AND o.data_processamento >= l.datetime_inclusao

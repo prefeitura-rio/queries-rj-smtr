@@ -1,35 +1,35 @@
 version: 2
 sources:
-- name: br_rj_riodejaneiro_recurso
+- name: br_rj_riodejaneiro_recursos
 models:
-  - name: recurso_sppo_viagens_individuais
+  - name: recursos_sppo_viagens_individuais
     description: Recursos abertos na plataforma Movidesk para pagamento de subsídio de viagens individuais de ônibus
     columns:
-      - name: datetime_captura
-        description: Data de captura dos dados
-      - name: datetime_recurso
-        description: Data de criação do ticket para pedido de recurso no Movidesk
       - name: id_recurso
         description: Número de id do recurso
+      - name: id_veiculo
+        description: Número de identificação do veículo (Somente números)
       - name: servico
         description: Tipo do serviço de ônibus
       - name: sentido
         description: Sentido do ônibus
       - name: consorcio
         description: Nome do consórcio
-      - name: id_veiculo
-        description: Número de identificação do veículo (Somente números)
       - name: datetime_partida
         description: "Datetime da partida da viagem"
       - name: datetime_chegada
         description: "Datetime da chegada da viagem"
-      - name: motivo
+      - name: datetime_captura
+        description: Data/hora de captura dos dados
+      - name: datetime_recurso
+        description: Data/hora de criação do ticket para pedido de recurso no Movidesk
+      - name: motivo_recurso
         description: Motivo para criação do recurso
       - name: julgamento
         description: Julgamento do recurso
       - name: motivo_julgamento
         description: Motivos para julgamento
-      - name: observacao
+      - name: observacao_julgamento
         description: Observações acerca do julgamentodo recurso
       - name: data
         description: Data do recurso (partição da tabela)
