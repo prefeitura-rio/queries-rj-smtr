@@ -7,7 +7,7 @@ models:
     columns:
       - name: id_recurso
         description: Número de id do recurso
-      - name: id_veiculo
+      - name: id_veiculo_numeral
         description: Número de identificação do veículo (Somente números)
       - name: servico
         description: Tipo do serviço de ônibus
