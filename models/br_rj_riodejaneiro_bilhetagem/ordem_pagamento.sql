@@ -16,19 +16,20 @@ WITH transacao AS (
         DATETIME(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%E6S%Ez', SAFE_CAST(JSON_VALUE(content, '$.data_transacao') AS STRING)), "America/Sao_Paulo") AS data_transacao,
         DATE(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%E6S%Ez', SAFE_CAST(JSON_VALUE(content, '$.data_processamento') AS STRING)), "America/Sao_Paulo") AS data_processamento,
         SAFE_CAST(JSON_VALUE(content, '$.cd_linha') AS STRING) AS cd_linha,
-        SAFE_CAST(JSON_VALUE(content, '$.cd_operadora') AS STRING) AS cd_operadora
+        SAFE_CAST(JSON_VALUE(content, '$.cd_operadora') AS STRING) AS cd_operadora,
+        SAFE_CAST(JSON_VALUE(content, '$.valor_transacao') AS FLOAT64) AS valor_transacao
     FROM
         {{ source("br_rj_riodejaneiro_bilhetagem_staging", "transacao") }}
     WHERE
         {% if is_incremental() -%}
-            data BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 1 DAY) AND DATE("{{var('date_range_end')}}")
+            DATE(data) BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 1 DAY) AND DATE("{{var('date_range_end')}}")
         {% else %}
-            data <= CURRENT_DATE("America/Sao_Paulo")
+            DATE(data) <= CURRENT_DATE("America/Sao_Paulo")
         {%- endif %}
 ),
 transacao_deduplicada AS (
     SELECT 
-        t,* EXCEPT(rn),
+        t.* EXCEPT(rn),
         lc.cd_consorcio
     FROM
     (
@@ -46,7 +47,13 @@ transacao_deduplicada AS (
         AND (t.data_transacao <= lc.datetime_fim_validade OR lc.datetime_fim_validade IS NULL)
     WHERE
         rn = 1
-        AND t.data_processamento < DATE("{{var('date_range_end')}}")
+        AND
+        {% if is_incremental() -%}
+            t.data_processamento < DATE("{{var('date_range_end')}}")
+        {% else %}
+            t.data_processamento < CURRENT_DATE("America/Sao_Paulo")
+        {%- endif %}
+        
 ),
 transacao_agg AS (
     SELECT
@@ -69,7 +76,7 @@ ordem_pagamento AS (
         DATE_SUB(r.data_ordem, INTERVAL 1 DAY) AS data_processamento,
         r.data_ordem,
         p.data_pagamento,
-        r.id_consorcio
+        r.id_consorcio,
         r.id_operadora,
         r.id_linha,
         r.id_ordem_pagamento AS id_ordem_pagamento,
@@ -132,7 +139,7 @@ ordem_pagamento_validacao AS (
         COALESCE(
             (t.quantidade_total_transacao_captura = op.quantidade_total_transacao AND t.valor_total_transacao_captura = op.valor_total_transacao_bruto),
             false
-        ) AS flag_ordem_valida,
+        ) AS flag_ordem_valida
     FROM
         ordem_pagamento op
     FULL OUTER JOIN
