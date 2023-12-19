@@ -7,15 +7,10 @@
       alias = 'recursos_sppo_viagens_individuais',
 ) }}
 
-WITH captura AS( 
-SELECT * 
-FROM {{ ref('recursos_sppo_viagens_individuais_view') }} 
-),
-julgamento AS(
-  SELECT * 
-  FROM {{ ref('recursos_sppo_viagens_individuais_ultimo_julgamento') }}
-),
-
+SELECT *.{{ ref('recursos_sppo_viagens_individuais_view') }} AS captura,
+       *.{{ ref('recursos_sppo_viagens_individuais_ultimo_julgamento') }} AS julgamento,
+FROM julgamento
 JOIN captura 
-ON captura.id_recurso = julgamento.id_recurso
+  ON captura.id_recurso = julgamento.id_recurso
+
 
