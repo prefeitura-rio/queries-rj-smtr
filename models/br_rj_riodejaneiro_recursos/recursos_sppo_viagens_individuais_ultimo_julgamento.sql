@@ -16,7 +16,6 @@ FROM
   {{ ref('recursos_sppo_viagens_individuais_view') }}
 WHERE
   datetime_update > dateadd(day, -1, current_date)
-  {% if is_incremental() %}
 ),
 captura_view AS (
   SELECT * 
