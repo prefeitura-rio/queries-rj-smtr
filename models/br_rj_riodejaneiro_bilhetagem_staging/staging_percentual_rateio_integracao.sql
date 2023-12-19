@@ -4,27 +4,36 @@
   )
 }}
 
-{{
-    open_staging_table(
-        pk_columns={
-            'id': 'STRING'
-        },
-        content_columns={
-            'dt_fim_validade': 'STRING',
-            'dt_inclusao': {'type': 'DATETIME', 'format': '%Y-%m-%dT%H:%M:%S%Ez'},
-            'dt_inicio_validade': {'type': 'DATE', 'format': '%Y-%m-%d'},
-            'id_tipo_modal_integracao_t1': 'INTEGER',
-            'id_tipo_modal_integracao_t2': 'INTEGER',
-            'id_tipo_modal_integracao_t3': 'INTEGER',
-            'id_tipo_modal_integracao_t4': 'INTEGER',
-            'id_tipo_modal_origem': 'INTEGER',
-            'perc_rateio_integracao_t1': 'FLOAT64',
-            'perc_rateio_integracao_t2': 'FLOAT64',
-            'perc_rateio_integracao_t3': 'FLOAT64',
-            'perc_rateio_integracao_t4': 'FLOAT64',
-            'perc_rateio_origem': 'FLOAT64'
-        },
-        source_dataset_id='br_rj_riodejaneiro_bilhetagem_staging',
-        source_table_id='percentual_rateio_integracao'
-    )
-}}
+WITH percentual_rateio_integracao AS (
+  SELECT
+    data,
+    SAFE_CAST(id AS STRING) AS id,
+    timestamp_captura,
+    SAFE_CAST(JSON_VALUE(content, '$.dt_fim_validade') AS STRING) AS dt_fim_validade,
+    DATETIME(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:S%Ez', SAFE_CAST(JSON_VALUE(content, '$.dt_inclusao') AS STRING)), 'America/Sao_Paulo') AS dt_inclusao,
+    DATE(PARSE_TIMESTAMP('%Y-%m-%d', SAFE_CAST(JSON_VALUE(content, '$.dt_inicio_validade') AS STRING)), 'America/Sao_Paulo') AS dt_inicio_validade,
+    REPLACE(SAFE_CAST(JSON_VALUE(content, '$.id_tipo_modal_integracao_t1') AS STRING), '.0', '') AS id_tipo_modal_integracao_t1,
+    REPLACE(SAFE_CAST(JSON_VALUE(content, '$.id_tipo_modal_integracao_t2') AS STRING), '.0', '') AS id_tipo_modal_integracao_t2,
+    REPLACE(SAFE_CAST(JSON_VALUE(content, '$.id_tipo_modal_integracao_t3') AS STRING), '.0', '') AS id_tipo_modal_integracao_t3,
+    REPLACE(SAFE_CAST(JSON_VALUE(content, '$.id_tipo_modal_integracao_t4') AS STRING), '.0', '') AS id_tipo_modal_integracao_t4,
+    REPLACE(SAFE_CAST(JSON_VALUE(content, '$.id_tipo_modal_origem') AS STRING), '.0', '') AS id_tipo_modal_origem,
+    SAFE_CAST(JSON_VALUE(content, '$.perc_rateio_integracao_t1') AS FLOAT64) AS perc_rateio_integracao_t1,
+    SAFE_CAST(JSON_VALUE(content, '$.perc_rateio_integracao_t2') AS FLOAT64) AS perc_rateio_integracao_t2,
+    SAFE_CAST(JSON_VALUE(content, '$.perc_rateio_integracao_t3') AS FLOAT64) AS perc_rateio_integracao_t3,
+    SAFE_CAST(JSON_VALUE(content, '$.perc_rateio_integracao_t4') AS FLOAT64) AS perc_rateio_integracao_t4,
+    SAFE_CAST(JSON_VALUE(content, '$.perc_rateio_origem') AS FLOAT64) AS perc_rateio_origem
+  FROM
+    {{ source('br_rj_riodejaneiro_bilhetagem_staging', 'percentual_rateio_integracao') }}
+)
+SELECT 
+  * EXCEPT(rn)
+FROM
+(
+  SELECT
+    *,
+    ROW_NUMBER() OVER (PARTITION BY id ORDER BY timestamp_captura DESC) AS rn
+  FROM
+    percentual_rateio_integracao
+)
+WHERE
+  rn = 1
