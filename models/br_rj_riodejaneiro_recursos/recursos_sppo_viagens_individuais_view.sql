@@ -1,15 +1,16 @@
 {{ config(
-  materialized = 'view',
+  materialized = 'incremental',
   partition_by = { 'field' :'data',
     'data_type' :'date',
     'granularity': 'day' },
       unique_key = 'id_recurso',
-      alias = 'recursos_sppo_viagens_individuais',
+      alias = 'recursos_sppo_viagens_individuais_view',
 ) }}
 
 
 WITH recurso_sppo AS (
   SELECT
+    ROW_NUMBER() OVER(PARTITION BY protocol ORDER BY timestamp_captura DESC) AS rn,
     JSON_EXTRACT_ARRAY(content, '$.customFieldValues') AS items,
     DATETIME(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%S', REGEXP_REPLACE(JSON_VALUE(content, '$.createdDate'), r'(\.\d+)?$', '')), 'America/Sao_Paulo') AS datetime_recurso,
     SAFE_CAST(protocol AS STRING) AS id_recurso,
@@ -40,6 +41,8 @@ exploded AS (
   FROM 
     recurso_sppo, 
     UNNEST(items) items
+  WHERE
+    rn = 1
 ), 
 pivotado AS (
   SELECT *
