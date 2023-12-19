@@ -131,6 +131,32 @@ vars:
 
   ### Bilhetagem ###
   var_percentual_tarifa_cbd: 0.04
+  quantidade_integracoes_max: 5
+  colunas_integracao: {
+    "data_transacao": {"type": "DATETIME", "select": true},
+    "id_aplicacao": {"type": "ID", "select": false},
+    "id_consorcio": {"type": "ID", "select": true},
+    "id_emissor": {"type": "ID", "select": false},
+    "id_linha": {"type": "ID", "select": true},
+    "id_matriz_integracao": {"type": "ID", "select": false},
+    "id_operadora": {"type": "ID", "select": true},
+    "id_ordem_rateio": {"type": "ID", "select": false},
+    "id_secao": {"type": "STRING", "select": false},
+    "id_servico": {"type": "ID", "select": false},
+    "id_tipo_modal": {"type": "ID", "select": true},
+    "id_transacao": {"type": "STRING", "select": true},
+    "latitude_trx": {"type": "FLOAT64", "select": false},
+    "longitude_trx": {"type": "FLOAT64", "select": false},
+    "nr_logico_midia_operador": {"type": "STRING", "select": false},
+    "perc_rateio": {"type": "FLOAT64", "select": true},
+    "posicao_validador": {"type": "STRING", "select": false},
+    "sentido": {"type": "ID", "select": true},
+    "valor_rateio_compensacao": {"type": "FLOAT64", "select": true},
+    "valor_rateio": {"type": "FLOAT64", "select": true},
+    "valor_tarifa": {"type": "FLOAT64", "select": true},
+    "valor_transacao": {"type": "FLOAT64", "select": true},
+    "veiculo_id": {"type": "ID", "select": false},
+  }
 
   ### Diretorios ###
   ids_consorcios: {"'221000014'": "'6'", "'221000023'": "'4'", "'221000032'": "'3'", "'221000041'": "'5'", "'221000050'": "'1'"}
