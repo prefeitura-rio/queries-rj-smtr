@@ -139,7 +139,7 @@ ordem_pagamento_validacao AS (
         COALESCE(
             (t.quantidade_total_transacao_captura = op.quantidade_total_transacao AND t.valor_total_transacao_captura = op.valor_total_transacao_bruto),
             false
-        ) AS flag_ordem_valida
+        ) AS indicador_ordem_valida
     FROM
         ordem_pagamento op
     FULL OUTER JOIN
@@ -175,7 +175,7 @@ SELECT
     o.valor_total_transacao_liquido,
     o.quantidade_total_transacao_captura,
     o.valor_total_transacao_captura,
-    o.flag_ordem_valida,
+    o.indicador_ordem_valida,
     '{{ var("version") }}' AS versao
 FROM
     ordem_pagamento_validacao o
