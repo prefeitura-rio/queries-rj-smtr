@@ -8,7 +8,7 @@ WITH percentual_rateio_integracao AS (
   SELECT
     data,
     SAFE_CAST(id AS STRING) AS id,
-    timestamp_captura,
+    DATETIME(PARSE_TIMESTAMP('%Y-%m-%d %H:%M:%S%Ez', timestamp_captura), "America/Sao_Paulo") AS timestamp_captura,
     SAFE_CAST(JSON_VALUE(content, '$.dt_fim_validade') AS STRING) AS dt_fim_validade,
     DATETIME(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:S%Ez', SAFE_CAST(JSON_VALUE(content, '$.dt_inclusao') AS STRING)), 'America/Sao_Paulo') AS dt_inclusao,
     DATE(PARSE_TIMESTAMP('%Y-%m-%d', SAFE_CAST(JSON_VALUE(content, '$.dt_inicio_validade') AS STRING)), 'America/Sao_Paulo') AS dt_inicio_validade,

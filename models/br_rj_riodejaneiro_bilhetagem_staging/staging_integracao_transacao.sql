@@ -7,7 +7,7 @@
 SELECT
   data,
   SAFE_CAST(id AS STRING) AS id,
-  timestamp_captura,
+  DATETIME(PARSE_TIMESTAMP('%Y-%m-%d %H:%M:%S%Ez', timestamp_captura), "America/Sao_Paulo") AS timestamp_captura,
   DATETIME(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%E*S%Ez', SAFE_CAST(JSON_VALUE(content, '$.data_inclusao') AS STRING)), 'America/Sao_Paulo') AS data_inclusao,
   DATETIME(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%E*S%Ez', SAFE_CAST(JSON_VALUE(content, '$.data_processamento') AS STRING)), 'America/Sao_Paulo') AS data_processamento,
   {% for column, column_config in var('colunas_integracao').items() %}

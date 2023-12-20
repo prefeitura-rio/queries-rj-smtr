@@ -8,7 +8,7 @@ SELECT
     data,
     hora,
     id,
-    timestamp_captura,
+    DATETIME(PARSE_TIMESTAMP('%Y-%m-%d %H:%M:%S%Ez', timestamp_captura), "America/Sao_Paulo") AS timestamp_captura,
     SAFE_CAST(JSON_VALUE(content, '$.assinatura') AS STRING) AS assinatura,
     SAFE_CAST(JSON_VALUE(content, '$.cd_aplicacao') AS STRING) AS cd_aplicacao,
     SAFE_CAST(JSON_VALUE(content, '$.cd_emissor') AS STRING) AS cd_emissor,
