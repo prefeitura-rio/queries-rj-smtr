@@ -6,7 +6,6 @@
 
 WITH matriz_melt AS (
   SELECT
-    i.timestamp_captura,
     i.id,
     im.sequencia_integracao,
     im.id_tipo_modal,
@@ -29,13 +28,13 @@ WITH matriz_melt AS (
     ) im
 )
 SELECT
-  i.timestamp_captura,
   i.id AS id_matriz_integracao,
   i.sequencia_integracao,
   m.ds_tipo_modal AS modo,
   i.perc_rateio AS percentual_rateio,
   i.dt_inicio_validade AS data_inicio_validade,
-  i.dt_fim_validade AS data_fim_validade
+  i.dt_fim_validade AS data_fim_validade,
+  '{{ var("version") }}' as versao
 FROM
   matriz_melt i
 LEFT JOIN
