@@ -4,7 +4,6 @@
     'data_type' :'date',
     'granularity': 'day' },
       unique_key = 'id_recurso',
-      alias = 'recursos_sppo_viagens_individuais_view',
 ) }}
 
 
