@@ -63,7 +63,7 @@ transacao_agg AS (
         cd_linha,
         cd_operadora,
         COUNT(*) AS quantidade_total_transacao_captura,
-        ROUND(SUM(valor_transacao), 1) AS valor_total_transacao_captura
+        ROUND(SUM(valor_transacao), 2) AS valor_total_transacao_captura
     FROM
         transacao_deduplicada
     GROUP BY
@@ -94,7 +94,7 @@ ordem_pagamento AS (
         r.qtd_rateio_debito AS quantidade_transacao_rateio_debito,
         r.valor_rateio_debito,
         r.qtd_debito +  r.qtd_vendaabordo +  r.qtd_gratuidade + r.qtd_integracao + r.qtd_rateio_credito + r.qtd_rateio_debito AS quantidade_total_transacao,
-        ROUND(r.valor_bruto, 1) AS valor_total_transacao_bruto,
+        ROUND(r.valor_bruto, 2) AS valor_total_transacao_bruto,
         r.valor_taxa AS valor_desconto_taxa,
         r.valor_liquido AS valor_total_transacao_liquido
     FROM 
