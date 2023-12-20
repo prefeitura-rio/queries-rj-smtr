@@ -9,8 +9,7 @@
     incremental_strategy="insert_overwrite"
   )
 }}
-
-WITH transacao_agg AS (
+WITH transacao AS (
     SELECT
         data,
         DATE_ADD(data, INTERVAL 1 DAY) AS data_ordem,
@@ -21,12 +20,12 @@ WITH transacao_agg AS (
         COUNT(*) AS quantidade_total_transacao_captura,
         ROUND(SUM(valor_transacao), 1) AS valor_total_transacao_captura
     FROM
-        {{ ref("transacao") }}
+        {{ source("br_rj_riodejaneiro_bilhetagem_staging", "transacao") }}
     WHERE
         {% if is_incremental() -%}
-            data BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 1 DAY) AND DATE_SUB(DATE("{{var('date_range_end')}}"), INTERVAL 1 DAY)
+            DATE(data) BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 1 DAY) AND DATE("{{var('date_range_end')}}")
         {% else %}
-            data < CURRENT_DATE("America/Sao_Paulo")
+            DATE(data) <= CURRENT_DATE("America/Sao_Paulo")
         {%- endif %}
     GROUP BY
         data,
@@ -35,6 +34,7 @@ WITH transacao_agg AS (
 ),
 ordem_pagamento AS (
     SELECT
+        DATE_SUB(r.data_ordem, INTERVAL 1 DAY) AS data_processamento,
         r.data_ordem,
         p.data_pagamento,
         dc.id_consorcio,
@@ -58,7 +58,7 @@ ordem_pagamento AS (
         r.qtd_rateio_debito AS quantidade_transacao_rateio_debito,
         r.valor_rateio_debito,
         r.qtd_debito +  r.qtd_vendaabordo +  r.qtd_gratuidade + r.qtd_integracao + r.qtd_rateio_credito + r.qtd_rateio_debito AS quantidade_total_transacao,
-        ROUND(r.valor_bruto, 1) AS valor_total_transacao_bruto,
+        ROUND(r.valor_bruto, 2) AS valor_total_transacao_bruto,
         r.valor_taxa AS valor_desconto_taxa,
         r.valor_liquido AS valor_total_transacao_liquido
     FROM 
@@ -91,6 +91,47 @@ ordem_pagamento AS (
     WHERE
         DATE(r.data) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
     {%- endif %}
+),
+ordem_pagamento_validacao AS (
+    SELECT
+        COALESCE(op.data_processamento, t.data_processamento) AS data_processamento,
+        COALESCE(op.data_ordem, t.data_ordem) AS data_ordem,
+        op.data_pagamento,
+        COALESCE(op.id_consorcio, t.cd_consorcio) AS id_consorcio,
+        COALESCE(op.id_operadora, t.cd_operadora) AS id_operadora,
+        COALESCE(op.id_linha, t.cd_linha) AS id_linha,
+        op.id_ordem_pagamento,
+        op.id_ordem_ressarcimento,
+        op.quantidade_transacao_debito,
+        op.valor_debito,
+        op.quantidade_transacao_especie,
+        op.valor_especie,
+        op.quantidade_transacao_gratuidade,
+        op.valor_gratuidade,
+        op.quantidade_transacao_integracao,
+        op.valor_integracao,
+        op.quantidade_transacao_rateio_credito,
+        op.valor_rateio_credito,
+        op.quantidade_transacao_rateio_debito,
+        op.valor_rateio_debito,
+        op.quantidade_total_transacao,
+        op.valor_total_transacao_bruto,
+        op.valor_desconto_taxa,
+        op.valor_total_transacao_liquido,
+        t.quantidade_total_transacao_captura,
+        t.valor_total_transacao_captura,
+        COALESCE(
+            (t.quantidade_total_transacao_captura = op.quantidade_total_transacao AND t.valor_total_transacao_captura = op.valor_total_transacao_bruto),
+            false
+        ) AS indicador_ordem_valida
+    FROM
+        ordem_pagamento op
+    FULL OUTER JOIN
+        transacao_agg t
+    ON
+        t.data_ordem = op.data_ordem
+        AND t.cd_linha = op.id_linha
+        AND t.cd_operadora = op.id_operadora
 )
 SELECT
     COALESCE(op.data_ordem, t.data_ordem) AS data_ordem,
@@ -124,9 +165,17 @@ SELECT
     ) AS flag_ordem_valida,
     '{{ var("version") }}' AS versao
 FROM
-    ordem_pagamento op
-FULL OUTER JOIN
-    transacao_agg t
+    ordem_pagamento_validacao o
+LEFT JOIN
+    {{ ref("diretorio_operadoras") }} AS do
+ON
+    o.id_operadora = do.id_operadora_jae
+LEFT JOIN
+    {{ ref("diretorio_consorcios") }} AS dc
+ON
+    o.id_consorcio = dc.id_consorcio_jae
+LEFT JOIN
+    {{ ref("staging_linha") }} AS l
 ON
     t.data_ordem = op.data_ordem
     AND t.servico = op.servico

@@ -1,3 +1,4 @@
+-- depends_on: {{ ref('operadoras_contato') }}
 {{
   config(
     materialized="incremental",
@@ -115,10 +116,6 @@ ON
     t.cd_linha = lc.cd_linha
     AND t.data_transacao >= lc.datetime_inicio_validade
     AND (t.data_transacao <= lc.datetime_fim_validade OR lc.datetime_fim_validade IS NULL)
-LEFT JOIN
-    {{ ref("staging_consorcio") }} AS c
-ON 
-    lc.cd_consorcio = c.cd_consorcio
 LEFT JOIN
     {{ ref("staging_operadora_transporte") }} AS o
 ON

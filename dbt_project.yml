@@ -179,7 +179,8 @@ models:
       +schema: br_rj_riodejaneiro_stu
     cadastro:
       +schema: cadastro
-    br_rj_riodejaneiro_recurso:
+    br_rj_riodejaneiro_recursos:
       +materialized: incremental
-      +schema: recurso_sppo_viagens_individuais
+      +schema: br_rj_riodejaneiro_recursos
+
 
