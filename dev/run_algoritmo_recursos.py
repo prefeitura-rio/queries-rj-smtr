@@ -9,7 +9,7 @@ from utils import run_dbt_model, dbt_seed
 from datetime import datetime, timedelta
 import pandas as pd
 
-dados = pd.read_csv('./data/reprocessar.csv')
+dados = pd.read_csv(r'\\wsl.localhost\Ubuntu\home\eng-rodrigocunha\smtr\algoritmo_recursos_individuais\data\reprocessar.csv')
 
 
 # Aumentar os datetime_partida (para menos) e datetime_chegada (para mais) em metade da
@@ -22,7 +22,7 @@ dados['datetime_chegada_amostra'] = dados['datetime_chegada_amostra'] + pd.to_ti
 dados['datetime_partida_amostra'] = dados['datetime_partida_amostra'] - pd.to_timedelta(dados['diferenca_minutos'], unit='m')
 dados = dados.drop(columns='diferenca_minutos')
 
-dates = dados['data'].drop_duplicates().astype(str).tolist()
+dates = dados['data'].sort_values().drop_duplicates().astype(str).tolist()
 
 
 # iterar sobre as datas para rodar o modelo de GPS
