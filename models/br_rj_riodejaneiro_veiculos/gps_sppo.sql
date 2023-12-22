@@ -33,7 +33,7 @@ WITH
       r.linha,
       r.latitude,
       r.longitude,
-      COALESCE(rep.servico_amostra, r.linha) as servico
+      COALESCE(SAFE_CAST(rep.servico_amostra AS STRING), SAFE_CAST(r.linha AS STRING)) as servico
     FROM {{ var('sppo_aux_registros_filtrada') }} r
 
 
