@@ -44,9 +44,8 @@ sources:
       - name: operadora_empresa
       - name: operadora_pessoa_fisica
 
-  - name: br_rj_riodejaneiro_recurso_staging
+  - name: br_rj_riodejaneiro_recursos_staging
     database: rj-smtr-dev
 
     tables:
-      - name: recurso_sppo_viagens_individuais
-
+      - name: recursos_sppo_viagens_individuais
