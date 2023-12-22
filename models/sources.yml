@@ -7,18 +7,17 @@ sources:
     tables:
       - name: transacao
       - name: linha
-      - name: grupo
-      - name: grupo_linha
       - name: dicionario
       - name: consorcio
-      - name: pessoa_juridica
       - name: operadora_transporte
       - name: ordem_pagamento
       - name: ordem_ressarcimento
-      - name: linha_consorcio
       - name: conta_bancaria
       - name: contato_pessoa_juridica
       - name: cliente
+      - name: percentual_rateio_integracao
+      - name: integracao_transacao
+      - name: tipo_modal
 
   - name: br_rj_riodejaneiro_gtfs_staging
     database: rj-smtr-staging
@@ -39,7 +38,7 @@ sources:
       - name: ordem_servico
 
   - name: br_rj_riodejaneiro_stu_staging
-    database: rj-smtr-dev
+    database: rj-smtr-staging
     
     tables:
       - name: operadora_empresa
