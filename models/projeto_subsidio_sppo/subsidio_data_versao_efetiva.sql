@@ -25,6 +25,10 @@ SELECT
       WHEN data = "2023-11-03" THEN "Ponto Facultativo" -- Ponto Facultativo - DECRETO RIO Nº 53417/2023
       WHEN data = "2023-11-05" THEN "Sabado" -- Domingo Atípico - ENEM - OS Novembro/Q1
       WHEN data = "2023-11-12" THEN "Sabado" -- Domingo Atípico - ENEM - OS Novembro/Q1
+      WHEN data = "2023-12-02" THEN "Sabado - Verão" -- OS de Verão
+      WHEN data = "2023-12-03" THEN "Domingo - Verão" -- OS de Verão
+      WHEN data = "2023-12-16" THEN "Sabado - Verão" -- OS de Verão
+      WHEN data = "2023-12-17" THEN "Domingo - Verão" -- OS de Verão
       WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 1 THEN "Domingo" -- Dia de São Sebastião -- Art. 8°, I - Lei Municipal nº 5146/2010
       WHEN EXTRACT(DAY FROM data) = 23 AND EXTRACT(MONTH FROM data) = 4 THEN "Domingo" -- Dia de São Jorge -- Art. 8°, II - Lei Municipal nº 5146/2010 / Lei Estadual Nº 5198/2008 / Lei Estadual Nº 5645/2010
       WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 11 THEN "Domingo" -- Aniversário de morte de Zumbi dos Palmares / Dia da Consciência Negra -- Art. 8°, IV - Lei Municipal nº 5146/2010 / Lei Estadual nº 526/1982 / Lei Estadual nº 1929/1991 / Lei Estadual nº 4007/2002 / Lei Estadual Nº 5645/2010
