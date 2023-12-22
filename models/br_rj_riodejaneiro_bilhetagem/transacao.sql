@@ -76,4 +76,4 @@ ON
 LEFT JOIN
     {{ ref("diretorio_consorcios") }} AS dc
 ON
-    lc.cd_consorcio = dc.id_consorcio_jae
+    t.cd_consorcio = dc.id_consorcio_jae

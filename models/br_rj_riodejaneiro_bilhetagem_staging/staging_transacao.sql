@@ -39,6 +39,6 @@ SELECT
     SAFE_CAST(JSON_VALUE(content, '$.valor_transacao') AS FLOAT64) AS valor_transacao,
     SAFE_CAST(JSON_VALUE(content, '$.veiculo_id') AS STRING) AS veiculo_id,
     SAFE_CAST(JSON_VALUE(content, '$.vl_saldo') AS FLOAT64) AS vl_saldo,
-    SAFE_CAST(JSON_VALUE(content, '$.id_tipo_modal') AS FLOAT64) AS id_tipo_modal
+    SAFE_CAST(JSON_VALUE(content, '$.id_tipo_modal') AS STRING) AS id_tipo_modal
 FROM
     {{ source("br_rj_riodejaneiro_bilhetagem_staging", "transacao") }}
