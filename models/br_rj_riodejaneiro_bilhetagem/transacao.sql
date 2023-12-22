@@ -1,4 +1,5 @@
 -- depends_on: {{ ref('operadoras_contato') }}
+-- depends_on: {{ ref('operadoras_contato') }}
 {{
   config(
     materialized="incremental",
