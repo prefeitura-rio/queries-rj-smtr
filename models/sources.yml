@@ -37,13 +37,6 @@ sources:
       - name: trips
       - name: ordem_servico
 
-  - name: br_rj_riodejaneiro_stu_staging
-    database: rj-smtr-staging
-    
-    tables:
-      - name: operadora_empresa
-      - name: operadora_pessoa_fisica
-
   - name: br_rj_riodejaneiro_recursos_staging
     database: rj-smtr-dev
 
