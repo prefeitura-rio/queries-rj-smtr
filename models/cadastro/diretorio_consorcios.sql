@@ -34,5 +34,3 @@ LEFT JOIN
   stu AS s
 ON
   j.cd_consorcio = s.cd_consorcio_jae
-
-  
