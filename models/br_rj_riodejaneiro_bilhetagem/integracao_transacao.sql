@@ -55,6 +55,7 @@ integracao_melt AS (
       i.tx_adicional AS texto_adicional
     FROM
       integracao_transacao_deduplicada i,
+      -- Transforma colunas com os dados de cada transação da integração em linhas diferentes
       UNNEST(
         [
           {% for n in range(var('quantidade_integracoes_max')) %}

@@ -14,6 +14,7 @@ WITH matriz_melt AS (
     i.dt_fim_validade
   FROM
     {{ ref("staging_percentual_rateio_integracao") }} i,
+    -- Transforma colunas com os dados de cada modo da integração em linhas diferentes
     UNNEST(
       [
         {% for n in range(var('quantidade_integracoes_max')) %}
