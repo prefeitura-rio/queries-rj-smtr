@@ -4,7 +4,7 @@
     'data_type' :'date',
     'granularity': 'day' },
       unique_key = 'id_recurso',
-      alias = 'recurso_sppo_viagens_individuais',
+      alias = 'recursos_sppo_viagens_individuais',
 ) }}
 
 
@@ -17,8 +17,8 @@ WITH recurso_sppo AS (
     DATETIME(PARSE_TIMESTAMP('%Y-%m-%d %H:%M:%S%Ez', timestamp_captura), 'America/Sao_Paulo') AS datetime_captura
 
   FROM 
-    {{source('br_rj_riodejaneiro_recurso_staging', 
-      'recurso_sppo_viagens_individuais')}} 
+    {{source('br_rj_riodejaneiro_recursos_staging', 
+      'recursos_sppo_viagens_individuais')}} 
   {% if is_incremental() -%}
     WHERE
         DATE(data) BETWEEN DATE("{{var('date_range_start')}}") 
@@ -85,13 +85,13 @@ FROM
 
 SELECT
     t.id_recurso,
+    DATE(datetime_recurso) AS data,
     t.datetime_captura,
     t.datetime_recurso,
-    t.julgamento,
     t.consorcio,
     t.servico,
-    t.id_veiculo,
     t.sentido,
+    t.id_veiculo AS id_veiculo_numeral,
     DATETIME(EXTRACT(date FROM TIMESTAMP(data_viagem)), EXTRACT(time FROM TIMESTAMP_SUB(hora_inicio_viagem, INTERVAL 2 HOUR)) ) AS datetime_partida,
     CASE 
       WHEN 
@@ -104,10 +104,11 @@ SELECT
           EXTRACT(time FROM TIMESTAMP_SUB(hora_fim_viagem, INTERVAL 2 HOUR))
         )
     END AS datetime_chegada,
-    t.motivo,
+    t.motivo AS motivo_recurso,
+    t.julgamento,
     t.motivo_julgamento,
-    t.observacao,
-    DATE(datetime_recurso) AS data,
+    t.observacao AS observacao_julgamento
+
   
 FROM
     tratado t
