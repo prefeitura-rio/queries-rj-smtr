@@ -21,7 +21,7 @@ sources:
       - name: cliente
 
   - name: br_rj_riodejaneiro_gtfs_staging
-     database: rj-smtr-staging
+    database: rj-smtr-staging
 
     tables:
       - name: agency
