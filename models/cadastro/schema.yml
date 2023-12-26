@@ -1,0 +1,92 @@
+version: 2
+
+models:
+  - name: diretorio_operadoras
+    description: "Tabela de operadoras de transporte"
+    columns:
+      - name: id_operadora
+        description: "Identificador único do operador, podendo ser o código de permissionário ou código da Jaé"
+      - name: operadora
+        description: "Nome do operador"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+      - name: tipo_operadora
+        description: "Tipo de permissionário (Exemplos: autônomo, empresa, cooperativa)"
+      - name: tipo_modal_stu
+        description: "Tipo de transporte no STU (ônibus, van, BRT)"
+      - name: tipo_modal_jae
+        description: "Tipo de transporte na Jaé (ônibus, van, BRT)"
+      - name: id_processo
+        description: "Número do processo no STU"
+      - name: data_processo
+        description: "Data do processo no STU"
+      - name: documento
+        description: "Documento do operador (CPF ou CNPJ)"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+      - name: tipo_documento
+        description: "Tipo do documento do operador (CPF ou CNPJ)"
+      - name: id_operadora_stu
+        description: "Código de permissionário vindo do STU"
+      - name: id_operadora_jae
+        description: "Código do operador no sistema da Jaé"
+      - name: situacao_operadora_jae
+        description: "Indicador de atividade do operador no sistema da Jaé"
+      - name: agencia
+        description: "Número da agência bancária do operador"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+      - name: tipo_conta
+        description: "Tipo da conta bancária do operador"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+      - name: banco
+        description: "Nome do banco"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+      - name: codigo_banco
+        description: "Código do banco (COMPE)"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+      - name: conta
+        description: "Número da conta bancária do operador"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+  - name: operadoras_contato
+    description: "Tabela de contatos das operadoras de transporte"
+    columns:
+      - name: id_operadora
+        description: "Identificador único da tabela cadastro.operadoras"
+      - name: contato
+        description: "Nome do contato"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+      - name: ramal
+        description: "Ramal do telefone"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+      - name: telefone
+        description: "Número de telefone"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+      - name: email
+        description: "Endereço de E-Mail"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+  - name: diretorio_consorcios
+    description: "Tabela de contatos das operadoras de transporte"
+    columns:
+      - name: id_consorcio
+        description: "Identificador único do consórcio, podendo ser o código de permissionário ou código da Jaé"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: id_processo
+        description: "Número do processo no STU"
+      - name: data_processo
+        description: "Data do processo no STU"
+      - name: cnpj
+        description: "CNPJ do consórcio"
+      - name: id_consorcio_stu
+        description: "Código de permissionário vindo do STU"
+      - name: id_consorcio_jae
+        description: "Código do consórcio no sistema da Jaé"

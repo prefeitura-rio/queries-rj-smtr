@@ -1,3 +1,9 @@
+{{
+    config(
+        materialized="table",
+    )
+}}
+
 SELECT
   COALESCE(SAFE_CAST(indicador_licenciado AS BOOL), FALSE) indicador_licenciado,
   COALESCE(SAFE_CAST(indicador_ar_condicionado AS BOOL), FALSE) indicador_ar_condicionado,
