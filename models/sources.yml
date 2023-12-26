@@ -1,24 +1,6 @@
 version: 2
 
 sources:
-  - name: br_rj_riodejaneiro_bilhetagem_staging
-    database: rj-smtr-staging
-
-    tables:
-      - name: transacao
-      - name: linha
-      - name: grupo
-      - name: grupo_linha
-      - name: dicionario
-      - name: consorcio
-      - name: pessoa_juridica
-      - name: operadora_transporte
-      - name: ordem_pagamento
-      - name: ordem_ressarcimento
-      - name: linha_consorcio
-      - name: conta_bancaria
-      - name: contato_pessoa_juridica
-      - name: cliente
 
   - name: br_rj_riodejaneiro_gtfs_staging
     database: rj-smtr-staging
@@ -37,13 +19,6 @@ sources:
       - name: stop_times
       - name: trips
       - name: ordem_servico
-
-  - name: br_rj_riodejaneiro_stu_staging
-    database: rj-smtr-staging
-    
-    tables:
-      - name: operadora_empresa
-      - name: operadora_pessoa_fisica
 
   - name: br_rj_riodejaneiro_recursos_staging
     database: rj-smtr-dev
