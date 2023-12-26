@@ -1,7 +1,10 @@
 {{ config(
   materialized = 'view',
+  alias='recursos_sppo_viagens_individuais',
   )
 }}
+
+
 
 SELECT
     ROW_NUMBER() OVER(PARTITION BY protocol ORDER BY timestamp_captura DESC) AS rn,
