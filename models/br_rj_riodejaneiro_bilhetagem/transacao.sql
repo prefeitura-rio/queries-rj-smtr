@@ -66,10 +66,6 @@ LEFT JOIN
 ON 
     t.id_tipo_modal = m.cd_tipo_modal
 LEFT JOIN
-    {{ ref("staging_consorcio") }} AS c
-ON 
-    t.cd_consorcio = c.cd_consorcio
-LEFT JOIN
     {{ ref("diretorio_operadoras") }} AS do
 ON
     t.cd_operadora = do.id_operadora_jae
