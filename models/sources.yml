@@ -45,24 +45,6 @@ sources:
       - name: operadora_empresa
       - name: operadora_pessoa_fisica
 
-  - name: br_rj_riodejaneiro_gtfs_staging
-    database: rj-smtr-staging
-
-    tables:
-      - name: agency
-      - name: calendar
-      - name: calendar_dates
-      - name: fare_attributes
-      - name: fare_rules
-      - name: feed_info
-      - name: frequencies
-      - name: routes
-      - name: shapes
-      - name: stops
-      - name: stop_times
-      - name: trips
-      - name: ordem_servico
-
   - name: br_rj_riodejaneiro_stu_staging
     database: rj-smtr-staging
     
