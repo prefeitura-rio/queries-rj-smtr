@@ -73,4 +73,3 @@ FROM
 )
 WHERE rn = 1
 
-

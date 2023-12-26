@@ -211,8 +211,7 @@ models:
     br_rj_riodejaneiro_recursos:
       +materialized: incremental
       +schema: br_rj_riodejaneiro_recursos
-
     br_rj_riodejaneiro_recursos_staging:
       +materialized: incremental
-      +schema: br_rj_riodejaneiro_recursos_staging # tirar quando for pra produção
+      +schema: br_rj_riodejaneiro_recursos_staging 
 
