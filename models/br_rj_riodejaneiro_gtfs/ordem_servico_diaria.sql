@@ -26,7 +26,14 @@ WITH
         'Dia Útil' AS du,
         'Ponto Facultativo' AS pf,
         'Sabado' AS sab,
-        'Domingo' AS dom )))
+        'Domingo' AS dom ))),
+        ,
+  subsidio_data_versao_efetiva AS (
+  SELECT
+    * EXCEPT(tipo_dia),
+    SPLIT(tipo_dia, " - ")[0] AS tipo_dia
+  FROM
+    {{ ref("subsidio_data_versao_efetiva") }} )
 SELECT
   DATA,
   tipo_dia,
@@ -39,7 +46,7 @@ SELECT
   {% set sentido = {"ida": ("I", "C"), "volta": "V"} %}
   {%- for key_s, value_s in sentido.items() %}
     {%- for key_td, value_td in tipo_dia.items() %}
-      WHEN sentido {% if key_s == "ida" %} IN {{ value_s }} {% else %} = "{{ value_s }}" {% endif %} AND tipo_dia LIKE "{{ key_td }}%" THEN {% if key_td in ["Sabado", "Domingo"] %} ROUND(SAFE_DIVIDE((partidas_{{ key_s }}_du * km_{{ value_td }}), km_du)) {% else %} partidas_{{ key_s }}_{{ value_td }} {% endif %}
+      WHEN sentido {% if key_s == "ida" %} IN {{ value_s }} {% else %} = "{{ value_s }}" {% endif %} AND tipo_dia = "{{ key_td }}" THEN {% if key_td in ["Sabado", "Domingo"] %} ROUND(SAFE_DIVIDE((partidas_{{ key_s }}_du * km_{{ value_td }}), km_du)) {% else %} partidas_{{ key_s }}_{{ value_td }} {% endif %}
     {% endfor -%}
   {% endfor -%}
 END
@@ -54,7 +61,7 @@ ON
   DATA BETWEEN d.data_inicio
   AND d.data_fim
 LEFT JOIN
-  {{ ref("subsidio_data_versao_efetiva") }} AS sd
+  subsidio_data_versao_efetiva AS sd
 USING
   (DATA)
 LEFT JOIN
