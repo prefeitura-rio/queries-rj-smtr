@@ -13,13 +13,13 @@ WITH transacao AS (
     SELECT
         id,
         timestamp_captura,
-        DATETIME(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%E6S%Ez', SAFE_CAST(JSON_VALUE(content, '$.data_transacao') AS STRING)), "America/Sao_Paulo") AS data_transacao,
-        DATE(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%E6S%Ez', SAFE_CAST(JSON_VALUE(content, '$.data_processamento') AS STRING)), "America/Sao_Paulo") AS data_processamento,
-        SAFE_CAST(JSON_VALUE(content, '$.cd_linha') AS STRING) AS cd_linha,
-        SAFE_CAST(JSON_VALUE(content, '$.cd_operadora') AS STRING) AS cd_operadora,
-        SAFE_CAST(JSON_VALUE(content, '$.valor_transacao') AS FLOAT64) AS valor_transacao
+        DATE(data_processamento) AS data_processamento,
+        cd_linha,
+        cd_operadora,
+        valor_transacao,
+        cd_consorcio
     FROM
-        {{ source("br_rj_riodejaneiro_bilhetagem_staging", "transacao") }}
+        {{ ref("staging_transacao") }}
     WHERE
         {% if is_incremental() -%}
             DATE(data) BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 1 DAY) AND DATE("{{var('date_range_end')}}")
@@ -29,8 +29,7 @@ WITH transacao AS (
 ),
 transacao_deduplicada AS (
     SELECT 
-        t.* EXCEPT(rn),
-        lc.cd_consorcio
+        t.* EXCEPT(rn)
     FROM
     (
         SELECT
@@ -39,12 +38,6 @@ transacao_deduplicada AS (
         FROM
             transacao
     ) t
-    LEFT JOIN
-        {{ ref("staging_linha_consorcio") }} AS lc
-    ON 
-        t.cd_linha = lc.cd_linha
-        AND t.data_transacao >= lc.datetime_inicio_validade
-        AND (t.data_transacao <= lc.datetime_fim_validade OR lc.datetime_fim_validade IS NULL)
     WHERE
         rn = 1
         AND
