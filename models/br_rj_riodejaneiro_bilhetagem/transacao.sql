@@ -10,6 +10,7 @@
     unique_key="id_transacao",
   )
 }}
+
 WITH transacao_deduplicada AS (
     SELECT 
         * EXCEPT(rn)
@@ -35,9 +36,11 @@ SELECT
     data_transacao AS datetime_transacao,
     data_processamento AS datetime_processamento,
     t.timestamp_captura AS datetime_captura,
-    m.ds_tipo_modal AS modo,
-    dc.id_consorcio AS id_consorcio,
-    do.id_operadora AS id_operadora,
+    m.modo,
+    dc.id_consorcio,
+    dc.consorcio,
+    do.id_operadora,
+    do.operadora,
     l.nr_linha AS servico,
     sentido,
     NULL AS id_veiculo,
@@ -62,9 +65,9 @@ ON
     t.cd_linha = l.cd_linha 
     AND t.data_transacao >= l.datetime_inclusao
 LEFT JOIN
-    {{ ref("staging_tipo_modal") }} AS m
+    {{ ref("diretorio_modos") }} AS m
 ON 
-    t.id_tipo_modal = m.cd_tipo_modal
+    (t.id_tipo_modal = m.id_modo_jae AND (m.id_consorcio_jae IS NULL OR t.cd_consorcio = m.id_consorcio_jae))
 LEFT JOIN
     {{ ref("diretorio_operadoras") }} AS do
 ON

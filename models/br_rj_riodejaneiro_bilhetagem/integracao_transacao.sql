@@ -78,9 +78,11 @@ SELECT
   i.datetime_captura,
   i.id_integracao,
   i.sequencia_integracao,
-  m.ds_tipo_modal AS modo,
+  m.modo,
   dc.id_consorcio,
+  dc.consorcio,
   do.id_operadora,
+  do.operadora,
   l.nr_linha AS servico,
   i.id_transacao,
   i.sentido,
@@ -99,9 +101,9 @@ ON
   i.id_linha = l.cd_linha
   AND i.data_transacao >= l.datetime_inclusao
 LEFT JOIN
-  {{ ref("staging_tipo_modal") }} AS m
+    {{ ref("diretorio_modos") }} AS m
 ON 
-  i.id_tipo_modal = m.cd_tipo_modal
+    (i.id_tipo_modal = m.id_modo_jae AND (m.id_consorcio_jae IS NULL OR i.id_consorcio = m.id_consorcio_jae))
 LEFT JOIN
   {{ ref("diretorio_operadoras") }} AS do
 ON
