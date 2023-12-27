@@ -27,7 +27,6 @@ WITH
         'Ponto Facultativo' AS pf,
         'Sabado' AS sab,
         'Domingo' AS dom ))),
-        ,
   subsidio_data_versao_efetiva AS (
   SELECT
     * EXCEPT(tipo_dia),
