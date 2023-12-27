@@ -26,7 +26,13 @@ WITH
         'Dia Útil' AS du,
         'Ponto Facultativo' AS pf,
         'Sabado' AS sab,
-        'Domingo' AS dom )))
+        'Domingo' AS dom ))),
+  subsidio_data_versao_efetiva AS (
+  SELECT
+    * EXCEPT(tipo_dia),
+    SPLIT(tipo_dia, " - ")[0] AS tipo_dia
+  FROM
+    {{ ref("subsidio_data_versao_efetiva") }} )
 SELECT
   DATA,
   tipo_dia,
@@ -54,7 +60,7 @@ ON
   DATA BETWEEN d.data_inicio
   AND d.data_fim
 LEFT JOIN
-  {{ ref("subsidio_data_versao_efetiva") }} AS sd
+  subsidio_data_versao_efetiva AS sd
 USING
   (DATA)
 LEFT JOIN
