@@ -7,7 +7,9 @@ models:
       - name: id_operadora
         description: "Identificador único do operador, podendo ser o código de permissionário ou código da Jaé"
       - name: operadora
-        description: "Nome do operador"
+        description: "Nome do operador (mascarado quando o operador é pessoa física)"
+      - name: operadora_completo
+        description: "Nome do operador [protegido]"
         policy_tags:
           - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
       - name: tipo_operadora
@@ -21,7 +23,7 @@ models:
       - name: data_processo
         description: "Data do processo no STU"
       - name: documento
-        description: "Documento do operador (CPF ou CNPJ)"
+        description: "Documento do operador (CPF ou CNPJ) [protegido]"
         policy_tags:
           - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
       - name: tipo_documento
@@ -33,23 +35,23 @@ models:
       - name: situacao_operadora_jae
         description: "Indicador de atividade do operador no sistema da Jaé"
       - name: agencia
-        description: "Número da agência bancária do operador"
+        description: "Número da agência bancária do operador [protegido]"
         policy_tags:
           - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
       - name: tipo_conta
-        description: "Tipo da conta bancária do operador"
+        description: "Tipo da conta bancária do operador [protegido]"
         policy_tags:
           - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
       - name: banco
-        description: "Nome do banco"
+        description: "Nome do banco [protegido]"
         policy_tags:
           - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
       - name: codigo_banco
-        description: "Código do banco (COMPE)"
+        description: "Código do banco (COMPE) [protegido]"
         policy_tags:
           - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
       - name: conta
-        description: "Número da conta bancária do operador"
+        description: "Número da conta bancária do operador [protegido]"
         policy_tags:
           - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
   - name: operadoras_contato
@@ -58,19 +60,19 @@ models:
       - name: id_operadora
         description: "Identificador único da tabela cadastro.operadoras"
       - name: contato
-        description: "Nome do contato"
+        description: "Nome do contato [protegido]"
         policy_tags:
           - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
       - name: ramal
-        description: "Ramal do telefone"
+        description: "Ramal do telefone [protegido]"
         policy_tags:
           - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
       - name: telefone
-        description: "Número de telefone"
+        description: "Número de telefone [protegido]"
         policy_tags:
           - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
       - name: email
-        description: "Endereço de E-Mail"
+        description: "Endereço de E-Mail [protegido]"
         policy_tags:
           - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
   - name: diretorio_consorcios
