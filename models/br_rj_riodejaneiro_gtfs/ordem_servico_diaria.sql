@@ -29,7 +29,7 @@ WITH
         'Domingo' AS dom ))),
   subsidio_data_versao_efetiva AS (
   SELECT
-    * EXCEPT(tipo_dia),
+    data,
     SPLIT(tipo_dia, " - ")[0] AS tipo_dia,
     tipo_dia AS tipo_dia_original
   FROM
