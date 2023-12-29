@@ -124,6 +124,8 @@ models:
         description: "Identificador único da integração"
       - name: sequencia_integracao
         description: "Sequência da transação dentro da integração"
+      - name: id_integracao_sequencia
+        description: "Identificador único da integração + sequência"
       - name: modo
         description: "Tipo de transporte (Ônibus, Van, BRT)"
       - name: id_consorcio
