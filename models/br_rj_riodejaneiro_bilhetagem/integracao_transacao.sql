@@ -8,7 +8,7 @@
       "data_type":"date",
       "granularity": "day"
     },
-    unique_key='id_transacao'
+    unique_key='id_integracao_sequencia'
   )
 }}
 
@@ -78,6 +78,7 @@ SELECT
   i.datetime_captura,
   i.id_integracao,
   i.sequencia_integracao,
+  CONCAT(i.id_integracao, '-', i.sequencia_integracao) AS id_integracao_sequencia,
   m.ds_tipo_modal AS modo,
   dc.id_consorcio,
   do.id_operadora,
