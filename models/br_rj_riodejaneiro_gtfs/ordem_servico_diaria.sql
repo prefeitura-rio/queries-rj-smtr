@@ -30,12 +30,13 @@ WITH
   subsidio_data_versao_efetiva AS (
   SELECT
     * EXCEPT(tipo_dia),
-    SPLIT(tipo_dia, " - ")[0] AS tipo_dia
+    SPLIT(tipo_dia, " - ")[0] AS tipo_dia,
+    tipo_dia AS tipo_dia_original
   FROM
     {{ ref("subsidio_data_versao_efetiva") }} )
 SELECT
   DATA,
-  tipo_dia,
+  tipo_dia_original AS tipo_dia,
   servico,
   vista,
   consorcio,
