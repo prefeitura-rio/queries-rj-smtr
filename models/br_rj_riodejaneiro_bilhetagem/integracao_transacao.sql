@@ -36,11 +36,11 @@ integracao_melt AS (
       EXTRACT(DATE FROM i.data_processamento) AS data,
       EXTRACT(HOUR FROM i.data_processamento) AS hora,
       i.data_inclusao AS datetime_inclusao,
-      i.data_processamento AS datetime_processamento,
+      i.data_processamento AS datetime_processamento_integracao,
       i.timestamp_captura AS datetime_captura,
       i.id AS id_integracao,
       im.sequencia_integracao,
-      im.data_transacao,
+      im.data_transacao AS datetime_transacao,
       im.id_tipo_modal,
       im.id_consorcio,
       im.id_operadora,
@@ -74,11 +74,12 @@ integracao_melt AS (
 SELECT 
   i.data,
   i.hora,
-  i.datetime_processamento,
+  i.datetime_processamento_integracao,
   i.datetime_captura,
+  i.datetime_transacao,
   i.id_integracao,
   i.sequencia_integracao,
-  m.modo,
+  m.ds_tipo_modal AS modo,
   CONCAT(i.id_integracao, '-', i.sequencia_integracao) AS id_integracao_sequencia,
   dc.id_consorcio,
   dc.consorcio,
@@ -102,9 +103,9 @@ ON
   i.id_linha = l.cd_linha
   AND i.data_transacao >= l.datetime_inclusao
 LEFT JOIN
-    {{ ref("diretorio_modos") }} AS m
+    {{ ref("staging_tipo_modal") }} AS m
 ON 
-    (i.id_tipo_modal = m.id_modo_jae AND (m.id_consorcio_jae IS NULL OR i.id_consorcio = m.id_consorcio_jae))
+    i.id_tipo_modal = m.cd_tipo_modal
 LEFT JOIN
   {{ ref("diretorio_operadoras") }} AS do
 ON

@@ -92,14 +92,3 @@ models:
         description: "Código de permissionário vindo do STU"
       - name: id_consorcio_jae
         description: "Código do consórcio no sistema da Jaé"
-  - name: diretorio_modos
-    description: "Tabela com dados unificados de modos de transporte"
-    columns:
-      - name: id_modo_stu
-        description: "Identificador único do modo no STU"
-      - name: id_modo_jae
-        description: "Identificador único do modo no sistema da Jaé"
-      - name: modo
-        description: "Nome do modo de transporte"
-      - name: id_consorcio_jae
-        description: "Identificador único do consórcio da Jaé (utilizado para distinguir os tipos de van (STPC e STPL)"

@@ -116,10 +116,12 @@ models:
         description: "Data de processamento da integração (partição)"
       - name: hora
         description: "Hora de processamento da integração"
-      - name: datetime_processamento
+      - name: datetime_processamento_integracao
         description: "Data e hora de processamento da integração em GMT-3"
       - name: datetime_captura
         description: "Data e hora da captura da integração em GMT-3"
+      - name: datetime_transacao
+        description: "Data e hora da transação em GMT-3"
       - name: id_integracao
         description: "Identificador único da integração"
       - name: sequencia_integracao

@@ -36,7 +36,7 @@ SELECT
     data_transacao AS datetime_transacao,
     data_processamento AS datetime_processamento,
     t.timestamp_captura AS datetime_captura,
-    m.modo,
+    m.ds_tipo_modal AS modo,
     dc.id_consorcio,
     dc.consorcio,
     do.id_operadora,
@@ -65,9 +65,9 @@ ON
     t.cd_linha = l.cd_linha 
     AND t.data_transacao >= l.datetime_inclusao
 LEFT JOIN
-    {{ ref("diretorio_modos") }} AS m
+    {{ ref("staging_tipo_modal") }} AS m
 ON 
-    (t.id_tipo_modal = m.id_modo_jae AND (m.id_consorcio_jae IS NULL OR t.cd_consorcio = m.id_consorcio_jae))
+    t.id_tipo_modal = m.cd_tipo_modal
 LEFT JOIN
     {{ ref("diretorio_operadoras") }} AS do
 ON
