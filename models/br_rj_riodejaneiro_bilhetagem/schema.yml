@@ -113,9 +113,9 @@ models:
     description: "integracao"
     columns:
       - name: data
-        description: "Data de processamento da integração (partição)"
+        description: "Data da transação (partição)"
       - name: hora
-        description: "Hora de processamento da integração"
+        description: "Hora da transação"
       - name: datetime_processamento_integracao
         description: "Data e hora de processamento da integração em GMT-3"
       - name: datetime_captura
