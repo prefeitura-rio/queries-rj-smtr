@@ -5,13 +5,6 @@
   )
 }}
 
-{%
-    set relacao_modo = [
-        {"id_jae": "'1'", "id_stu": ""},
-
-    ]
-%}
-
 WITH jae AS (
     SELECT
         cd_tipo_modal,
@@ -38,7 +31,7 @@ stu AS (
         FULL OUTER JOIN
             {{ ref("staging_operadora_pessoa_fisica") }} pf
         ON pf.id_modo = pj.id_modo
-    )  
+    )
 )
 SELECT
     s.id_modo AS id_modo_stu,
@@ -58,4 +51,4 @@ FROM
 FULL OUTER JOIN
     stu s
 ON
-    j.cd_tipo_modal = s.id_modo_jae
+    j.cd_tipo_modal = s.id_modo_jae00
