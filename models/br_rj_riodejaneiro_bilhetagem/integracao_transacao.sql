@@ -33,8 +33,8 @@ WITH integracao_transacao_deduplicada AS (
 ),
 integracao_melt AS (
     SELECT
-      EXTRACT(DATE FROM i.data_processamento) AS data,
-      EXTRACT(HOUR FROM i.data_processamento) AS hora,
+      EXTRACT(DATE FROM im.data_transacao) AS data,
+      EXTRACT(HOUR FROM im.data_transacao) AS hora,
       i.data_inclusao AS datetime_inclusao,
       i.data_processamento AS datetime_processamento_integracao,
       i.timestamp_captura AS datetime_captura,
