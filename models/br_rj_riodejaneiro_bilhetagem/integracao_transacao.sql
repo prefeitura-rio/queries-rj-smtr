@@ -101,7 +101,7 @@ LEFT JOIN
   {{ ref("staging_linha") }} AS l
 ON
   i.id_linha = l.cd_linha
-  AND i.data_transacao >= l.datetime_inclusao
+  AND i.datetime_transacao >= l.datetime_inclusao
 LEFT JOIN
   {{ ref("staging_tipo_modal") }} AS m
 ON 

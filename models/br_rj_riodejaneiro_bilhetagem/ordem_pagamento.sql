@@ -17,6 +17,7 @@ WITH transacao AS (
         cd_linha,
         cd_operadora,
         valor_transacao,
+        tipo_transacao,
         cd_consorcio
     FROM
         {{ ref("staging_transacao") }}
