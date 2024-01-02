@@ -39,6 +39,7 @@ transacao_deduplicada AS (
             transacao
     ) t
     WHERE
+        -- Remover gratuidades da contagem de transações
         tipo_transacao != '21'
         AND rn = 1
         AND
