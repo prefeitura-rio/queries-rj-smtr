@@ -83,7 +83,7 @@ SELECT
     {% endfor %}
   END AS data_versao_trips,
   CASE
-    -- Reveillon:
+    -- Reveillon 2022:
     WHEN data = DATE(2022,12,31) THEN data
     WHEN data = DATE(2023,1,1) THEN data
     WHEN data BETWEEN DATE(2023,1,2) AND DATE(2023,1,15) THEN DATE(2023,1,2)
@@ -122,7 +122,7 @@ SELECT
     {% endfor %}
   END AS data_versao_shapes,
   CASE
-    -- Reveillon:
+    -- Reveillon 2022:
     WHEN data = DATE(2022,12,31) THEN data
     WHEN data = DATE(2023,1,1) THEN data
     WHEN data BETWEEN DATE(2023,1,2) AND DATE(2023,1,15) THEN DATE(2023,1,2)
