@@ -77,29 +77,55 @@ stu AS (
     END AS modo_join
   FROM
     stu_pessoa_fisica
+),
+cadastro AS (
+  SELECT 
+    COALESCE(s.perm_autor, j.cd_operadora_transporte) AS id_operadora,
+    UPPER(REGEXP_REPLACE(NORMALIZE(COALESCE(s.nome_operadora, j.nm_cliente), NFD), r"\pM", '')) AS operadora_completo,
+    s.tipo_permissao AS tipo_operadora,
+    s.modo AS tipo_modal_stu,
+    j.ds_tipo_modal AS tipo_modal_jae,
+    s.processo AS id_processo,
+    s.data_registro AS data_processo,
+    COALESCE(s.documento, j.nr_documento) AS documento,
+    COALESCE(s.tipo_documento, j.tipo_documento) AS tipo_documento,
+    s.perm_autor AS id_operadora_stu,
+    j.cd_operadora_transporte AS id_operadora_jae,
+    j.in_situacao_atividade AS situacao_operadora_jae,
+    j.cd_agencia AS agencia,
+    j.cd_tipo_conta AS tipo_conta,
+    j.nm_banco AS banco,
+    LPAD(j.nr_banco, 3, '0') AS codigo_banco,
+    j.nr_conta AS conta
+  FROM
+    stu AS s
+  FULL OUTER JOIN
+    operadora_jae AS j
+  ON
+    s.documento = j.nr_documento
+    AND s.modo_join = j.ds_tipo_modal
 )
-SELECT 
-  COALESCE(s.perm_autor, j.cd_operadora_transporte) AS id_operadora,
-  UPPER(REGEXP_REPLACE(NORMALIZE(COALESCE(s.nome_operadora, j.nm_cliente), NFD), r"\pM", '')) AS operadora,
-  s.tipo_permissao AS tipo_operadora,
-  s.modo AS tipo_modal_stu,
-  j.ds_tipo_modal AS tipo_modal_jae,
-  s.processo AS id_processo,
-  s.data_registro AS data_processo,
-  COALESCE(s.documento, j.nr_documento) AS documento,
-  COALESCE(s.tipo_documento, j.tipo_documento) AS tipo_documento,
-  s.perm_autor AS id_operadora_stu,
-  j.cd_operadora_transporte AS id_operadora_jae,
-  j.in_situacao_atividade AS situacao_operadora_jae,
-  j.cd_agencia AS agencia,
-  j.cd_tipo_conta AS tipo_conta,
-  j.nm_banco AS banco,
-  LPAD(j.nr_banco, 3, '0') AS codigo_banco,
-  j.nr_conta AS conta
+SELECT
+  id_operadora,
+  CASE
+    WHEN tipo_documento = "CNPJ" THEN operadora_completo
+    ELSE REGEXP_REPLACE(operadora_completo, '[^ ]', '*')
+  END AS operadora,
+  operadora_completo,
+  tipo_operadora,
+  tipo_modal_stu,
+  tipo_modal_jae,
+  id_processo,
+  data_processo,
+  documento,
+  tipo_documento,
+  id_operadora_stu,
+  id_operadora_jae,
+  situacao_operadora_jae,
+  agencia,
+  tipo_conta,
+  banco,
+  codigo_banco,
+  conta
 FROM
-  stu AS s
-FULL OUTER JOIN
-  operadora_jae AS j
-ON
-  s.documento = j.nr_documento
-  AND s.modo_join = j.ds_tipo_modal
+  cadastro

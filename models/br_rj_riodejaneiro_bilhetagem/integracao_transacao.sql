@@ -33,14 +33,14 @@ WITH integracao_transacao_deduplicada AS (
 ),
 integracao_melt AS (
     SELECT
-      EXTRACT(DATE FROM i.data_processamento) AS data,
-      EXTRACT(HOUR FROM i.data_processamento) AS hora,
+      EXTRACT(DATE FROM im.data_transacao) AS data,
+      EXTRACT(HOUR FROM im.data_transacao) AS hora,
       i.data_inclusao AS datetime_inclusao,
-      i.data_processamento AS datetime_processamento,
+      i.data_processamento AS datetime_processamento_integracao,
       i.timestamp_captura AS datetime_captura,
       i.id AS id_integracao,
       im.sequencia_integracao,
-      im.data_transacao,
+      im.data_transacao AS datetime_transacao,
       im.id_tipo_modal,
       im.id_consorcio,
       im.id_operadora,
@@ -74,14 +74,17 @@ integracao_melt AS (
 SELECT 
   i.data,
   i.hora,
-  i.datetime_processamento,
+  i.datetime_processamento_integracao,
   i.datetime_captura,
+  i.datetime_transacao,
   i.id_integracao,
   i.sequencia_integracao,
-  CONCAT(i.id_integracao, '-', i.sequencia_integracao) AS id_integracao_sequencia,
   m.ds_tipo_modal AS modo,
+  CONCAT(i.id_integracao, '-', i.sequencia_integracao) AS id_integracao_sequencia,
   dc.id_consorcio,
+  dc.consorcio,
   do.id_operadora,
+  do.operadora,
   l.nr_linha AS servico,
   i.id_transacao,
   i.sentido,
@@ -102,7 +105,7 @@ ON
 LEFT JOIN
   {{ ref("staging_tipo_modal") }} AS m
 ON 
-  i.id_tipo_modal = m.cd_tipo_modal
+    i.id_tipo_modal = m.cd_tipo_modal
 LEFT JOIN
   {{ ref("diretorio_operadoras") }} AS do
 ON

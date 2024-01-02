@@ -39,7 +39,9 @@ transacao_deduplicada AS (
             transacao
     ) t
     WHERE
-        rn = 1
+        -- Remover gratuidades da contagem de transações
+        tipo_transacao != '21'
+        AND rn = 1
         AND
         {% if is_incremental() -%}
             t.data_processamento < DATE("{{var('date_range_end')}}")
@@ -97,8 +99,8 @@ ordem_pagamento AS (
     ON
         r.id_ordem_pagamento = p.id_ordem_pagamento
     {% if is_incremental() -%}
-    WHERE
-        DATE(r.data) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+        WHERE
+            DATE(r.data) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
     {%- endif %}
 ),
 ordem_pagamento_validacao AS (
@@ -146,7 +148,9 @@ SELECT
     o.data_ordem,
     o.data_pagamento,
     dc.id_consorcio,
+    dc.consorcio,
     do.id_operadora,
+    do.operadora,
     l.nr_linha AS servico,
     o.id_ordem_pagamento,
     o.id_ordem_ressarcimento,
