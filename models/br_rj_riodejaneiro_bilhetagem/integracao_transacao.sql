@@ -103,7 +103,7 @@ ON
   i.id_linha = l.cd_linha
   AND i.data_transacao >= l.datetime_inclusao
 LEFT JOIN
-    {{ ref("staging_tipo_modal") }} AS m
+  {{ ref("staging_tipo_modal") }} AS m
 ON 
     i.id_tipo_modal = m.cd_tipo_modal
 LEFT JOIN
