@@ -16,6 +16,7 @@ WITH
             SAFE_CAST(JSON_VALUE(content, '$.Processo') AS STRING) AS processo,
             SAFE_CAST(JSON_VALUE(content, '$.Nome') AS STRING) AS nome,
             SAFE_CAST(JSON_VALUE(content, '$.Placa') AS STRING) AS placa,
+            SAFE_CAST(JSON_VALUE(content, '$.id_modo') AS STRING) AS id_modo,
             SAFE_CAST(JSON_VALUE(content, '$.modo') AS STRING) AS modo,
             SAFE_CAST(JSON_VALUE(content, '$.tipo_permissao') AS STRING) AS tipo_permissao
         FROM

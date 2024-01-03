@@ -14,6 +14,7 @@ WITH
             DATE(PARSE_TIMESTAMP('%d/%m/%Y', SAFE_CAST(JSON_VALUE(content, '$.Data') AS STRING)), "America/Sao_Paulo") AS data_registro,
             SAFE_CAST(JSON_VALUE(content, '$.Processo') AS STRING) AS processo,
             SAFE_CAST(JSON_VALUE(content, '$.Razao_Social') AS STRING) AS razao_social,
+            SAFE_CAST(JSON_VALUE(content, '$.id_modo') AS STRING) AS id_modo,
             SAFE_CAST(JSON_VALUE(content, '$.modo') AS STRING) AS modo,
             SAFE_CAST(JSON_VALUE(content, '$.tipo_permissao') AS STRING) AS tipo_permissao
         FROM
