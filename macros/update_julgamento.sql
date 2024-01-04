@@ -1,5 +1,4 @@
 {% macro update_julgamento(model) %}
-{% set incremental = is_incremental() %}
 
 WITH exploded AS (
     SELECT 

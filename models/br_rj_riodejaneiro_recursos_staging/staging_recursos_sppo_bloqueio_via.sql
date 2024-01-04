@@ -1,6 +1,5 @@
 {{ config(
   materialized = 'view',
-  alias='recursos_sppo_bloqueio_via',
   )
 }}
 
@@ -16,4 +15,4 @@ SELECT
     data 
   FROM 
     {{source('br_rj_riodejaneiro_recursos_staging', 
-      'recursos_sspo_bloqueio_via')}}
+      'recursos_sppo_bloqueio_via')}}

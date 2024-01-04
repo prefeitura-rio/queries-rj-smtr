@@ -16,7 +16,7 @@ WITH exploded AS (
     ) AS value, 
     SAFE_CAST(JSON_EXTRACT(items, '$.customFieldId') AS STRING ) AS field_id 
   FROM 
-    {{ ref('staging_recursos_sppo_viagens_individuais') }}, 
+    {{ ref('staging_recursos_sppo_bloqueio_via') }}, 
     UNNEST(items) items
   
  {% if is_incremental() -%}
@@ -100,6 +100,6 @@ SELECT
 FROM
     tratado t
 LEFT JOIN 
-   {{ update_julgamento(recursos_sppo_bloqueio_via) }} AS j
+   {{ ref('recursos_sppo_bloqueio_via_julgamento') }} AS j
 
   ON t.id_recurso = j.id_recurso
