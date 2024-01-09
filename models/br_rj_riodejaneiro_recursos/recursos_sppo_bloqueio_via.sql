@@ -67,10 +67,8 @@ tratado AS (
    
   FROM 
     pivotado p
-), 
-julgamento AS (
-  {{ update_julgamento('br_rj_riodejaneiro_recursos.staging_recursos_sppo_bloqueio_via') }}
-)
+) 
+
 SELECT
     t.id_recurso,
     DATE(datetime_recurso) AS data,
@@ -102,10 +100,9 @@ SELECT
  
 FROM
     tratado t
+    
 LEFT JOIN 
 
-  julgamento AS j
-
-   --{{ ref('recursos_sppo_bloqueio_via_julgamento') }} AS j
-
+   {{ ref('recursos_sppo_bloqueio_via_ultimo_julgamento') }} AS j
+  
   ON t.id_recurso = j.id_recurso

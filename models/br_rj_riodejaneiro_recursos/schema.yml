@@ -66,11 +66,18 @@ models:
           description: Observações acerca do julgamentodo recurso
         - name: data
           description: Data do recurso (partição da tabela)
+        - name: data_julgamento
+          description: Data do julgamento
+
   - name: recursos_sppo_reprocessamento
     description: "Recursos abertos na plataforma Movidesk para pagamento de subsídio de reprocessamento"
     columns:
+        - name: id_recurso
+          description: Número de id do recurso
         - name: julgamento
           description: Julgamento do recurso
+        - name: motivo_recurso
+          description: Motivo para criação do recurso
         - name: motivo_julgamento
           description: Motivos para julgamento
         - name: observacao_julgamento
@@ -81,3 +88,9 @@ models:
           description: Data/hora de criação do ticket para pedido de recurso no Movidesk
         - name: data
           description: Data do recurso (partição da tabela)
+        - name: data_hora_inicio_viagem
+          description: Data e hora de início da viagem
+        - name: data_hora_fim_viagem
+          description: Data e hora de fim da viagem
+        - name: data_julgamento
+          description: Data do julgamento
