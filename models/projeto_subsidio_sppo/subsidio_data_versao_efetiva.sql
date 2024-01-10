@@ -68,6 +68,7 @@ SELECT
     WHEN data = DATE(2023,12,31) THEN data
     WHEN data = DATE(2024,01,01) THEN data
     WHEN data BETWEEN DATE(2024,01,02) AND DATE(2024,01,15) THEN DATE(2024,01,02)
+    WHEN data BETWEEN DATE(2024,01,16) AND DATE(2024,01,31) THEN DATE(2024,01,02)
     -- 2022:
     WHEN data BETWEEN DATE(2022,10,1) AND DATE(2022,10,2) THEN DATE(2022,9,16)
     WHEN data BETWEEN DATE(2022,6,1) AND LAST_DAY(DATE(2022,6,30), MONTH) THEN DATE(2022,6,1)
@@ -75,8 +76,8 @@ SELECT
       WHEN data BETWEEN DATE(2022,{{ i }},1) AND DATE(2022,{{ i }},15) THEN DATE(2022,{{ i }},1)
       WHEN data BETWEEN DATE(2022,{{ i }},16) AND LAST_DAY(DATE(2022,{{ i }},30), MONTH) THEN DATE(2022,{{ i }},16)
     {% endfor %}
-    -- 2023:
-    {% for j in range(2023, 2024) %}
+    -- 2023 a 2024:
+    {% for j in range(2023, 2025) %}
       {% for i in range(1, 13) %}
         WHEN EXTRACT(MONTH FROM data) = {{ i }} THEN DATE({{ j }},{{ i }},1)
       {% endfor %}
@@ -107,6 +108,7 @@ SELECT
     WHEN data = DATE(2023,12,31) THEN data
     WHEN data = DATE(2024,01,01) THEN data
     WHEN data BETWEEN DATE(2024,01,02) AND DATE(2024,01,15) THEN DATE(2024,01,02)
+    WHEN data BETWEEN DATE(2024,01,16) AND DATE(2024,01,31) THEN DATE(2024,01,02)
     -- 2022:
     WHEN data BETWEEN DATE(2022,10,1) AND DATE(2022,10,2) THEN DATE(2022,9,16)
     WHEN data BETWEEN DATE(2022,6,1) AND LAST_DAY(DATE(2022,6,30), MONTH) THEN DATE(2022,6,1)
@@ -114,8 +116,8 @@ SELECT
       WHEN data BETWEEN DATE(2022,{{ i }},1) AND DATE(2022,{{ i }},15) THEN DATE(2022,{{ i }},1)
       WHEN data BETWEEN DATE(2022,{{ i }},16) AND LAST_DAY(DATE(2022,{{ i }},30), MONTH) THEN DATE(2022,{{ i }},16)
     {% endfor %}
-    -- 2023:
-    {% for j in range(2023, 2024) %}
+    -- 2023 a 2024:
+    {% for j in range(2023, 2025) %}
       {% for i in range(1, 13) %}
         WHEN EXTRACT(MONTH FROM data) = {{ i }} THEN DATE({{ j }},{{ i }},1)
       {% endfor %}
@@ -146,13 +148,14 @@ SELECT
     WHEN data = DATE(2023,12,31) THEN data
     WHEN data = DATE(2024,01,01) THEN data
     WHEN data BETWEEN DATE(2024,01,02) AND DATE(2024,01,15) THEN DATE(2024,01,02)
+    WHEN data BETWEEN DATE(2024,01,16) AND DATE(2024,01,31) THEN DATE(2024,01,02)
     -- 2022:
     {% for i in range(6, 13) %}
       WHEN data BETWEEN DATE(2022,{{ i }},1) AND DATE(2022,{{ i }},15) THEN DATE(2022,{{ i }},1)
       WHEN data BETWEEN DATE(2022,{{ i }},16) AND LAST_DAY(DATE(2022,{{ i }},30), MONTH) THEN DATE(2022,{{ i }},16)
     {% endfor %}
-    -- 2023:
-    {% for j in range(2023, 2024) %}
+    -- 2023 a 2024:
+    {% for j in range(2023, 2025) %}
       {% for i in range(1, 13) %}
         WHEN EXTRACT(MONTH FROM data) = {{ i }} THEN DATE({{ j }},{{ i }},1)
       {% endfor %}
