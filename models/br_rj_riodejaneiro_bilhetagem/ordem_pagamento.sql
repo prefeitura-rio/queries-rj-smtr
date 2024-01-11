@@ -178,11 +178,11 @@ SELECT
 FROM
     ordem_pagamento_validacao o
 LEFT JOIN
-    {{ ref("diretorio_operadoras") }} AS do
+    {{ ref("operadoras") }} AS do
 ON
     o.id_operadora = do.id_operadora_jae
 LEFT JOIN
-    {{ ref("diretorio_consorcios") }} AS dc
+    {{ ref("consorcios") }} AS dc
 ON
     o.id_consorcio = dc.id_consorcio_jae
 LEFT JOIN

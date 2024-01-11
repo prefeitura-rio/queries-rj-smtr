@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: diretorio_operadoras
+  - name: operadoras
     description: "Tabela de operadoras de transporte"
     columns:
       - name: id_operadora
@@ -75,7 +75,7 @@ models:
         description: "Endereço de E-Mail [protegido]"
         policy_tags:
           - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
-  - name: diretorio_consorcios
+  - name: consorcios
     description: "Tabela com dados unificados de consorcios"
     columns:
       - name: id_consorcio

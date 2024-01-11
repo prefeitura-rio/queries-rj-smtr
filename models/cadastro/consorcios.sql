@@ -1,7 +1,6 @@
 {{
   config(
-    materialized="table",
-    alias='consorcios'
+    materialized="table"
   )
 }}
 
