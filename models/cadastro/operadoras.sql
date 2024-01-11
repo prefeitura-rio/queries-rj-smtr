@@ -1,7 +1,6 @@
 {{
   config(
-    materialized="table",
-    alias='operadoras'
+    materialized="table"
   )
 }}
 
