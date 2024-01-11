@@ -340,3 +340,12 @@ models:
         description: "Data de referência do feed (versão)."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
+  - name: ordem_servico_viagens_planejadas
+    description: "Dados das linhas presentes no município para vigens planejadas."
+    columns:
+      - name: DATA
+        description: "Data de referência."
+      - name: viagens_planejadas
+        description: "Viagens planejadas no dia."
+      - name: servico
+        description: "Número da linha de ônibus."
