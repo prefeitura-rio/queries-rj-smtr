@@ -1,11 +1,10 @@
 {{ config(
   materialized = 'view',
-  alias='recursos_sppo_viagens_individuais',
   )
 }}
 
-WITH treated_data AS (
 
+WITH treated_data AS (
   SELECT
       ROW_NUMBER() OVER(PARTITION BY protocol ORDER BY timestamp_captura DESC) AS rn,
       JSON_EXTRACT_ARRAY(content, '$.customFieldValues') AS items,
@@ -16,7 +15,7 @@ WITH treated_data AS (
       data 
     FROM 
       {{source('br_rj_riodejaneiro_recursos_staging', 
-        'recursos_sppo_viagens_individuais')}}
+        'recursos_sppo_reprocessamento')}}
 )
 
 SELECT *
