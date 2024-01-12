@@ -16,7 +16,6 @@ WITH exploded AS (
     WHERE
         DATE(data) BETWEEN DATE("{{var('date_range_start')}}") 
         AND DATE("{{var('date_range_end')}}")
-        AND rn=1
   {%- endif %}
 ), 
 pivotado AS (
@@ -71,5 +70,5 @@ FROM
   WHERE 
     j.julgamento != j.ultimo_julgamento OR j.ultimo_julgamento IS NULL
 )
-WHERE rn = 1
+
 
