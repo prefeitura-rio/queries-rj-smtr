@@ -107,11 +107,11 @@ LEFT JOIN
 ON 
     i.id_tipo_modal = m.cd_tipo_modal
 LEFT JOIN
-  {{ ref("diretorio_operadoras") }} AS do
+  {{ ref("operadoras") }} AS do
 ON
   i.id_operadora = do.id_operadora_jae
 LEFT JOIN
-  {{ ref("diretorio_consorcios") }} AS dc
+  {{ ref("consorcios") }} AS dc
 ON
   i.id_consorcio = dc.id_consorcio_jae
 WHERE i.id_transacao IS NOT NULL

@@ -29,6 +29,8 @@ SELECT
       WHEN data = "2023-12-03" THEN "Domingo - Verão" -- OS de Verão
       WHEN data = "2023-12-16" THEN "Sabado - Verão" -- OS de Verão
       WHEN data = "2023-12-17" THEN "Domingo - Verão" -- OS de Verão
+      WHEN data = "2023-12-31" THEN "Domingo - Réveillon"
+      WHEN data = "2024-01-01" THEN "Domingo - Réveillon"
       WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 1 THEN "Domingo" -- Dia de São Sebastião -- Art. 8°, I - Lei Municipal nº 5146/2010
       WHEN EXTRACT(DAY FROM data) = 23 AND EXTRACT(MONTH FROM data) = 4 THEN "Domingo" -- Dia de São Jorge -- Art. 8°, II - Lei Municipal nº 5146/2010 / Lei Estadual Nº 5198/2008 / Lei Estadual Nº 5645/2010
       WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 11 THEN "Domingo" -- Aniversário de morte de Zumbi dos Palmares / Dia da Consciência Negra -- Art. 8°, IV - Lei Municipal nº 5146/2010 / Lei Estadual nº 526/1982 / Lei Estadual nº 1929/1991 / Lei Estadual nº 4007/2002 / Lei Estadual Nº 5645/2010
@@ -59,15 +61,16 @@ SELECT
     WHEN data BETWEEN DATE(2023,10,16) AND DATE(2023,10,16) THEN DATE(2023,10,16)
     WHEN data BETWEEN DATE(2023,10,17) AND DATE(2023,10,23) THEN DATE(2023,10,17)
     WHEN data BETWEEN DATE(2023,10,24) AND DATE(2023,10,31) THEN DATE(2023,10,24)
-    WHEN data = DATE(2023,12,01) THEN data
+    WHEN data = DATE(2023,12,01) THEN data -- Desvio do TIG
     WHEN data BETWEEN DATE(2023,12,02) AND DATE(2023,12,03) THEN DATE(2023,12,03) -- OS de Verão
-    WHEN data BETWEEN DATE(2023,12,04) AND DATE(2023,12,15) THEN DATE(2023,12,02) -- Fim do desvio do TIG
-    WHEN data BETWEEN DATE(2023,12,16) AND DATE(2023,12,17) THEN DATE(2023,12,17) -- OS de Verão
-    WHEN data BETWEEN DATE(2023,12,18) AND DATE(2023,12,30) THEN DATE(2023,12,16)
+    WHEN data BETWEEN DATE(2023,12,16) AND DATE(2023,12,17) THEN DATE(2023,12,03) -- OS de Verão
+    WHEN data BETWEEN DATE(2023,12,04) AND DATE(2023,12,20) THEN DATE(2023,12,02) -- Fim do desvio do TIG
+    WHEN data BETWEEN DATE(2023,12,21) AND DATE(2023,12,30) THEN DATE(2023,12,21)
     -- Reveillon 2023:
     WHEN data = DATE(2023,12,31) THEN data
     WHEN data = DATE(2024,01,01) THEN data
     WHEN data BETWEEN DATE(2024,01,02) AND DATE(2024,01,15) THEN DATE(2024,01,02)
+    WHEN data BETWEEN DATE(2024,01,16) AND DATE(2024,01,31) THEN DATE(2024,01,02)
     -- 2022:
     WHEN data BETWEEN DATE(2022,10,1) AND DATE(2022,10,2) THEN DATE(2022,9,16)
     WHEN data BETWEEN DATE(2022,6,1) AND LAST_DAY(DATE(2022,6,30), MONTH) THEN DATE(2022,6,1)
@@ -75,8 +78,8 @@ SELECT
       WHEN data BETWEEN DATE(2022,{{ i }},1) AND DATE(2022,{{ i }},15) THEN DATE(2022,{{ i }},1)
       WHEN data BETWEEN DATE(2022,{{ i }},16) AND LAST_DAY(DATE(2022,{{ i }},30), MONTH) THEN DATE(2022,{{ i }},16)
     {% endfor %}
-    -- 2023:
-    {% for j in range(2023, 2024) %}
+    -- 2023 a 2024:
+    {% for j in range(2023, 2025) %}
       {% for i in range(1, 13) %}
         WHEN EXTRACT(MONTH FROM data) = {{ i }} THEN DATE({{ j }},{{ i }},1)
       {% endfor %}
@@ -98,15 +101,16 @@ SELECT
     WHEN data BETWEEN DATE(2023,10,16) AND DATE(2023,10,16) THEN DATE(2023,10,16)
     WHEN data BETWEEN DATE(2023,10,17) AND DATE(2023,10,23) THEN DATE(2023,10,17)
     WHEN data BETWEEN DATE(2023,10,24) AND DATE(2023,10,31) THEN DATE(2023,10,24)
-    WHEN data = DATE(2023,12,01) THEN data
+    WHEN data = DATE(2023,12,01) THEN data -- Desvio do TIG
     WHEN data BETWEEN DATE(2023,12,02) AND DATE(2023,12,03) THEN DATE(2023,12,03) -- OS de Verão
-    WHEN data BETWEEN DATE(2023,12,04) AND DATE(2023,12,15) THEN DATE(2023,12,02) -- Fim do desvio do TIG
-    WHEN data BETWEEN DATE(2023,12,16) AND DATE(2023,12,17) THEN DATE(2023,12,17) -- OS de Verão
-    WHEN data BETWEEN DATE(2023,12,18) AND DATE(2023,12,30) THEN DATE(2023,12,16)
+    WHEN data BETWEEN DATE(2023,12,16) AND DATE(2023,12,17) THEN DATE(2023,12,03) -- OS de Verão
+    WHEN data BETWEEN DATE(2023,12,04) AND DATE(2023,12,20) THEN DATE(2023,12,02) -- Fim do desvio do TIG
+    WHEN data BETWEEN DATE(2023,12,21) AND DATE(2023,12,30) THEN DATE(2023,12,21)
     -- Reveillon 2023:
     WHEN data = DATE(2023,12,31) THEN data
     WHEN data = DATE(2024,01,01) THEN data
     WHEN data BETWEEN DATE(2024,01,02) AND DATE(2024,01,15) THEN DATE(2024,01,02)
+    WHEN data BETWEEN DATE(2024,01,16) AND DATE(2024,01,31) THEN DATE(2024,01,02)
     -- 2022:
     WHEN data BETWEEN DATE(2022,10,1) AND DATE(2022,10,2) THEN DATE(2022,9,16)
     WHEN data BETWEEN DATE(2022,6,1) AND LAST_DAY(DATE(2022,6,30), MONTH) THEN DATE(2022,6,1)
@@ -114,8 +118,8 @@ SELECT
       WHEN data BETWEEN DATE(2022,{{ i }},1) AND DATE(2022,{{ i }},15) THEN DATE(2022,{{ i }},1)
       WHEN data BETWEEN DATE(2022,{{ i }},16) AND LAST_DAY(DATE(2022,{{ i }},30), MONTH) THEN DATE(2022,{{ i }},16)
     {% endfor %}
-    -- 2023:
-    {% for j in range(2023, 2024) %}
+    -- 2023 a 2024:
+    {% for j in range(2023, 2025) %}
       {% for i in range(1, 13) %}
         WHEN EXTRACT(MONTH FROM data) = {{ i }} THEN DATE({{ j }},{{ i }},1)
       {% endfor %}
@@ -137,22 +141,23 @@ SELECT
     WHEN data BETWEEN DATE(2023,10,16) AND DATE(2023,10,16) THEN DATE(2023,10,16)
     WHEN data BETWEEN DATE(2023,10,17) AND DATE(2023,10,23) THEN DATE(2023,10,17)
     WHEN data BETWEEN DATE(2023,10,24) AND DATE(2023,10,31) THEN DATE(2023,10,24)
-    WHEN data = DATE(2023,12,01) THEN data
+    WHEN data = DATE(2023,12,01) THEN data -- Desvio do TIG
     WHEN data BETWEEN DATE(2023,12,02) AND DATE(2023,12,03) THEN DATE(2023,12,03) -- OS de Verão
-    WHEN data BETWEEN DATE(2023,12,04) AND DATE(2023,12,15) THEN DATE(2023,12,02) -- Fim do desvio do TIG
-    WHEN data BETWEEN DATE(2023,12,16) AND DATE(2023,12,17) THEN DATE(2023,12,17) -- OS de Verão
-    WHEN data BETWEEN DATE(2023,12,18) AND DATE(2023,12,30) THEN DATE(2023,12,16)
+    WHEN data BETWEEN DATE(2023,12,16) AND DATE(2023,12,17) THEN DATE(2023,12,03) -- OS de Verão
+    WHEN data BETWEEN DATE(2023,12,04) AND DATE(2023,12,20) THEN DATE(2023,12,02) -- Fim do desvio do TIG
+    WHEN data BETWEEN DATE(2023,12,21) AND DATE(2023,12,30) THEN DATE(2023,12,21)
     -- Reveillon 2023:
     WHEN data = DATE(2023,12,31) THEN data
     WHEN data = DATE(2024,01,01) THEN data
     WHEN data BETWEEN DATE(2024,01,02) AND DATE(2024,01,15) THEN DATE(2024,01,02)
+    WHEN data BETWEEN DATE(2024,01,16) AND DATE(2024,01,31) THEN DATE(2024,01,02)
     -- 2022:
     {% for i in range(6, 13) %}
       WHEN data BETWEEN DATE(2022,{{ i }},1) AND DATE(2022,{{ i }},15) THEN DATE(2022,{{ i }},1)
       WHEN data BETWEEN DATE(2022,{{ i }},16) AND LAST_DAY(DATE(2022,{{ i }},30), MONTH) THEN DATE(2022,{{ i }},16)
     {% endfor %}
-    -- 2023:
-    {% for j in range(2023, 2024) %}
+    -- 2023 a 2024:
+    {% for j in range(2023, 2025) %}
       {% for i in range(1, 13) %}
         WHEN EXTRACT(MONTH FROM data) = {{ i }} THEN DATE({{ j }},{{ i }},1)
       {% endfor %}
@@ -177,4 +182,4 @@ SELECT
       END
     )
   END AS valor_subsidio_por_km
-FROM UNNEST(GENERATE_DATE_ARRAY("2022-06-01", "2023-12-31")) AS data
+FROM UNNEST(GENERATE_DATE_ARRAY("2022-06-01", "2024-12-31")) AS data

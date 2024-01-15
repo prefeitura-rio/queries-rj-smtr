@@ -29,6 +29,16 @@ WITH transacao_deduplicada AS (
     )
     WHERE
         rn = 1
+),
+tipo_transacao AS (
+  SELECT
+    chave AS id_tipo_transacao,
+    valor AS tipo_transacao,
+  FROM
+    `rj-smtr.br_rj_riodejaneiro_bilhetagem.dicionario`
+  WHERE
+    id_tabela = "transacao"
+    AND coluna = "id_tipo_transacao" 
 )
 SELECT 
     EXTRACT(DATE FROM data_transacao) AS data,
@@ -47,7 +57,7 @@ SELECT
     COALESCE(id_cliente, pan_hash) AS id_cliente,
     id AS id_transacao,
     id_tipo_midia AS id_tipo_pagamento,
-    tipo_transacao AS id_tipo_transacao,
+    tt.tipo_transacao,
     tipo_integracao AS id_tipo_integracao,
     NULL AS id_integracao,
     latitude_trx AS latitude,
@@ -69,10 +79,14 @@ LEFT JOIN
 ON 
     t.id_tipo_modal = m.cd_tipo_modal
 LEFT JOIN
-    {{ ref("diretorio_operadoras") }} AS do
+    {{ ref("operadoras") }} AS do
 ON
     t.cd_operadora = do.id_operadora_jae
 LEFT JOIN
-    {{ ref("diretorio_consorcios") }} AS dc
+    {{ ref("consorcios") }} AS dc
 ON
     t.cd_consorcio = dc.id_consorcio_jae
+LEFT JOIN
+    tipo_transacao AS tt
+ON
+    tt.id_tipo_transacao = t.tipo_transacao
