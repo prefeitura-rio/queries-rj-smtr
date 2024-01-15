@@ -7,7 +7,8 @@
 ) }}
 
 WITH exploded AS (
-  SELECT 
+  SELECT
+    ROW_NUMBER() OVER(PARTITION BY id_recurso ORDER BY datetime_captura DESC) AS rn, 
     id_recurso,
     datetime_recurso,
     datetime_captura,
@@ -18,12 +19,10 @@ WITH exploded AS (
   FROM 
     {{ ref('staging_recursos_sppo_bloqueio_via') }}, 
     UNNEST(items) items
-  
- {% if is_incremental() -%}
+  {% if is_incremental() -%}
     WHERE
-        DATE(data) BETWEEN DATE("{{var('date_range_start')}}") 
+      DATE(data) BETWEEN DATE("{{var('date_range_start')}}") 
         AND DATE("{{var('date_range_end')}}")
-        AND rn=1
   {%- endif %}
 ), 
 pivotado AS (
@@ -37,6 +36,7 @@ pivotado AS (
         '111900', '111874'
       )
     )
+  WHERE rn = 1
 ), 
 tratado AS (
   SELECT 
@@ -67,42 +67,42 @@ tratado AS (
    
   FROM 
     pivotado p
-) 
+)
 
 SELECT
-    t.id_recurso,
-    DATE(datetime_recurso) AS data,
-    t.datetime_captura,
-    t.datetime_recurso,
-    t.datetime_update,
-    t.consorcio,
-    t.servico,
-    t.sentido,
-    t.id_veiculo AS id_veiculo_numeral,
-    DATETIME(EXTRACT(date FROM TIMESTAMP(data_viagem)), EXTRACT(time FROM TIMESTAMP_SUB(hora_inicio_viagem, INTERVAL 2 HOUR)) ) AS datetime_partida,
-    CASE 
-      WHEN 
-        EXTRACT(time FROM TIMESTAMP_SUB(hora_inicio_viagem, INTERVAL 2 HOUR)) > EXTRACT(time FROM TIMESTAMP_SUB(hora_fim_viagem, INTERVAL 2 HOUR)) 
-        
-      THEN 
-        DATETIME(EXTRACT(date FROM TIMESTAMP_ADD(data_viagem, INTERVAL 1 DAY)), EXTRACT(time FROM TIMESTAMP_SUB(hora_fim_viagem, INTERVAL 2 HOUR))) 
-      ELSE 
-        DATETIME(EXTRACT(date FROM TIMESTAMP(data_viagem)), 
-          EXTRACT(time FROM TIMESTAMP_SUB(hora_fim_viagem, INTERVAL 2 HOUR))
-        )
-    END AS datetime_chegada,
-    t.numero_relatorio_cimu,
-    t.motivo AS motivo_recurso,
-    t.julgamento,
-    t.motivo_julgamento,
-    t.observacao AS observacao_julgamento,
-    j.data_julgamento
- 
-FROM
-    tratado t
-    
-LEFT JOIN 
-
-   {{ ref('recursos_sppo_bloqueio_via_ultimo_julgamento') }} AS j
+      t.id_recurso,
+      DATE(datetime_recurso) AS data,
+      t.datetime_captura,
+      t.datetime_recurso,
+      t.datetime_update,
+      t.consorcio,
+      t.servico,
+      t.sentido,
+      t.id_veiculo AS id_veiculo_numeral,
+      DATETIME(EXTRACT(date FROM TIMESTAMP(data_viagem)), EXTRACT(time FROM TIMESTAMP_SUB(hora_inicio_viagem, INTERVAL 2 HOUR)) ) AS datetime_partida,
+      CASE 
+        WHEN 
+          EXTRACT(time FROM TIMESTAMP_SUB(hora_inicio_viagem, INTERVAL 2 HOUR)) > EXTRACT(time FROM TIMESTAMP_SUB(hora_fim_viagem, INTERVAL 2 HOUR)) 
+          
+        THEN 
+          DATETIME(EXTRACT(date FROM TIMESTAMP_ADD(data_viagem, INTERVAL 1 DAY)), EXTRACT(time FROM TIMESTAMP_SUB(hora_fim_viagem, INTERVAL 2 HOUR))) 
+        ELSE 
+          DATETIME(EXTRACT(date FROM TIMESTAMP(data_viagem)), 
+            EXTRACT(time FROM TIMESTAMP_SUB(hora_fim_viagem, INTERVAL 2 HOUR))
+          )
+      END AS datetime_chegada,
+      t.numero_relatorio_cimu,
+      t.motivo AS motivo_recurso,
+      t.julgamento,
+      t.motivo_julgamento,
+      t.observacao AS observacao_julgamento,
+      j.data_julgamento
   
-  ON t.id_recurso = j.id_recurso
+  FROM
+      tratado t
+      
+  LEFT JOIN 
+
+    {{ ref('recursos_sppo_bloqueio_via_ultimo_julgamento') }} AS j
+    
+    ON t.id_recurso = j.id_recurso

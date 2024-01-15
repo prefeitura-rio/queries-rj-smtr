@@ -7,7 +7,8 @@
 ) }}
 
 WITH exploded AS (
-  SELECT 
+  SELECT
+    ROW_NUMBER() OVER(PARTITION BY id_recurso ORDER BY datetime_captura DESC) AS rn,
     id_recurso,
     datetime_recurso,
     datetime_captura,
@@ -18,7 +19,12 @@ WITH exploded AS (
   FROM 
     {{ ref('staging_recursos_sppo_reprocessamento') }}, 
     UNNEST(items) items
-  
+
+  {% if is_incremental() -%}
+  WHERE
+    DATE(data) BETWEEN DATE("{{var('date_range_start')}}") 
+        AND DATE("{{var('date_range_end')}}")
+  {%- endif %}
  
 ), 
 pivotado AS (
@@ -30,6 +36,7 @@ pivotado AS (
         '111900', '125615'
       )
     )
+  WHERE rn = 1
 ), 
 tratado AS (
   SELECT 
@@ -47,26 +54,25 @@ tratado AS (
   FROM 
     pivotado p
 ) 
-
 SELECT
-    t.id_recurso,
-    DATE(datetime_recurso) AS data,
-    t.datetime_captura,
-    t.datetime_recurso,
-    t.datetime_update,
-    DATETIME(TIMESTAMP_SUB(data_hora_inicio, INTERVAL 3 HOUR)) AS data_hora_inicio_viagem,
-    DATETIME(TIMESTAMP_SUB(data_hora_fim, INTERVAL 3 HOUR)) AS data_hora_fim_viagem,
-    t.motivo AS motivo_recurso,
-    t.julgamento,
-    t.motivo_julgamento,
-    t.observacao AS observacao_julgamento,
-    j.data_julgamento
- 
+      t.id_recurso,
+      DATE(datetime_recurso) AS data,
+      t.datetime_captura,
+      t.datetime_recurso,
+      t.datetime_update,
+      DATETIME(TIMESTAMP_SUB(data_hora_inicio, INTERVAL 3 HOUR)) AS data_hora_inicio_viagem,
+      DATETIME(TIMESTAMP_SUB(data_hora_fim, INTERVAL 3 HOUR)) AS data_hora_fim_viagem,
+      t.motivo AS motivo_recurso,
+      t.julgamento,
+      t.motivo_julgamento,
+      t.observacao AS observacao_julgamento,
+      j.data_julgamento
+  
 FROM
-    tratado t
-    
+      tratado t
+      
 LEFT JOIN 
 
-   {{ ref('recursos_sppo_reprocessamento_ultimo_julgamento') }} AS j
-  
+    {{ ref('recursos_sppo_reprocessamento_ultimo_julgamento') }} AS j
+    
   ON t.id_recurso = j.id_recurso

@@ -16,7 +16,6 @@ WITH exploded AS (
     WHERE
         DATE(data) BETWEEN DATE("{{var('date_range_start')}}") 
         AND DATE("{{var('date_range_end')}}")
-        AND rn=1
   {%- endif %}
 ), 
 pivotado AS (
@@ -47,11 +46,7 @@ pivotado AS (
       data_julgamento,
       LAG(julgamento) OVER (PARTITION BY id_recurso ORDER BY data_julgamento) AS ultimo_julgamento
     FROM
-      {% if is_incremental() %}
-        incremental 
-      {% else %}
         pivotado 
-      {% endif %}
     WHERE 
       julgamento IS NOT NULL
   )
@@ -71,5 +66,4 @@ FROM
   WHERE 
     j.julgamento != j.ultimo_julgamento OR j.ultimo_julgamento IS NULL
 )
-WHERE rn = 1
-
+WHERE rn=1
