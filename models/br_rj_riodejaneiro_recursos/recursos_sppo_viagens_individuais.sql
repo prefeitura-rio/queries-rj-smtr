@@ -69,6 +69,7 @@ tratado AS (
 ),
 treated_data AS (
   SELECT
+      ROW_NUMBER() OVER(PARTITION BY protocol ORDER BY timestamp_captura DESC) AS rn,
       t.id_recurso,
       DATE(datetime_recurso) AS data,
       t.datetime_captura,
