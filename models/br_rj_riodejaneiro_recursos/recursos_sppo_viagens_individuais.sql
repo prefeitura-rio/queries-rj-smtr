@@ -7,7 +7,8 @@
 ) }}
 
 WITH exploded AS (
-  SELECT 
+  SELECT
+    ROW_NUMBER() OVER(PARTITION BY id_recurso ORDER BY datetime_captura DESC) AS rn, 
     id_recurso,
     datetime_recurso,
     datetime_captura,
@@ -18,14 +19,14 @@ WITH exploded AS (
   FROM 
     {{ ref('staging_recursos_sppo_viagens_individuais') }}, 
     UNNEST(items) items
-  
-  WHERE
-    rn=1
+
   {% if is_incremental() -%}
-        AND DATE(data) BETWEEN DATE("{{var('date_range_start')}}") 
+    WHERE
+      DATE(data) BETWEEN DATE("{{var('date_range_start')}}") 
         AND DATE("{{var('date_range_end')}}")
   {%- endif %}
-), 
+
+),  
 pivotado AS (
   SELECT *
   FROM 
@@ -37,6 +38,7 @@ pivotado AS (
         '111900'
       )
     )
+  WHERE rn = 1
 ), 
 tratado AS (
   SELECT 
@@ -66,10 +68,8 @@ tratado AS (
    
   FROM 
     pivotado p
-),
-treated_data AS (
-  SELECT
-      ROW_NUMBER() OVER(PARTITION BY protocol ORDER BY timestamp_captura DESC) AS rn,
+)
+SELECT
       t.id_recurso,
       DATE(datetime_recurso) AS data,
       t.datetime_captura,
@@ -97,15 +97,12 @@ treated_data AS (
       t.observacao AS observacao_julgamento,
       j.data_julgamento
   
-  FROM
+FROM
       tratado t
-  LEFT JOIN 
+LEFT JOIN 
     {{ ref('recursos_sppo_viagens_individuais_ultimo_julgamento') }} AS j
 
-    ON t.id_recurso = j.id_recurso
-)
+  ON t.id_recurso = j.id_recurso
 
-SELECT *
-FROM treated_data 
-WHERE rn = 1 
+
 
