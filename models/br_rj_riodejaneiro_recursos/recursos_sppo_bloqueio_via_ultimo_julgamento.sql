@@ -46,11 +46,7 @@ pivotado AS (
       data_julgamento,
       LAG(julgamento) OVER (PARTITION BY id_recurso ORDER BY data_julgamento) AS ultimo_julgamento
     FROM
-      {% if is_incremental() %}
-        incremental 
-      {% else %}
         pivotado 
-      {% endif %}
     WHERE 
       julgamento IS NOT NULL
   )
@@ -70,5 +66,5 @@ FROM
   WHERE 
     j.julgamento != j.ultimo_julgamento OR j.ultimo_julgamento IS NULL
 )
-
+WHERE rn=1
 

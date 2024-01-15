@@ -67,9 +67,10 @@ tratado AS (
    
   FROM 
     pivotado p
-) 
-
+),
+treated_data AS ( 
 SELECT
+    ROW_NUMBER() OVER(PARTITION BY protocol ORDER BY timestamp_captura DESC) AS rn,
     t.id_recurso,
     DATE(datetime_recurso) AS data,
     t.datetime_captura,
@@ -106,3 +107,8 @@ LEFT JOIN
    {{ ref('recursos_sppo_bloqueio_via_ultimo_julgamento') }} AS j
   
   ON t.id_recurso = j.id_recurso
+)
+
+SELECT *
+FROM treated_data
+WHERE rn=1

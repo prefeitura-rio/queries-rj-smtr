@@ -46,27 +46,33 @@ tratado AS (
    
   FROM 
     pivotado p
-) 
-
-SELECT
-    t.id_recurso,
-    DATE(datetime_recurso) AS data,
-    t.datetime_captura,
-    t.datetime_recurso,
-    t.datetime_update,
-    DATETIME(TIMESTAMP_SUB(data_hora_inicio, INTERVAL 3 HOUR)) AS data_hora_inicio_viagem,
-    DATETIME(TIMESTAMP_SUB(data_hora_fim, INTERVAL 3 HOUR)) AS data_hora_fim_viagem,
-    t.motivo AS motivo_recurso,
-    t.julgamento,
-    t.motivo_julgamento,
-    t.observacao AS observacao_julgamento,
-    j.data_julgamento
- 
-FROM
-    tratado t
-    
-LEFT JOIN 
-
-   {{ ref('recursos_sppo_reprocessamento_ultimo_julgamento') }} AS j
+), 
+treated_data AS (
+  SELECT
+      ROW_NUMBER() OVER(PARTITION BY protocol ORDER BY timestamp_captura DESC) AS rn,
+      t.id_recurso,
+      DATE(datetime_recurso) AS data,
+      t.datetime_captura,
+      t.datetime_recurso,
+      t.datetime_update,
+      DATETIME(TIMESTAMP_SUB(data_hora_inicio, INTERVAL 3 HOUR)) AS data_hora_inicio_viagem,
+      DATETIME(TIMESTAMP_SUB(data_hora_fim, INTERVAL 3 HOUR)) AS data_hora_fim_viagem,
+      t.motivo AS motivo_recurso,
+      t.julgamento,
+      t.motivo_julgamento,
+      t.observacao AS observacao_julgamento,
+      j.data_julgamento
   
-  ON t.id_recurso = j.id_recurso
+  FROM
+      tratado t
+      
+  LEFT JOIN 
+
+    {{ ref('recursos_sppo_reprocessamento_ultimo_julgamento') }} AS j
+    
+    ON t.id_recurso = j.id_recurso
+)
+
+SELECT *
+FROM treated_data
+WHERE rn =1
