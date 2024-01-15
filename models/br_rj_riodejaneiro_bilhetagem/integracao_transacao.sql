@@ -8,7 +8,8 @@
       "data_type":"date",
       "granularity": "day"
     },
-    unique_key='id_integracao_sequencia'
+    unique_key='id_integracao_sequencia',
+    project="rj-smtr-staging"
   )
 }}
 
