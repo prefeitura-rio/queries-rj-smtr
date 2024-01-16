@@ -18,8 +18,12 @@ models:
         description: "Tipo de transporte (Ônibus, Van, BRT)"
       - name: id_consorcio
         description: "Identificador do consórcio na tabela cadastro.consorcios"
+      - name: consorcio
+        description: "Nome do consórcio"
       - name: id_operadora
         description: "Identificador da operadora na tabela cadastro.operadoras"
+      - name: operadora
+        description: "Nome da operadora de transporte (mascarado se for pessoa física)"
       - name: servico
         description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...)"
       - name: sentido
@@ -32,7 +36,7 @@ models:
         description: "Identificador único da transação"
       - name: id_tipo_pagamento
         description: "Código do tipo de pagamento utilizado"
-      - name: id_tipo_transacao
+      - name: tipo_transacao
         description: "Tipo de transação realizada"
       - name: id_tipo_integracao
         description: "Tipo da integração realizada (identificador relacionado à matriz de integração)"
@@ -110,7 +114,7 @@ models:
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)"
   - name: integracao_transacao
-    description: "integracao"
+    description: "Tabela com a relação de integrações entre transações [Dados em fase de teste]"
     columns:
       - name: data
         description: "Data da transação (partição)"
@@ -132,8 +136,12 @@ models:
         description: "Tipo de transporte (Ônibus, Van, BRT)"
       - name: id_consorcio
         description: "Identificador do consórcio na tabela cadastro.consorcios"
+      - name: consorcio
+        description: "Nome do consórcio"
       - name: id_operadora
         description: "Identificador da operadora na tabela cadastro.operadoras"
+      - name: operadora
+        description: "Nome da operadora de transporte (mascarado se for pessoa física)"
       - name: servico
         description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...)"
       - name: id_transacao
@@ -169,6 +177,39 @@ models:
         description: "Data de início da validade da matriz"
       - name: data_fim_validade
         description: "Data de fim da validade da matriz"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: gps_validador
+    description: "Tabela com os dados dos sinais de GPS enviados pelos validadores da Jaé"
+    columns:
+      - name: data
+        description: "Data do recebimento da transmissão do GPS (partição)"
+      - name: hora
+        description: "Hora do recebimento da transmissão do GPS"
+      - name: datetime_recebimento_transmissao
+        description: "Data e hora do recebimento da transmissão do GPS em GMT-3"
+      - name: datetime_captura
+        description: "Data e hora da captura do dado de GPS em GMT-3"
+      - name: id_operadora
+        description: "Identificador da operadora na tabela cadastro.operadoras"
+      - name: operadora
+        description: "Nome da operadora de transporte (mascarado se for pessoa física)"
+      - name: servico
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...)"
+      - name: numero_serie_validador
+        description: "Número de série do validador"
+      - name: id_transmissao_gps
+        description: "Identificador único da tabela de GPS dos validadores"
+      - name: latitude
+        description: "Latitude do validador no momento da transmissão"
+      - name: longitude
+        description: "Longitude do validador no momento da transmissão"
+      - name: prefixo_veiculo
+        description: "Prefixo do veículo em que o validador está instalado"
+      - name: sentido_linha
+        description: "Sentido da linha"
+      - name: estado_equipamento
+        description: "Validador aberto ou fechado no momento da transmissão"
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)"
   - name: dicionario

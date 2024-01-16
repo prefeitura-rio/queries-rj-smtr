@@ -18,6 +18,7 @@ sources:
       - name: percentual_rateio_integracao
       - name: integracao_transacao
       - name: tipo_modal
+      - name: gps_validador
 
   - name: br_rj_riodejaneiro_gtfs_staging
     database: rj-smtr-staging
