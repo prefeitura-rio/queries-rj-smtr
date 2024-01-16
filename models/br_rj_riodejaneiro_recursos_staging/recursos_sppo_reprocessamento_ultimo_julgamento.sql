@@ -10,7 +10,7 @@ WITH exploded AS (
     ) AS julgamento, 
     SAFE_CAST(JSON_EXTRACT(items, '$.customFieldId') AS STRING ) AS field_id 
   FROM 
-    {{ ref('staging_recursos_sppo_viagens_individuais') }}, 
+    {{ ref('staging_recursos_sppo_reprocessamento') }}, 
     UNNEST(items) items
   {% if is_incremental() -%}
     WHERE
@@ -65,6 +65,5 @@ FROM
     julgamento j
   WHERE 
     j.julgamento != j.ultimo_julgamento OR j.ultimo_julgamento IS NULL
-    
 )
 WHERE rn=1

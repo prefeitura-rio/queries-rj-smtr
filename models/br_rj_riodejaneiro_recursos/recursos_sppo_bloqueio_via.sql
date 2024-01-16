@@ -17,16 +17,14 @@ WITH exploded AS (
     ) AS value, 
     SAFE_CAST(JSON_EXTRACT(items, '$.customFieldId') AS STRING ) AS field_id 
   FROM 
-    {{ ref('staging_recursos_sppo_viagens_individuais') }}, 
+    {{ ref('staging_recursos_sppo_bloqueio_via') }}, 
     UNNEST(items) items
-
   {% if is_incremental() -%}
     WHERE
       DATE(data) BETWEEN DATE("{{var('date_range_start')}}") 
         AND DATE("{{var('date_range_end')}}")
   {%- endif %}
-
-),  
+), 
 pivotado AS (
   SELECT *
   FROM 
@@ -35,7 +33,7 @@ pivotado AS (
         '111870', '111871', '111872', '111873', 
         '111901', '111865', '111867', '111868', 
         '111869', '111866', '111904', '125615', 
-        '111900'
+        '111900', '111874'
       )
     )
   WHERE rn = 1
@@ -62,6 +60,7 @@ tratado AS (
     PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%E*S%Ez',SAFE_CAST(p.111867 AS STRING), 'America/Sao_Paulo') AS data_viagem, 
     PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%E*S%Ez', SAFE_CAST(p.111868 AS STRING), 'America/Sao_Paulo') AS hora_inicio_viagem, 
     PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%E*S%Ez', SAFE_CAST(p.111869 AS STRING), 'America/Sao_Paulo') AS hora_fim_viagem, 
+    SAFE_CAST(p.111874 AS STRING) AS numero_relatorio_cimu,
     SAFE_CAST(p.111866 AS STRING) AS motivo, 
     COALESCE(SAFE_CAST(p.111904 AS STRING), SAFE_CAST(p.111900 AS STRING)) AS motivo_julgamento, 
     SAFE_CAST(p.125615 AS STRING) AS observacao,
@@ -69,6 +68,7 @@ tratado AS (
   FROM 
     pivotado p
 )
+
 SELECT
       t.id_recurso,
       DATE(datetime_recurso) AS data,
@@ -91,17 +91,18 @@ SELECT
             EXTRACT(time FROM TIMESTAMP_SUB(hora_fim_viagem, INTERVAL 2 HOUR))
           )
       END AS datetime_chegada,
+      t.numero_relatorio_cimu,
       t.motivo AS motivo_recurso,
       t.julgamento,
       t.motivo_julgamento,
       t.observacao AS observacao_julgamento,
       j.data_julgamento
   
-FROM
+  FROM
       tratado t
-LEFT JOIN 
-    {{ ref('recursos_sppo_viagens_individuais_ultimo_julgamento') }} AS j
+      
+  LEFT JOIN 
 
-  ON t.id_recurso = j.id_recurso
-
-
+    {{ ref('recursos_sppo_bloqueio_via_ultimo_julgamento') }} AS j
+    
+    ON t.id_recurso = j.id_recurso
