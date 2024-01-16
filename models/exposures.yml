@@ -4,7 +4,6 @@ exposures:
 
   - name: painel_subsidio_dos_onibus
     type: dashboard                         # required
-    # maturity: high                          # optional
     url: https://bit.ly/painel_subsidios_sppo       # optional
     description: >                          # optional
       Subsídio pago e penalidades aplicadas aos serviços 
@@ -23,17 +22,18 @@ exposures:
 
   - name: painel_operacao_dos_onibus
     type: dashboard                         # required
-    # maturity: medium                          # optional
     url: https://bit.ly/relatorio_operacao_sppo      # optional
     description: >                          # optional
       Analisar o atendimento da quilometragem 
       planejada para cada linha de ônibus.
 
+
+      Tabela externa: `rj-smtr-dev.cmtd_projetos.forms-teste`.
+
     depends_on:                             # expected
       - ref('sumario_servico_dia_historico')
       - ref('subsidio_trips_desaninhada')
       - ref('subsidio_shapes_geom')
-      # - ref('cmtd_projetos.forms-teste') -> tabela referente ao recurso de bloqueio de via
       - ref('viagens_realizadas')
       - ref('ordem_servico_diaria')
    
@@ -43,15 +43,16 @@ exposures:
 
   - name: painel_gps_dos_onibus
     type: dashboard                         # required
-    # maturity: medium                          # optional
     url: https://bit.ly/GPS_SPPO_8_DIAS      # optional
     description: >                          # optional
       Localização dos ônibus municipais 
       e frota operante ao longo do dia.
 
+
+      Tabela externa: `rj-smtr.dashboard_gps_sppo.gps_sppo_8_dias`.
+
     depends_on:                             # expected
       - ref('viagem_planejada')
-    #  - ref('gps_sppo_8_dias')
       - ref('subsidio_shapes_geom')
       - ref('subsidio_trips_desaninhada')
       - ref('subsidio_shapes_geom')
@@ -64,66 +65,56 @@ exposures:
 
   - name: painel_demanda_dos_onibus_rdo_d40
     type: dashboard                         # required
-    # maturity: medium                          # optional
     url: https://bit.ly/rdo_d40_sppo_brt      # optional
     description: >                          # optional
       Indicadores de operação dos ônibus 
       e BRT consolidados pelas operadoras.
       Inclui passageiros transportados, receita e KM aferida.
 
-    # depends_on:                             # expected
-    #   - ref('brt_depara_rdo')
-    #   - ref('estacoes')
-    #   - ref('rdo40_tratado')
-    
-   
+
+      Tabelas externas: `rj-smtr.br_rj_riodejaneiro_brt_estacoes.brt_depara_rdo`,
+      `rj-smtr.br_rj_riodejaneiro_brt_estacoes.estacoes`,
+      `rj-smtr.br_rj_riodejaneiro_rdo.rdo40_tratado`.
     owner:
       name: SUBTT
       email: email@email.com
 
   - name: painel_relatorio_multas
     type: dashboard                         # required
-    # maturity: medium                          # optional
     url: https://bit.ly/relatorio_multas      # optional
     description: >                          # optional
       Multas aplicadas aos operadores de 
       transporte municipal desde 2018.
 
-    #depends_on:                             # expected
-    #  - ref('https://siurblab.rio.rj.gov.br/SMTR/Multas/multas.txt')
 
-
+      Tabela externa: `https://siurblab.rio.rj.gov.br/SMTR/Multas/multas.txt`
     owner:
       name: SUBTT
       email: email@email.com
 
   - name: painel_relatorio_operacao_stpl
     type: dashboard                         # required
-    # maturity: medium                          # optional
     url: http://tinyurl.com/yvdu3442      # optional
     description: >                          # optional
       Painel Relatório de Operação STPL.
 
-    # depends_on:                             # expected
-    #   - ref('rdo5_registros_stpl')
-    #   - ref('rho5_registros_stpl')
 
+      Tabelas externas: `rj-smtr.br_rj_riodejaneiro_rdo.rdo5_registros_stpl`,
+       `rj-smtr.br_rj_riodejaneiro_rdo.rho5_registros_stpl`.
     owner:
       name: SUBTT
       email: email@email.com
 
   - name: painel_optimus
     type: dashboard                         # required
-    # maturity: medium                          # optional
     url: http://tinyurl.com/2cyz282w      # optional
     description: >                          # optional
       OBSERVATÓRIO DAS POLÍTICAS TRANSVERSAIS 
       DE MOBILIDADE URBANA SUSTENTÁVEL DA 
       CIDADE DO RIO DE JANEIRO – OPTMUS RIO.
 
-    # depends_on:                             # expected
-    #   - ref('rdo40_tratado_bi_do_bem_get5')
 
+      Tabela externa: `rj-smtr.dashboards.rdo40_tratado_bi_do_bem_get5`.
     owner:
       name: SUBTT
       email: email@email.com
