@@ -106,3 +106,4 @@ SELECT
     {{ ref('recursos_sppo_bloqueio_via_ultimo_julgamento') }} AS j
     
     ON t.id_recurso = j.id_recurso
+

@@ -3,6 +3,8 @@
   )
 }}
 
+
+
 SELECT
   JSON_EXTRACT_ARRAY(content, '$.customFieldValues') AS items,
   DATETIME(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%S', REGEXP_REPLACE(JSON_VALUE(content, '$.createdDate'), r'(\.\d+)?$', '')), 'America/Sao_Paulo') AS datetime_recurso,
@@ -12,4 +14,5 @@ SELECT
   data 
 FROM 
   {{source('br_rj_riodejaneiro_recursos_staging', 
-    'recursos_sppo_reprocessamento')}}
+    'recursos_sppo_viagens_individuais')}}
+

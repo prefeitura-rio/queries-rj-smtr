@@ -105,3 +105,4 @@ LEFT JOIN
   ON t.id_recurso = j.id_recurso
 
 
+
