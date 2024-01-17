@@ -13,6 +13,7 @@ SELECT
   COALESCE(SAFE_CAST(indicador_autuacao_equipamento AS BOOL), FALSE) indicador_autuacao_equipamento,
   COALESCE(SAFE_CAST(indicador_sensor_temperatura AS BOOL), FALSE) indicador_sensor_temperatura,
   COALESCE(SAFE_CAST(indicador_validador_sbd AS BOOL), FALSE) indicador_validador_sbd,
+  COALESCE(SAFE_CAST(indicador_ar_condicionado_agente_verao AS BOOL), FALSE) indicador_ar_condicionado_agente_verao,
   SAFE_CAST(status AS STRING) status,
   SAFE_CAST(subsidio_km AS FLOAT64) subsidio_km,
   SAFE_CAST(irk AS FLOAT64) irk,
