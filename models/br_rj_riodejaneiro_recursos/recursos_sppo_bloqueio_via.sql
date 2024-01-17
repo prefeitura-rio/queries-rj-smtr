@@ -8,7 +8,6 @@
 
 WITH exploded AS (
   SELECT
-    ROW_NUMBER() OVER(PARTITION BY id_recurso ORDER BY datetime_captura DESC) AS rn, 
     id_recurso,
     datetime_recurso,
     datetime_captura,
@@ -36,10 +35,10 @@ pivotado AS (
         '111900', '111874'
       )
     )
-  WHERE rn = 1
 ), 
 tratado AS (
-  SELECT 
+  SELECT
+    ROW_NUMBER() OVER(PARTITION BY id_recurso ORDER BY datetime_captura DESC) AS rn, 
     id_recurso, 
     datetime_captura, 
     datetime_recurso,
@@ -98,11 +97,13 @@ SELECT
       t.observacao AS observacao_julgamento,
       j.data_julgamento
   
-  FROM
+FROM
       tratado t
       
-  LEFT JOIN 
+LEFT JOIN 
 
     {{ ref('recursos_sppo_bloqueio_via_ultimo_julgamento') }} AS j
     
-    ON t.id_recurso = j.id_recurso
+  ON t.id_recurso = j.id_recurso
+
+WHERE rn=1

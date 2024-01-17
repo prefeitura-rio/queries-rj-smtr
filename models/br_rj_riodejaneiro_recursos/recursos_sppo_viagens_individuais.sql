@@ -8,7 +8,6 @@
 
 WITH exploded AS (
   SELECT
-    ROW_NUMBER() OVER(PARTITION BY id_recurso ORDER BY datetime_captura DESC) AS rn, 
     id_recurso,
     datetime_recurso,
     datetime_captura,
@@ -24,6 +23,7 @@ WITH exploded AS (
     WHERE
       DATE(data) BETWEEN DATE("{{var('date_range_start')}}") 
         AND DATE("{{var('date_range_end')}}")
+      AND rn=1
   {%- endif %}
 
 ),  
@@ -38,10 +38,9 @@ pivotado AS (
         '111900'
       )
     )
-  WHERE rn = 1
 ), 
 tratado AS (
-  SELECT 
+  SELECT
     id_recurso, 
     datetime_captura, 
     datetime_recurso,
