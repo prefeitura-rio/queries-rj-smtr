@@ -27,7 +27,8 @@ WITH exploded AS (
  
 ), 
 pivotado AS (
-  SELECT *
+  SELECT *,
+  ROW_NUMBER() OVER(PARTITION BY id_recurso ORDER BY datetime_captura DESC) AS rn,
   FROM 
     exploded PIVOT(
       ANY_VALUE(value) FOR field_id IN (
@@ -37,8 +38,7 @@ pivotado AS (
     )
 ), 
 tratado AS (
-  SELECT
-    ROW_NUMBER() OVER(PARTITION BY id_recurso ORDER BY datetime_captura DESC) AS rn, 
+  SELECT 
     id_recurso, 
     datetime_captura, 
     datetime_recurso,
@@ -46,12 +46,12 @@ tratado AS (
     SAFE_CAST(p.111865 AS STRING) AS julgamento, 
     PARSE_TIMESTAMP('%Y-%m-%d %H:%M:%S', SAFE_CAST(p.113816 AS STRING), 'America/Sao_Paulo') AS data_hora_inicio, 
     PARSE_TIMESTAMP('%Y-%m-%d %H:%M:%S', SAFE_CAST(p.113817 AS STRING), 'America/Sao_Paulo') AS data_hora_fim, 
-    SAFE_CAST(p.111866 AS STRING) AS motivo, 
     COALESCE(SAFE_CAST(p.111904 AS STRING), SAFE_CAST(p.111900 AS STRING)) AS motivo_julgamento, 
     SAFE_CAST(p.125615 AS STRING) AS observacao,
    
   FROM 
     pivotado p
+  WHERE rn = 1
 ) 
 SELECT
       t.id_recurso,
@@ -75,4 +75,4 @@ LEFT JOIN
     {{ ref('recursos_sppo_reprocessamento_ultimo_julgamento') }} AS j
     
   ON t.id_recurso = j.id_recurso
-WHERE rn = 1
+
