@@ -34,7 +34,7 @@ WITH
     DISTINCT data,
     id_veiculo
   FROM
-    {{ ref("gps_sppo") }}
+    {{ ref("gps_sppo") }} -- `rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo`
   WHERE
     data = DATE("{{ var('run_date') }}") ),
   autuacoes AS (
@@ -51,6 +51,15 @@ WITH
     data = DATE("{{ infracao_date }}")
     AND data_infracao = DATE("{{ var('run_date') }}")
     AND modo = "ONIBUS"),
+  registros_agente_verao AS (
+    SELECT
+      DISTINCT data,
+      id_veiculo,
+      TRUE AS indicador_registro_agente_verao_ar_condicionado
+    FROM
+      {{ ref("sppo_registro_agente_verao") }}
+    WHERE
+      data = DATE("{{ var('run_date') }}") ),
   autuacao_ar_condicionado AS (
   SELECT
     data,
@@ -148,12 +157,13 @@ WITH
   SELECT
     data,
     id_veiculo,
-    STRUCT( COALESCE(l.indicador_licenciado, FALSE) AS indicador_licenciado,
-      COALESCE(l.indicador_ar_condicionado, FALSE) AS indicador_ar_condicionado,
-      COALESCE(a.indicador_autuacao_ar_condicionado, FALSE) AS indicador_autuacao_ar_condicionado,
-      COALESCE(a.indicador_autuacao_seguranca, FALSE) AS indicador_autuacao_seguranca,
-      COALESCE(a.indicador_autuacao_limpeza, FALSE) AS indicador_autuacao_limpeza,
-      COALESCE(a.indicador_autuacao_equipamento, FALSE) AS indicador_autuacao_equipamento) AS indicadores
+    STRUCT( COALESCE(l.indicador_licenciado, FALSE)                     AS indicador_licenciado,
+            COALESCE(l.indicador_ar_condicionado, FALSE)                AS indicador_ar_condicionado,
+            COALESCE(a.indicador_autuacao_ar_condicionado, FALSE)       AS indicador_autuacao_ar_condicionado,
+            COALESCE(a.indicador_autuacao_seguranca, FALSE)             AS indicador_autuacao_seguranca,
+            COALESCE(a.indicador_autuacao_limpeza, FALSE)               AS indicador_autuacao_limpeza,
+            COALESCE(a.indicador_autuacao_equipamento, FALSE)           AS indicador_autuacao_equipamento,
+            COALESCE(r.indicador_registro_agente_verao_ar_condicionado, FALSE)   AS indicador_registro_agente_verao_ar_condicionado) AS indicadores
   FROM
     gps g
   LEFT JOIN
@@ -165,7 +175,12 @@ WITH
     autuacoes_agg AS a
   USING
     (data,
-      placa))
+      placa)
+  LEFT JOIN
+    registros_agente_verao AS r
+  USING
+    (data,
+      id_veiculo))
 SELECT
   gla.* EXCEPT(indicadores),
   TO_JSON(indicadores) AS indicadores,
@@ -182,4 +197,5 @@ ON
   AND gla.indicadores.indicador_autuacao_seguranca = p.indicador_autuacao_seguranca
   AND gla.indicadores.indicador_autuacao_limpeza = p.indicador_autuacao_limpeza
   AND gla.indicadores.indicador_autuacao_equipamento = p.indicador_autuacao_equipamento
+  AND gla.indicadores.indicador_registro_agente_verao_ar_condicionado = p.indicador_registro_agente_verao_ar_condicionado
   AND (data BETWEEN p.data_inicio AND p.data_fim)
