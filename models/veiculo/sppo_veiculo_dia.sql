@@ -55,7 +55,7 @@ WITH
     SELECT
       DISTINCT data,
       id_veiculo,
-      TRUE AS indicador_ar_condicionado_agente_verao
+      TRUE AS indicador_registro_agente_verao_ar_condicionado
     FROM
       {{ ref("sppo_registro_agente_verao") }}
     WHERE
@@ -163,7 +163,7 @@ WITH
             COALESCE(a.indicador_autuacao_seguranca, FALSE)             AS indicador_autuacao_seguranca,
             COALESCE(a.indicador_autuacao_limpeza, FALSE)               AS indicador_autuacao_limpeza,
             COALESCE(a.indicador_autuacao_equipamento, FALSE)           AS indicador_autuacao_equipamento,
-            COALESCE(r.indicador_ar_condicionado_agente_verao, FALSE)   AS indicador_ar_condicionado_agente_verao) AS indicadores
+            COALESCE(r.indicador_registro_agente_verao_ar_condicionado, FALSE)   AS indicador_registro_agente_verao_ar_condicionado) AS indicadores
   FROM
     gps g
   LEFT JOIN
@@ -197,5 +197,5 @@ ON
   AND gla.indicadores.indicador_autuacao_seguranca = p.indicador_autuacao_seguranca
   AND gla.indicadores.indicador_autuacao_limpeza = p.indicador_autuacao_limpeza
   AND gla.indicadores.indicador_autuacao_equipamento = p.indicador_autuacao_equipamento
-  AND gla.indicadores.indicador_ar_condicionado_agente_verao = p.indicador_ar_condicionado_agente_verao
+  AND gla.indicadores.indicador_registro_agente_verao_ar_condicionado = p.indicador_registro_agente_verao_ar_condicionado
   AND (data BETWEEN p.data_inicio AND p.data_fim)
