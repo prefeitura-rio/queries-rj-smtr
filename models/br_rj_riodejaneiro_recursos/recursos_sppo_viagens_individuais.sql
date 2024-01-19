@@ -23,7 +23,6 @@ WITH exploded AS (
     WHERE
       DATE(data) BETWEEN DATE("{{var('date_range_start')}}") 
         AND DATE("{{var('date_range_end')}}")
-      AND rn=1
   {%- endif %}
 
 ),  
