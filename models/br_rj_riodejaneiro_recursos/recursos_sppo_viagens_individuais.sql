@@ -8,7 +8,6 @@
 
 WITH exploded AS (
   SELECT
-    ROW_NUMBER() OVER(PARTITION BY id_recurso ORDER BY datetime_captura DESC) AS rn, 
     id_recurso,
     datetime_recurso,
     datetime_captura,
@@ -28,7 +27,8 @@ WITH exploded AS (
 
 ),  
 pivotado AS (
-  SELECT *
+  SELECT *,
+  ROW_NUMBER() OVER(PARTITION BY id_recurso ORDER BY datetime_captura DESC) AS rn,
   FROM 
     exploded PIVOT(
       ANY_VALUE(value) FOR field_id IN (
@@ -38,10 +38,9 @@ pivotado AS (
         '111900'
       )
     )
-  WHERE rn = 1
 ), 
 tratado AS (
-  SELECT 
+  SELECT
     id_recurso, 
     datetime_captura, 
     datetime_recurso,
@@ -68,6 +67,7 @@ tratado AS (
    
   FROM 
     pivotado p
+  WHERE rn=1
 )
 SELECT
       t.id_recurso,
