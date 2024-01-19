@@ -31,15 +31,15 @@ WITH gps_deduplicado AS (
 )
 SELECT
     do.modo,
-    g.data_tracking AS datetime_gps,
     EXTRACT(DATE FROM g.data_tracking) AS data,
     EXTRACT(HOUR FROM g.data_tracking) AS hora,
+    g.data_tracking AS datetime_gps,
     g.timestamp_captura AS datetime_captura,
     do.id_operadora,
     do.operadora,
     l.nr_linha AS servico,
     NULL AS id_veiculo,
-    g.numero_serie_equipamento AS numero_serie_validador,
+    g.numero_serie_equipamento AS id_validador,
     g.id AS id_transmissao_gps,
     g.latitude_equipamento AS latitude,
     g.longitude_equipamento AS longitude,
@@ -47,7 +47,7 @@ SELECT
         WHEN g.sentido_linha = "IDA" THEN 0
         WHEN g.sentido_linha = "VOLTA" THEN 1
         ELSE 2
-    END AS sentido,
+    END AS direction_id,
     g.estado_equipamento,
     '{{ var("version") }}' as versao
 FROM
