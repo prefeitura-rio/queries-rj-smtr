@@ -19,7 +19,8 @@ WITH
         indicador_autuacao_limpeza,
         indicador_autuacao_equipamento,
         indicador_sensor_temperatura,
-        indicador_validador_sbd )) AS indicadores,
+        indicador_validador_sbd,
+        indicador_registro_agente_verao_ar_condicionado )) AS indicadores,
     ARRAY_AGG(status) AS status_array
   FROM
     subsidio_parametros
