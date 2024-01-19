@@ -198,7 +198,7 @@ models:
         description: "Nome da operadora de transporte (mascarado se for pessoa física)"
       - name: servico
         description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...)"
-      - name: numero_serie_validador
+      - name: id_validador
         description: "Número de série do validador"
       - name: id_transmissao_gps
         description: "Identificador único da tabela de GPS dos validadores"
@@ -207,8 +207,8 @@ models:
       - name: longitude
         description: "Longitude do validador no momento da transmissão"
       - name: id_veiculo
-        description: ""
-      - name: sentido
+        description: "[EM DESENVOLVIMENTO] Código identificador do veículo (número de ordem)"
+      - name: direction_id
         description: "Sentido da linha (0 = ida, 1 = volta)"
       - name: estado_equipamento
         description: "Validador aberto ou fechado no momento da transmissão"
