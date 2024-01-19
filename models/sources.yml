@@ -52,3 +52,9 @@ sources:
       - name: recursos_sppo_viagens_individuais
       - name: recursos_sppo_bloqueio_via
       - name: recursos_sppo_reprocessamento
+  
+  - name: cadastro
+    database: rj-smtr
+
+    tables:
+      - name: modos
