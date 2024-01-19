@@ -208,8 +208,8 @@ models:
         description: "Longitude do validador no momento da transmissão"
       - name: id_veiculo
         description: "[EM DESENVOLVIMENTO] Código identificador do veículo (número de ordem)"
-      - name: direction_id
-        description: "Sentido da linha (0 = ida, 1 = volta)"
+      - name: sentido
+        description: "Sentido da linha"
       - name: estado_equipamento
         description: "Validador aberto ou fechado no momento da transmissão"
       - name: versao

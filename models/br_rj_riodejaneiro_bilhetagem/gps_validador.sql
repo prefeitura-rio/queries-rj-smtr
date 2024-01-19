@@ -43,11 +43,7 @@ SELECT
     g.id AS id_transmissao_gps,
     g.latitude_equipamento AS latitude,
     g.longitude_equipamento AS longitude,
-    CASE 
-        WHEN g.sentido_linha = "IDA" THEN 0
-        WHEN g.sentido_linha = "VOLTA" THEN 1
-        ELSE 2
-    END AS direction_id,
+    INITCAP(g.sentido_linha) AS sentido,
     g.estado_equipamento,
     '{{ var("version") }}' as versao
 FROM
