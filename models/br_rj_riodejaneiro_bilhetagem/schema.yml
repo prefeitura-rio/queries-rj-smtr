@@ -188,7 +188,7 @@ models:
         description: "Data do recebimento da transmissão do GPS (partição)"
       - name: hora
         description: "Hora do recebimento da transmissão do GPS"
-      - name: timestamp_gps
+      - name: datetime_gps
         description: "Data e hora do recebimento da transmissão do GPS em GMT-3"
       - name: datetime_captura
         description: "Data e hora da captura do dado de GPS em GMT-3"
@@ -206,10 +206,10 @@ models:
         description: "Latitude do validador no momento da transmissão"
       - name: longitude
         description: "Longitude do validador no momento da transmissão"
-      - name: prefixo_veiculo
-        description: "Prefixo do veículo em que o validador está instalado"
+      - name: id_veiculo
+        description: ""
       - name: sentido
-        description: "Sentido da linha"
+        description: "Sentido da linha (0 = ida, 1 = volta)"
       - name: estado_equipamento
         description: "Validador aberto ou fechado no momento da transmissão"
       - name: versao
