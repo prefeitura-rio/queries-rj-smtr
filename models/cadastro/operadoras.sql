@@ -36,7 +36,7 @@ WITH operadora_jae AS (
   JOIN 
     {{ source("cadastro", "modos") }} m
   ON
-    ot.cd_tipo_modal = m.id_modo AND sistema = "jae"
+    ot.cd_tipo_modal = m.id_modo AND m.fonte = "jae"
 ),
 stu_pessoa_juridica AS (
   SELECT
@@ -87,7 +87,7 @@ stu AS (
   JOIN 
     {{ source("cadastro", "modos") }} m
   ON
-    s.id_modo = m.id_modo AND sistema = "stu"
+    s.id_modo = m.id_modo AND m.fonte = "stu"
 ),
 cadastro AS (
   SELECT 

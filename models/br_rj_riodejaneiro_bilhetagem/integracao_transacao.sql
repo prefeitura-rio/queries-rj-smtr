@@ -105,7 +105,7 @@ ON
 LEFT JOIN 
     {{ source("cadastro", "modos") }} m
 ON
-  i.id_tipo_modal = m.id_modo AND sistema = "jae"
+  i.id_tipo_modal = m.id_modo AND m.fonte = "jae"
 LEFT JOIN
   {{ ref("operadoras") }} AS do
 ON
