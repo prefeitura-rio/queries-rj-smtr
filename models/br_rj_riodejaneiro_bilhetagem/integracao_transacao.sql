@@ -79,7 +79,7 @@ SELECT
   i.datetime_transacao,
   i.id_integracao,
   i.sequencia_integracao,
-  m.ds_tipo_modal AS modo,
+  m.modo,
   CONCAT(i.id_integracao, '-', i.sequencia_integracao) AS id_integracao_sequencia,
   dc.id_consorcio,
   dc.consorcio,
@@ -102,10 +102,10 @@ LEFT JOIN
 ON
   i.id_linha = l.cd_linha
   AND i.datetime_transacao >= l.datetime_inclusao
-LEFT JOIN
-  {{ ref("staging_tipo_modal") }} AS m
-ON 
-    i.id_tipo_modal = m.cd_tipo_modal
+LEFT JOIN 
+    {{ source("cadastro", "modos") }} m
+ON
+  i.id_tipo_modal = m.id_modo AND m.fonte = "jae"
 LEFT JOIN
   {{ ref("operadoras") }} AS do
 ON
