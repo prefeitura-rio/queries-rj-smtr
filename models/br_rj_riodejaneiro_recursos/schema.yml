@@ -47,7 +47,7 @@ models:
           description: Nome do consórcio
         - name: numero_relatorio_cimu
           description: Número do relatório CIMU
-        - name: dia_viagem
+        - name: data_viagem
           description: Data da viagem
         - name: datetime_captura
           description: Data/hora de captura dos dados
