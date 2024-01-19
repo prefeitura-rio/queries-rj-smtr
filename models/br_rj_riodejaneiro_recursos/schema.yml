@@ -33,13 +33,12 @@ models:
         description: Observações acerca do julgamentodo recurso
       - name: data
         description: Data do recurso (partição da tabela)
+
   - name: recursos_sppo_bloqueio_via
     description: "Recursos abertos na plataforma Movidesk para pagamento de subsídio de bloqueio de via"
     columns:
         - name: id_recurso
           description: Número de id do recurso
-        - name: id_veiculo_numeral
-          description: Número de identificação do veículo (Somente números)
         - name: servico
           description: Tipo do serviço de ônibus
         - name: sentido
@@ -47,17 +46,13 @@ models:
         - name: consorcio
           description: Nome do consórcio
         - name: numero_relatorio_cimu
-          description: Número dorelatório CIMU
-        - name: datetime_partida
-          description: Datetime da partida da viagem
-        - name: datetime_chegada
-          description: Datetime da chegada da viagem
+          description: Número do relatório CIMU
+        - name: dia_viagem
+          description: Data da viagem
         - name: datetime_captura
           description: Data/hora de captura dos dados
         - name: datetime_recurso
           description: Data/hora de criação do ticket para pedido de recurso no Movidesk
-        - name: motivo_recurso
-          description: Motivo para criação do recurso
         - name: julgamento
           description: Julgamento do recurso
         - name: motivo_julgamento
@@ -76,8 +71,6 @@ models:
           description: Número de id do recurso
         - name: julgamento
           description: Julgamento do recurso
-        - name: motivo_recurso
-          description: Motivo para criação do recurso
         - name: motivo_julgamento
           description: Motivos para julgamento
         - name: observacao_julgamento
