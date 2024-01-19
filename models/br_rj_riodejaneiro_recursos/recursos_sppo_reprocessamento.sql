@@ -61,7 +61,6 @@ SELECT
       t.datetime_update,
       DATETIME(TIMESTAMP_SUB(data_hora_inicio, INTERVAL 3 HOUR)) AS data_hora_inicio_viagem,
       DATETIME(TIMESTAMP_SUB(data_hora_fim, INTERVAL 3 HOUR)) AS data_hora_fim_viagem,
-      t.motivo AS motivo_recurso,
       t.julgamento,
       t.motivo_julgamento,
       t.observacao AS observacao_julgamento,

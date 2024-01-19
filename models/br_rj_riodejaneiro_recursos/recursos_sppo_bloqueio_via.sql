@@ -74,7 +74,7 @@ SELECT
       t.consorcio,
       t.servico,
       t.sentido,
-      t.data_viagem, # fazer extract da data     
+      DATE(EXTRACT(date FROM TIMESTAMP(data_viagem))) AS dia_viagem,     
       t.numero_relatorio_cimu,
       t.julgamento,
       t.motivo_julgamento,
