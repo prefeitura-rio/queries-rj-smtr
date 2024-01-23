@@ -20,7 +20,8 @@ SELECT
   SAFE_CAST(JSON_VALUE(content,'$.servico') AS STRING) AS servico,
   SAFE_CAST(JSON_VALUE(content,'$.link_foto') AS STRING) AS link_foto,
   SAFE_CAST(JSON_VALUE(content,'$.validacao') AS BOOL) AS validacao,
-  SAFE_CAST(DATETIME(TIMESTAMP_TRUNC(TIMESTAMP(timestamp_captura), SECOND), "America/Sao_Paulo" ) AS DATETIME) AS timestamp_captura,
+  SAFE_CAST(DATETIME(TIMESTAMP_TRUNC(TIMESTAMP(timestamp_captura), SECOND), "America/Sao_Paulo" ) AS DATETIME) AS datetime_captura,
+  "{{ var("version") }}" AS versao
 FROM
   {{ var('sppo_registro_agente_verao_staging') }}
 WHERE
