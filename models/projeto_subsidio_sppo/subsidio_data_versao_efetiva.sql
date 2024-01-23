@@ -29,6 +29,8 @@ SELECT
       WHEN data = "2023-12-03" THEN "Domingo - Verão" -- OS de Verão
       WHEN data = "2023-12-16" THEN "Sabado - Verão" -- OS de Verão
       WHEN data = "2023-12-17" THEN "Domingo - Verão" -- OS de Verão
+      WHEN data = "2024-01-06" THEN "Sabado - Verão" -- OS de Verão
+      WHEN data = "2024-01-07" THEN "Domingo - Verão" -- OS de Verão
       WHEN data = "2023-12-31" THEN "Domingo - Réveillon"
       WHEN data = "2024-01-01" THEN "Domingo - Réveillon"
       WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 1 THEN "Domingo" -- Dia de São Sebastião -- Art. 8°, I - Lei Municipal nº 5146/2010
@@ -71,6 +73,7 @@ SELECT
     WHEN data = DATE(2024,01,01) THEN data
     -- 2023:
     WHEN data BETWEEN DATE(2024,01,02) AND DATE(2024,01,14) THEN DATE(2024,01,02)
+    WHEN data BETWEEN DATE(2024,01,06) AND DATE(2024,01,07) THEN DATE(2024,01,03) -- OS de Verão
     WHEN data BETWEEN DATE(2024,01,15) AND DATE(2024,01,31) THEN DATE(2024,01,15)
     -- 2022:
     WHEN data BETWEEN DATE(2022,10,1) AND DATE(2022,10,2) THEN DATE(2022,9,16)
@@ -112,6 +115,7 @@ SELECT
     WHEN data = DATE(2024,01,01) THEN data
     -- 2023:
     WHEN data BETWEEN DATE(2024,01,02) AND DATE(2024,01,14) THEN DATE(2024,01,02)
+    WHEN data BETWEEN DATE(2024,01,06) AND DATE(2024,01,07) THEN DATE(2024,01,03) -- OS de Verão
     WHEN data BETWEEN DATE(2024,01,15) AND DATE(2024,01,31) THEN DATE(2024,01,15)
     -- 2022:
     WHEN data BETWEEN DATE(2022,10,1) AND DATE(2022,10,2) THEN DATE(2022,9,16)
@@ -153,6 +157,7 @@ SELECT
     WHEN data = DATE(2024,01,01) THEN data
     -- 2023:
     WHEN data BETWEEN DATE(2024,01,02) AND DATE(2024,01,14) THEN DATE(2024,01,02)
+    WHEN data BETWEEN DATE(2024,01,06) AND DATE(2024,01,07) THEN DATE(2024,01,03) -- OS de Verão
     WHEN data BETWEEN DATE(2024,01,15) AND DATE(2024,01,31) THEN DATE(2024,01,15)
     -- 2022:
     {% for i in range(6, 13) %}
