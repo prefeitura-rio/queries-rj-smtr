@@ -229,3 +229,24 @@ models:
                       - Com ar e não autuado - Veículo que operou, foi licenciado com ar condicionado e não foi autuado"
       - name: versao
         description: "SHA do repositório no Github"
+  - name: sppo_registro_agente_verao
+    description: "Tabela com registros de Agentes de Verão para fins de cálculo de subsídio nos termos da RESOLUÇÃO SMTR Nº 3.682/2024"
+    columns:
+      - name: data
+        description: "Data de registro pelo agente público"
+      - name: datetime_registro
+        description: "Datetime de registro pelo agente público"
+      - name: id_registro
+        description: "ID do registro (HASH SHA256)"
+      - name: id_veiculo
+        description: "Número de ordem do veículo, identificação que é exibida na lateral do ônibus"
+      - name: servico
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, SN011, ...)"
+      - name: link_foto
+        description: "Link com a imagem interna do veículo"
+      - name: validacao
+        description: "Coluna de validação do registro enviado pelo agente público (apenas TRUE nesta tabela)"
+      - name: datetime_captura
+        description: "Datetime de captura do registro pela pipeline"
+      - name: versao
+        description: "SHA do repositório no Github"
