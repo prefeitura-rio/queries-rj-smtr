@@ -32,14 +32,16 @@ models:
         description: "Identificador único do veículo"
       - name: id_cliente
         description: "Identificador único do cliente"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/6071707853840412174/policyTags/1168584191451386864'
       - name: id_transacao
         description: "Identificador único da transação"
       - name: id_tipo_pagamento
         description: "Código do tipo de pagamento utilizado"
       - name: tipo_transacao
-        description: "Tipo de transação realizada"
-      - name: indicador_integracao
-        description: "Indicador booleano se a transação é parte de uma integração (coluna atualizada diariamente)"
+        description: "Tipo de transação realizada (a primeira perna de integrações são classificadas como tipo Débito e não Integração)"
+      # - name: indicador_integracao
+      #   description: "Indicador booleano se a transação é parte de uma integração (coluna atualizada diariamente)"
       - name: id_tipo_integracao
         description: "Tipo da integração realizada (identificador relacionado à matriz de integração)"
       - name: id_integracao
@@ -214,6 +216,8 @@ models:
         description: "Sentido da linha"
       - name: estado_equipamento
         description: "Validador aberto ou fechado no momento da transmissão"
+      - name: temperatura
+        description: "Temperatura do local, medida pelo sensor do validador (ºC)"
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)"
   - name: dicionario
