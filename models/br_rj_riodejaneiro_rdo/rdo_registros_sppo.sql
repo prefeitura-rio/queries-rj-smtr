@@ -15,9 +15,9 @@ FROM
     (
         SELECT
             *,
-            ROW_NUMBER() OVER (PARTITION BY id_transacao ORDER BY timestamp_captura DESC) AS rn
+            ROW_NUMBER() OVER (PARTITION BY data_transacao, linha, operadora ORDER BY data_processamento DESC) AS rn
         FROM
-            {{ref('rho_registros_sppo_view')}}
+            {{ref('rdo_registros_sppo_view')}}
         {% if is_incremental() %}
             WHERE
                 ano = EXTRACT(YEAR FROM DATE("{{var('run_date')}}"))

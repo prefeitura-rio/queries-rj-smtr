@@ -11,6 +11,9 @@ SELECT
     SAFE_CAST(operadora AS STRING) operadora,
     SAFE_CAST(linha_rcti AS STRING) linha_rcti,
     SAFE_CAST(DATETIME(TIMESTAMP(timestamp_captura), "America/Sao_Paulo") AS DATETIME) timestamp_captura,
-    DATE(CONCAT(ano,'-', mes, '-', dia)) data_particao
-FROM {{var('rho_registros_sppo_staging')}}
-WHERE data_transacao > "{{var('rho_sppo_start_date')}}"
+    SAFE_CAST(ano AS INT64) ano,
+    SAFE_CAST(mes AS INT64) mes,
+    SAFE_CAST(dia AS INT64) dia
+    -- DATE(CONCAT(ano,'-', mes, '-', dia)) data_particao
+FROM 
+    {{ source("br_rj_riodejaneiro_rdo_staging", "rho_registros_sppo") }}
