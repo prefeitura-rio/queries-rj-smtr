@@ -1,14 +1,14 @@
 -- depends_on: {{ ref('matriz_integracao') }}
 {{
   config(
-    alias="integracao",
     materialized="incremental",
     partition_by={
       "field":"data",
       "data_type":"date",
       "granularity": "day"
     },
-    unique_key='id_integracao_sequencia'
+    unique_key='id_transacao',
+    post_hook="{{ update_transacao_integracao(is_incremental()) }}",
   )
 }}
 
@@ -70,48 +70,56 @@ integracao_melt AS (
           {% endfor %}
         ]
       ) AS im
+),
+integracao_rn AS (
+  SELECT 
+    i.data,
+    i.hora,
+    i.datetime_processamento_integracao,
+    i.datetime_captura,
+    i.datetime_transacao,
+    i.id_integracao,
+    i.sequencia_integracao,
+    m.modo,
+    CONCAT(i.id_integracao, '-', i.sequencia_integracao) AS id_integracao_sequencia,
+    dc.id_consorcio,
+    dc.consorcio,
+    do.id_operadora,
+    do.operadora,
+    l.nr_linha AS servico,
+    i.id_transacao,
+    i.sentido,
+    i.perc_rateio AS percentual_rateio,
+    i.valor_rateio_compensacao,
+    i.valor_rateio,
+    i.valor_transacao,
+    i.valor_transacao_total,
+    i.texto_adicional,
+    '{{ var("version") }}' as versao,
+    ROW_NUMBER() OVER (PARTITION BY id_transacao ORDER BY datetime_processamento_integracao DESC) AS rn
+  FROM
+    integracao_melt i
+  LEFT JOIN
+    {{ ref("staging_linha") }} AS l
+  ON
+    i.id_linha = l.cd_linha
+    AND i.datetime_transacao >= l.datetime_inclusao
+  LEFT JOIN 
+      {{ source("cadastro", "modos") }} m
+  ON
+    i.id_tipo_modal = m.id_modo AND m.fonte = "jae"
+  LEFT JOIN
+    {{ ref("operadoras") }} AS do
+  ON
+    i.id_operadora = do.id_operadora_jae
+  LEFT JOIN
+    {{ ref("consorcios") }} AS dc
+  ON
+    i.id_consorcio = dc.id_consorcio_jae
+  WHERE i.id_transacao IS NOT NULL
 )
-SELECT 
-  i.data,
-  i.hora,
-  i.datetime_processamento_integracao,
-  i.datetime_captura,
-  i.datetime_transacao,
-  i.id_integracao,
-  i.sequencia_integracao,
-  m.modo,
-  CONCAT(i.id_integracao, '-', i.sequencia_integracao) AS id_integracao_sequencia,
-  dc.id_consorcio,
-  dc.consorcio,
-  do.id_operadora,
-  do.operadora,
-  l.nr_linha AS servico,
-  i.id_transacao,
-  i.sentido,
-  i.perc_rateio AS percentual_rateio,
-  i.valor_rateio_compensacao,
-  i.valor_rateio,
-  i.valor_transacao,
-  i.valor_transacao_total,
-  i.texto_adicional,
-  '{{ var("version") }}' as versao
+SELECT
+  * EXCEPT(rn)
 FROM
-  integracao_melt i
-LEFT JOIN
-  {{ ref("staging_linha") }} AS l
-ON
-  i.id_linha = l.cd_linha
-  AND i.datetime_transacao >= l.datetime_inclusao
-LEFT JOIN 
-    {{ source("cadastro", "modos") }} m
-ON
-  i.id_tipo_modal = m.id_modo AND m.fonte = "jae"
-LEFT JOIN
-  {{ ref("operadoras") }} AS do
-ON
-  i.id_operadora = do.id_operadora_jae
-LEFT JOIN
-  {{ ref("consorcios") }} AS dc
-ON
-  i.id_consorcio = dc.id_consorcio_jae
-WHERE i.id_transacao IS NOT NULL
+  integracao_rn
+WHERE rn = 1

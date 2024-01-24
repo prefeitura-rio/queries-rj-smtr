@@ -38,6 +38,8 @@ models:
         description: "Código do tipo de pagamento utilizado"
       - name: tipo_transacao
         description: "Tipo de transação realizada"
+      - name: indicador_integracao
+        description: "Indicador booleano se a transação é parte de uma integração (coluna atualizada diariamente)"
       - name: id_tipo_integracao
         description: "Tipo da integração realizada (identificador relacionado à matriz de integração)"
       - name: id_integracao
@@ -113,7 +115,7 @@ models:
         description: "Indicador de validação da ordem de pagamento i.e. se a quantidade e valor total informados são encontrados na captura de transações individuais"
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)"
-  - name: integracao_transacao
+  - name: integracao
     description: "Tabela com a relação de integrações entre transações [Dados em fase de teste]"
     columns:
       - name: data
