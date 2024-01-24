@@ -8,7 +8,6 @@
       "granularity": "day"
     },
     unique_key='id_transacao',
-    post_hook="{{ update_transacao_integracao(is_incremental()) }}",
   )
 }}
 

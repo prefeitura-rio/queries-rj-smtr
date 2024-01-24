@@ -39,18 +39,18 @@ tipo_transacao AS (
   WHERE
     id_tabela = "transacao"
     AND coluna = "id_tipo_transacao" 
-),
-integracao AS (
-    SELECT
-        id_integracao,
-        id_transacao
-    FROM
-        {{ ref("integracao") }}
-    {% if is_incremental() -%}
-        WHERE
-            data BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 2 DAY) AND DATE("{{var('date_range_end')}}")
-    {%- endif %}
 )
+-- integracao AS (
+--     SELECT
+--         id_integracao,
+--         id_transacao
+--     FROM
+--         {{ ref("integracao") }}
+--     {% if is_incremental() -%}
+--         WHERE
+--             data BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 2 DAY) AND DATE("{{var('date_range_end')}}")
+--     {%- endif %}
+-- )
 SELECT 
     EXTRACT(DATE FROM data_transacao) AS data,
     EXTRACT(HOUR FROM data_transacao) AS hora,
@@ -69,10 +69,10 @@ SELECT
     id AS id_transacao,
     id_tipo_midia AS id_tipo_pagamento,
     tt.tipo_transacao,
-    CASE
-        WHEN i.id_integracao IS NULL THEN FALSE
-        ELSE TRUE
-    END AS indicador_integracao
+    -- CASE
+    --     WHEN i.id_integracao IS NULL THEN FALSE
+    --     ELSE TRUE
+    -- END AS indicador_integracao,
     tipo_integracao AS id_tipo_integracao,
     NULL AS id_integracao,
     latitude_trx AS latitude,
@@ -105,7 +105,7 @@ LEFT JOIN
     tipo_transacao AS tt
 ON
     tt.id_tipo_transacao = t.tipo_transacao
-LEFT JOIN
-    integracao AS i
-ON
-    i.id_transacao = t.id
+-- LEFT JOIN
+--     integracao AS i
+-- ON
+--     i.id_transacao = t.id
