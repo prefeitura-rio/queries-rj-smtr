@@ -6,26 +6,30 @@
 
 WITH transacao_agrupada AS (
     SELECT
-        data,
-        hora,
-        modo,
-        consorcio,
-        servico,
-        sentido,
+        t.data,
+        t.hora,
+        t.modo,
+        t.consorcio,
+        t.servico,
+        t.sentido,
         CASE
-            WHEN indicador_integracao = TRUE THEN "Integração"
-            ELSE tipo_transacao
+            WHEN i.id_integracao IS NOT NULL THEN "Integração"
+            ELSE t.tipo_transacao
         END AS tipo_transacao,
-        COUNT(id_transacao) AS quantidade_passageiros,
-        -- ROUND(100 * COUNT(id_transacao) / SUM(COUNT(*)) OVER (PARTITION BY DATA, modo), 2) AS percentual_passageiros_modo,
-        ROUND(100 * COUNT(id_transacao) / SUM(COUNT(*)) OVER (PARTITION BY DATA), 2) AS percentual_passageiros_dia
+        COUNT(t.id_transacao) AS quantidade_passageiros,
+        -- ROUND(100 * COUNT(t.id_transacao) / SUM(COUNT(*)) OVER (PARTITION BY t.data, t.modo), 2) AS percentual_passageiros_modo,
+        ROUND(100 * COUNT(t.id_transacao) / SUM(COUNT(*)) OVER (PARTITION BY t.data), 2) AS percentual_passageiros_dia
     FROM
-        {{ ref("transacao") }}
+        {{ ref("transacao") }} t
+    LEFT JOIN
+        {{ ref("integracao") }} i
+    ON
+        t.id_transacao = i.id_transacao
     WHERE
-        data >= "2023-07-19"
-        AND servico NOT IN ("888888",
+        t.data >= "2023-07-19"
+        AND t.servico NOT IN ("888888",
         "999999")
-        AND id_operadora != "2"
+        AND t.id_operadora != "2"
     GROUP BY
         1,
         2,
