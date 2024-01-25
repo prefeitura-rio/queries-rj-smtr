@@ -14,10 +14,12 @@ models:
           - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
       - name: tipo_operadora
         description: "Tipo de permissionário (Exemplos: autônomo, empresa, cooperativa)"
-      - name: tipo_modal_stu
-        description: "Tipo de transporte no STU (ônibus, van, BRT)"
-      - name: tipo_modal_jae
-        description: "Tipo de transporte na Jaé (ônibus, van, BRT)"
+      - name: modo
+        description: "Modo de transporte do operador, podendo ser o modo na Jaé ou no STU"
+      - name: modo_stu
+        description: "Modo de transporte no STU (ônibus, van, BRT)"
+      - name: modo_jae
+        description: "Modo de transporte na Jaé (ônibus, van, BRT)"
       - name: id_processo
         description: "Número do processo no STU"
       - name: data_processo
@@ -32,7 +34,7 @@ models:
         description: "Código de permissionário vindo do STU"
       - name: id_operadora_jae
         description: "Código do operador no sistema da Jaé"
-      - name: situacao_operadora_jae
+      - name: indicador_operador_ativo_jae
         description: "Indicador de atividade do operador no sistema da Jaé"
       - name: agencia
         description: "Número da agência bancária do operador [protegido]"

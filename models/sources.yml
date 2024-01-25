@@ -18,6 +18,7 @@ sources:
       - name: percentual_rateio_integracao
       - name: integracao_transacao
       - name: tipo_modal
+      - name: gps_validador
 
   - name: br_rj_riodejaneiro_gtfs_staging
     database: rj-smtr-staging
@@ -49,3 +50,11 @@ sources:
 
     tables:
       - name: recursos_sppo_viagens_individuais
+      - name: recursos_sppo_bloqueio_via
+      - name: recursos_sppo_reprocessamento
+  
+  - name: cadastro
+    database: rj-smtr
+
+    tables:
+      - name: modos

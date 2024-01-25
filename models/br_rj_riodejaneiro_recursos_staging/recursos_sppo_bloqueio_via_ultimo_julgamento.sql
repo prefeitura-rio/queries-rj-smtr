@@ -10,7 +10,7 @@ WITH exploded AS (
     ) AS julgamento, 
     SAFE_CAST(JSON_EXTRACT(items, '$.customFieldId') AS STRING ) AS field_id 
   FROM 
-    {{ ref('staging_recursos_sppo_viagens_individuais') }}, 
+    {{ ref('staging_recursos_sppo_bloqueio_via') }}, 
     UNNEST(items) items
   {% if is_incremental() -%}
     WHERE
@@ -46,7 +46,7 @@ pivotado AS (
       data_julgamento,
       LAG(julgamento) OVER (PARTITION BY id_recurso ORDER BY data_julgamento) AS ultimo_julgamento
     FROM
-      pivotado 
+        pivotado 
     WHERE 
       julgamento IS NOT NULL
   )
@@ -65,6 +65,5 @@ FROM
     julgamento j
   WHERE 
     j.julgamento != j.ultimo_julgamento OR j.ultimo_julgamento IS NULL
-    
 )
 WHERE rn=1
