@@ -62,7 +62,7 @@ models:
               quote: false
     tests:
       - dbt_utils.expression_is_true:
-          expression: "ROUND(valor_subsidio_pago/2.81,2) <= ROUND(km_apurada+0.01,2)" # Teto de pagamento de subsídio
+          expression: "ROUND(valor_subsidio_pago/4.04,2) <= ROUND(km_apurada+0.01,2)" # Teto de pagamento de subsídio
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
             - data
