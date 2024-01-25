@@ -212,7 +212,3 @@ models:
     br_rj_riodejaneiro_recursos_staging:
       +materialized: incremental
       +schema: br_rj_riodejaneiro_recursos_staging
-    bilhetagem:
-      +schema: bilhetagem
-
-

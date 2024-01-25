@@ -220,6 +220,27 @@ models:
         description: "Temperatura do local, medida pelo sensor do validador (ºC)"
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)"
+  - name: passageiros_hora
+    description: "View para ser usada em análises do dashboard. Agrega valores da tabela transacao por: data, hora, modo, consorcio, operadora, servico, sentido e tipo_transacao"
+    columns:
+      - name: data
+        description: "Data da transação"
+      - name: hora
+        description: "Hora da transação"
+      - name: modo
+        description: "Tipo de transporte (Ônibus, Van, BRT)"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: operadora
+        description: "Nome da operadora de transporte (mascarado se for pessoa física)"
+      - name: servico
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...)"
+      - name: sentido
+        description: "Sentido de operação do serviço (0 = ida, 1 = volta)"
+      - name: tipo_transacao
+        description: "Tipo de transação realizada (informação tratada para considerar a primeira perna de integrações como tipo Integração)"
+      - name: quantidade_passageiros
+        description: "Quantidade de transações que aconteceram em determinada data e hora"
   - name: dicionario
     description: "Dicionário de dados"
     columns:
