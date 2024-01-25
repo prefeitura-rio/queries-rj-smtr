@@ -2,7 +2,7 @@ version: 2
 
 models:
   - name: passageiros_hora
-    description: "View para ser usada em análises do dashboard"
+    description: "View para ser usada em análises do dashboard. Agrega valores da tabela transacao por: data, hora, modo, consorcio, operadora, servico, sentido e tipo_transacao"
     columns:
       - name: data
         description: "Data da transação"
