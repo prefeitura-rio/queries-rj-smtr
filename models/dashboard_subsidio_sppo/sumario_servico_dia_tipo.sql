@@ -190,7 +190,7 @@ WITH
       km_apurada,
     FROM
       servico_km ) PIVOT(SUM(viagens) AS viagens,
-      SUM(km_apurada) AS km_apurada FOR tipo_viagem IN (
+      COALESCE(SUM(km_apurada),0) AS km_apurada FOR tipo_viagem IN (
         {% if execute %}
           {% set status_q = run_query(status_list_query) %}
           {% set status_list = status_q.columns[0].values() %}
