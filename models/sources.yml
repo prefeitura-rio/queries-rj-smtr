@@ -51,3 +51,23 @@ sources:
       - name: recursos_sppo_viagens_individuais
       - name: recursos_sppo_bloqueio_via
       - name: recursos_sppo_reprocessamento
+  
+  - name: cadastro
+    database: rj-smtr
+
+    tables:
+      - name: modos
+
+  - name: br_rj_riodejaneiro_rdo
+    database: rj-smtr
+
+    tables:
+      - name: rdo40_tratado
+
+  - name: projeto_subsidio_sppo_encontro_contas
+    database: rj-smtr
+
+    tables:
+      - name: subsidio_parametros_atualizada
+      - name: recursos_sppo_reprocessamento
+      - name: recursos_sppo_bloqueio_via
