@@ -9,6 +9,7 @@ SELECT
     SAFE_CAST(DATETIME(TIMESTAMP(timestamp_captura), "America/Sao_Paulo") AS DATETIME) timestamp_captura,
     SAFE_CAST(ano AS INT64) ano,
     SAFE_CAST(mes AS INT64) mes,
-    SAFE_CAST(dia AS INT64) dia
+    SAFE_CAST(dia AS INT64) dia,
+    DATE(CONCAT(ano,'-', mes, '-', dia)) data_particao
 from 
     {{ source("br_rj_riodejaneiro_rdo_staging", "rho5_registros_stpl") }} as t
