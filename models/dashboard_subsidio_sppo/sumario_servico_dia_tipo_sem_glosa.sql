@@ -11,6 +11,7 @@ parametros AS (
     {{ ref("subsidio_parametros") }}
   WHERE
     data_inicio >= '2023-07-04'
+    AND data_fim <= '2023-12-31'
 )
 SELECT
   consorcio,
