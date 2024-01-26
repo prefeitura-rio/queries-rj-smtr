@@ -18,9 +18,9 @@ WITH rho_stpl AS (
         operadora,
         total_pagantes,
         total_gratuidades,
-        timestamp_captura AS datetime_captura
+        timestamp_captura
     FROM
-        {{ ref('rho_registros_stpl_view') }}
+        {{ ref('staging_rho_registros_stpl') }}
 ),
 rho_rn AS (
     SELECT
@@ -33,15 +33,25 @@ rho_rn AS (
                 linha,
                 operadora 
             ORDER BY 
-                datetime_captura DESC
+                timestamp_captura DESC
         ) AS rn
     FROM
         rho_stpl
 )
 SELECT
-    * EXCEPT(rn)
+    data_transacao,
+    hora_transacao,
+    linha AS servico_rio_card,
+    operadora,
+    SUM(total_pagantes) AS  quantidade_transacao_pagante,
+    SUM(total_gratuidades) AS quantidade_transacao_gratuidade
 FROM
     rho_rn
 WHERE
     rn = 1
+GROUP BY
+    1,
+    2,
+    3,
+    4
 

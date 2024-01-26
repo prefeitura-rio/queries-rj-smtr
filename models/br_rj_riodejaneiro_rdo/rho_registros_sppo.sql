@@ -16,20 +16,29 @@ WITH rho_new AS (
         hora_transacao,
         data_processamento,
         data_particao AS data_arquivo_rho,
-        linha,
-        linha_rcti,
+        linha AS servico_rio_card,
+        linha_rcti AS linha_rio_card,
         operadora,
-        total_pagantes_cartao,
-        total_pagantes_especie,
-        total_gratuidades,
+        total_pagantes_cartao AS quantidade_transacao_cartao,
+        total_pagantes_especie AS quantidade_transacao_especie,
+        total_gratuidades AS quantidade_transacao_gratuidade,
         registro_processado,
         timestamp_captura AS datetime_captura
     FROM
-        {{ ref('rho_registros_sppo_view') }}
+        {{ ref('staging_rho_registros_sppo') }}
     {% if is_incremental() %}
         WHERE
-            timestamp_captura > DATETIME("{{ var('date_range_start') }}")
-            AND timestamp_captura <= DATETIME("{{ var('date_range_end') }}") 
+            ano BETWEEN 
+                EXTRACT(YEAR FROM DATE("{{ var('date_range_start') }}")) 
+                AND EXTRACT(YEAR FROM DATE("{{ var('date_range_end') }}"))
+            AND mes BETWEEN 
+                EXTRACT(MONTH FROM DATE("{{ var('date_range_start') }}")) 
+                AND EXTRACT(MONTH FROM DATE("{{ var('date_range_end') }}"))
+            AND dia BETWEEN 
+                EXTRACT(DAY FROM DATE("{{ var('date_range_start') }}")) 
+                AND EXTRACT(DAY FROM DATE("{{ var('date_range_end') }}"))
+            AND timestamp_captura > DATETIME("{{ var('date_range_start') }}")
+            AND timestamp_captura <= DATETIME("{{ var('date_range_end') }}")
     {% endif %}
 ),
 rho_complete_partitions AS (
@@ -50,7 +59,7 @@ rho_complete_partitions AS (
             data_transacao IN (SELECT DISTINCT data_transacao FROM rho_new)
     
     {% endif %}
-)
+),
 rho_rn AS (
     SELECT
         *,
@@ -59,7 +68,8 @@ rho_rn AS (
                 data_transacao, 
                 hora_transacao,
                 data_arquivo_rho,
-                linha_rcti,
+                servico_rio_card,
+                linha_rio_card,
                 operadora 
             ORDER BY 
                 datetime_captura DESC
