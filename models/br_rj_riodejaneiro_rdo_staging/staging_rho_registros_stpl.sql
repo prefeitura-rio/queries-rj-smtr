@@ -1,3 +1,9 @@
+{{
+  config(
+    alias='rho_registros_stpl',
+  )
+}}
+
 SELECT 
     SAFE_CAST(operadora AS STRING) operadora,
     SAFE_CAST(linha AS STRING) linha,

@@ -1,3 +1,10 @@
+{{
+  config(
+    alias='rho_registros_sppo',
+  )
+}}
+
+
 SELECT
     CONCAT(TRIM(linha_rcti), '_', data_transacao, '_', hora_transacao, ano,'_', mes, '_', dia) id_transacao,
     TRIM(linha) linha,
