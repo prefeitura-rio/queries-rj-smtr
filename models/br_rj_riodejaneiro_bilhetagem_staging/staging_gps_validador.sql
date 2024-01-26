@@ -32,7 +32,8 @@ SELECT
     SAFE_CAST(JSON_VALUE(content, '$.qtd_venda_botao') AS FLOAT64) AS qtd_venda_botao,
     SAFE_CAST(JSON_VALUE(content, '$.sentido_linha') AS STRING) AS sentido_linha,
     SAFE_CAST(JSON_VALUE(content, '$.tarifa_linha') AS FLOAT64) AS tarifa_linha,
-    SAFE_CAST(JSON_VALUE(content, '$.versao_app') AS FLOAT64) AS versao_app
+    SAFE_CAST(JSON_VALUE(content, '$.versao_app') AS FLOAT64) AS versao_app,
+    SAFE_CAST(JSON_VALUE(content, '$.temperatura') AS FLOAT64) AS temperatura
 FROM
     {{ source('br_rj_riodejaneiro_bilhetagem_staging', 'gps_validador') }}
 
