@@ -16,8 +16,8 @@ WITH rho_new AS (
         hora_transacao,
         data_processamento,
         data_particao AS data_arquivo_rho,
-        linha AS servico_rio_card,
-        linha_rcti AS linha_rio_card,
+        linha AS servico_riocard,
+        linha_rcti AS linha_riocard,
         operadora,
         total_pagantes_cartao AS quantidade_transacao_cartao,
         total_pagantes_especie AS quantidade_transacao_especie,
@@ -37,8 +37,6 @@ WITH rho_new AS (
             AND dia BETWEEN 
                 EXTRACT(DAY FROM DATE("{{ var('date_range_start') }}")) 
                 AND EXTRACT(DAY FROM DATE("{{ var('date_range_end') }}"))
-            AND timestamp_captura > DATETIME("{{ var('date_range_start') }}")
-            AND timestamp_captura <= DATETIME("{{ var('date_range_end') }}")
     {% endif %}
 ),
 rho_complete_partitions AS (
@@ -48,7 +46,7 @@ rho_complete_partitions AS (
         rho_new
     
     {% if is_incremental() %}
-    
+
         UNION ALL
 
         SELECT
@@ -57,7 +55,7 @@ rho_complete_partitions AS (
             {{ this }}
         WHERE
             data_transacao IN (SELECT DISTINCT data_transacao FROM rho_new)
-    
+
     {% endif %}
 ),
 rho_rn AS (
@@ -68,8 +66,8 @@ rho_rn AS (
                 data_transacao, 
                 hora_transacao,
                 data_arquivo_rho,
-                servico_rio_card,
-                linha_rio_card,
+                servico_riocard,
+                linha_riocard,
                 operadora 
             ORDER BY 
                 datetime_captura DESC

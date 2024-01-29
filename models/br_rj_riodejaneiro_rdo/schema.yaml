@@ -2,7 +2,7 @@ version: 2
 
 models:
   - name: rho_registros_sppo
-    description: "View para tipar e padronizar dados do RHO"
+    description: "Tabela materializada para acesso geral aos dados do RHO SPPO"
     columns:
       - name: data_transacao
         description: "Data da transação (partição)"
@@ -12,9 +12,9 @@ models:
         description: "Data de processamento da transação"
       - name: data_arquivo_rho
         description: "Data do arquivo fonte do RHO"
-      - name: servico_rio_card
+      - name: servico_riocard
         description: "Nome curto da linha de acordo com o padrão do RioCard"
-      - name: linha_rio_card
+      - name: linha_riocard
         description: "Identificador interno da linha no RioCard"
       - name: operadora
         description: "Identificador da operadora de transporte"
@@ -27,16 +27,16 @@ models:
       - name: registro_processado
         description: "Identificador se o registro foi recalculado"
       - name: datetime_captura
-        description: "Data da captura dos dados"
+        description: "Data e hora da captura dos dados"
 
   - name: rho_registros_stpl
-    description: "Tabela materializada para acesso geral aos dados do RHO"
+    description: "Tabela materializada para acesso geral aos dados do RHO STPL"
     columns:
-       - name: data_transacao
+      - name: data_transacao
         description: "Data da transação (partição)"
       - name: hora_transacao
         description: "Hora da transação"
-      - name: servico_rio_card
+      - name: servico_riocard
         description: "Nome curto da linha de acordo com o padrão do RioCard"
       - name: operadora
         description: "Identificador da operadora de transporte"
@@ -44,3 +44,5 @@ models:
         description: "Quantidade de transações pagantes"
       - name: quantidade_transacao_gratuidade
         description: "Quantidade de gratuidades"
+      - name: arquivos_somados
+        description: "Coluna de controle com array das datas dos arquivos que foram somados para obter os valores finais"
