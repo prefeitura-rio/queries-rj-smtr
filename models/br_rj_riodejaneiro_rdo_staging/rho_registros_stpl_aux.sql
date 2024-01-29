@@ -10,6 +10,9 @@
   )
 }}
 
+-- Tabela auxiliar para manter os dados com os mesmos identificadores:
+-- data e hora de transacao, linha e operadora desagregados antes de somar na tabela final
+-- Foi criada para não ter o risco de somar os dados do mesmo arquivo mais de uma vez
 WITH rho_new AS (
     SELECT
         data_transacao,

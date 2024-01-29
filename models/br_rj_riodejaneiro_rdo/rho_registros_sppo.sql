@@ -58,6 +58,7 @@ rho_complete_partitions AS (
 
     {% endif %}
 ),
+-- Deduplica os dados com base na data e hora da transacao, linha, linha_rcti e operadora
 rho_rn AS (
     SELECT
         *,
