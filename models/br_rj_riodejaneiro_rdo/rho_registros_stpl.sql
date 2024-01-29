@@ -1,52 +1,94 @@
 {{ 
   config(
-      materialized='table',
-      partition_by={
-            "field":"data_transacao",
-            "data_type": "date",
-            "granularity":"day"
-      },
+    materialized='incremental',
+    incremental_strategy="insert_overwrite",
+    partition_by={
+        "field":"data_transacao",
+        "data_type": "date",
+        "granularity":"day"
+    },
   )
 }}
 
-WITH rho_stpl AS (
+WITH rho_new AS (
     SELECT
         data_transacao,
         hora_transacao,
         data_particao AS data_arquivo_rho,
-        linha,
+        linha AS servico_riocard,
         operadora,
-        total_pagantes,
-        total_gratuidades,
-        timestamp_captura
+        total_pagantes AS quantidade_transacao_pagante,
+        total_gratuidades AS quantidade_transacao_gratuidade,
+        timestamp_captura AS datetime_captura
     FROM
         {{ ref('staging_rho_registros_stpl') }}
+    {% if is_incremental() %}
+        WHERE
+            ano BETWEEN 
+                EXTRACT(YEAR FROM DATE("{{ var('date_range_start') }}")) 
+                AND EXTRACT(YEAR FROM DATE("{{ var('date_range_end') }}"))
+            AND mes BETWEEN 
+                EXTRACT(MONTH FROM DATE("{{ var('date_range_start') }}")) 
+                AND EXTRACT(MONTH FROM DATE("{{ var('date_range_end') }}"))
+            AND dia BETWEEN 
+                EXTRACT(DAY FROM DATE("{{ var('date_range_start') }}")) 
+                AND EXTRACT(DAY FROM DATE("{{ var('date_range_end') }}"))
+    {% endif %}
 ),
-rho_rn AS (
+rho_complete_partitions AS (
     SELECT
-        *,
-        ROW_NUMBER() OVER(
-            PARTITION BY 
-                data_transacao, 
-                hora_transacao,
-                data_arquivo_rho,
-                linha,
-                operadora 
-            ORDER BY 
-                timestamp_captura DESC
-        ) AS rn
+        data_transacao,
+        hora_transacao,
+        data_arquivo_rho,
+        servico_riocard,
+        operadora,
+        quantidade_transacao_pagante,
+        quantidade_transacao_gratuidade
     FROM
-        rho_stpl
+        rho_new
+
+    {% if is_incremental() %}
+    
+        UNION ALL
+
+        SELECT
+            data_transacao,
+            hora_transacao,
+            data_arquivo_rho,
+            servico_riocard,
+            operadora,
+            quantidade_transacao_pagante,
+            quantidade_transacao_gratuidade
+        FROM
+            {{ this }},
+            UNNEST(arquivos_somados) AS data_arquivo_rho
+        WHERE
+            data_transacao IN (SELECT DISTINCT data_transacao FROM rho_new)
+    {% endif %}
 )
 SELECT
     data_transacao,
     hora_transacao,
-    linha AS servico_rio_card,
+    servico_riocard,
     operadora,
-    SUM(total_pagantes) AS  quantidade_transacao_pagante,
-    SUM(total_gratuidades) AS quantidade_transacao_gratuidade
+    SUM(quantidade_transacao_pagante) AS quantidade_transacao_pagante,
+    SUM(quantidade_transacao_gratuidade) AS quantidade_transacao_gratuidade,
+    ARRAY_AGG(data_arquivo_rho) AS arquivos_somados
 FROM
-    rho_rn
+    (
+        SELECT 
+            *,
+            ROW_NUMBER() OVER(
+                PARTITION BY 
+                    data_transacao,
+                    hora_transacao,
+                    data_arquivo_rho,
+                    servico_riocard,
+                    operadora
+                ) AS rn
+        FROM
+            rho_complete_partitions
+    )
 WHERE
     rn = 1
 GROUP BY
@@ -54,4 +96,3 @@ GROUP BY
     2,
     3,
     4
-
