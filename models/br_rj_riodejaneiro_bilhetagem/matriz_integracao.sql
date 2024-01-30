@@ -31,16 +31,16 @@ WITH matriz_melt AS (
 SELECT
   i.id AS id_matriz_integracao,
   i.sequencia_integracao,
-  m.ds_tipo_modal AS modo,
+  m.modo,
   i.perc_rateio AS percentual_rateio,
   i.dt_inicio_validade AS data_inicio_validade,
   i.dt_fim_validade AS data_fim_validade,
   '{{ var("version") }}' as versao
 FROM
   matriz_melt i
-LEFT JOIN
-  {{ ref("staging_tipo_modal") }} AS m
-ON 
-  i.id_tipo_modal = m.cd_tipo_modal
+LEFT JOIN 
+    {{ source("cadastro", "modos") }} m
+ON
+  i.id_tipo_modal = m.id_modo AND m.fonte = "jae"
 WHERE
   i.id_tipo_modal IS NOT NULL

@@ -195,6 +195,9 @@ models:
     br_rj_riodejaneiro_rdo:
       +materialized: view
       +schema: br_rj_riodejaneiro_rdo
+    br_rj_riodejaneiro_rdo_staging:
+      +materialized: view
+      +schema: br_rj_riodejaneiro_rdo_staging
     br_rj_riodejaneiro_bilhetagem:
       +materialized: incremental
       +schema: br_rj_riodejaneiro_bilhetagem
@@ -216,5 +219,3 @@ models:
       +materialized: incremental
       +schema: projeto_subsidio_sppo_encontro_contas
       +incremental_strategy: insert_overwrite
-
-

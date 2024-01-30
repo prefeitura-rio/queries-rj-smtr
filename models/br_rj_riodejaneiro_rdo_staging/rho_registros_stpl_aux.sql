@@ -1,31 +1,30 @@
 {{ 
   config(
-      materialized='incremental',
-      partition_by={
-            "field":"data_transacao",
-            "data_type": "date",
-            "granularity":"day"
-      },
-      incremental_strategy="insert_overwrite"
+    materialized='incremental',
+    incremental_strategy="insert_overwrite",
+    partition_by={
+        "field":"data_transacao",
+        "data_type": "date",
+        "granularity":"day"
+    },
   )
 }}
 
+-- Tabela auxiliar para manter os dados com os mesmos identificadores:
+-- data e hora de transacao, linha e operadora desagregados antes de somar na tabela final
+-- Foi criada para não ter o risco de somar os dados do mesmo arquivo mais de uma vez
 WITH rho_new AS (
     SELECT
         data_transacao,
         hora_transacao,
-        data_processamento,
         data_particao AS data_arquivo_rho,
         linha AS servico_riocard,
-        linha_rcti AS linha_riocard,
         operadora,
-        total_pagantes_cartao AS quantidade_transacao_cartao,
-        total_pagantes_especie AS quantidade_transacao_especie,
+        total_pagantes AS quantidade_transacao_pagante,
         total_gratuidades AS quantidade_transacao_gratuidade,
-        registro_processado,
         timestamp_captura AS datetime_captura
     FROM
-        {{ ref('staging_rho_registros_sppo') }}
+        {{ ref('staging_rho_registros_stpl') }}
     {% if is_incremental() %}
         WHERE
             ano BETWEEN 
@@ -44,9 +43,9 @@ rho_complete_partitions AS (
         *
     FROM
         rho_new
-    
-    {% if is_incremental() %}
 
+    {% if is_incremental() %}
+    
         UNION ALL
 
         SELECT
@@ -55,30 +54,33 @@ rho_complete_partitions AS (
             {{ this }}
         WHERE
             data_transacao IN (SELECT DISTINCT data_transacao FROM rho_new)
-
     {% endif %}
-),
--- Deduplica os dados com base na data e hora da transacao, linha, linha_rcti e operadora
-rho_rn AS (
-    SELECT
-        *,
-        ROW_NUMBER() OVER(
-            PARTITION BY 
-                data_transacao, 
-                hora_transacao,
-                data_arquivo_rho,
-                servico_riocard,
-                linha_riocard,
-                operadora 
-            ORDER BY 
-                datetime_captura DESC
-        ) AS rn
-    FROM
-        rho_complete_partitions
 )
 SELECT
-    * EXCEPT(rn)
+    data_transacao,
+    hora_transacao,
+    data_arquivo_rho,
+    servico_riocard,
+    operadora,
+    quantidade_transacao_pagante,
+    quantidade_transacao_gratuidade,
+    datetime_captura
 FROM
-    rho_rn
+    (
+        SELECT 
+            *,
+            ROW_NUMBER() OVER(
+                PARTITION BY 
+                    data_transacao,
+                    hora_transacao,
+                    data_arquivo_rho,
+                    servico_riocard,
+                    operadora
+                ORDER BY
+                    datetime_captura DESC
+                ) AS rn
+        FROM
+            rho_complete_partitions
+    )
 WHERE
     rn = 1
