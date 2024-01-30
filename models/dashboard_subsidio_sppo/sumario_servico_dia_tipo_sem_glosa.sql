@@ -9,6 +9,7 @@ WITH
     {{ ref("subsidio_parametros") }}
   WHERE
     data_inicio >= "2023-07-04"
+    AND status IN ("Licenciado sem ar e não autuado", "Licenciado com ar e não autuado")
   GROUP BY
     1,
     2 )
