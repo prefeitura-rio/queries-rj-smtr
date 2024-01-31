@@ -58,7 +58,7 @@ sources:
 
     tables:
       - name: modos
-
+  
   - name: br_rj_riodejaneiro_rdo
     database: rj-smtr
 
@@ -73,16 +73,9 @@ sources:
       - name: recursos_sppo_reprocessamento
       - name: recursos_sppo_bloqueio_via
   
-  - name: cadastro
-    database: rj-smtr
-
-    tables:
-      - name: modos
-  
   - name: br_rj_riodejaneiro_rdo_staging
     database: rj-smtr-staging
 
     tables:
       - name: rho_registros_sppo
       - name: rho5_registros_stpl
-  
