@@ -10,6 +10,32 @@
   )
 }}
 
+{% set staging_table = ref('staging_rho_registros_sppo') %}
+{% if execute %}
+    {% if is_incremental() %}
+        {% set partitions_query %}
+            SELECT DISTINCT
+                CONCAT("'", data_transacao, "'")
+            FROM
+                {{ staging_table }}
+            WHERE
+                ano BETWEEN 
+                    EXTRACT(YEAR FROM DATE("{{ var('date_range_start') }}")) 
+                    AND EXTRACT(YEAR FROM DATE("{{ var('date_range_end') }}"))
+                AND mes BETWEEN 
+                    EXTRACT(MONTH FROM DATE("{{ var('date_range_start') }}")) 
+                    AND EXTRACT(MONTH FROM DATE("{{ var('date_range_end') }}"))
+                AND dia BETWEEN 
+                    EXTRACT(DAY FROM DATE("{{ var('date_range_start') }}")) 
+                    AND EXTRACT(DAY FROM DATE("{{ var('date_range_end') }}"))
+        {% endset %}
+
+        {% set partitions = run_query(partitions_query) %}
+
+        {% set partition_list = partitions.columns[0].values() %}
+    {% endif %}
+{% endif %}
+
 WITH rho_new AS (
     SELECT
         data_transacao,
@@ -25,7 +51,7 @@ WITH rho_new AS (
         registro_processado,
         timestamp_captura AS datetime_captura
     FROM
-        {{ ref('staging_rho_registros_sppo') }}
+        {{ staging_table }}
     {% if is_incremental() %}
         WHERE
             ano BETWEEN 
@@ -54,7 +80,12 @@ rho_complete_partitions AS (
         FROM
             {{ this }}
         WHERE
-            data_transacao IN (SELECT DISTINCT data_transacao FROM rho_new)
+            data_transacao
+        {% if partition_list|length > 0 %}
+            IN ({{ partition_list|join(', ') }})
+        {% else %}
+            = "2000-01-01"
+        {% endif %}
 
     {% endif %}
 ),
