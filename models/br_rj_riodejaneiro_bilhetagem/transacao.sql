@@ -11,6 +11,30 @@
   )
 }}
 
+{% set incremental_filter %}
+    DATE(data) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+    AND timestamp_captura BETWEEN DATETIME("{{var('date_range_start')}}") AND DATETIME("{{var('date_range_end')}}")
+{% endset %}
+
+{% set transacao_staging = ref('staging_transacao') %}
+{% if execute %}
+    {% if is_incremental() %}
+        {% set gratuidade_partitions_query %}
+            SELECT DISTINCT
+                id_cliente
+            FROM
+                {{ transacao_staging }}
+            WHERE
+                {{ incremental_filter }}
+                AND t.tipo_transacao = "21"
+        {% endset %}
+
+        {% set gratuidade_partitions = run_query(gratuidade_partitions_query) %}
+
+        {% set gratuidade_partition_list = gratuidade_partitions.columns[0].values() %}
+    {% endif %}
+{% endif %}
+
 WITH transacao_deduplicada AS (
     SELECT 
         * EXCEPT(rn)
@@ -20,11 +44,10 @@ WITH transacao_deduplicada AS (
             *,
             ROW_NUMBER() OVER (PARTITION BY id ORDER BY timestamp_captura DESC) AS rn
         FROM
-            {{ ref("staging_transacao") }}
+            {{ transacao_staging }}
         {% if is_incremental() -%}
         WHERE
-            DATE(data) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
-            AND timestamp_captura BETWEEN DATETIME("{{var('date_range_start')}}") AND DATETIME("{{var('date_range_end')}}")
+            {{ incremental_filter }}
         {%- endif %}
     )
     WHERE
@@ -40,14 +63,20 @@ tipo_transacao AS (
     id_tabela = "transacao"
     AND coluna = "id_tipo_transacao" 
 ),
-WITH gratuidade AS (
+gratuidade AS (
     SELECT 
-        cd_cliente,
+        CAST(id_cliente AS STRING) AS id_cliente,
         tipo_gratuidade,
-        data_inclusao AS data_inicio_validade,
-        LEAD(data_inclusao) OVER (PARTITION BY cd_cliente ORDER BY data_inclusao) AS data_fim_validade
+        data_inicio_validade,
+        data_fim_validade
     FROM
-        {{ ref("staging_gratuidade") }}
+        {{ ref("gratuidade_aux") }}
+    WHERE
+        id_cliente
+        {% if partition_list|length > 0 %}
+            IN ({{ gratuidade_partition_list|join(', ') }})
+        {% else %}
+            = 0
 ),
 tipo_pagamento AS (
   SELECT
@@ -117,7 +146,7 @@ ON
 LEFT JOIN
     gratuidade g
 ON
-    t.id_cliente = g.cd_cliente
+    t.tipo_transacao = "21"
+    AND t.id_cliente = g.id_cliente
     AND t.data_transacao >= g.data_inicio_validade
-    AND t.data_transacao < g.data_fim_validade
-    AND t.tipo_transacao = "21"
+    AND (t.data_transacao < g.data_fim_validade OR g.data_fim_validade IS NULL)
