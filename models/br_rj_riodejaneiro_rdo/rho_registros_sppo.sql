@@ -71,7 +71,7 @@ rho_complete_partitions AS (
     FROM
         rho_new
     
-    {% if is_incremental() %}
+    {% if is_incremental() and partition_list|length > 0 %}
 
         UNION ALL
 
@@ -80,12 +80,7 @@ rho_complete_partitions AS (
         FROM
             {{ this }}
         WHERE
-            data_transacao
-        {% if partition_list|length > 0 %}
-            IN ({{ partition_list|join(', ') }})
-        {% else %}
-            = "2000-01-01"
-        {% endif %}
+            data_transacao IN ({{ partition_list|join(', ') }})
 
     {% endif %}
 ),
