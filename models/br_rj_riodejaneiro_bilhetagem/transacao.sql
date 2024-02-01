@@ -11,6 +11,7 @@
   )
 }}
 
+-- Verifica partições para consultar na tabela de gratuidades
 {% set incremental_filter %}
     DATE(data) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
     AND timestamp_captura BETWEEN DATETIME("{{var('date_range_start')}}") AND DATETIME("{{var('date_range_end')}}")
@@ -21,12 +22,12 @@
     {% if is_incremental() %}
         {% set gratuidade_partitions_query %}
             SELECT DISTINCT
-                id_cliente
+                CAST(CAST(id_cliente AS FLOAT64) AS INT64) AS id_cliente
             FROM
                 {{ transacao_staging }}
             WHERE
                 {{ incremental_filter }}
-                AND t.tipo_transacao = "21"
+                AND tipo_transacao = "21"
         {% endset %}
 
         {% set gratuidade_partitions = run_query(gratuidade_partitions_query) %}
@@ -71,12 +72,16 @@ gratuidade AS (
         data_fim_validade
     FROM
         {{ ref("gratuidade_aux") }}
-    WHERE
-        id_cliente
-        {% if partition_list|length > 0 %}
-            IN ({{ gratuidade_partition_list|join(', ') }})
-        {% else %}
-            = 0
+    -- se for incremental pega apenas as partições necessárias
+    {% if is_incremental() %}
+        WHERE
+            id_cliente
+            {% if gratuidade_partition_list|length > 0 %}
+                IN ({{ gratuidade_partition_list|join(', ') }})
+            {% else %}
+                = 0
+            {% endif %}
+    {% endif %}
 ),
 tipo_pagamento AS (
   SELECT
@@ -102,7 +107,7 @@ SELECT
     l.nr_linha AS servico,
     sentido,
     NULL AS id_veiculo,
-    COALESCE(id_cliente, pan_hash) AS id_cliente,
+    COALESCE(t.id_cliente, t.pan_hash) AS id_cliente,
     id AS id_transacao,
     tp.tipo_pagamento,
     tt.tipo_transacao,

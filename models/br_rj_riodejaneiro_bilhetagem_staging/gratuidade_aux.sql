@@ -3,7 +3,7 @@
     materialized="incremental",
     incremental_strategy="insert_overwrite",
     partition_by={
-      "field": "cd_cliente",
+      "field": "id_cliente",
       "data_type": "int64",
       "range": {
         "start": 0,
@@ -39,7 +39,7 @@
     {% endif %}
 {% endif %}
 
-WITH gratuidade_complete_partitions (
+WITH gratuidade_complete_partitions AS (
     SELECT
         CAST(CAST(cd_cliente AS FLOAT64) AS INT64) AS id_cliente,
         id AS id_gratuidade,
@@ -48,20 +48,24 @@ WITH gratuidade_complete_partitions (
         timestamp_captura
     FROM
         {{ staging_gratuidade }}
-    
     {% if is_incremental() -%}
-        UNION ALL
-
-        SELECT
-            id_cliente,
-            id_gratuidade,
-            tipo_gratuidade,
-            data_inicio_validade,
-            timestamp_captura
-        FROM
-            {{ this }}
         WHERE
-            id_cliente IN ({{ partition_list|join(', ') }})
+        {{ incremental_filter }}
+    
+        {% if partition_list|length > 0 -%}
+            UNION ALL
+
+            SELECT
+                id_cliente,
+                id_gratuidade,
+                tipo_gratuidade,
+                data_inicio_validade,
+                timestamp_captura
+            FROM
+                {{ this }}
+            WHERE
+                id_cliente IN ({{ partition_list|join(', ') }})
+        {%- endif %}
     {%- endif %}
 ),
 gratuidade_deduplicada AS (
@@ -71,13 +75,9 @@ gratuidade_deduplicada AS (
         (
             SELECT
                 *,
-                ROW_NUMBER() OVER (PARTITION BY id_gratuidade ORDER BY timestamp_captura DESC)
+                ROW_NUMBER() OVER (PARTITION BY id_gratuidade ORDER BY timestamp_captura DESC) AS rn
             FROM
                 gratuidade_complete_partitions
-            {% if is_incremental() -%}
-                WHERE
-                    {{ incremental_filter }}
-            {%- endif %}
         )
     WHERE
         rn = 1
@@ -86,7 +86,7 @@ SELECT
     id_cliente,
     tipo_gratuidade,
     data_inicio_validade,
-    LEAD(data_inclusao) OVER (PARTITION BY cd_cliente ORDER BY data_inicio_validade) AS data_fim_validade,
+    LEAD(data_inicio_validade) OVER (PARTITION BY id_cliente ORDER BY data_inicio_validade) AS data_fim_validade,
     timestamp_captura
 FROM
     gratuidade_complete_partitions
