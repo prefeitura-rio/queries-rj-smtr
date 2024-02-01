@@ -39,6 +39,25 @@ tipo_transacao AS (
   WHERE
     id_tabela = "transacao"
     AND coluna = "id_tipo_transacao" 
+),
+WITH gratuidade AS (
+    SELECT 
+        cd_cliente,
+        tipo_gratuidade,
+        data_inclusao AS data_inicio_validade,
+        LEAD(data_inclusao) OVER (PARTITION BY cd_cliente ORDER BY data_inclusao) AS data_fim_validade
+    FROM
+        {{ ref("staging_gratuidade") }}
+),
+tipo_pagamento AS (
+  SELECT
+    chave AS id_tipo_pagamento,
+    valor AS tipo_pagamento
+  FROM
+    `rj-smtr.br_rj_riodejaneiro_bilhetagem.dicionario`
+  WHERE
+    id_tabela = "transacao"
+    AND coluna = "id_tipo_pagamento" 
 )
 SELECT 
     EXTRACT(DATE FROM data_transacao) AS data,
@@ -56,8 +75,9 @@ SELECT
     NULL AS id_veiculo,
     COALESCE(id_cliente, pan_hash) AS id_cliente,
     id AS id_transacao,
-    id_tipo_midia AS id_tipo_pagamento,
+    tp.tipo_pagamento,
     tt.tipo_transacao,
+    g.tipo_gratuidade,
     tipo_integracao AS id_tipo_integracao,
     NULL AS id_integracao,
     latitude_trx AS latitude,
@@ -90,3 +110,14 @@ LEFT JOIN
     tipo_transacao AS tt
 ON
     tt.id_tipo_transacao = t.tipo_transacao
+LEFT JOIN
+    tipo_pagamento tp
+ON
+    t.id_tipo_midia = tp.id_tipo_pagamento
+LEFT JOIN
+    gratuidade g
+ON
+    t.id_cliente = g.cd_cliente
+    AND t.data_transacao >= g.data_inicio_validade
+    AND t.data_transacao < g.data_fim_validade
+    AND t.tipo_transacao = "21"
