@@ -14,5 +14,5 @@ SELECT
     SAFE_CAST(JSON_VALUE(content, '$.id_tipo_gratuidade') AS STRING) AS id_tipo_gratuidade,
     SAFE_CAST(JSON_VALUE(content, '$.tipo_gratuidade') AS STRING) AS tipo_gratuidade
 FROM
-  {{ source('br_rj_riodejaneiro_bilhetagem_staging_dev', 'gratuidade') }}
+  {{ source('br_rj_riodejaneiro_bilhetagem_staging', 'gratuidade') }}
 
