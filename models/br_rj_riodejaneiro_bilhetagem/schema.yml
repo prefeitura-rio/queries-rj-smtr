@@ -36,12 +36,12 @@ models:
           - 'projects/rj-smtr/locations/us/taxonomies/6071707853840412174/policyTags/1168584191451386864'
       - name: id_transacao
         description: "Identificador único da transação"
-      - name: id_tipo_pagamento
-        description: "Código do tipo de pagamento utilizado"
+      - name: tipo_pagamento
+        description: "Tipo de pagamento utilizado"
       - name: tipo_transacao
         description: "Tipo de transação realizada (a primeira perna de integrações são classificadas como tipo Débito e não Integração)"
-      # - name: indicador_integracao
-      #   description: "Indicador booleano se a transação é parte de uma integração (coluna atualizada diariamente)"
+      - name: tipo_gratuidade
+        description: "Tipo da gratuidade (Estudante, PCD, Sênior)"
       - name: id_tipo_integracao
         description: "Tipo da integração realizada (identificador relacionado à matriz de integração)"
       - name: id_integracao
