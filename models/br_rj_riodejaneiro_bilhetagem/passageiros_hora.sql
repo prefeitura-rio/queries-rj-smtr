@@ -28,7 +28,21 @@
     {% endif %}
 {% endif %}
 
-WITH transacao_agrupada AS (
+WITH integracao AS (
+    SELECT
+        *
+    FROM
+        {{ ref("integracao") }}
+    {% if is_incremental() %}
+        WHERE
+            {% if partition_list|length > 0 %}
+                data IN ({{ partition_list|join(', ') }})
+            {% else %}
+                data = "2000-01-01"
+            {% endif %}
+    {% endif %}
+),
+transacao_agrupada AS (
     SELECT
         t.data,
         t.hora,
@@ -46,7 +60,7 @@ WITH transacao_agrupada AS (
     FROM
         {{ ref("transacao") }} t
     LEFT JOIN
-        {{ ref("integracao") }} i
+        integracao i
     ON
         t.id_transacao = i.id_transacao
     WHERE
