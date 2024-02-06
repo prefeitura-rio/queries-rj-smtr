@@ -10,6 +10,11 @@
     )
 }}
 
+
+/* 
+consulta as partições a serem atualizadas com base nas transações capturadas entre date_range_start e date_range_end
+e as integrações capturadas entre date_range_start e date_range_end
+*/
 {% set transacao_staging = ref('staging_transacao') %}
 {% set integracao_staging = ref('staging_integracao_transacao') %}
 {% if execute %}
