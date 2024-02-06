@@ -11,15 +11,42 @@
 }}
 
 {% set transacao_staging = ref('staging_transacao') %}
+{% set integracao_staging = ref('staging_integracao_transacao') %}
 {% if execute %}
     {% if is_incremental() %}
         {% set partitions_query %}
-            SELECT DISTINCT
-                CONCAT("'", DATE(data_transacao), "'") AS data_transacao
+            WITH particoes_integracao AS (
+                SELECT DISTINCT
+                    CONCAT("'", DATE(data_transacao), "'") AS data_transacao
+                FROM
+                    {{ integracao_staging }},
+                    UNNEST([
+                        data_transacao_t0,
+                        data_transacao_t1,
+                        data_transacao_t2,
+                        data_transacao_t3,
+                        data_transacao_t4
+                    ]) AS data_transacao
+                WHERE
+                    DATE(data) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+
+            ),
+            particoes_transacao AS (
+                SELECT DISTINCT
+                    CONCAT("'", DATE(data_transacao), "'") AS data_transacao
+                FROM
+                    {{ transacao_staging }}
+                WHERE
+                    DATE(data) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+            )
+            SELECT
+                COALESCE(t.data_transacao, i.data_transacao) AS data_transacao
             FROM
-                {{ transacao_staging }}
-            WHERE
-                DATE(data) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+                particoes_transacao t
+            FULL OUTER JOIN
+                particoes_integracao i
+            USING(data_transacao)
+                
         {% endset %}
 
         {% set partitions = run_query(partitions_query) %}
