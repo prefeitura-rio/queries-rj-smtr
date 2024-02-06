@@ -1,7 +1,8 @@
 {{
   config(
     materialized="incremental",
-    incremental_strategy="insert_overwrite",
+    incremental_strategy="merge",
+    unique_key="id_gratuidade",
     partition_by={
       "field": "id_cliente",
       "data_type": "int64",
@@ -84,9 +85,10 @@ gratuidade_deduplicada AS (
 )
 SELECT
     id_cliente,
+    id_gratuidade,
     tipo_gratuidade,
     data_inicio_validade,
     LEAD(data_inicio_validade) OVER (PARTITION BY id_cliente ORDER BY data_inicio_validade) AS data_fim_validade,
     timestamp_captura
 FROM
-    gratuidade_complete_partitions
+    gratuidade_deduplicada
