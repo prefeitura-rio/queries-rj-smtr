@@ -1,13 +1,14 @@
 {{ config(
-  partition_by = { 'field' :'data_versao',
+  partition_by = { 'field' :'feed_version',
   'data_type' :'date',
   'granularity': 'day' },
-  unique_key = ['agency_id', 'data_versao'],
+  unique_key = ['agency_id', 'feed_version'],
   alias = 'agency',
 ) }} 
 
 
-SELECT SAFE_CAST(data_versao AS DATE) data_versao,
+SELECT 
+  SAFE_CAST(timestamp_captura AS DATE) AS feed_version,
   SAFE_CAST(agency_id AS STRING) agency_id,
   SAFE_CAST(JSON_VALUE(content, '$.agency_name') AS STRING) agency_name,
   SAFE_CAST(JSON_VALUE(content, '$.agency_url') AS STRING) agency_url,
