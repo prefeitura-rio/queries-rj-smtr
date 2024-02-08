@@ -28,11 +28,19 @@ SELECT
     temperatura,
     '{{ var("version") }}' as versao
 FROM
-    {{ ref("gps_validador_aux") }}
-WHERE
+(
+    SELECT
+        *,
+        ROW_NUMBER() OVER(PARTITION BY id_transmissao_gps ORDER BY datetime_captura DESC) AS rn
+    FROM
+        {{ ref("gps_validador_aux") }}
+    
     {% if is_incremental() %}
-        DATE(data) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
-        AND datetime_captura > DATETIME("{{var('date_range_start')}}") AND datetime_captura <= DATETIME("{{var('date_range_end')}}")
-        AND
-    {%- endif %}
-    modo != "Van"
+      WHERE
+          DATE(data) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+          AND datetime_captura > DATETIME("{{var('date_range_start')}}") AND datetime_captura <= DATETIME("{{var('date_range_end')}}")
+    {% endif %}
+)
+WHERE
+    rn = 1
+    AND modo != "Van"
