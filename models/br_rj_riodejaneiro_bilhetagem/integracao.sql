@@ -60,7 +60,7 @@ integracao_melt AS (
           {% for n in range(var('quantidade_integracoes_max')) %}
             STRUCT(
               {% for column, column_config in var('colunas_integracao').items() %}
-                {% if  column_config.select %}
+                {% if column_config.select %}
                   {{ column }}_t{{ n }} AS {{ column }},
                 {% endif %}
               {% endfor %}
