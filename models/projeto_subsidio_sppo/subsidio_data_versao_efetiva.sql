@@ -71,7 +71,7 @@ SELECT
     -- Reveillon 2023:
     WHEN data = DATE(2023,12,31) THEN data
     WHEN data = DATE(2024,01,01) THEN data
-    -- 2023:
+    -- 2024:
     WHEN data BETWEEN DATE(2024,01,06) AND DATE(2024,01,07) THEN DATE(2024,01,03) -- OS de Verão
     WHEN data BETWEEN DATE(2024,01,02) AND DATE(2024,01,14) THEN DATE(2024,01,02)
     WHEN data BETWEEN DATE(2024,01,15) AND DATE(2024,01,31) THEN DATE(2024,01,15)
@@ -85,7 +85,7 @@ SELECT
     -- 2023 a 2024:
     {% for j in range(2023, 2025) %}
       {% for i in range(1, 13) %}
-        WHEN EXTRACT(MONTH FROM data) = {{ i }} THEN DATE({{ j }},{{ i }},1)
+        WHEN EXTRACT(MONTH FROM data) = {{ i }} AND EXTRACT(YEAR FROM data) = {{ j }} THEN DATE({{ j }},{{ i }},1)
       {% endfor %}
     {% endfor %}
   END AS data_versao_trips,
@@ -127,7 +127,7 @@ SELECT
     -- 2023 a 2024:
     {% for j in range(2023, 2025) %}
       {% for i in range(1, 13) %}
-        WHEN EXTRACT(MONTH FROM data) = {{ i }} THEN DATE({{ j }},{{ i }},1)
+        WHEN EXTRACT(MONTH FROM data) = {{ i }} AND EXTRACT(YEAR FROM data) = {{ j }} THEN DATE({{ j }},{{ i }},1)
       {% endfor %}
     {% endfor %}
   END AS data_versao_shapes,
@@ -167,7 +167,7 @@ SELECT
     -- 2023 a 2024:
     {% for j in range(2023, 2025) %}
       {% for i in range(1, 13) %}
-        WHEN EXTRACT(MONTH FROM data) = {{ i }} THEN DATE({{ j }},{{ i }},1)
+        WHEN EXTRACT(MONTH FROM data) = {{ i }} AND EXTRACT(YEAR FROM data) = {{ j }} THEN DATE({{ j }},{{ i }},1)
       {% endfor %}
     {% endfor %}
   END AS data_versao_frequencies,
