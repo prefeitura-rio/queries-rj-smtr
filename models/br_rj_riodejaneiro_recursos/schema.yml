@@ -34,6 +34,7 @@ models:
       - name: data
         description: Data do recurso (partição da tabela)
 
+
   - name: recursos_sppo_bloqueio_via
     description: "Recursos abertos na plataforma Movidesk para pagamento de subsídio de bloqueio de via"
     columns:

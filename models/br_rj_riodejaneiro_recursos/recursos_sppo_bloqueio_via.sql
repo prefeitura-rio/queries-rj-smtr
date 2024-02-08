@@ -27,6 +27,8 @@ WITH exploded AS (
 pivotado AS (
   SELECT *,
   ROW_NUMBER() OVER(PARTITION BY id_recurso ORDER BY datetime_captura DESC) AS rn, 
+  SELECT *,
+  ROW_NUMBER() OVER(PARTITION BY id_recurso ORDER BY datetime_captura DESC) AS rn, 
   FROM 
     exploded PIVOT(
       ANY_VALUE(value) FOR field_id IN (
@@ -39,6 +41,7 @@ pivotado AS (
 ), 
 tratado AS (
   SELECT
+  SELECT
     id_recurso, 
     datetime_captura, 
     datetime_recurso,
@@ -49,6 +52,7 @@ tratado AS (
       WHEN SAFE_CAST(p.111872 AS STRING) = "SR - Regular" THEN SAFE_CAST(p.111871 AS STRING)
       ELSE CONCAT(REPLACE(SPLIT(SAFE_CAST(p.111872 AS STRING), "-")[OFFSET(0)], " ", ""), SAFE_CAST(p.111871 AS STRING))
     END AS servico, 
+     CASE
      CASE
         WHEN SAFE_CAST(p.111901 AS STRING) = "Ida" THEN "I"
         WHEN SAFE_CAST(p.111901 AS STRING) = "Volta" THEN "V"
@@ -62,6 +66,7 @@ tratado AS (
    
   FROM 
     pivotado p
+  WHERE rn=1
   WHERE rn=1
 )
 
@@ -82,10 +87,12 @@ SELECT
       j.data_julgamento
   
 FROM
+FROM
       tratado t
       
 LEFT JOIN 
 
     {{ ref('recursos_sppo_bloqueio_via_ultimo_julgamento') }} AS j
     
+  ON t.id_recurso = j.id_recurso
   ON t.id_recurso = j.id_recurso

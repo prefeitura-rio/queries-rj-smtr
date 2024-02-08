@@ -74,3 +74,4 @@ LEFT JOIN
     {{ ref('recursos_sppo_reprocessamento_ultimo_julgamento') }} AS j
     
   ON t.id_recurso = j.id_recurso
+
