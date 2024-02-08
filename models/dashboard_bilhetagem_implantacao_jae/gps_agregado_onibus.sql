@@ -38,7 +38,7 @@ WITH gps_agregado AS (
                 {{ ref("gps_validador") }}
             WHERE
                 data = current_date("America/Sao_Paulo")
-                AND modo = "BRT"
+                AND modo = "Ônibus"
         )
     WHERE
         rn = 1
