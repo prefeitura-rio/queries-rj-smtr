@@ -19,6 +19,7 @@ sources:
       - name: integracao_transacao
       - name: tipo_modal
       - name: gps_validador
+      - name: gratuidade
 
   - name: br_rj_riodejaneiro_gtfs_staging
     database: rj-smtr-staging
@@ -58,3 +59,11 @@ sources:
 
     tables:
       - name: modos
+  
+  - name: br_rj_riodejaneiro_rdo_staging
+    database: rj-smtr-staging
+
+    tables:
+      - name: rho_registros_sppo
+      - name: rho5_registros_stpl
+  

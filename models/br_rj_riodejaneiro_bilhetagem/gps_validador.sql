@@ -45,6 +45,7 @@ SELECT
     g.longitude_equipamento AS longitude,
     INITCAP(g.sentido_linha) AS sentido,
     g.estado_equipamento,
+    g.temperatura,
     '{{ var("version") }}' as versao
 FROM
     gps_deduplicado g
