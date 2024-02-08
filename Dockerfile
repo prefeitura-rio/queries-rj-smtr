@@ -15,5 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt && \
 WORKDIR /dbt
 COPY . .
 
+RUN dbt deps
+
 # Run dbt rpc
 CMD ["dbt", "rpc", "--profiles-dir", ".", "--host", "0.0.0.0", "--port", "8580"]
