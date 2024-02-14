@@ -220,6 +220,47 @@ models:
         description: "Temperatura do local, medida pelo sensor do validador (ºC)"
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)"
+  - name: gps_validador_van
+    description: "Tabela de posições de GPS de todos os validadores da Jaé instalados em vans, incluindo estado do equipamento (Aberto/Fechado), serviço, sentido e veículo associado e temperatura do veículo."
+    columns:
+      - name: modo
+        description: "Tipo de transporte (Ônibus, Van, BRT)"
+      - name: data
+        description: "Data do recebimento da transmissão do GPS (partição)"
+      - name: hora
+        description: "Hora do recebimento da transmissão do GPS"
+      - name: datetime_gps
+        description: "Data e hora do recebimento da transmissão do GPS em GMT-3"
+      - name: datetime_captura
+        description: "Data e hora da captura do dado de GPS em GMT-3"
+      - name: id_operadora
+        description: "Identificador da operadora na tabela cadastro.operadoras"
+      - name: operadora
+        description: "Nome da operadora de transporte (mascarado se for pessoa física)"
+      - name: servico
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...)"
+      - name: id_validador
+        description: "Número de série do validador"
+      - name: id_transmissao_gps
+        description: "Identificador único da tabela de GPS dos validadores"
+      - name: latitude
+        description: "Latitude do validador no momento da transmissão [protegido]"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/5185403103447535390'
+      - name: longitude
+        description: "Longitude do validador no momento da transmissão [protegido]"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/5185403103447535390'
+      - name: id_veiculo
+        description: "[EM DESENVOLVIMENTO] Código identificador do veículo (número de ordem)"
+      - name: sentido
+        description: "Sentido da linha"
+      - name: estado_equipamento
+        description: "Validador aberto ou fechado no momento da transmissão"
+      - name: temperatura
+        description: "Temperatura do local, medida pelo sensor do validador (ºC)"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
   - name: passageiros_hora
     description: "Tabela de contagem do número de passageiros por hora, criada para uso no painel de bilhetagem. Agrega valores da tabela de transações por: data, hora, modo, consorcio, operadora, servico, sentido e tipo_transacao"
     columns:
