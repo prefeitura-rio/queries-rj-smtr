@@ -201,6 +201,12 @@ models:
     br_rj_riodejaneiro_rdo_staging:
       +materialized: view
       +schema: br_rj_riodejaneiro_rdo_staging
+    br_rj_riodejaneiro_bilhetagem:
+      +materialized: incremental
+      +schema: br_rj_riodejaneiro_bilhetagem
+    br_rj_riodejaneiro_bilhetagem_staging:
+      +materialized: view
+      +schema: br_rj_riodejaneiro_bilhetagem_staging
     br_rj_riodejaneiro_stu:
       +materialized: view
       +schema: br_rj_riodejaneiro_stu
