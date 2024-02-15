@@ -218,3 +218,7 @@ models:
     br_rj_riodejaneiro_recursos_staging:
       +materialized: incremental
       +schema: br_rj_riodejaneiro_recursos_staging
+    projeto_subsidio_sppo_encontro_contas:
+      +materialized: incremental
+      +schema: projeto_subsidio_sppo_encontro_contas
+      +incremental_strategy: insert_overwrite
