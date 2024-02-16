@@ -1,13 +1,13 @@
 {{config( 
-    partition_by = { 'field' :'data_versao',
+    partition_by = { 'field' :'feed_start_date',
     'data_type' :'date',
     'granularity': 'day' },
-    unique_key = ['trip_id','data_versao'],
+    unique_key = ['trip_id','feed_start_date'],
     alias = 'trips' 
 )}}
 
 
-SELECT SAFE_CAST(data_versao AS DATE) data_versao,
+SELECT SAFE_CAST(data_versao AS DATE) as feed_start_date,
     SAFE_CAST(JSON_VALUE(content, '$.route_id') AS STRING) route_id,
     SAFE_CAST(JSON_VALUE(content, '$.service_id') AS STRING) service_id,
     SAFE_CAST(trip_id AS STRING) trip_id,
@@ -23,4 +23,6 @@ FROM {{ source(
             'br_rj_riodejaneiro_gtfs_staging',
             'trips'
         ) }}
-WHERE data_versao = '{{ var("data_versao_gtfs") }}'
+  {% if is_incremental() -%}
+    WHERE data_versao = '{{ var("data_versao_gtfs") }}'
+  {%- endif %}

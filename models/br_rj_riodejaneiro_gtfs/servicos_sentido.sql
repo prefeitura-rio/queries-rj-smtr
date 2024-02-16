@@ -20,7 +20,7 @@ WITH
   LEFT JOIN
     {{ ref("shapes_geom_gtfs") }} AS s
   USING
-    (data_versao,
+    (feed_start_date,
       shape_id)
   WHERE
     (data_versao >= "2023-06-01" AND
@@ -31,7 +31,7 @@ WITH
         AND (service_id LIKE "S_R%"
           OR service_id LIKE "S_O%")))
     OR
-    (data_versao < "2023-06-01" AND
+    (feed_start_date < "2023-06-01" AND
       ( trip_short_name NOT IN (SELECT * FROM servicos_exclusivos_sabado)
       OR ( trip_short_name IN (SELECT * FROM servicos_exclusivos_sabado)
         AND service_id = "S")))
@@ -39,7 +39,7 @@ WITH
   servicos_rn AS (
   SELECT
     *,
-    ROW_NUMBER() OVER (PARTITION BY data_versao, trip_short_name, direction_id ORDER BY trip_short_name, service_id, shape_id, direction_id) AS rn
+    ROW_NUMBER() OVER (PARTITION BY feed_start_date, trip_short_name, direction_id ORDER BY trip_short_name, service_id, shape_id, direction_id) AS rn
   FROM
     servicos ),
   servicos_filtrada AS (
@@ -62,7 +62,7 @@ WITH
   HAVING
     COUNT(DISTINCT direction_id) = 1 )
 SELECT
-  data_versao,
+  feed_start_date,
   trip_short_name AS servico,
   CASE
     WHEN q_direcoes = 1 AND ST_DISTANCE(start_pt, end_pt) <= 50 THEN "C"
@@ -75,5 +75,7 @@ FROM
 LEFT JOIN
   servicos_potencialmente_circulares AS spc
 USING
-  (data_versao,
+  (feed_start_date,
     trip_short_name)
+
+

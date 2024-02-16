@@ -5,8 +5,8 @@
 WITH
   data_versao AS (
   SELECT
-    data_versao,
-    data_versao AS data_inicio,
+    feed_start_date,
+    feed_start_date AS data_inicio,
     COALESCE(DATE_SUB(LEAD(data_versao) OVER (ORDER BY data_versao), INTERVAL 1 DAY), LAST_DAY(data_versao, MONTH)) AS data_fim
   FROM (
     SELECT
