@@ -1,14 +1,14 @@
 {{config(
-    partition_by = { 'field' :'feed_version',
+    partition_by = { 'field' :'feed_start_date',
     'data_type' :'date',
     'granularity': 'day' },
-    unique_key = ['feed_publisher_name', 'feed_version'],
+    unique_key = ['feed_publisher_name', 'feed_start_date'],
     alias = 'feed_info'
 )}} 
 
 
 SELECT 
-  SAFE_CAST(timestamp_captura AS DATE) AS feed_version, 
+  SAFE_CAST(timestamp_captura AS STRING) AS feed_version, 
   SAFE_CAST(data_versao AS DATE) as feed_start_date,
   date_sub(lead(date(data_versao)) over (order by data_versao), interval 1 day) as feed_end_date,
   SAFE_CAST(feed_publisher_name AS STRING) feed_publisher_name,
@@ -22,4 +22,6 @@ SELECT
             'br_rj_riodejaneiro_gtfs_staging',
             'feed_info'
         ) }}
-WHERE data_versao = '{{ var("data_versao_gtfs") }}'
+  {% if is_incremental() -%}
+    WHERE data_versao = '{{ var("data_versao_gtfs") }}'
+  {%- endif %}
