@@ -23,7 +23,7 @@ WITH
     (feed_start_date,
       shape_id)
   WHERE
-    (data_versao >= "2023-06-01" AND
+    (feed_start_date >= "2023-06-01" AND
       ( trip_short_name NOT IN (SELECT * FROM servicos_exclusivos_sabado)
         AND (service_id LIKE "U_R%"
           OR service_id LIKE "U_O%") )
@@ -51,7 +51,7 @@ WITH
     rn = 1),
   servicos_potencialmente_circulares AS (
   SELECT
-    data_versao,
+    feed_start_date,
     trip_short_name,
     COUNT(DISTINCT direction_id) AS q_direcoes
   FROM
