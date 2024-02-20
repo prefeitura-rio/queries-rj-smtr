@@ -1,13 +1,13 @@
 {{ config(
-  partition_by = { 'field' :'data_versao',
+  partition_by = { 'field' :'feed_start_date',
     'data_type' :'date',
     'granularity': 'day' },
-  unique_key = ['servico', 'data_versao'],
+  unique_key = ['servico', 'feed_start_date'],
   alias = 'ordem_servico'
 ) }}
 
 WITH ordem_servico AS (
-  SELECT SAFE_CAST(data_versao AS DATE) data_versao,
+  SELECT SAFE_CAST(data_versao AS DATE) as feed_start_date,
     SAFE_CAST(servico AS STRING) servico,
     SAFE_CAST(JSON_VALUE(content, '$.vista') AS STRING) vista,
     SAFE_CAST(JSON_VALUE(content, '$.consorcio') AS STRING) consorcio,
@@ -33,10 +33,13 @@ WITH ordem_servico AS (
     SAFE_CAST(JSON_VALUE(content, '$.km_domingo') AS FLOAT64) km_domingo,
     '{{ var("version") }}' as versao_modelo
   FROM {{ source(
-      'br_rj_riodejaneiro_gtfs_staging',
+      'gtfs_staging',
       'ordem_servico'
     ) }}
-  WHERE data_versao = '{{ var("data_versao_gtfs") }}')
+  {% if is_incremental() -%}
+    WHERE feed_start_date = '{{ var("data_versao_gtfs") }}'
+  {%- endif %}
+)
 SELECT *
 FROM ordem_servico UNPIVOT (
     (

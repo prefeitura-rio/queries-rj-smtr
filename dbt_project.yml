@@ -215,3 +215,7 @@ models:
     br_rj_riodejaneiro_recursos_staging:
       +materialized: incremental
       +schema: br_rj_riodejaneiro_recursos_staging
+    gtfs:
+      +materialized: incremental
+      +incremental_strategy: insert_overwrite
+      +schema: gtfs
