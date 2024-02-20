@@ -14,7 +14,7 @@ SELECT
         SAFE_CAST(JSON_VALUE(content, '$.exception_type') AS STRING) exception_type,
         '{{ var("version") }}' as versao_modelo
 FROM {{ source(
-        'gtfs_staging',
+        'br_rj_riodejaneiro_gtfs_staging',
         'calendar_dates'
     ) }}
   {% if is_incremental() -%}

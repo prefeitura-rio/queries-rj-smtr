@@ -33,7 +33,7 @@ WITH ordem_servico AS (
     SAFE_CAST(JSON_VALUE(content, '$.km_domingo') AS FLOAT64) km_domingo,
     '{{ var("version") }}' as versao_modelo
   FROM {{ source(
-      'gtfs_staging',
+      'br_rj_riodejaneiro_gtfs_staging',
       'ordem_servico'
     ) }}
   {% if is_incremental() -%}

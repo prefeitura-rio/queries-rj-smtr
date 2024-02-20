@@ -25,7 +25,7 @@ SELECT
     SAFE_CAST(JSON_VALUE(content, '$.network_id') AS STRING) network_id,
     '{{ var("version") }}' as versao_modelo
  FROM {{ source(
-            'gtfs_staging',
+            'br_rj_riodejaneiro_gtfs_staging',
             'routes'
         ) }}
   {% if is_incremental() -%}

@@ -16,7 +16,7 @@ SELECT
     SAFE_CAST(JSON_VALUE(content, '$.contains_id') AS STRING) contains_id,
     '{{ var("version") }}' as versao_modelo
  FROM {{ source(
-            'gtfs_staging',
+            'br_rj_riodejaneiro_gtfs_staging',
             'fare_rules'
         ) }}
   {% if is_incremental() -%}
