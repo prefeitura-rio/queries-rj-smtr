@@ -15,7 +15,7 @@ SELECT SAFE_CAST(data_versao AS DATE) as feed_start_date,
   SAFE_CAST(JSON_VALUE(content, '$.shape_dist_traveled') AS FLOAT64) shape_dist_traveled,
   '{{ var("version") }}' as versao_modelo
 FROM
-  {{source('br_rj_riodejaneiro_gtfs_staging', 'shapes')}}
+  {{source('gtfs_staging', 'shapes')}}
   {% if is_incremental() -%}
     WHERE data_versao = '{{ var("data_versao_gtfs") }}'
   {%- endif %}
