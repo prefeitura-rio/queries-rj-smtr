@@ -12,9 +12,9 @@ WITH contents AS (
               ST_GEOGPOINT(shape_pt_lon, shape_pt_lat) AS ponto_shape,
               shape_pt_sequence,
               feed_start_date,
-              FROM {{ref('shapes_gtfs')}} s
+              FROM {{ref('shapes_gtfs2')}} s
        {% if is_incremental() -%}
-              WHERE data_versao = '{{ var("data_versao_gtfs") }}'
+              WHERE feed_start_date = '{{ var("data_versao_gtfs") }}'
        {%- endif %}
 ),
 pts AS (
