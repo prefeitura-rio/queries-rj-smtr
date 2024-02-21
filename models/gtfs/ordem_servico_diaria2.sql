@@ -12,12 +12,12 @@ WITH
     SELECT
       DISTINCT feed_start_date,
     FROM
-      {{ ref("ordem_servico_gtfs") }} )),
+      {{ ref("ordem_servico_gtfs2") }} )),
   ordem_servico_pivot AS (
   SELECT
     *
   FROM
-    {{ ref("ordem_servico_gtfs") }} 
+    {{ ref("ordem_servico_gtfs2") }} 
     PIVOT( MAX(partidas_ida) AS partidas_ida,
       MAX(partidas_volta) AS partidas_volta,
       MAX(viagens_planejadas) AS viagens_planejadas,
@@ -69,7 +69,7 @@ LEFT JOIN
 USING
   (feed_start_date)
 LEFT JOIN
-  {{ ref("servicos_sentido") }}
+  {{ ref("servicos_sentido2") }}
 USING
   (feed_start_date,
     servico)
