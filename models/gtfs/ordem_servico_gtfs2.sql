@@ -37,7 +37,7 @@ WITH ordem_servico AS (
       'ordem_servico'
     ) }}
   {% if is_incremental() -%}
-    WHERE feed_start_date = '{{ var("data_versao_gtfs") }}'
+    WHERE data_versao = '{{ var("data_versao_gtfs") }}'
   {%- endif %}
 )
 SELECT *

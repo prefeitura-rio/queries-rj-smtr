@@ -19,7 +19,7 @@ SELECT
   SAFE_CAST(JSON_VALUE(content, '$.feed_contact_url') AS STRING) feed_contact_url,
     '{{ var("version") }}' as versao_modelo
  FROM {{ source(
-            'br_rj_riodejaneiro_gtfs_staging',
+            'gtfs_staging',
             'feed_info'
         ) }}
   {% if is_incremental() -%}

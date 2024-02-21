@@ -15,7 +15,7 @@ SELECT
   SAFE_CAST(JSON_VALUE(content, '$.agency_timezone') AS STRING) agency_timezone,
   SAFE_CAST(JSON_VALUE(content, '$.agency_lang') AS STRING) agency_lang,
   '{{ var("version") }}' as versao_modelo
-  FROM {{ source('br_rj_riodejaneiro_gtfs_staging', 'agency') }}
+  FROM {{ source('gtfs_staging', 'agency') }}
   {% if is_incremental() -%}
     WHERE data_versao = '{{ var("data_versao_gtfs") }}'
   {%- endif %}
