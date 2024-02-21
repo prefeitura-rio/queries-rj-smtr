@@ -68,7 +68,7 @@ sources:
       - name: rho5_registros_stpl
   
   - name: gtfs_staging
-    database: rj-smtr-dev
+    database: rj-smtr-staging
 
     tables:
       - name: agency
