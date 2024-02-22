@@ -25,7 +25,7 @@ SELECT SAFE_CAST(data_versao AS DATE) as feed_start_date,
     SAFE_CAST(JSON_VALUE(content, '$.platform_code') AS STRING) platform_code,
     '{{ var("version") }}' as versao_modelo
 FROM {{ source(
-            'gtfs_staging',
+            'br_rj_riodejaneiro_gtfs_staging',
             'stops'
         ) }}
   {% if is_incremental() -%}
