@@ -22,7 +22,7 @@ SELECT SAFE_CAST(data_versao AS DATE) as feed_start_date,
     SAFE_CAST(JSON_VALUE(content, '$.timepoint') AS STRING) timepoint,
     '{{ var("version") }}' as versao_modelo
 FROM {{ source(
-            'gtfs_staging',
+            'br_rj_riodejaneiro_gtfs_staging',
             'stop_times'
         ) }}
   {% if is_incremental() -%}

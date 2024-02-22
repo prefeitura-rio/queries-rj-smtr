@@ -17,7 +17,7 @@ SELECT SAFE_CAST(data_versao AS DATE) feed_start_date,
         SAFE_CAST(JSON_VALUE(content, '$.transfer_duration') AS INT64) transfer_duration,
         '{{ var("version") }}' as versao_modelo
 FROM {{source(
-            'gtfs_staging',
+            'br_rj_riodejaneiro_gtfs_staging',
             'fare_attributes'
         )}}
   {% if is_incremental() -%}

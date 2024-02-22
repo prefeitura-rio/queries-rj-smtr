@@ -21,7 +21,7 @@ SELECT
     PARSE_DATE('%Y%m%d', SAFE_CAST(JSON_VALUE(content, '$.end_date') AS STRING)) end_date,
     '{{ var("version") }}' as versao_modelo
  FROM {{ source(
-            'gtfs_staging',
+            'br_rj_riodejaneiro_gtfs_staging',
             'calendar'
         ) }}
   {% if is_incremental() -%}
