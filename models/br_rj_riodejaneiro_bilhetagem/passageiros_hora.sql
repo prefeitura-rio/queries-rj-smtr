@@ -108,7 +108,7 @@ transacao_agrupada AS (
         {% endif %}
         AND t.servico NOT IN ("888888", "999999")
         AND t.id_operadora != "2"
-        AND t.modo = "BRT"
+        AND (t.modo = "BRT" OR (t.modo = "VLT" AND t.data >= DATE("2024-02-24")))
         AND t.tipo_transacao IS NOT NULL
     GROUP BY
         1,
