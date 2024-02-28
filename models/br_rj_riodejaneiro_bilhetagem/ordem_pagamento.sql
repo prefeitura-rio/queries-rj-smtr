@@ -20,6 +20,7 @@ WITH servico_motorista AS (
             dt_fechamento,
             nr_logico_midia,
             cd_linha,
+            cd_operadora,
             ROW_NUMBER() OVER (PARTITION BY id_servico, nr_logico_midia ORDER BY timestamp_captura DESC) AS rn
         FROM
             {{ ref("staging_servico_motorista") }}
@@ -43,6 +44,7 @@ transacao AS (
         t.cd_consorcio,
         sm.dt_fechamento AS datetime_fechamento_servico,
         sm.cd_linha AS cd_linha_servico,
+        sm.cd_operadora AS cd_operadora_servico,
         t.id_servico
     FROM
         {{ ref("staging_transacao") }} t
@@ -57,34 +59,11 @@ transacao AS (
         {% else %}
             DATE(t.data) <= CURRENT_DATE("America/Sao_Paulo")
         {% endif %}
-        -- filtra dados de ônibus em serviços abertos
-        -- AND (t.id_tipo_modal != '2' OR (t.id_tipo_modal = '2' AND sm.dt_fechamento IS NOT NULL))
 ),
 transacao_deduplicada AS (
     SELECT 
         t.* EXCEPT(rn),
-        CASE
-            WHEN
-                -- Ônibus em serviços fechados entre meia noite e 03:59:59 entram na ordem de pagamento do fechamento do serviço
-                id_tipo_modal = '2'
-                AND cd_linha_servico NOT IN ('140', '142', '663', '919')
-                AND CAST(t.id_servico AS INTEGER) > 2 
-                AND TIME(datetime_fechamento_servico) >= TIME('2000-01-01 00:00:00')
-                AND TIME(datetime_fechamento_servico) < TIME('2000-01-01 04:00:00')
-                -- AND TIME(datetime_processamento) >= TIME('2000-01-01 00:00:00')
-                -- AND TIME(datetime_processamento) < TIME('2000-01-01 04:00:00')
-            THEN DATE(datetime_fechamento_servico)
-                -- THEN data_processamento
-            -- Ônibus em serviços fechados entram na ordem de pagamento do dia seguinte ao fechamento do serviço
-            WHEN 
-                id_tipo_modal = '2'
-                AND CAST(t.id_servico AS INTEGER) > 2
-                AND cd_linha_servico NOT IN ('140', '142', '663', '919') 
-            THEN DATE_ADD(DATE(datetime_fechamento_servico), INTERVAL 1 DAY)
-            -- As demais transações entram na ordem de pagamento do dia seguinte ao processamento
-            ELSE DATE_ADD(data_processamento, INTERVAL 1 DAY)
-        END AS data_ordem
-        -- DATE_ADD(data_processamento, INTERVAL 1 DAY) AS data_ordem
+        DATE_ADD(data_processamento, INTERVAL 1 DAY) AS data_ordem -- TODO: Regra da data por serviços fechados no modo Ônibus quando começar a operação
     FROM
     (
         SELECT
@@ -95,33 +74,36 @@ transacao_deduplicada AS (
     ) t
     WHERE
         rn = 1
-        -- Remove gratuidades da contagem de transações e transferências
-        AND tipo_transacao NOT IN ('5', '21')
-        -- Remove linhas e operadoras de teste
-        -- AND cd_operadora NOT IN ('2', '2104')
-        AND cd_linha NOT IN ('140', '142')
 ),
 transacao_agg AS (
     SELECT
-        data_ordem,
-        ANY_VALUE(cd_consorcio) AS cd_consorcio,
-        cd_linha,
-        cd_operadora,
+        t.data_ordem,
+        ANY_VALUE(t.cd_consorcio) AS cd_consorcio,
+        t.cd_linha,
+        t.cd_operadora,
         COUNT(*) AS quantidade_total_transacao_captura,
-        ROUND(SUM(valor_transacao), 2) AS valor_total_transacao_captura
+        ROUND(SUM(t.valor_transacao), 2) AS valor_total_transacao_captura
     FROM
-        transacao_deduplicada
+        transacao_deduplicada t
+    LEFT JOIN
+        {{ ref("staging_linha_sem_ressarcimento") }} l
+    ON
+        t.cd_linha = l.id_linha
     WHERE
         -- Remove dados com data de ordem de pagamento maiores que a execução do modelo
         {% if is_incremental() %}
-            data_ordem DATE("{{var('date_range_end')}}")
+            t.data_ordem DATE("{{var('date_range_end')}}")
         {% else %}
-            data_ordem <= CURRENT_DATE("America/Sao_Paulo")
+            t.data_ordem <= CURRENT_DATE("America/Sao_Paulo")
         {% endif %}
+        -- Remove linhas de teste que não entram no ressarcimento
+        AND l.id_linha IS NULL
+        -- Remove gratuidades e transferências da contagem de transações
+        AND tipo_transacao NOT IN ('5', '21')
     GROUP BY
-        data_ordem,
-        cd_linha,
-        cd_operadora
+        t.data_ordem,
+        t.cd_linha,
+        t.cd_operadora
 ),
 ordem_pagamento AS (
     SELECT
