@@ -4,7 +4,6 @@
   )
 }}
 
--- WITH servico_motorista AS (
 SELECT
   data,
   SAFE_CAST(NR_LOGICO_MIDIA AS STRING) AS nr_logico_midia,
@@ -21,17 +20,4 @@ SELECT
   SAFE_CAST(JSON_VALUE(content, '$.TP_GERACAO') AS STRING) AS tp_geracao,
   SAFE_CAST(JSON_VALUE(content, '$.VL_TARIFA_LINHA') AS FLOAT64) AS vl_tarifa_linha
 FROM
-  {{ source('br_rj_riodejaneiro_bilhetagem_staging_dev', 'servico_motorista') }}
--- )
--- SELECT 
---   * EXCEPT(rn)
--- FROM
--- (
---   SELECT
---     *,
---     ROW_NUMBER() OVER (PARTITION BY NR_LOGICO_MIDIA, ID_SERVICO ORDER BY timestamp_captura DESC) AS rn
---   FROM
---     servico_motorista
--- )
--- WHERE
---   rn = 1
+  {{ source('br_rj_riodejaneiro_bilhetagem_staging', 'servico_motorista') }}

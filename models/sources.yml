@@ -23,15 +23,6 @@ sources:
       - name: ordem_rateio
       - name: servico_motorista
       - name: linha_sem_ressarcimento
-  
-  - name: br_rj_riodejaneiro_bilhetagem_staging_dev
-    database: rj-smtr-dev
-    schema: br_rj_riodejaneiro_bilhetagem_staging
-
-    tables:
-      - name: ordem_rateio
-      - name: servico_motorista
-      - name: linha_sem_ressarcimento
 
   - name: br_rj_riodejaneiro_gtfs_staging
     database: rj-smtr-staging
