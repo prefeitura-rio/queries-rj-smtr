@@ -16,7 +16,7 @@ models:
         description: "Fuso horário onde a agência de transporte público está localizada"
       - name: agency_lang
         description: "Idioma principal usado por esta agência de transporte público."
-      - name: data_versao
+      - name: feed_start_date
         description: "Data de referência do feed (versão)."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
@@ -44,7 +44,7 @@ models:
         description: "Inicie o dia de serviço para o intervalo de serviço."
       - name: end_date
         description: "Finalize o dia de serviço para o intervalo de serviço."
-      - name: data_versao
+      - name: feed_start_date
         description: "Data de referência do feed (versão)."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
@@ -58,7 +58,7 @@ models:
         description: "Data em que ocorre a exceção de serviço."
       - name: exception_type
         description: "Indica se o serviço está disponível na data especificada no campo de data."
-      - name: data_versao
+      - name: feed_start_date
         description: "Data de referência do feed (versão)."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
@@ -80,7 +80,7 @@ models:
         description: "Identifica a agência relevante para uma tarifa."
       - name: transfer_duration
         description: "Período de tempo em segundos antes que uma transferência expire."
-      - name: data_versao
+      - name: feed_start_date
         description: "Data de referência do feed (versão)."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
@@ -98,7 +98,7 @@ models:
         description: "Identifica uma zona de destino."
       - name: contains_id
         description: "Identifica as zonas nas quais um passageiro entrará ao usar uma determinada classe de tarifa."
-      - name: data_versao
+      - name: feed_start_date
         description: "Data de referência do feed (versão)."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
@@ -124,7 +124,7 @@ models:
         description: "Endereço de e-mail para comunicação sobre o conjunto de dados GTFS e práticas de publicação de dados."
       - name: feed_contact_url
         description: "n, um formulário web, suporte técnico ou outras ferramentas para comunicação sobre o conjunto de dados GTFS e práticas de publicação de dados."
-      - name: data_versao
+      - name: feed_start_date
         description: "Data de referência do feed (versão)."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
@@ -142,7 +142,7 @@ models:
         description: "Tempo, em segundos, entre partidas da mesma parada (intervalo) da viagem, durante o intervalo de tempo especificado por start_time e end_time."
       - name: exact_times
         description: "Indica o tipo de serviço para uma viagem."
-      - name: data_versao
+      - name: feed_start_date
         description: "Data de referência do feed (versão)."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
@@ -176,7 +176,7 @@ models:
         description: "Indica que o passageiro pode descer do veículo de transporte público em qualquer ponto ao longo do trajeto de viagem do veículo, conforme descrito em shape.txt, em cada viagem da rota."
       - name: network_id
         description: "Identifica um grupo de rotas. Várias linhas em rotas.txt podem ter o mesmo network_id."
-      - name: data_versao
+      - name: feed_start_date
         description: "Data de referência do feed (versão)."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
@@ -186,7 +186,7 @@ models:
     columns:
       - name: shape_id
         description: "Identifica uma forma."
-      - name: data_versao
+      - name: feed_start_date
         description: "Data de referência do feed (versão)."
       - name: shape
         description: "Dado geográfico construído com a query."
@@ -206,7 +206,7 @@ models:
         description: "Longitude de um ponto de forma."
       - name: shape_dist_traveled
         description: "Distância real percorrida ao longo da forma desde o primeiro ponto da forma até o ponto especificado neste registro."
-      - name: data_versao
+      - name: feed_start_date
         description: "Data de referência do feed (versão)."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
@@ -244,7 +244,7 @@ models:
         description: "Nível do local."
       - name: platform_code
         description: "Identificador de plataforma para uma parada de plataforma (uma parada pertencente a uma estação)."
-      - name: data_versao
+      - name: feed_start_date
         description: "Data de referência do feed (versão)."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
@@ -276,7 +276,7 @@ models:
         description: "Distância real percorrida ao longo do formato associado, desde a primeira parada até a parada especificada neste registro."
       - name: timepoint
         description: "Indica se os horários de chegada e saída de uma parada são rigorosamente respeitados pelo veículo ou se são horários aproximados e/ou interpolados."
-      - name: data_versao
+      - name: feed_start_date
         description: "Data de referência do feed (versão)."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
@@ -304,7 +304,7 @@ models:
         description: "Indica acessibilidade para cadeiras de rodas."
       - name: bikes_allowed
         description: "Indica se bicicletas são permitidas."
-      - name: data_versao
+      - name: feed_start_date
         description: "Data de referência do feed (versão)."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
@@ -336,7 +336,7 @@ models:
         description: "Distância total planejada diária para o serviço. "
       - name: tipo_dia
         description: "Tipo de dia, se dia útil, sábado, domingo ou ponto facultativo."
-      - name: data_versao
+      - name: feed_start_date
         description: "Data de referência do feed (versão)."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."

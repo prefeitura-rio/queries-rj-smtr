@@ -1,13 +1,13 @@
 {{config(
-    partition_by = { 'field' :'data_versao',
+    partition_by = { 'field' :'feed_start_date',
     'data_type' :'date',
     'granularity': 'day' },
-    unique_key = ['fare_id', 'data_versao'],
+    unique_key = ['fare_id', 'feed_start_date'],
     alias = 'fare_attributes'
 )}} 
 
 
-SELECT SAFE_CAST(data_versao AS DATE) data_versao,
+SELECT SAFE_CAST(data_versao AS DATE) feed_start_date,
         SAFE_CAST(fare_id AS STRING) fare_id,
         SAFE_CAST(JSON_VALUE(content, '$.price') AS FLOAT64) price,
         SAFE_CAST(JSON_VALUE(content, '$.currency_type') AS STRING) currency_type,
@@ -20,4 +20,6 @@ FROM {{source(
             'br_rj_riodejaneiro_gtfs_staging',
             'fare_attributes'
         )}}
-WHERE data_versao = '{{ var("data_versao_gtfs") }}'
+  {% if is_incremental() -%}
+    WHERE data_versao = '{{ var("data_versao_gtfs") }}'
+  {%- endif %}

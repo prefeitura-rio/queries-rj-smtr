@@ -1,8 +1,8 @@
 {{ config(
-       partition_by = { 'field' :'data_versao',
+       partition_by = { 'field' :'feed_start_date',
        'data_type' :'date',
        'granularity': 'day' },
-       unique_key = ['shape_id', 'data_versao'],
+       unique_key = ['shape_id', 'feed_start_date'],
        alias = 'shapes_geom'
 ) }} 
 
@@ -11,22 +11,24 @@ WITH contents AS (
        SELECT shape_id,
               ST_GEOGPOINT(shape_pt_lon, shape_pt_lat) AS ponto_shape,
               shape_pt_sequence,
-              data_versao,
+              feed_start_date,
               FROM {{ref('shapes_gtfs')}} s
-       WHERE data_versao = '{{ var("data_versao_gtfs") }}'
+       {% if is_incremental() -%}
+              WHERE data_versao = '{{ var("data_versao_gtfs") }}'
+       {%- endif %}
 ),
 pts AS (
        SELECT *,
-              MAX(shape_pt_sequence) OVER(PARTITION BY data_versao, shape_id) final_pt_sequence
+              MAX(shape_pt_sequence) OVER(PARTITION BY feed_start_date, shape_id) final_pt_sequence
        FROM contents c
-       ORDER BY data_versao,
+       ORDER BY feed_start_date,
               shape_id,
               shape_pt_sequence
 ),
 shapes AS (
        -- BUILD LINESTRINGS OVER SHAPE POINTS
        SELECT shape_id,
-              data_versao,
+              feed_start_date,
               ST_MAKELINE(ARRAY_AGG(ponto_shape)) AS shape
        FROM pts
        GROUP BY 1,
@@ -37,7 +39,7 @@ boundary AS (
        SELECT c1.shape_id,
               c1.ponto_shape start_pt,
               c2.ponto_shape end_pt,
-              c1.data_versao
+              c1.feed_start_date
        FROM (
                      SELECT *
                      FROM pts
@@ -48,26 +50,26 @@ boundary AS (
                      FROM pts
                      WHERE shape_pt_sequence = final_pt_sequence
               ) c2 ON c1.shape_id = c2.shape_id
-              AND c1.data_versao = c2.data_versao
+              AND c1.feed_start_date = c2.feed_start_date
 ),
 merged AS (
        -- JOIN SHAPES AND BOUNDARY POINTS
        SELECT s.*,
               b.*
-       EXCEPT(data_versao, shape_id),
+       EXCEPT(feed_start_date, shape_id),
               ROUND(ST_LENGTH(shape), 1) shape_distance,
               FROM shapes s
               JOIN boundary b ON s.shape_id = b.shape_id
-              AND s.data_versao = b.data_versao
+              AND s.feed_start_date = b.feed_start_date
 ),
 ids AS (
-       SELECT data_versao,
+       SELECT feed_start_date,
               shape_id,
               shape,
               shape_distance,
               start_pt,
               end_pt,
-              ROW_NUMBER() OVER(PARTITION BY data_versao, shape_id) rn
+              ROW_NUMBER() OVER(PARTITION BY feed_start_date, shape_id) rn
        FROM merged m
 )
 SELECT 

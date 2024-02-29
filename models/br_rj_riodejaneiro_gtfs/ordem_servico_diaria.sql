@@ -3,14 +3,14 @@
 ) }} 
 
 WITH
-  data_versao AS (
+  feed_start_date AS (
   SELECT
-    data_versao,
-    data_versao AS data_inicio,
-    COALESCE(DATE_SUB(LEAD(data_versao) OVER (ORDER BY data_versao), INTERVAL 1 DAY), LAST_DAY(data_versao, MONTH)) AS data_fim
+    feed_start_date,
+    feed_start_date AS data_inicio,
+    COALESCE(DATE_SUB(LEAD(feed_start_date) OVER (ORDER BY feed_start_date), INTERVAL 1 DAY), LAST_DAY(feed_start_date, MONTH)) AS data_fim
   FROM (
     SELECT
-      DISTINCT data_versao,
+      DISTINCT feed_start_date,
     FROM
       {{ ref("ordem_servico_gtfs") }} )),
   ordem_servico_pivot AS (
@@ -27,7 +27,7 @@ WITH
         'Ponto Facultativo' AS pf,
         'Sabado' AS sab,
         'Domingo' AS dom ))),
-  subsidio_data_versao_efetiva AS (
+  subsidio_feed_start_date_efetiva AS (
   SELECT
     data,
     SPLIT(tipo_dia, " - ")[0] AS tipo_dia,
@@ -54,22 +54,22 @@ END
   horario_inicio AS inicio_periodo,
   horario_fim AS fim_periodo
 FROM
-  UNNEST(GENERATE_DATE_ARRAY((SELECT MIN(data_inicio) FROM data_versao), (SELECT MAX(data_fim) FROM data_versao))) AS DATA
+  UNNEST(GENERATE_DATE_ARRAY((SELECT MIN(data_inicio) FROM feed_start_date), (SELECT MAX(data_fim) FROM feed_start_date))) AS DATA
 LEFT JOIN
-  data_versao AS d
+  feed_start_date AS d
 ON
   DATA BETWEEN d.data_inicio
   AND d.data_fim
 LEFT JOIN
-  subsidio_data_versao_efetiva AS sd
+  subsidio_feed_start_date_efetiva AS sd
 USING
   (DATA)
 LEFT JOIN
   ordem_servico_pivot AS o
 USING
-  (data_versao)
+  (feed_start_date)
 LEFT JOIN
   {{ ref("servicos_sentido") }}
 USING
-  (data_versao,
+  (feed_start_date,
     servico)
