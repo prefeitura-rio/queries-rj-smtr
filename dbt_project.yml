@@ -207,6 +207,9 @@ models:
     br_rj_riodejaneiro_bilhetagem_staging:
       +materialized: view
       +schema: br_rj_riodejaneiro_bilhetagem_staging
+    dashboard_bilhetagem_implantacao_jae:
+      +materialized: table
+      +schema: dashboard_bilhetagem_implantacao_jae
     br_rj_riodejaneiro_stu:
       +materialized: view
       +schema: br_rj_riodejaneiro_stu

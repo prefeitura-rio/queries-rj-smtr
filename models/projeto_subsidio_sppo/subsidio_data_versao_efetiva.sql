@@ -31,6 +31,10 @@ SELECT
       WHEN data = "2023-12-17" THEN "Domingo - Verão" -- OS de Verão
       WHEN data = "2024-01-06" THEN "Sabado - Verão" -- OS de Verão
       WHEN data = "2024-01-07" THEN "Domingo - Verão" -- OS de Verão
+      WHEN data = "2024-02-09" THEN "Ponto Facultativo" -- Despacho MTR-DES-2024/07951
+      WHEN data = "2024-02-12" THEN "Domingo" -- Despacho MTR-DES-2024/07951
+      WHEN data = "2024-02-13" THEN "Domingo" -- Despacho MTR-DES-2024/07951
+      WHEN data = "2024-02-14" THEN "Ponto Facultativo" -- Despacho MTR-DES-2024/07951
       WHEN data = "2023-12-31" THEN "Domingo - Réveillon"
       WHEN data = "2024-01-01" THEN "Domingo - Réveillon"
       WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 1 THEN "Domingo" -- Dia de São Sebastião -- Art. 8°, I - Lei Municipal nº 5146/2010
@@ -71,10 +75,13 @@ SELECT
     -- Reveillon 2023:
     WHEN data = DATE(2023,12,31) THEN data
     WHEN data = DATE(2024,01,01) THEN data
-    -- 2023:
+    -- 2024:
     WHEN data BETWEEN DATE(2024,01,06) AND DATE(2024,01,07) THEN DATE(2024,01,03) -- OS de Verão
     WHEN data BETWEEN DATE(2024,01,02) AND DATE(2024,01,14) THEN DATE(2024,01,02)
     WHEN data BETWEEN DATE(2024,01,15) AND DATE(2024,01,31) THEN DATE(2024,01,15)
+    WHEN data BETWEEN DATE(2024,02,01) AND DATE(2024,02,18) THEN DATE(2024,02,01) -- OS fev/Q1
+    WHEN data BETWEEN DATE(2024,02,19) AND DATE(2024,02,23) THEN DATE(2024,02,19) -- OS fev/Q2
+    WHEN data BETWEEN DATE(2024,02,24) AND DATE(2024,02,29) THEN DATE(2024,02,24) -- OS fev/Q2 - TIG
     -- 2022:
     WHEN data BETWEEN DATE(2022,10,1) AND DATE(2022,10,2) THEN DATE(2022,9,16)
     WHEN data BETWEEN DATE(2022,6,1) AND LAST_DAY(DATE(2022,6,30), MONTH) THEN DATE(2022,6,1)
@@ -85,7 +92,7 @@ SELECT
     -- 2023 a 2024:
     {% for j in range(2023, 2025) %}
       {% for i in range(1, 13) %}
-        WHEN EXTRACT(MONTH FROM data) = {{ i }} THEN DATE({{ j }},{{ i }},1)
+        WHEN EXTRACT(MONTH FROM data) = {{ i }} AND EXTRACT(YEAR FROM data) = {{ j }} THEN DATE({{ j }},{{ i }},1)
       {% endfor %}
     {% endfor %}
   END AS data_versao_trips,
@@ -113,10 +120,13 @@ SELECT
     -- Reveillon 2023:
     WHEN data = DATE(2023,12,31) THEN data
     WHEN data = DATE(2024,01,01) THEN data
-    -- 2023:
+    -- 2024:
     WHEN data BETWEEN DATE(2024,01,06) AND DATE(2024,01,07) THEN DATE(2024,01,03) -- OS de Verão
     WHEN data BETWEEN DATE(2024,01,02) AND DATE(2024,01,14) THEN DATE(2024,01,02)
     WHEN data BETWEEN DATE(2024,01,15) AND DATE(2024,01,31) THEN DATE(2024,01,15)
+    WHEN data BETWEEN DATE(2024,02,01) AND DATE(2024,02,18) THEN DATE(2024,02,01) -- OS fev/Q1
+    WHEN data BETWEEN DATE(2024,02,19) AND DATE(2024,02,23) THEN DATE(2024,02,19) -- OS fev/Q2
+    WHEN data BETWEEN DATE(2024,02,24) AND DATE(2024,02,29) THEN DATE(2024,02,24) -- OS fev/Q2 - TIG
     -- 2022:
     WHEN data BETWEEN DATE(2022,10,1) AND DATE(2022,10,2) THEN DATE(2022,9,16)
     WHEN data BETWEEN DATE(2022,6,1) AND LAST_DAY(DATE(2022,6,30), MONTH) THEN DATE(2022,6,1)
@@ -127,7 +137,7 @@ SELECT
     -- 2023 a 2024:
     {% for j in range(2023, 2025) %}
       {% for i in range(1, 13) %}
-        WHEN EXTRACT(MONTH FROM data) = {{ i }} THEN DATE({{ j }},{{ i }},1)
+        WHEN EXTRACT(MONTH FROM data) = {{ i }} AND EXTRACT(YEAR FROM data) = {{ j }} THEN DATE({{ j }},{{ i }},1)
       {% endfor %}
     {% endfor %}
   END AS data_versao_shapes,
@@ -155,10 +165,13 @@ SELECT
     -- Reveillon 2023:
     WHEN data = DATE(2023,12,31) THEN data
     WHEN data = DATE(2024,01,01) THEN data
-    -- 2023:
+    -- 2024:
     WHEN data BETWEEN DATE(2024,01,06) AND DATE(2024,01,07) THEN DATE(2024,01,03) -- OS de Verão
     WHEN data BETWEEN DATE(2024,01,02) AND DATE(2024,01,14) THEN DATE(2024,01,02)
     WHEN data BETWEEN DATE(2024,01,15) AND DATE(2024,01,31) THEN DATE(2024,01,15)
+    WHEN data BETWEEN DATE(2024,02,01) AND DATE(2024,02,18) THEN DATE(2024,02,01) -- OS fev/Q1
+    WHEN data BETWEEN DATE(2024,02,19) AND DATE(2024,02,23) THEN DATE(2024,02,19) -- OS fev/Q2
+    WHEN data BETWEEN DATE(2024,02,24) AND DATE(2024,02,29) THEN DATE(2024,02,24) -- OS fev/Q2 - TIG
     -- 2022:
     {% for i in range(6, 13) %}
       WHEN data BETWEEN DATE(2022,{{ i }},1) AND DATE(2022,{{ i }},15) THEN DATE(2022,{{ i }},1)
@@ -167,7 +180,7 @@ SELECT
     -- 2023 a 2024:
     {% for j in range(2023, 2025) %}
       {% for i in range(1, 13) %}
-        WHEN EXTRACT(MONTH FROM data) = {{ i }} THEN DATE({{ j }},{{ i }},1)
+        WHEN EXTRACT(MONTH FROM data) = {{ i }} AND EXTRACT(YEAR FROM data) = {{ j }} THEN DATE({{ j }},{{ i }},1)
       {% endfor %}
     {% endfor %}
   END AS data_versao_frequencies,
