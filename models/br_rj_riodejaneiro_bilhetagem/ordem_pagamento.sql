@@ -9,28 +9,61 @@
     incremental_strategy="insert_overwrite"
   )
 }}
+
+-- WITH servico_motorista AS (
+--     SELECT
+--         * EXCEPT(rn)
+--     FROM
+--     (
+--         SELECT
+--             id_servico,
+--             dt_fechamento,
+--             nr_logico_midia,
+--             cd_linha,
+--             cd_operadora,
+--             ROW_NUMBER() OVER (PARTITION BY id_servico, nr_logico_midia ORDER BY timestamp_captura DESC) AS rn
+--         FROM
+--             {{ ref("staging_servico_motorista") }}
+--         {% if is_incremental() %}
+--             WHERE
+--                 DATE(data) BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 1 DAY) AND DATE("{{var('date_range_end')}}")
+--         {% endif %}  
+--     )   
+-- ),
 WITH transacao AS (
     SELECT
-        id,
-        timestamp_captura,
-        DATE(data_processamento) AS data_processamento,
-        cd_linha,
-        cd_operadora,
-        valor_transacao,
-        tipo_transacao,
-        cd_consorcio
+        t.id,
+        t.timestamp_captura,
+        DATE(t.data_processamento) AS data_processamento,
+        t.data_processamento AS datetime_processamento,
+        t.cd_linha,
+        t.cd_operadora,
+        t.valor_transacao,
+        t.tipo_transacao,
+        t.id_tipo_modal,
+        t.cd_consorcio,
+        -- sm.dt_fechamento AS datetime_fechamento_servico,
+        -- sm.cd_linha AS cd_linha_servico,
+        -- sm.cd_operadora AS cd_operadora_servico,
+        t.id_servico
     FROM
-        {{ ref("staging_transacao") }}
+        {{ ref("staging_transacao") }} t
+    -- LEFT JOIN
+    --     servico_motorista sm
+    -- ON
+    --     sm.id_servico = t.id_servico
+    --     AND sm.nr_logico_midia = t.nr_logico_midia_operador
     WHERE
-        {% if is_incremental() -%}
-            DATE(data) BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 1 DAY) AND DATE("{{var('date_range_end')}}")
+        {% if is_incremental() %}
+            DATE(t.data) BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 1 DAY) AND DATE_ADD(DATE("{{var('date_range_end')}}"), INTERVAL 1 DAY)
         {% else %}
-            DATE(data) <= CURRENT_DATE("America/Sao_Paulo")
-        {%- endif %}
+            DATE(t.data) <= CURRENT_DATE("America/Sao_Paulo")
+        {% endif %}
 ),
 transacao_deduplicada AS (
     SELECT 
-        t.* EXCEPT(rn)
+        t.* EXCEPT(rn),
+        DATE_ADD(data_processamento, INTERVAL 1 DAY) AS data_ordem -- TODO: Regra da data por serviços fechados no modo Ônibus quando começar a operação
     FROM
     (
         SELECT
@@ -40,36 +73,40 @@ transacao_deduplicada AS (
             transacao
     ) t
     WHERE
-        -- Remover gratuidades da contagem de transações
-        tipo_transacao != '21'
-        AND rn = 1
-        AND
-        {% if is_incremental() -%}
-            t.data_processamento < DATE("{{var('date_range_end')}}")
-        {% else %}
-            t.data_processamento < CURRENT_DATE("America/Sao_Paulo")
-        {%- endif %}
-        
+        rn = 1
 ),
 transacao_agg AS (
     SELECT
-        data_processamento,
-        DATE_ADD(data_processamento, INTERVAL 1 DAY) AS data_ordem,
-        ANY_VALUE(cd_consorcio) AS cd_consorcio,
-        cd_linha,
-        cd_operadora,
+        t.data_ordem,
+        ANY_VALUE(t.cd_consorcio) AS cd_consorcio,
+        t.cd_linha,
+        t.cd_operadora,
         COUNT(*) AS quantidade_total_transacao_captura,
-        ROUND(SUM(valor_transacao), 2) AS valor_total_transacao_captura
+        ROUND(SUM(t.valor_transacao), 2) AS valor_total_transacao_captura
     FROM
-        transacao_deduplicada
+        transacao_deduplicada t
+    LEFT JOIN
+        {{ ref("staging_linha_sem_ressarcimento") }} l
+    ON
+        t.cd_linha = l.id_linha
+    WHERE
+        -- Remove dados com data de ordem de pagamento maiores que a execução do modelo
+        {% if is_incremental() %}
+            t.data_ordem <= DATE("{{var('date_range_end')}}")
+        {% else %}
+            t.data_ordem <= CURRENT_DATE("America/Sao_Paulo")
+        {% endif %}
+        -- Remove linhas de teste que não entram no ressarcimento
+        AND l.id_linha IS NULL
+        -- Remove gratuidades e transferências da contagem de transações
+        AND tipo_transacao NOT IN ('5', '21')
     GROUP BY
-        data_processamento,
-        cd_linha,
-        cd_operadora
+        t.data_ordem,
+        t.cd_linha,
+        t.cd_operadora
 ),
 ordem_pagamento AS (
     SELECT
-        DATE_SUB(r.data_ordem, INTERVAL 1 DAY) AS data_processamento,
         r.data_ordem,
         p.data_pagamento,
         r.id_consorcio,
@@ -85,28 +122,29 @@ ordem_pagamento AS (
         r.valor_gratuidade,
         r.qtd_integracao AS quantidade_transacao_integracao,
         r.valor_integracao,
-        r.qtd_rateio_credito AS quantidade_transacao_rateio_credito,
-        r.valor_rateio_credito,
-        r.qtd_rateio_debito AS quantidade_transacao_rateio_debito,
-        r.valor_rateio_debito,
-        r.qtd_debito +  r.qtd_vendaabordo +  r.qtd_gratuidade + r.qtd_integracao + r.qtd_rateio_credito + r.qtd_rateio_debito AS quantidade_total_transacao,
+        COALESCE(rat.qtd_rateio_compensacao_credito_total, r.qtd_rateio_credito) AS quantidade_transacao_rateio_credito,
+        COALESCE(rat.valor_rateio_compensacao_credito_total, r.valor_rateio_credito) AS valor_rateio_credito,
+        COALESCE(rat.qtd_rateio_compensacao_debito_total, r.qtd_rateio_debito) AS quantidade_transacao_rateio_debito,
+        COALESCE(rat.valor_rateio_compensacao_debito_total, r.valor_rateio_debito) AS valor_rateio_debito,
         ROUND(r.valor_bruto, 2) AS valor_total_transacao_bruto,
         r.valor_taxa AS valor_desconto_taxa,
         r.valor_liquido AS valor_total_transacao_liquido
     FROM 
         {{ ref("staging_ordem_ressarcimento") }} r
     LEFT JOIN
+        {{ ref("staging_ordem_rateio") }} rat
+    USING(data_ordem, id_consorcio, id_operadora, id_linha)
+    LEFT JOIN
         {{ ref("staging_ordem_pagamento") }} p
     ON
         r.id_ordem_pagamento = p.id_ordem_pagamento
-    {% if is_incremental() -%}
+    {% if is_incremental() %}
         WHERE
             DATE(r.data) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
-    {%- endif %}
+    {% endif %}
 ),
-ordem_pagamento_validacao AS (
+ordem_pagamento_transacao AS (
     SELECT
-        COALESCE(op.data_processamento, t.data_processamento) AS data_processamento,
         COALESCE(op.data_ordem, t.data_ordem) AS data_ordem,
         op.data_pagamento,
         COALESCE(op.id_consorcio, t.cd_consorcio) AS id_consorcio,
@@ -126,16 +164,17 @@ ordem_pagamento_validacao AS (
         op.valor_rateio_credito,
         op.quantidade_transacao_rateio_debito,
         op.valor_rateio_debito,
-        op.quantidade_total_transacao,
+        (
+            op.quantidade_transacao_debito
+            + op.quantidade_transacao_especie 
+            + op.quantidade_transacao_gratuidade
+            + op.quantidade_transacao_integracao
+        ) AS quantidade_total_transacao,
         op.valor_total_transacao_bruto,
         op.valor_desconto_taxa,
         op.valor_total_transacao_liquido,
         t.quantidade_total_transacao_captura,
-        t.valor_total_transacao_captura,
-        COALESCE(
-            (t.quantidade_total_transacao_captura = op.quantidade_total_transacao AND t.valor_total_transacao_captura = op.valor_total_transacao_bruto),
-            false
-        ) AS indicador_ordem_valida
+        t.valor_total_transacao_captura
     FROM
         ordem_pagamento op
     FULL OUTER JOIN
@@ -173,10 +212,13 @@ SELECT
     o.valor_total_transacao_liquido,
     o.quantidade_total_transacao_captura,
     o.valor_total_transacao_captura,
-    o.indicador_ordem_valida,
+    COALESCE(
+        (o.quantidade_total_transacao_captura = o.quantidade_total_transacao AND o.valor_total_transacao_captura = o.valor_total_transacao_bruto),
+        false
+    ) AS indicador_ordem_valida,
     '{{ var("version") }}' AS versao
 FROM
-    ordem_pagamento_validacao o
+    ordem_pagamento_transacao o
 LEFT JOIN
     {{ ref("operadoras") }} AS do
 ON
@@ -188,5 +230,4 @@ ON
 LEFT JOIN
     {{ ref("staging_linha") }} AS l
 ON
-    o.id_linha = l.cd_linha 
-    AND o.data_processamento >= l.datetime_inclusao
+    o.id_linha = l.cd_linha
