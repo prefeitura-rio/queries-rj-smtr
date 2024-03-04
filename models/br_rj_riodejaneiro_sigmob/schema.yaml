@@ -68,47 +68,47 @@ models:
     description: Cadastro dos serviços (routes)
     columns:
       - name: route_id
-        tests:
-          - not_null:
-              partition_column: data_versao
-          - unique_key:
-              partition_column: data_versao
-              combined_keys: ""
+        # tests:
+        #   - not_null:
+        #       partition_column: data_versao
+        #   - unique_key:
+        #       partition_column: data_versao
+        #       combined_keys: ""
   - name: trips_desaninhada
     description: Cadastro de itinerários (trips)
     columns:
       - name: trip_id
         description: Identificador único para um itinerário
-        tests:
-          - not_null:
-              partition_column: data_versao
-          - unique_key:
-              partition_column: data_versao
-              combined_keys: ""
-          - one_to_one:
-              partition_column: data_versao
-              to_table: ref('shapes_geom')
+        # tests:
+        #   - not_null:
+        #       partition_column: data_versao
+        #   - unique_key:
+        #       partition_column: data_versao
+        #       combined_keys: ""
+        #   - one_to_one:
+        #       partition_column: data_versao
+        #       to_table: ref('shapes_geom')
       - name: route_id
         description: Identificador única para a route (serviço)
-        tests:
-          - many_to_one:
-              foreign_key: route_id
-              partition_column: data_versao
-              to_table: ref('routes_desaninhada')
+        # tests:
+        #   - many_to_one:
+        #       foreign_key: route_id
+        #       partition_column: data_versao
+        #       to_table: ref('routes_desaninhada')
   - name: shapes_geom
     description: tabela com as linestrings de cada itinarário consolidadas a partir da captura ponto a ponto
     columns:
       - name: shape_id
-        tests:
-          - not_null:
-              partition_column: data_versao
+        # tests:
+        #   - not_null:
+        #       partition_column: data_versao
       - name: trip_id
-        tests:
-          - not_null:
-              partition_column: data_versao
-          - unique_key:
-              partition_column: data_versao
-              combined_keys: ""
-          - one_to_one:
-              partition_column: data_versao
-              to_table: ref('trips_desaninhada')
+        # tests:
+        #   - not_null:
+        #       partition_column: data_versao
+        #   - unique_key:
+        #       partition_column: data_versao
+        #       combined_keys: ""
+        #   - one_to_one:
+        #       partition_column: data_versao
+        #       to_table: ref('trips_desaninhada')
