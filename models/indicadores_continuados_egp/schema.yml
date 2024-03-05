@@ -1,0 +1,49 @@
+version: 2
+sources:
+  - name: "indicadores_continuados_egp"
+
+models:
+  - name: indicador_gratuidade_mes_onibus
+    description: "Quantidade total de gratuidades - ônibus"
+    columns:
+      - name: ano
+        description: Ano de obtenção dos dados
+      - name: mes
+        description: Mês de obtenção dos dados
+      - name: modo
+        description: Tipo de modal de transporte (ônibus, brt)
+      - name: indicador_gratuidade_mes
+        description: Soma dos indicadores de gratuidade em RDO D+40 - ônibus
+  - name: indicador_gratuidade_mes_brt
+    description: "Quantidade total de gratuidades - brt"
+    columns:
+      - name: ano
+        description: Ano de obtenção dos dados
+      - name: mes
+        description: Mês de obtenção dos dados
+      - name: modo
+        description: Tipo de modal de transporte (ônibus, brt)
+      - name: indicador_gratuidade_mes
+        description:  Soma dos indicadores de gratuidade em RDO D+40 - BRT
+  - name: passageiros_pagantes_onibus
+    description: "Quantidade total de passageiros pagantes no mês - ônibus"
+    columns:
+      - name: ano
+        description: Ano de obtenção dos dados
+      - name: mes
+        description: Mês de obtenção dos dados
+      - name: modo
+        description: Tipo de modal de transporte (ônibus, brt)
+      - name: indicador_passageiro_pagante_mes
+        description: Soma dos indicadores de passageiro pagante em RDO D+40 - ônibus
+  - name: passageiros_pagantes_brt
+    description: "Quantidade total de passageiros pagantes no mês - brt"
+    columns:
+      - name: ano
+        description: Ano de obtenção dos dados
+      - name: mes
+        description: Mês de obtenção dos dados
+      - name: modo
+        description: Tipo de modal de transporte (ônibus, brt)
+      - name: indicador_passageiro_pagante_mes
+        description: Soma dos indicadores de passageiro pagante em RDO D+40 - BRT
