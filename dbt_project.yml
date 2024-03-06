@@ -227,4 +227,5 @@ models:
       +schema: gtfs
     indicadores_continuados_egp:
       +materialized: incremental
+      +incremental_strategy: insert_overwrite
       +schema: indicadores_continuados_egp
