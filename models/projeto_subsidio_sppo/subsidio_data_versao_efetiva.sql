@@ -1,3 +1,21 @@
+{{ 
+config(
+    materialized='incremental',
+    partition_by={
+            "field":"data",
+            "data_type": "date",
+            "granularity":"day"
+    },
+    incremental_strategy='insert_overwrite'
+)
+}}
+
+{% if execute %}
+  {% set trips_date = run_query("SELECT MAX(data_versao) FROM " ~ ref("subsidio_trips_desaninhada") ~ " WHERE data_versao >= DATE_TRUNC(DATE_SUB(DATE('" ~ var("run_date") ~ "'), INTERVAL 30 DAY), MONTH)").columns[0].values()[0] %}
+  {% set shapes_date = run_query("SELECT MAX(data_versao) FROM " ~ var("subsidio_shapes") ~ " WHERE data_versao >= DATE_TRUNC(DATE_SUB(DATE('" ~ var("run_date") ~ "'), INTERVAL 30 DAY), MONTH)").columns[0].values()[0] %}
+  {% set frequencies_date = run_query("SELECT MAX(data_versao) FROM " ~ ref("subsidio_quadro_horario") ~ " WHERE data_versao >= DATE_TRUNC(DATE_SUB(DATE('" ~ var("run_date") ~ "'), INTERVAL 30 DAY), MONTH)").columns[0].values()[0] %}
+{% endif %}
+
 WITH
   dates AS (
   SELECT 
@@ -210,23 +228,38 @@ WITH
   SELECT
     DISTINCT data_versao
   FROM
-    {{ ref("subsidio_trips_desaninhada") }} ),
+    {{ ref("subsidio_trips_desaninhada") }} 
+  {% if is_incremental() %}
+  WHERE
+    data_versao >= DATE_TRUNC(DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 30 DAY), MONTH)
+  {% endif %}
+  ),
   shapes AS (
   SELECT
     DISTINCT data_versao
   FROM
-    {{ var("subsidio_shapes") }} ),
+    {{ var("subsidio_shapes") }} 
+  {% if is_incremental() %}
+  WHERE
+    data_versao >= DATE_TRUNC(DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 30 DAY), MONTH)
+  {% endif %}
+  ),
   frequencies AS (
   SELECT
     DISTINCT data_versao
   FROM
-    {{ ref("subsidio_quadro_horario") }} )
+    {{ ref("subsidio_quadro_horario") }} 
+  {% if is_incremental() %}
+  WHERE
+    data_versao >= DATE_TRUNC(DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 30 DAY), MONTH)
+  {% endif %}
+  )
 SELECT
   data,
   tipo_dia,
-  COALESCE(t.data_versao, (SELECT MAX(data_versao) FROM trips)) AS data_versao_trips,
-  COALESCE(s.data_versao, (SELECT MAX(data_versao) FROM shapes)) AS data_versao_shapes,
-  COALESCE(f.data_versao, (SELECT MAX(data_versao) FROM frequencies)) AS data_versao_frequencies,
+  COALESCE(t.data_versao, DATE("{{ trips_date }}")) AS data_versao_trips,
+  COALESCE(s.data_versao, DATE("{{ shapes_date }}")) AS data_versao_shapes,
+  COALESCE(f.data_versao, DATE("{{ frequencies_date }}")) AS data_versao_frequencies,
   valor_subsidio_por_km
 FROM
   dates AS d
@@ -242,3 +275,9 @@ LEFT JOIN
   frequencies AS f
 ON
   f.data_versao = d.data_versao_frequencies
+WHERE
+{% if is_incremental() %}
+  data BETWEEN DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 1 DAY) AND DATE("{{ var("run_date") }}")
+{% else %}
+  data <= DATE("{{ var("run_date") }}")
+{% endif %}
