@@ -23,7 +23,7 @@ SELECT
       rdo.qtd_grt_estud_municipal + rdo.qtd_grt_rodoviario +
       rdo.qtd_grt_passe_livre_universitario) AS indicador_gratuidade_mes
 FROM
-   {{ref('rdo40_tratado')}} AS rdo
+   {{source('br_rj_riodejaneiro_rdo','rdo40_tratado')}} AS rdo
 LEFT JOIN 
   consorcio AS c ON rdo.termo = c.id_consorcio
 WHERE 
