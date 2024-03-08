@@ -1,13 +1,13 @@
 {{ 
-config(
-    materialized='incremental',
+  config(
+    materialized="incremental",
     partition_by={
-            "field":"data",
-            "data_type": "date",
-            "granularity":"day"
+      "field":"data",
+      "data_type": "date",
+      "granularity":"day"
     },
-    incremental_strategy='insert_overwrite'
-)
+    incremental_strategy="insert_overwrite"
+  )
 }}
 
 {% if execute %}
@@ -101,7 +101,8 @@ WITH
       WHEN data BETWEEN DATE(2024,01,15) AND DATE(2024,01,31) THEN DATE(2024,01,15)
       WHEN data BETWEEN DATE(2024,02,01) AND DATE(2024,02,18) THEN DATE(2024,02,01) -- OS fev/Q1
       WHEN data BETWEEN DATE(2024,02,19) AND DATE(2024,02,23) THEN DATE(2024,02,19) -- OS fev/Q2
-      WHEN data BETWEEN DATE(2024,02,24) AND DATE(2024,02,29) THEN DATE(2024,02,24) -- OS fev/Q2 - TIG
+      WHEN data BETWEEN DATE(2024,02,24) AND DATE(2024,03,01) THEN DATE(2024,02,24) -- OS fev/Q2 - TIG
+      WHEN data BETWEEN DATE(2024,03,02) AND DATE(2024,03,31) THEN DATE(2024,03,02) -- OS mar/Q1
       -- 2022:
       WHEN data BETWEEN DATE(2022,10,1) AND DATE(2022,10,2) THEN DATE(2022,9,16)
       WHEN data BETWEEN DATE(2022,6,1) AND LAST_DAY(DATE(2022,6,30), MONTH) THEN DATE(2022,6,1)
@@ -146,7 +147,8 @@ WITH
       WHEN data BETWEEN DATE(2024,01,15) AND DATE(2024,01,31) THEN DATE(2024,01,15)
       WHEN data BETWEEN DATE(2024,02,01) AND DATE(2024,02,18) THEN DATE(2024,02,01) -- OS fev/Q1
       WHEN data BETWEEN DATE(2024,02,19) AND DATE(2024,02,23) THEN DATE(2024,02,19) -- OS fev/Q2
-      WHEN data BETWEEN DATE(2024,02,24) AND DATE(2024,02,29) THEN DATE(2024,02,24) -- OS fev/Q2 - TIG
+      WHEN data BETWEEN DATE(2024,02,24) AND DATE(2024,03,01) THEN DATE(2024,02,24) -- OS fev/Q2 - TIG
+      WHEN data BETWEEN DATE(2024,03,02) AND DATE(2024,03,31) THEN DATE(2024,03,02) -- OS mar/Q1
       -- 2022:
       WHEN data BETWEEN DATE(2022,10,1) AND DATE(2022,10,2) THEN DATE(2022,9,16)
       WHEN data BETWEEN DATE(2022,6,1) AND LAST_DAY(DATE(2022,6,30), MONTH) THEN DATE(2022,6,1)
@@ -191,7 +193,8 @@ WITH
       WHEN data BETWEEN DATE(2024,01,15) AND DATE(2024,01,31) THEN DATE(2024,01,15)
       WHEN data BETWEEN DATE(2024,02,01) AND DATE(2024,02,18) THEN DATE(2024,02,01) -- OS fev/Q1
       WHEN data BETWEEN DATE(2024,02,19) AND DATE(2024,02,23) THEN DATE(2024,02,19) -- OS fev/Q2
-      WHEN data BETWEEN DATE(2024,02,24) AND DATE(2024,02,29) THEN DATE(2024,02,24) -- OS fev/Q2 - TIG
+      WHEN data BETWEEN DATE(2024,02,24) AND DATE(2024,03,01) THEN DATE(2024,02,24) -- OS fev/Q2 - TIG
+      WHEN data BETWEEN DATE(2024,03,02) AND DATE(2024,03,31) THEN DATE(2024,03,02) -- OS mar/Q1
       -- 2022:
       {% for i in range(6, 13) %}
         WHEN data BETWEEN DATE(2022,{{ i }},1) AND DATE(2022,{{ i }},15) THEN DATE(2022,{{ i }},1)
