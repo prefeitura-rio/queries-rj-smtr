@@ -1,20 +1,24 @@
 {{config( 
-    partition_by = { 'field' :'mes',
-    'data_type' :'int',
+    partition_by = { 'field' :'data',
+    'data_type' :'date',
     'granularity': 'month' },
 )}}
 
 WITH consorcio AS (
-  SELECT
+    SELECT
     id_consorcio,
-    c.consorcio,
-    (SELECT modo FROM rj-smtr.cadastro.modos WHERE id_modo='3' AND fonte='jae') AS modo
+    modo
   FROM
-    {{ref('consorcios')}} c
+    `rj-smtr.cadastro.consorcios` c
+  LEFT JOIN
+    `rj-smtr.cadastro.operadoras` o
+  ON
+    c.id_consorcio_jae = o.id_operadora_jae
   WHERE
-    c.id_consorcio = '221000050'
+    consorcio="MobiRio"
 )
 SELECT
+  DATE_TRUNC(data, MONTH) AS data,
   rdo.ano,
   rdo.mes,
   c.modo,
@@ -23,10 +27,11 @@ SELECT
       rdo.qtd_grt_estud_municipal + rdo.qtd_grt_rodoviario +
       rdo.qtd_grt_passe_livre_universitario) AS indicador_gratuidade_mes
 FROM
-   {{source('br_rj_riodejaneiro_rdo','rdo40_tratado')}} AS rdo
+   --{{source('br_rj_riodejaneiro_rdo','rdo40_tratado')}} AS rdo
+   `rj-smtr.br_rj_riodejaneiro_rdo.rdo40_tratado` AS rdo
 LEFT JOIN 
   consorcio AS c ON rdo.termo = c.id_consorcio
 WHERE 
   rdo.data BETWEEN "2015-01-01" AND "2023-06-30" AND c.id_consorcio IS NOT NULL
 GROUP BY 
-  rdo.ano, rdo.mes, c.modo
+ data, rdo.ano, rdo.mes, c.modo

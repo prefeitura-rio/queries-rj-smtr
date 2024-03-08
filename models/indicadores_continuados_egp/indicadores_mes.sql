@@ -1,50 +1,50 @@
+
 SELECT 
-    EXTRACT(YEAR FROM data) AS ano,
-    EXTRACT(MONTH FROM data) AS mes,
-    SUM(indicador_passageiro_pagante_dia) AS valor,
-    "Indicador de passageiros pagantes por mês - Ônibus" AS indicador
+    ano,
+    mes,
+    modo,
+    indicador_passageiro_pagante_mes AS valor,
+    "Indicador de passageiros pagantes por mês" AS indicador
 FROM {{ref ('passageiros_pagantes_onibus')}}
-    GROUP BY ano, mes
- 
+
 UNION ALL
 
 SELECT 
-    EXTRACT(YEAR FROM data) AS ano,
-    EXTRACT(MONTH FROM data) AS mes,
-    SUM(indicador_passageiro_pagante_dia) AS valor,
-    "Indicador de passageiros pagantes por mês - BRT" AS indicador
+    ano,
+    mes,
+    modo,
+    indicador_passageiro_pagante_mes AS valor, -- depois de indicador
+    "Indicador de passageiros pagantes por mês" AS indicador
 FROM {{ref ('passageiros_pagantes_brt')}}
-    GROUP BY ano, mes
 
 UNION ALL
 
 SELECT
-    EXTRACT(YEAR FROM data) AS ano,
-    EXTRACT("
-FROM {{ref ('passageiros_pagantes_brt')}}
-    GROUP BY ano, mes
+    ano,
+    mes,
+    modo,
+    indicador_gratuidade_mes AS valor,
+    "Indicador de gratuidade por mês" AS indicador
+
+FROM {{ref ('indicador_gratuidade_onibus')}}
+
 UNION ALL
 SELECT 
-    EXTRACT(YEAR FROM data) AS ano,
-    EXTRACT(MONTH FROM data) AS mes,
-    SUM(indicador_gratuidade_dia) AS valor
+    ano,
+    mes,
+    modo,
+    indicador_gratuidade_mes AS valor,
+    "Indicador de gratuidade por mês" AS indicador
 FROM {{ref ('indicador_gratuidade_brt')}}
-    GROUP BY ano, mes
-UNION ALL 
-
-SELECT 
-    EXTRACT(YEAR FROM data) AS ano,
-    EXTRACT(MONTH FROM data) AS mes,
-    SUM(indicador_gratuidade_dia) AS valor
-FROM {{ref ('indicador_gratuidade_onibus')}}
-    GROUP BY ano, mes
 
 UNION ALL 
 
 SELECT 
     ano,
     mes,
-    indicador_frota AS valor 
+    NULL AS modo,
+    indicador_frota AS valor,
+    "Indicador de frota operante por mês" AS indicador
 
 FROM {{ref ('indicador_frota_operante_mes')}}
 
@@ -53,5 +53,19 @@ UNION ALL
 SELECT 
     ano,
     mes,
-    indicador_idade_media AS valor 
+    NULL AS modo,
+    indicador_frota AS valor,
+    "Indicador de frota operante por mês" AS indicador
+
+FROM {{ref ('indicador_frota_operante_mes')}}
+
+UNION ALL
+
+SELECT
+    ano,
+    mes,
+    NULL AS modo,
+    indicador_idade_media AS valor,
+    "Indicador de idade média da frota por mês" AS indicador
+
 FROM {{ref ('indicador_idade_media_frota_mes')}}

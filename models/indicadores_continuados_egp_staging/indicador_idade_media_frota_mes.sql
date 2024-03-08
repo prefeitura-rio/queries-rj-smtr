@@ -1,20 +1,20 @@
 {{config( 
-    partition_by = { 'field' :'mes',
+    partition_by = { 'field' :'data',
     'data_type' :'date',
-    'granularity': 'day' },
+    'granularity': 'month' },
 )}}
 
 WITH idade_frota AS (
   SELECT
-    LAST_DAY(data) AS ultimo_dia_mes,
-    EXTRACT(YEAR FROM LAST_DAY(data)) - CAST(ano_fabricacao AS INT64) AS idade
+  data,
+  EXTRACT(YEAR FROM LAST_DAY(data)) - CAST(ano_fabricacao AS INT64) AS idade
   FROM
-    {{ref('sppo_licenciamento')}}
+    rj-smtr.veiculo.sppo_licenciamento
 )
 SELECT 
-  MIN(ultimo_dia_mes) AS data,
-  EXTRACT(YEAR FROM ultimo_dia_mes) AS ano,
-  EXTRACT(MONTH FROM ultimo_dia_mes) AS mes,
+  MIN(LAST_DAY(data)) AS data,
+  EXTRACT(YEAR FROM data) AS ano,
+  EXTRACT(MONTH FROM data) AS mes,
   ROUND(AVG(idade),2) AS indicador_idade_media
 FROM idade_frota
 GROUP BY

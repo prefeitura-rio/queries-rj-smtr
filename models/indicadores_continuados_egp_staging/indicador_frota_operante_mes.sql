@@ -1,20 +1,20 @@
 {{config( 
     partition_by = { 'field' :'data',
     'data_type' :'date',
-    'granularity': 'day' },
+    'granularity': 'month' },
 )}}
 
 SELECT
 
-  MIN(DATA) AS data,
-  EXTRACT(YEAR FROM DATA) AS ano,
-  EXTRACT(MONTH FROM DATA) AS mes,
+  MIN(data) AS data,
+  EXTRACT(YEAR FROM data) AS ano,
+  EXTRACT(MONTH FROM data) AS mes,
   "Ônibus" AS modo,
   COUNT(DISTINCT id_veiculo) AS indicador_frota,
   
 FROM
   {{ ref('viagem_completa') }}
 GROUP BY
-  1,2,3
+  2,3
 
 

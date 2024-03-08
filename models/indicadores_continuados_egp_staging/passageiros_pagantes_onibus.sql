@@ -1,31 +1,37 @@
 {{config( 
-    partition_by = { 'field' :'mes',
-    'data_type' :'int',
+    partition_by = { 'field' :'data',
+    'data_type' :'date',
     'granularity': 'month' },
 )}}
 
 WITH consorcio AS (
-  SELECT
+    SELECT
     id_consorcio,
-    c.consorcio,
-    (SELECT modo FROM rj-smtr.cadastro.modos WHERE id_modo='2' AND fonte='stu') AS modo
+    modo
   FROM
-    {{ref('consorcios')}} c
+    `rj-smtr.cadastro.consorcios` c
+  LEFT JOIN
+    `rj-smtr.cadastro.operadoras` o
+  ON
+    c.id_consorcio_jae = o.id_operadora_jae
   WHERE
-    c.id_consorcio IN ('221000023', '221000032', '221000014', '221000041')
+    consorcio IN ("Internorte", "Intersul", "Santa Cruz", "Transcarioca")
 )
 SELECT
+  DATE_TRUNC(data, MONTH) AS data,
   rdo.ano,
   rdo.mes,
   c.modo,
 SUM(qtd_buc_1_perna+qtd_buc_2_perna_integracao+
       qtd_buc_supervia_1_perna+qtd_buc_supervia_2_perna_integracao+
       qtd_cartoes_perna_unica_e_demais+qtd_pagamentos_especie) AS indicador_passageiro_pagante_mes,
-FROM
-   {{ref('rdo40_tratado')}} AS rdo
+FROM  --colocar como valor_indicador
+   `rj-smtr.br_rj_riodejaneiro_rdo.rdo40_tratado` AS rdo
 LEFT JOIN 
   consorcio AS c ON rdo.termo = c.id_consorcio
 WHERE 
   rdo.data >= "2015-01-01" AND c.id_consorcio IS NOT NULL
 GROUP BY 
-  rdo.ano, rdo.mes, c.modo
+  data, rdo.ano, rdo.mes, c.modo
+
+-- nomes no singular
