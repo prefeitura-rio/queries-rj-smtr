@@ -27,6 +27,8 @@ models:
         description: "Ano de apuração do indicador"
       - name: mes
         description: "Mês de apuração do indicador"
+      - name: modo
+        description: "Modo de transporte"
       - name: idade_media_veiculo_mes
         description: "Indicador de idade média da frota licenciada por mês"
       - name: data_ultima_atualizacao
@@ -42,6 +44,8 @@ models:
         description: "Ano de apuração do indicador"
       - name: mes
         description: "Mês de apuração do indicador"
+      - name: modo
+        description: "Modo de transporte"
       - name: idade_media_veiculo_mes
         description: "Indicador de idade média da frota operante por mês"
       - name: data_ultima_atualizacao
