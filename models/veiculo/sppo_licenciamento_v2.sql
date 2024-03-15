@@ -66,38 +66,38 @@
         ROW_NUMBER() OVER (PARTITION BY id_veiculo ORDER BY DATA DESC) rn
     FROM
         raw)
-SELECT
-    modo,
-    id_veiculo,
-    data_inicio_vinculo,
-    CASE
-        WHEN DATA != DATE("{{ var('licenciamento_max_date') }}") THEN DATA
-    ELSE
-        NULL
-    END AS data_fim_vinculo,
-    ano_fabricacao,
-    carroceria,
-    data_ultima_vistoria,
-    id_carroceria,
-    id_chassi,
-    id_fabricante_chassi,
-    id_interno_carroceria,
-    id_planta,
-    indicador_ar_condicionado,
-    indicador_elevador,
-    indicador_usb,
-    indicador_wifi,
-    nome_chassi,
-    permissao,
-    placa,
-    quantidade_lotacao_pe,
-    quantidade_lotacao_sentado,
-    tipo_combustivel,
-    tipo_veiculo,
-    status,
-    timestamp_captura,
-FROM
-    treated
-WHERE
-    rn = 1
+    SELECT
+        modo,
+        id_veiculo,
+        data_inicio_vinculo,
+        CASE
+            WHEN DATA != DATE("{{ var('licenciamento_max_date') }}") THEN DATA
+        ELSE
+            NULL
+        END AS data_fim_vinculo,
+        ano_fabricacao,
+        carroceria,
+        data_ultima_vistoria,
+        id_carroceria,
+        id_chassi,
+        id_fabricante_chassi,
+        id_interno_carroceria,
+        id_planta,
+        indicador_ar_condicionado,
+        indicador_elevador,
+        indicador_usb,
+        indicador_wifi,
+        nome_chassi,
+        permissao,
+        placa,
+        quantidade_lotacao_pe,
+        quantidade_lotacao_sentado,
+        tipo_combustivel,
+        tipo_veiculo,
+        status,
+        timestamp_captura,
+    FROM
+        treated
+    WHERE
+        rn = 1
 {% endif -%}
