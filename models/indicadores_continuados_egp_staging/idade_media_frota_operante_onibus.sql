@@ -70,6 +70,7 @@ SELECT
   data,
   EXTRACT(YEAR FROM data) AS ano,
   EXTRACT(MONTH FROM data) AS mes,
+  "Ônibus" AS modo,
   ROUND(AVG(idade),2) AS idade_media_veiculo_mes,
   CURRENT_DATE() AS data_ultima_atualizacao,
   '{{ var("version") }}' as versao

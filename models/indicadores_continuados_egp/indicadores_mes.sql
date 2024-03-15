@@ -1,8 +1,8 @@
 {% set queries = [
     {"table": "passageiro_pagante", "indicator": "Passageiros pagantes por mês", "field": "quantidade_passageiro_pagante_mes"},
     {"table": "passageiro_gratuidade", "indicator": "Gratuidades por mês", "field": "quantidade_passageiro_gratuidade_mes"},
-    {"table": "frota_operante", "indicator": "Frota operante por mês", "field": "quantidade_veiculo_mes", "mode": "NULL"},
-    {"table": "idade_media_frota_operante_onibus", "indicator": "Idade média da frota operante por mês", "field": "idade_media_veiculo_mes", "mode": "NULL"}
+    {"table": "frota_operante", "indicator": "Frota operante por mês", "field": "quantidade_veiculo_mes"},
+    {"table": "idade_media_frota_operante_onibus", "indicator": "Idade média da frota operante por mês", "field": "idade_media_veiculo_mes"}
 ] %}
 
 {% for query in queries %}

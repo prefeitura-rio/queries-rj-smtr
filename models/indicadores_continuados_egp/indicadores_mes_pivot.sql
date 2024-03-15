@@ -3,6 +3,7 @@
 {% if execute %}
     {% set result = run_query("SELECT DISTINCT nome_indicador, modo FROM " ~ table_name) %}
     {% set indicadores_modos = {} %}
+    {% set total_indicators = namespace(value=0) %}
     {% for row in result %}
         {% set indicador = row['nome_indicador'] %}
         {% set modo = row['modo'] %}
@@ -11,15 +12,16 @@
         {% else %}
             {% do indicadores_modos.update({indicador: [modo]}) %}
         {% endif %}
+        {% set total_indicators.value = total_indicators.value + 1 %}
     {% endfor %}
+
+    {% set outer_loop_iteration = namespace(value=0) %}
+
 {% endif %}
 
-{% set outer_loop_iteration = namespace(value=0) %}
-{% set total_indicators = indicadores_modos|length %}
-
 {% for indicador, modos in indicadores_modos.items() %}
-    {% set outer_loop_iteration.value = outer_loop_iteration.value + 1 %}
     {% for modo in modos %}
+    {% set outer_loop_iteration.value = outer_loop_iteration.value + 1 %}
     SELECT 
         "{{ indicador }}" AS indicador, 
         {% if modo %}"{{ modo }}"{% else %}NULL{% endif %} AS modo,
@@ -53,6 +55,6 @@
             12 Dezembro ) 
         )
     )
-    {% if outer_loop_iteration.value != total_indicators %}UNION ALL{% endif %}
+    {% if outer_loop_iteration.value != total_indicators.value %}UNION ALL{% endif %}
     {% endfor %}
 {% endfor %}
