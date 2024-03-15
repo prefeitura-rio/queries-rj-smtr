@@ -92,9 +92,6 @@ vars:
   ## GTFS
   data_versao_gtfs: "YYYY-MM-DD"
 
-  ## EGP
-  data_materializacao_egp: "YYYY-MM-DD"
-
   ### Subsídio SPPO (Ônibus) ###
   buffer: 500 # distância em metros para buffer
   perc_conformidade_distancia_min: 0
