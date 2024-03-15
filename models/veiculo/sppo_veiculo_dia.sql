@@ -9,25 +9,49 @@
 
 WITH
   licenciamento AS (
-  SELECT
-    DATE("{{ var('run_date') }}") AS data,
-    id_veiculo,
-    placa,
-    tipo_veiculo,
-    indicador_ar_condicionado,
-    TRUE AS indicador_licenciado
-  FROM
-    {{ ref("sppo_licenciamento") }} --`rj-smtr`.`veiculo`.`sppo_licenciamento`
-  {%- if var("stu_data_versao") != "" %}
-  WHERE 
-    data = DATE("{{ var('stu_data_versao') }}")
+  {%- if var("run_date") >= "2024-03-01" %}
+    SELECT
+      DATE("{{ var('run_date') }}") AS data,
+      id_veiculo,
+      placa,
+      tipo_veiculo,
+      indicador_ar_condicionado,
+      TRUE AS indicador_licenciado,
+      CASE
+        WHEN data_ultima_vistoria IS NULL AND DATE_DIFF(DATE("{{ var('run_date') }}"), data_inicio_vinculo, DAY) <= 10 THEN TRUE 
+        WHEN data_ultima_vistoria > "31-12-2022" THEN TRUE
+        WHEN s.id_veiculo IS NOT NULL THEN TRUE
+      ELSE
+        FALSE
+      END AS indicador_vistoriado
+    FROM
+      {{ ref("sppo_licenciamento_v2") }} AS l
+    LEFT JOIN
+      {{ ref("sppo_licenciamento_vistoria_solicitacao") }} AS s
+    USING
+      (id_veiculo)
   {% else -%}
-    {%- if execute %}
-        {% set licenciamento_date = run_query("SELECT MIN(data) FROM " ~ ref("sppo_licenciamento") ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 5 DAY)").columns[0].values()[0] %}
-    {% endif -%}
-  WHERE 
-    data = DATE("{{ licenciamento_date }}")
-  {% endif -%}  
+    SELECT
+      DATE("{{ var('run_date') }}") AS data,
+      id_veiculo,
+      placa,
+      tipo_veiculo,
+      indicador_ar_condicionado,
+      TRUE AS indicador_licenciado,
+      NULL AS indicador_vistoriado
+    FROM
+      {{ ref("sppo_licenciamento") }} --`rj-smtr`.`veiculo`.`sppo_licenciamento`
+    {%- if var("stu_data_versao") != "" %}
+    WHERE 
+      data = DATE("{{ var('stu_data_versao') }}")
+    {% else -%}
+      {%- if execute %}
+          {% set licenciamento_date = run_query("SELECT MIN(data) FROM " ~ ref("sppo_licenciamento") ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 5 DAY)").columns[0].values()[0] %}
+      {% endif -%}
+    WHERE 
+      data = DATE("{{ licenciamento_date }}")
+    {% endif -%}  
+  {% endif -%}
   ),
   gps AS (
   SELECT
@@ -60,6 +84,19 @@ WITH
       {{ ref("sppo_registro_agente_verao") }}
     WHERE
       data = DATE("{{ var('run_date') }}") ),
+  vistoria AS (
+  SELECT
+    id_veiculo
+  FROM
+    {{ ref("sppo_licenciamento_vistoria_solicitacao") }}
+  WHERE
+  {%- if execute %}
+    {% set infracao_date = run_query("SELECT MIN(data) FROM " ~ ref("sppo_infracao") ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 7 DAY)").columns[0].values()[0] %}
+  {% endif -%}
+    data = DATE("{{ infracao_date }}")
+    AND data_infracao = DATE("{{ var('run_date') }}")
+    AND modo = "ONIBUS"
+  ),
   autuacao_ar_condicionado AS (
   SELECT
     data,
@@ -158,6 +195,7 @@ WITH
     data,
     id_veiculo,
     STRUCT( COALESCE(l.indicador_licenciado, FALSE)                     AS indicador_licenciado,
+            COALESCE(l.indicador_vistoriado, FALSE)                     AS indicador_vistoriado,
             COALESCE(l.indicador_ar_condicionado, FALSE)                AS indicador_ar_condicionado,
             COALESCE(a.indicador_autuacao_ar_condicionado, FALSE)       AS indicador_autuacao_ar_condicionado,
             COALESCE(a.indicador_autuacao_seguranca, FALSE)             AS indicador_autuacao_seguranca,
@@ -192,6 +230,7 @@ LEFT JOIN
   {{ ref("subsidio_parametros") }} AS p --`rj-smtr.dashboard_subsidio_sppo.subsidio_parametros` 
 ON
   gla.indicadores.indicador_licenciado = p.indicador_licenciado
+  AND gla.indicadores.indicador_vistoriado = p.indicador_vistoriado
   AND gla.indicadores.indicador_ar_condicionado = p.indicador_ar_condicionado
   AND gla.indicadores.indicador_autuacao_ar_condicionado = p.indicador_autuacao_ar_condicionado
   AND gla.indicadores.indicador_autuacao_seguranca = p.indicador_autuacao_seguranca
