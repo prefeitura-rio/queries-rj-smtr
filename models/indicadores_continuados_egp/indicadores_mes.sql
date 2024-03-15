@@ -1,57 +1,18 @@
+{% set queries = [
+    {"table": "passageiro_pagante", "indicator": "Passageiros pagantes por mês", "field": "quantidade_passageiro_pagante_mes"},
+    {"table": "passageiro_gratuidade", "indicator": "Gratuidades por mês", "field": "quantidade_passageiro_gratuidade_mes"},
+    {"table": "frota_operante", "indicator": "Frota operante por mês", "field": "quantidade_veiculo_mes", "mode": "NULL"},
+    {"table": "idade_media_frota_operante_onibus", "indicator": "Idade média da frota operante por mês", "field": "idade_media_veiculo_mes", "mode": "NULL"}
+] %}
 
+{% for query in queries %}
 SELECT 
     ano,
     mes,
-    modo,
-    "Indicador de passageiros pagantes por mês" AS nome_indicador,
-    quantidade_passageiro_pagante_mes AS valor
-FROM {{ref ("passageiro_pagante_onibus")}}
-
-UNION ALL
-
-SELECT 
-    ano,
-    mes,
-    modo,
-    "Indicador de passageiros pagantes por mês" AS nome_indicador,
-    quantidade_passageiro_pagante_mes AS valor,
-FROM {{ref ("passageiro_pagante_brt")}}
-
-UNION ALL
-
-SELECT
-    ano,
-    mes,
-    modo,
-    "Indicador de gratuidade por mês" AS nome_indicador,
-    quantidade_passageiro_gratuidade_mes AS valor,
-FROM {{ref ("passageiro_gratuidade_onibus")}}
-
-UNION ALL
-SELECT 
-    ano,
-    mes,
-    modo,
-    "Indicador de gratuidade por mês" AS nome_indicador,
-    quantidade_passageiro_gratuidade_mes AS valor,
-FROM {{ref ("passageiro_gratuidade_brt")}}
-
-UNION ALL 
-
-SELECT 
-    ano,
-    mes,
-    NULL AS modo,
-    "Indicador de frota operante por mês" AS nome_indicador,
-    quantidade_veiculos_mes AS valor,
-FROM {{ref ("frota_operante_onibus")}}
-
-UNION ALL
-
-SELECT
-    ano,
-    mes,
-    NULL AS modo,
-    "Indicador de idade média da frota por mês" AS nome_indicador,
-    idade_media_veiculos_mes AS valor,
-FROM {{ref ("idade_media_frota")}}
+    {% if query.mode is defined %}NULL{% else %}modo{% endif %} AS modo,
+    "{{ query.indicator }}" AS nome_indicador,
+    {{ query.field }} AS valor,
+    data_ultima_atualizacao
+FROM {{ ref(query.table) }}
+{% if not loop.last %}UNION ALL{% endif %}
+{% endfor %}
