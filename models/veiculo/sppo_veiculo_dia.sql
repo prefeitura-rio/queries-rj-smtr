@@ -1,10 +1,17 @@
 {{
-    config(
-        materialized="incremental",
-        partition_by={"field": "data", "data_type": "date", "granularity": "day"},
-        unique_key=["data", "id_veiculo"],
-        incremental_strategy="insert_overwrite",
-    )
+  config(
+    materialized="incremental",
+    partition_by={
+      "field": "data", 
+      "data_type": "date", 
+      "granularity": "day"
+    },
+    unique_key=[
+      "data", 
+      "id_veiculo"
+    ],
+    incremental_strategy="merge",
+  )
 }}
 
 WITH
@@ -84,19 +91,6 @@ WITH
       {{ ref("sppo_registro_agente_verao") }}
     WHERE
       data = DATE("{{ var('run_date') }}") ),
-  vistoria AS (
-  SELECT
-    id_veiculo
-  FROM
-    {{ ref("sppo_licenciamento_vistoria_solicitacao") }}
-  WHERE
-  {%- if execute %}
-    {% set infracao_date = run_query("SELECT MIN(data) FROM " ~ ref("sppo_infracao") ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 7 DAY)").columns[0].values()[0] %}
-  {% endif -%}
-    data = DATE("{{ infracao_date }}")
-    AND data_infracao = DATE("{{ var('run_date') }}")
-    AND modo = "ONIBUS"
-  ),
   autuacao_ar_condicionado AS (
   SELECT
     data,
