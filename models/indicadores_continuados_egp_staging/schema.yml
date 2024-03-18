@@ -1,0 +1,88 @@
+version: 2
+
+models:
+  - name: frota_operante
+    description: "Indicador de frota operante por mês"
+    columns:
+      - name: data
+        description: "Data de referência para partição"
+      - name: ano
+        description: "Ano de apuração do indicador"
+      - name: mes
+        description: "Mês de apuração do indicador"
+      - name: modo
+        description: "Modo de transporte"
+      - name: quantidade_veiculo_mes
+        description: "Quantidade de veículos operantes no mês"
+      - name: data_ultima_atualizacao
+        description: "Data da última atualização do indicador"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: idade_media_frota_licenciada
+    description: "Indicador de idade média da frota licenciada por mês"
+    columns:
+      - name: data
+        description: "Data de referência para apuração (partição)"
+      - name: ano
+        description: "Ano de apuração do indicador"
+      - name: mes
+        description: "Mês de apuração do indicador"
+      - name: modo
+        description: "Modo de transporte"
+      - name: idade_media_veiculo_mes
+        description: "Indicador de idade média da frota licenciada por mês"
+      - name: data_ultima_atualizacao
+        description: "Data da última atualização do indicador"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: idade_media_frota_operante_onibus
+    description: "Indicador de idade média da frota operante por mês"
+    columns:
+      - name: data
+        description: "Data de referência para partição"
+      - name: ano
+        description: "Ano de apuração do indicador"
+      - name: mes
+        description: "Mês de apuração do indicador"
+      - name: modo
+        description: "Modo de transporte"
+      - name: idade_media_veiculo_mes
+        description: "Indicador de idade média da frota operante por mês"
+      - name: data_ultima_atualizacao
+        description: "Data da última atualização do indicador"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: passageiro_gratuidade
+    description: "Indicador de gratuidades por mês"
+    columns:
+      - name: data
+        description: "Data de referência para partição"
+      - name: ano
+        description: "Ano de apuração do indicador"
+      - name: mes
+        description: "Mês de apuração do indicador"
+      - name: modo
+        description: "Modo de transporte (se aplicável)"
+      - name: quantidade_passageiro_gratuidade_mes
+        description: "Indicador de gratuidades por mês"
+      - name: data_ultima_atualizacao
+        description: "Data da última atualização do indicador"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: passageiro_pagante
+    description: "Indicador de passageiros pagantes por mês"
+    columns:
+      - name: data
+        description: "Data de referência para partição"
+      - name: ano
+        description: "Ano de apuração do indicador"
+      - name: mes
+        description: "Mês de apuração do indicador"
+      - name: modo
+        description: "Modo de transporte (se aplicável)"
+      - name: quantidade_passageiro_pagante_mes
+        description: "Indicador de passageiros pagantes por mês"
+      - name: data_ultima_atualizacao
+        description: "Data da última atualização do indicador"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"

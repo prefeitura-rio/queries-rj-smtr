@@ -69,4 +69,11 @@ sources:
     tables:
       - name: rho_registros_sppo
       - name: rho5_registros_stpl
-  
+
+  - name: br_rj_riodejaneiro_rdo
+    database: rj-smtr
+
+    tables:
+      - name: rdo40_tratado
+
+
