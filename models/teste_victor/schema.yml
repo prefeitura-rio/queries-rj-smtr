@@ -1,0 +1,30 @@
+version: 2
+
+models:
+  - name: horario_chegada_stops
+    description: "Horários de chegada nas paradas ao longo do dia para a rota 457 sentido ida"
+    columns:
+      - name: feed_start_date
+        description: "(Partição) Data inicial do feed (versão)."
+      - name: data
+        description: "Data da viagem"
+      - name: service_id
+        description: "Identifica um conjunto de datas em que o serviço está disponível para uma ou mais rotas."
+      - name: route_id
+        description: "Identifica uma rota."
+      - name: route_short_name
+        description: "Nome abreviado de uma rota."
+      - name: trip_id
+        description: "Identifica uma viagem."
+      - name: direction_id
+        description: "Indica a direção de deslocamento de uma viagem. "
+      - name: datetime_trip_start
+        description: "Horário de saída da viajem"
+      - name: stop_id
+        description: "Identifica uma localização: paragem/plataforma, estação, entrada/saída, nó genérico ou área de embarque "
+      - name: datetime_stop_arrival
+        description: "Horário de chegada no local"
+      - name: stop_name
+        description: "Nome do local."
+      - name: stop_location
+        description: "Posição geografica do local"

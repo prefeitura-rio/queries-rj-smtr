@@ -1,15 +1,24 @@
+{{
+  config(
+    partition_by={
+      "field":"data",
+      "data_type":"date",
+      "granularity": "day"
+    }
+  )
+}}
 
 {% if execute %}
-  {% set gratuidade_partitions_query %}
+  {% set feed_start_date_query %}
     SELECT 
       MAX(feed_start_date) as last_feed_start_date
     FROM 
-      rj-smtr.gtfs.agency
+      rj-smtr.gtfs.feed_info
     WHERE
       feed_start_date < DATE("{{ var( 'run_date' ) }}")
   {% endset %}
   
-  {% set last_feed_start_date = run_query(gratuidade_partitions_query)[0].values() %}
+  {% set last_feed_start_date = run_query(feed_start_date_query)[0].values()[0] %}
 {% endif %}
 
 with cte_service_ids_today AS (
@@ -28,7 +37,7 @@ with cte_service_ids_today AS (
         OR (EXTRACT(DAYOFWEEK FROM  DATE("{{ var( 'run_date' ) }}") ) = 7 AND saturday = "1")
         OR (EXTRACT(DAYOFWEEK FROM  DATE("{{ var( 'run_date' ) }}") ) = 1 AND sunday = "1")
       )
-    AND feed_start_date = {{ last_feed_start_date }}
+    AND feed_start_date = "{{ last_feed_start_date }}"
 ),
 cte_trips_today AS (
   SELECT 
@@ -41,7 +50,7 @@ cte_trips_today AS (
     DATETIME_ADD(
       DATETIME_ADD(
         DATETIME_ADD(
-          DATE_TRUNC(DATE("{{ var( 'run_date' ) }}"), DAY), 
+          DATE_TRUNC(DATETIME("{{ var( 'run_date' ) }}"), DAY), 
           INTERVAL CAST(SPLIT(start_time, ':')[OFFSET(0)] AS INT64) HOUR
         ), 
         INTERVAL CAST(SPLIT(start_time, ':')[OFFSET(1)] AS INT64) MINUTE
@@ -52,7 +61,7 @@ cte_trips_today AS (
     DATETIME_ADD(
       DATETIME_ADD(
         DATETIME_ADD(
-          DATE_TRUNC(DATE("{{ var( 'run_date' ) }}"), DAY), 
+          DATE_TRUNC(DATETIME("{{ var( 'run_date' ) }}"), DAY), 
           INTERVAL CAST(SPLIT(end_time, ':')[OFFSET(0)] AS INT64) HOUR
         ), 
         INTERVAL CAST(SPLIT(end_time, ':')[OFFSET(1)] AS INT64) MINUTE
@@ -66,9 +75,9 @@ cte_trips_today AS (
     JOIN rj-smtr.gtfs.routes AS r ON t.route_id = r.route_id 
     JOIN cte_service_ids_today AS sit ON t.service_id = sit.service_id
   WHERE 
-    t.feed_start_date = {{ last_feed_start_date }} 
-    AND f.feed_start_date = {{ last_feed_start_date }}
-    AND r.feed_start_date = {{ last_feed_start_date }}
+    t.feed_start_date = "{{ last_feed_start_date }}" 
+    AND f.feed_start_date = "{{ last_feed_start_date }}"
+    AND r.feed_start_date = "{{ last_feed_start_date }}"
     AND t.direction_id = "0"
     AND r.route_short_name = "457"
 ),
@@ -81,7 +90,7 @@ cte_planned_trips_timestamp_array AS (
     direction_id,
     GENERATE_TIMESTAMP_ARRAY(
       CAST(datetime_trip_start AS TIMESTAMP),
-      DATETIME_ADD(CAST(datetime_trip_end AS TIMESTAMP), INTERVAL -headway_secs SECOND),
+      DATETIME_SUB(CAST(datetime_trip_end AS TIMESTAMP), INTERVAL 1 SECOND),
       INTERVAL headway_secs SECOND
     ) AS datetime_trip_start_array
   FROM
@@ -115,12 +124,12 @@ cte_trip_stops AS (
       JOIN cte_trips_today AS tt ON st.trip_id = tt.trip_id
       JOIN rj-smtr.gtfs.stops AS s ON st.stop_id = s.stop_id
     WHERE 
-        st.feed_start_date = {{ last_feed_start_date }}
-        AND s.feed_start_date = {{ last_feed_start_date }}
+        st.feed_start_date = "{{ last_feed_start_date }}"
+        AND s.feed_start_date = "{{ last_feed_start_date }}"
 ),
 cte_final AS (
   SELECT 
-    {{ last_feed_start_date }} AS feed_start_date,
+    "{{ last_feed_start_date }}" AS feed_start_date,
     DATE("{{ var( 'run_date' ) }}") AS data,
     ptde.service_id,
     ptde.route_id,

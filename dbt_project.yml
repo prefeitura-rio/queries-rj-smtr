@@ -224,3 +224,5 @@ models:
       +schema: gtfs
     teste_victor:
       +schema: teste_victor
+      +materialized: incremental
+      +incremental_strategy: insert_overwrite
