@@ -9,7 +9,7 @@
 
 SELECT 
   fi.feed_version,
-  SAFE_CAST(sdata_versao AS DATE) as feed_start_date,
+  SAFE_CAST(s.data_versao AS DATE) as feed_start_date,
   fi.feed_end_date,
   SAFE_CAST(s.shape_id AS STRING) shape_id,
   SAFE_CAST(JSON_VALUE(s.content, '$.shape_pt_lat') AS FLOAT64) shape_pt_lat,
@@ -22,7 +22,7 @@ FROM
 JOIN 
   {{ ref('feed_info_gtfs2') }} fi 
 ON 
-  s.data_versao = fi.feed_start_date
+  s.data_versao = CAST(fi.feed_start_date AS STRING)
 {% if is_incremental() -%}
   WHERE 
     s.data_versao = '{{ var("data_versao_gtfs") }}'

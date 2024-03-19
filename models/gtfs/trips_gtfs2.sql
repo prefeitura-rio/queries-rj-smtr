@@ -30,7 +30,7 @@ FROM
 JOIN
     {{ ref('feed_info_gtfs2') }} fi 
 ON 
-    t.data_versao = fi.feed_start_date
+    t.data_versao = CAST(fi.feed_start_date AS STRING)
 {% if is_incremental() -%}
     WHERE 
         t.data_versao = '{{ var("data_versao_gtfs") }}'

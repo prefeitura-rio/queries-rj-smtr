@@ -42,7 +42,7 @@ WITH ordem_servico AS (
   JOIN
     {{ ref('feed_info_gtfs2') }} fi 
   ON 
-    os.data_versao = fi.feed_start_date
+    os.data_versao = CAST(fi.feed_start_date AS STRING)
   {% if is_incremental() -%}
     WHERE 
       os.data_versao = '{{ var("data_versao_gtfs") }}'
