@@ -25,5 +25,5 @@ SELECT
 FROM
   {{ var('sppo_registro_agente_verao_staging') }}
 WHERE
-  data = (SELECT MAX(data) FROM rj-smtr-staging.veiculo_staging.sppo_registro_agente_verao)
+  data = (SELECT MAX(data) FROM {{ var('sppo_registro_agente_verao_staging') }} WHERE SAFE_CAST(data AS DATE) >= DATE_ADD(DATE("{{ var('run_date') }}"), INTERVAL 5 DAY))
   AND SAFE_CAST(JSON_VALUE(content,'$.validacao') AS BOOL) = TRUE

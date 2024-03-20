@@ -6,11 +6,7 @@
       "data_type": "date", 
       "granularity": "day"
     },
-    unique_key=[
-      "data", 
-      "id_veiculo"
-    ],
-    incremental_strategy="merge",
+    incremental_strategy="insert_overwrite",
   )
 }}
 
@@ -20,14 +16,15 @@ WITH
     SELECT
       DATE("{{ var('run_date') }}") AS data,
       id_veiculo,
-      placa,
+      l.placa,
       tipo_veiculo,
       indicador_ar_condicionado,
       TRUE AS indicador_licenciado,
       CASE
         WHEN data_ultima_vistoria IS NULL AND DATE_DIFF(DATE("{{ var('run_date') }}"), data_inicio_vinculo, DAY) <= 10 THEN TRUE 
-        WHEN data_ultima_vistoria > "31-12-2022" THEN TRUE
+        WHEN data_ultima_vistoria > "2022-12-31" THEN TRUE
         WHEN s.id_veiculo IS NOT NULL THEN TRUE
+        WHEN DATE("{{ var('run_date') }}") > data_fim_vinculo THEN FALSE -- > OU >=? | Deve afetar o indicador_vistoriado ou o indicador_licenciado?
       ELSE
         FALSE
       END AS indicador_vistoriado
@@ -189,7 +186,9 @@ WITH
     data,
     id_veiculo,
     STRUCT( COALESCE(l.indicador_licenciado, FALSE)                     AS indicador_licenciado,
+            {%- if var("run_date") >= "2024-03-01" %}
             COALESCE(l.indicador_vistoriado, FALSE)                     AS indicador_vistoriado,
+            {%- endif %}
             COALESCE(l.indicador_ar_condicionado, FALSE)                AS indicador_ar_condicionado,
             COALESCE(a.indicador_autuacao_ar_condicionado, FALSE)       AS indicador_autuacao_ar_condicionado,
             COALESCE(a.indicador_autuacao_seguranca, FALSE)             AS indicador_autuacao_seguranca,
@@ -224,7 +223,9 @@ LEFT JOIN
   {{ ref("subsidio_parametros") }} AS p --`rj-smtr.dashboard_subsidio_sppo.subsidio_parametros` 
 ON
   gla.indicadores.indicador_licenciado = p.indicador_licenciado
+  {%- if var("run_date") >= "2024-03-01" %}
   AND gla.indicadores.indicador_vistoriado = p.indicador_vistoriado
+  {%- endif %}
   AND gla.indicadores.indicador_ar_condicionado = p.indicador_ar_condicionado
   AND gla.indicadores.indicador_autuacao_ar_condicionado = p.indicador_autuacao_ar_condicionado
   AND gla.indicadores.indicador_autuacao_seguranca = p.indicador_autuacao_seguranca
