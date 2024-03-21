@@ -98,7 +98,7 @@ models:
       - name: tipo_recurso
         description: "Tipo de recurso"
       - name: servico
-        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...)"
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 006, 010, ...)"
   - name: recursos_sppo_servico_dia_pago
     description: "recursos_sppo_servico_dia_pago"
     columns:
@@ -117,6 +117,6 @@ models:
       - name: consorcio
         description: "Nome do consórcio"
       - name: servico
-        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...)"
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 006, 010, ...)"
       - name: valor_pago
         description: "Valor pago devido ao recurso"

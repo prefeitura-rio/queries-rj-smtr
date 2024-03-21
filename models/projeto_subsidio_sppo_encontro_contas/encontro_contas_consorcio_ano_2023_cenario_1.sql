@@ -1,6 +1,11 @@
+-- depends_on: {{ ref('recursos_sppo_servico_dia_pago') }}
 {{ config(
   materialized = "table",
 ) }}
+
+{% if execute %}
+  {% set lista_datas_remover = run_query("SELECT DISTINCT DATA FROM " ~ ref('recursos_sppo_servico_dia_pago') ~ " WHERE servico = 'Todos'").columns[0].values() %}
+{% endif %}
 
 WITH
   recurso AS (
@@ -26,15 +31,10 @@ WITH
       {{ ref("sumario_servico_dia_historico") }}
     WHERE
       DATA BETWEEN "2023-01-01"
-      AND "2023-11-30"
+      AND "2023-12-31"
       AND DATA NOT IN ("2022-10-02",
         "2022-10-30",
-        "2023-02-17",
-        "2023-02-18",
-        "2023-02-19",
-        "2023-02-20",
-        "2023-02-21",
-        "2023-02-22") ) s
+        '{{ lista_datas_remover|join("', '") }}') ) s
   LEFT JOIN
     recurso r
   USING
@@ -62,7 +62,7 @@ WITH
       {{ ref("sumario_servico_tipo_viagem_dia") }}
     WHERE
       DATA BETWEEN "2023-01-01"
-      AND "2023-11-30") s
+      AND "2023-12-31") s
   LEFT JOIN (
     SELECT
       DISTINCT data_inicio,
@@ -135,15 +135,10 @@ WITH
       {{ source("br_rj_riodejaneiro_rdo", "rdo40_tratado") }}
     WHERE
       DATA BETWEEN DATE("2023-01-01")
-      AND DATE("2023-11-30")
+      AND DATE("2023-12-31")
       AND DATA NOT IN ("2022-10-02",
         "2022-10-30",
-        "2023-02-17",
-        "2023-02-18",
-        "2023-02-19",
-        "2023-02-20",
-        "2023-02-21",
-        "2023-02-22")
+        '{{ lista_datas_remover|join("', '") }}')
     GROUP BY
       1,
       2,

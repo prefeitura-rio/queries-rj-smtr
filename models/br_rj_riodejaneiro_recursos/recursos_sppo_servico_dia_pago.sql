@@ -41,8 +41,7 @@ WITH
   FROM
     {{ source("br_rj_riodejaneiro_recursos_staging", "recursos_sppo_servico_dia_pago") }}
   WHERE
-    tipo_recurso NOT IN ("Tipo de Recurso")
-    AND DATA NOT LIKE "%-%" )
+    DATA NOT LIKE "%-%" )
 SELECT
   data,
   tipo_dia,
