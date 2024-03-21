@@ -87,3 +87,36 @@ models:
           description: Data e hora de fim da viagem
         - name: data_julgamento
           description: Data do julgamento
+
+  - name: recursos_sppo_servico_dia_avaliacao
+    description: "recursos_sppo_servico_dia_avaliacao"
+    columns:
+      - name: data
+        description: "Data da viagem"
+      - name: id_recurso
+        description: "Número de ID do recurso"
+      - name: tipo_recurso
+        description: "Tipo de recurso"
+      - name: servico
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...)"
+  - name: recursos_sppo_servico_dia_pago
+    description: "recursos_sppo_servico_dia_pago"
+    columns:
+      - name: data
+        description: "Data da viagem"
+      - name: tipo_dia
+        description: "Tipo de dia (ex.: dia útil, sábado, domingo ou ponto facultativo)"
+      - name: id_recurso
+        description: "Número de ID do recurso"
+      - name: tipo_recurso
+        description: "Tipo de recurso"
+      - name: quinzena_ocorrencia
+        description: "Quinzena de ocorrência do recurso"
+      - name: quinzena_pagamento
+        description: "Quinzena de pagamento do recurso"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: servico
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...)"
+      - name: valor_pago
+        description: "Valor pago devido ao recurso"
