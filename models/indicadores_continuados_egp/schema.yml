@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: indicadores_mes
+    description: "Indicadores mensais vinculados ao Escritório de Gerenciamento de Projetos e de Metas (EGP-Rio)"
+    columns:
+      - name: ano
+        description: "Ano de apuração do indicador"
+      - name: mes
+        description: "Mês de apuração do indicador"
+      - name: modo
+        description: "Modo de transporte (quando aplicável)"
+      - name: nome_indicador
+        description: "Nome do indicador"
+      - name: valor
+        description: "Valor do indicador"
+      - name: data_ultima_atualizacao
+        description: "Data da última atualização do indicador"

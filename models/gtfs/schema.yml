@@ -17,7 +17,11 @@ models:
       - name: agency_lang
         description: "Idioma principal usado por esta agência de transporte público."
       - name: feed_start_date
-        description: "Data de referência do feed (versão)."
+        description: "(Partição) Data inicial do feed (versão)."
+      - name: feed_end_date
+        description: "Data final do feed (versão)."
+      - name: feed_version
+        description: "String que indica a versão atual do conjunto de dados gtfs."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -45,7 +49,11 @@ models:
       - name: end_date
         description: "Finalize o dia de serviço para o intervalo de serviço."
       - name: feed_start_date
-        description: "Data de referência do feed (versão)."
+        description: "(Partição) Data inicial do feed (versão)."
+      - name: feed_end_date
+        description: "Data final do feed (versão)."
+      - name: feed_version
+        description: "String que indica a versão atual do conjunto de dados gtfs."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -59,7 +67,11 @@ models:
       - name: exception_type
         description: "Indica se o serviço está disponível na data especificada no campo de data."
       - name: feed_start_date
-        description: "Data de referência do feed (versão)."
+        description: "(Partição) Data inicial do feed (versão)."
+      - name: feed_end_date
+        description: "Data final do feed (versão)."
+      - name: feed_version
+        description: "String que indica a versão atual do conjunto de dados gtfs."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -81,7 +93,11 @@ models:
       - name: transfer_duration
         description: "Período de tempo em segundos antes que uma transferência expire."
       - name: feed_start_date
-        description: "Data de referência do feed (versão)."
+        description: "(Partição) Data inicial do feed (versão)."
+      - name: feed_end_date
+        description: "Data final do feed (versão)."
+      - name: feed_version
+        description: "String que indica a versão atual do conjunto de dados gtfs."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -99,7 +115,11 @@ models:
       - name: contains_id
         description: "Identifica as zonas nas quais um passageiro entrará ao usar uma determinada classe de tarifa."
       - name: feed_start_date
-        description: "Data de referência do feed (versão)."
+        description: "(Partição) Data inicial do feed (versão)."
+      - name: feed_end_date
+        description: "Data final do feed (versão)."
+      - name: feed_version
+        description: "String que indica a versão atual do conjunto de dados gtfs."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -143,7 +163,11 @@ models:
       - name: exact_times
         description: "Indica o tipo de serviço para uma viagem."
       - name: feed_start_date
-        description: "Data de referência do feed (versão)."
+        description: "(Partição) Data inicial do feed (versão)."
+      - name: feed_end_date
+        description: "Data final do feed (versão)."
+      - name: feed_version
+        description: "String que indica a versão atual do conjunto de dados gtfs."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -177,7 +201,11 @@ models:
       - name: network_id
         description: "Identifica um grupo de rotas. Várias linhas em rotas.txt podem ter o mesmo network_id."
       - name: feed_start_date
-        description: "Data de referência do feed (versão)."
+        description: "(Partição) Data inicial do feed (versão)."
+      - name: feed_end_date
+        description: "Data final do feed (versão)."
+      - name: feed_version
+        description: "String que indica a versão atual do conjunto de dados gtfs."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -207,7 +235,11 @@ models:
       - name: shape_dist_traveled
         description: "Distância real percorrida ao longo da forma desde o primeiro ponto da forma até o ponto especificado neste registro."
       - name: feed_start_date
-        description: "Data de referência do feed (versão)."
+        description: "(Partição) Data inicial do feed (versão)."
+      - name: feed_end_date
+        description: "Data final do feed (versão)."
+      - name: feed_version
+        description: "String que indica a versão atual do conjunto de dados gtfs."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -245,7 +277,11 @@ models:
       - name: platform_code
         description: "Identificador de plataforma para uma parada de plataforma (uma parada pertencente a uma estação)."
       - name: feed_start_date
-        description: "Data de referência do feed (versão)."
+        description: "(Partição) Data inicial do feed (versão)."
+      - name: feed_end_date
+        description: "Data final do feed (versão)."
+      - name: feed_version
+        description: "String que indica a versão atual do conjunto de dados gtfs."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -277,7 +313,11 @@ models:
       - name: timepoint
         description: "Indica se os horários de chegada e saída de uma parada são rigorosamente respeitados pelo veículo ou se são horários aproximados e/ou interpolados."
       - name: feed_start_date
-        description: "Data de referência do feed (versão)."
+        description: "(Partição) Data inicial do feed (versão)."
+      - name: feed_end_date
+        description: "Data final do feed (versão)."
+      - name: feed_version
+        description: "String que indica a versão atual do conjunto de dados gtfs."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -305,7 +345,11 @@ models:
       - name: bikes_allowed
         description: "Indica se bicicletas são permitidas."
       - name: feed_start_date
-        description: "Data de referência do feed (versão)."
+        description: "(Partição) Data inicial do feed (versão)."
+      - name: feed_end_date
+        description: "Data final do feed (versão)."
+      - name: feed_version
+        description: "String que indica a versão atual do conjunto de dados gtfs."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -337,6 +381,10 @@ models:
       - name: tipo_dia
         description: "Tipo de dia, se dia útil, sábado, domingo ou ponto facultativo."
       - name: feed_start_date
-        description: "Data de referência do feed (versão)."
+        description: "(Partição) Data inicial do feed (versão)."
+      - name: feed_end_date
+        description: "Data final do feed (versão)."
+      - name: feed_version
+        description: "String que indica a versão atual do conjunto de dados gtfs."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
