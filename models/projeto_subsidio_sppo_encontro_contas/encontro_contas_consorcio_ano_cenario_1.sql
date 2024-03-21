@@ -7,6 +7,9 @@
   {% set lista_datas_remover = run_query("SELECT DISTINCT DATA FROM " ~ ref('recursos_sppo_servico_dia_pago') ~ " WHERE servico = 'Todos'").columns[0].values() %}
 {% endif %}
 
+{% set data_inicio = "2022-06-01" %}
+{% set data_fim = "2023-12-31" %}
+
 WITH
   recurso AS (
   SELECT
@@ -29,9 +32,10 @@ WITH
       valor_subsidio_pago AS subsidio
     FROM
       {{ ref("sumario_servico_dia_historico") }}
+      --`rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_dia_historico`
     WHERE
-      DATA BETWEEN "2023-01-01"
-      AND "2023-12-31"
+      DATA BETWEEN "{{ data_inicio }}"
+      AND "{{ data_fim }}"
       AND DATA NOT IN ("2022-10-02",
         "2022-10-30",
         '{{ lista_datas_remover|join("', '") }}') ) s
@@ -60,9 +64,10 @@ WITH
       km_apurada
     FROM
       {{ ref("sumario_servico_tipo_viagem_dia") }}
+      --`rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_tipo_viagem_dia`
     WHERE
-      DATA BETWEEN "2023-01-01"
-      AND "2023-12-31") s
+      DATA BETWEEN "{{ data_inicio }}"
+      AND "{{ data_fim }}") s
   LEFT JOIN (
     SELECT
       DISTINCT data_inicio,
@@ -134,8 +139,8 @@ WITH
     FROM
       {{ source("br_rj_riodejaneiro_rdo", "rdo40_tratado") }}
     WHERE
-      DATA BETWEEN DATE("2023-01-01")
-      AND DATE("2023-12-31")
+      DATA BETWEEN DATE("{{ data_inicio }}")
+      AND DATE("{{ data_fim }}")
       AND DATA NOT IN ("2022-10-02",
         "2022-10-30",
         '{{ lista_datas_remover|join("', '") }}')
