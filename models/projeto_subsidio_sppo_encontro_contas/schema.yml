@@ -90,7 +90,7 @@ models:
       - name: saldo_milhoes
         description: "Saldo total - R$ (milhões)"
   - name: encontro_contas_consorcio_dia_cenario_1
-    description: "Balanço da receita aferida e esperada considerando recursos já pagos e recursos em avaliação pela TR/SUBTT/CMO (recursos_sppo_servico_dia_pago + recursos_sppo_servico_dia_avaliacao) por consórcio e dia - Cenário 2"
+    description: "Balanço da receita aferida e esperada considerando apenas recursos já pagos (recursos_sppo_servico_dia_pago) por consórcio e mês - Cenário 1"
     columns:
       - name: data
         description: "Data"
@@ -111,7 +111,7 @@ models:
       - name: saldo
         description: "Saldo total - R$"
   - name: encontro_contas_consorcio_dia_cenario_2
-    description: "Sumário do encontro de contas por consórcio e dia - Cenário 2"
+    description: "Balanço da receita aferida e esperada considerando recursos já pagos e recursos em avaliação pela TR/SUBTT/CMO (recursos_sppo_servico_dia_pago + recursos_sppo_servico_dia_avaliacao) por consórcio e dia - Cenário 2"
     columns:
       - name: data
         description: "Data"
