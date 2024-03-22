@@ -48,6 +48,9 @@ WITH
       EXTRACT(year
       FROM
         DATA) AS ano,
+      EXTRACT(MONTH
+      FROM
+        DATA) AS mes,
       DATA,
       consorcio,
       servico,
@@ -93,6 +96,9 @@ WITH
     EXTRACT(year
     FROM
       DATA) AS ano,
+    EXTRACT(MONTH
+      FROM
+        DATA) AS mes,
     s.data,
     s.consorcio,
     s.servico,
@@ -135,10 +141,12 @@ WITH
     1,
     2,
     3,
-    4 ),
+    4,
+    5 ),
   esperado AS (
   SELECT
     s.ano,
+    s.mes,
     s.consorcio,
     SUM(km_apurada) AS km,
     SUM(subsidio) AS subsidio,
@@ -158,10 +166,12 @@ WITH
       servico)
   GROUP BY
     1,
-    2 ),
+    2,
+    3 ),
   rdo AS (
   SELECT
     rdo.ano,
+    rdo.mes,
     c.consorcio,
     SUM(rdo.remuneracao_tarifaria) AS remuneracao_tarifaria
   FROM (
@@ -169,6 +179,9 @@ WITH
       EXTRACT(year
       FROM
         DATA) AS ano,
+      EXTRACT(MONTH
+      FROM
+        DATA) AS mes,
       DATA,
       termo AS id_consorcio,
       CASE
@@ -190,7 +203,8 @@ WITH
       1,
       2,
       3,
-      4 ) rdo
+      4,
+      5 ) rdo
   INNER JOIN (
     SELECT
       consorcio,
@@ -219,9 +233,11 @@ WITH
     AND sd.servico IS NOT NULL
   GROUP BY
     1,
-    2 )
+    2,
+    3 )
 SELECT
   ano,
+  mes,
   consorcio,
   ROUND(km/POW(10,6), 2) km_milhoes,
   ROUND(remuneracao_tarifaria/POW(10,6), 2) remuneracao_tarifaria_milhoes,
@@ -240,7 +256,8 @@ FROM (
   FULL JOIN
     rdo
   USING
-    (ano,
+    ( ano,
+      mes,
       consorcio) )
 ORDER BY
   1,

@@ -17,6 +17,16 @@ WITH
     servico
   FROM
     {{ ref("encontro_contas_recursos_sppo_servico_dia_pago") }} ),
+  servico_dia_subsidio AS (
+    SELECT
+      data,
+      servico,
+    FROM
+      --{{ ref("sumario_servico_dia_historico") }}
+      `rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_dia_historico`
+    WHERE
+      perc_km_planejada >= 80
+  ),
   subsidio AS (
   SELECT
     s.*
@@ -29,16 +39,35 @@ WITH
       consorcio,
       servico,
       km_apurada AS km_apurada,
-      valor_subsidio_pago AS subsidio
+      valor_subsidio_pago AS subsidio,
+      (irk * km_apurada) AS receita_esperada,
     FROM
-      {{ ref("sumario_servico_dia_historico") }}
-      --`rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_dia_historico`
+      --{{ ref("sumario_servico_dia_historico") }}
+      `rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_dia_historico`
+    LEFT JOIN
+      (
+        SELECT DISTINCT
+          data_inicio,
+          data_fim,
+          irk
+        FROM
+          {{ source("projeto_subsidio_sppo_encontro_contas", "subsidio_parametros_atualizada") }}
+      ) AS p
+    ON
+    (data BETWEEN p.data_inicio
+      AND p.data_fim)
+    LEFT JOIN
+      servico_dia_subsidio AS sd
+    USING
+      (data,
+        servico)
     WHERE
       DATA BETWEEN "{{ data_inicio }}"
       AND "{{ data_fim }}"
       AND DATA NOT IN ("2022-10-02",
         "2022-10-30",
-        '{{ lista_datas_remover|join("', '") }}') ) s
+        '{{ lista_datas_remover|join("', '") }}') 
+      AND sd.servico IS NOT NULL) s
   LEFT JOIN
     recurso r
   USING
@@ -63,8 +92,8 @@ WITH
       tipo_viagem,
       km_apurada
     FROM
-      {{ ref("sumario_servico_tipo_viagem_dia") }}
-      --`rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_tipo_viagem_dia`
+      --{{ ref("sumario_servico_tipo_viagem_dia") }}
+      `rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_tipo_viagem_dia`
     WHERE
       DATA BETWEEN "{{ data_inicio }}"
       AND "{{ data_fim }}") s
@@ -100,7 +129,7 @@ WITH
     s.consorcio,
     SUM(km_apurada) AS km,
     SUM(subsidio) AS subsidio,
-    SUM(9.17 * km_apurada) AS receita_esperada,
+    SUM(receita_esperada) AS receita_esperada,
     SUM(desconto) AS desconto
   FROM
     subsidio s
@@ -154,7 +183,7 @@ WITH
       consorcio,
       id_consorcio
     FROM
-      rj-smtr.cadastro.consorcios
+      {{ ref("consorcios") }}
     WHERE
       consorcio IN ("Internorte",
         "Intersul",
@@ -167,8 +196,14 @@ WITH
   USING
     (DATA,
       servico)
+  LEFT JOIN
+    servico_dia_subsidio AS sd
+  USING
+    (data,
+      servico)  
   WHERE
     r.data IS NULL
+    AND sd.servico IS NOT NULL
   GROUP BY
     1,
     2 )
