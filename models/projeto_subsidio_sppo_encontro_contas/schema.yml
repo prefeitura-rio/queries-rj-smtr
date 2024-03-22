@@ -1,0 +1,166 @@
+version: 2
+
+models:
+  - name: encontro_contas_consorcio_ano_cenario_1
+    description: "Balanço da receita aferida e esperada por consórcio e ano - Cenário 1: Considerando apenas recursos pagos (recursos_sppo_servico_dia_pago)"
+    columns:
+      - name: ano
+        description: "Ano"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: km_milhoes
+        description: "Quilometragem apurada - km (milhões)"
+      - name: remuneracao_tarifaria_milhoes
+        description: "Remuneração tarifária - R$ (milhões)"
+      - name: subsidio_milhoes
+        description: "Subsídio apurado - R$ (milhões)"
+      - name: receita_aferida_milhoes
+        description: "Receita total aferida - R$ (milhões)"
+      - name: receita_esperada_milhoes
+        description: "Receita total esperada - R$ (milhões)"
+      - name: desconto_milhoes
+        description: "Desconto total - R$ (milhões)"
+      - name: saldo_milhoes
+        description: "Saldo total - R$ (milhões)"
+  - name: encontro_contas_consorcio_ano_cenario_2
+    description: "Balanço da receita aferida e esperada por consórcio e ano - Cenário 2: Considerando recursos pagos + recursos em avaliação pela TR/SUBTT/CMO (recursos_sppo_servico_dia_pago + recursos_sppo_servico_dia_avaliacao)"
+    columns:
+      - name: ano
+        description: "Ano"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: km_milhoes
+        description: "Quilometragem apurada - km (milhões)"
+      - name: remuneracao_tarifaria_milhoes
+        description: "Remuneração tarifária - R$ (milhões)"
+      - name: subsidio_milhoes
+        description: "Subsídio apurado - R$ (milhões)"
+      - name: receita_aferida_milhoes
+        description: "Receita total aferida - R$ (milhões)"
+      - name: receita_esperada_milhoes
+        description: "Receita total esperada - R$ (milhões)"
+      - name: desconto_milhoes
+        description: "Desconto total - R$ (milhões)"
+      - name: saldo_milhoes
+        description: "Saldo total - R$ (milhões)"
+  - name: encontro_contas_consorcio_mes_cenario_1
+    description: "Balanço da receita aferida e esperada por consórcio e mês - Cenário 1: Considerando apenas recursos pagos (recursos_sppo_servico_dia_pago)"
+    columns:
+      - name: ano
+        description: "Ano"
+      - name: mes
+        description: "Mês"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: km_milhoes
+        description: "Quilometragem apurada - km (milhões)"
+      - name: remuneracao_tarifaria_milhoes
+        description: "Remuneração tarifária - R$ (milhões)"
+      - name: subsidio_milhoes
+        description: "Subsídio apurado - R$ (milhões)"
+      - name: receita_aferida_milhoes
+        description: "Receita total aferida - R$ (milhões)"
+      - name: receita_esperada_milhoes
+        description: "Receita total esperada - R$ (milhões)"
+      - name: desconto_milhoes
+        description: "Desconto total - R$ (milhões)"
+      - name: saldo_milhoes
+        description: "Saldo total - R$ (milhões)"
+  - name: encontro_contas_consorcio_mes_cenario_2
+    description: "Balanço da receita aferida e esperada por consórcio e mês - Cenário 2: Considerando recursos pagos + recursos em avaliação pela TR/SUBTT/CMO (recursos_sppo_servico_dia_pago + recursos_sppo_servico_dia_avaliacao)"
+    columns:
+      - name: ano
+        description: "Ano"
+      - name: mes
+        description: "Mês"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: km_milhoes
+        description: "Quilometragem apurada - km (milhões)"
+      - name: remuneracao_tarifaria_milhoes
+        description: "Remuneração tarifária - R$ (milhões)"
+      - name: subsidio_milhoes
+        description: "Subsídio apurado - R$ (milhões)"
+      - name: receita_aferida_milhoes
+        description: "Receita total aferida - R$ (milhões)"
+      - name: receita_esperada_milhoes
+        description: "Receita total esperada - R$ (milhões)"
+      - name: desconto_milhoes
+        description: "Desconto total - R$ (milhões)"
+      - name: saldo_milhoes
+        description: "Saldo total - R$ (milhões)"
+  - name: encontro_contas_consorcio_dia_cenario_1
+    description: "Balanço da receita aferida e esperada por consórcio e dia - Cenário 1: Considerando apenas recursos pagos (recursos_sppo_servico_dia_pago)"
+    columns:
+      - name: data
+        description: "Data"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: km
+        description: "Quilometragem apurada - km"
+      - name: remuneracao_tarifaria
+        description: "Remuneração tarifária - R$"
+      - name: subsidio
+        description: "Subsídio apurado - R$"
+      - name: receita_aferida
+        description: "Receita total aferida - R$"
+      - name: receita_esperada
+        description: "Receita total esperada - R$"
+      - name: desconto
+        description: "Desconto total - R$"
+      - name: saldo
+        description: "Saldo total - R$"
+  - name: encontro_contas_consorcio_dia_cenario_2
+    description: "Balanço da receita aferida e esperada por consórcio e dia - Cenário 2: Considerando recursos pagos + recursos em avaliação pela TR/SUBTT/CMO (recursos_sppo_servico_dia_pago + recursos_sppo_servico_dia_avaliacao)"
+    columns:
+      - name: data
+        description: "Data"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: km
+        description: "Quilometragem apurada - km"
+      - name: remuneracao_tarifaria
+        description: "Remuneração tarifária - R$"
+      - name: subsidio
+        description: "Subsídio apurado - R$"
+      - name: receita_aferida
+        description: "Receita total aferida - R$"
+      - name: receita_esperada
+        description: "Receita total esperada - R$"
+      - name: desconto
+        description: "Desconto total - R$"
+      - name: saldo
+        description: "Saldo total - R$"
+  - name: subsidio_parametros_atualizada
+    description: "Parâmetros de remuneração do subsídio dos serviços de ônibus (SPPO) por tipo de viagem"
+    columns:
+      - name: indicador_licenciado
+        description: "Indicador se o veículo encontra-se licenciado"
+      - name: indicador_ar_condicionado
+        description: "Indicador se o veículo foi licenciado com ar condicionado"
+      - name: indicador_autuacao_ar_condicionado
+        description: "Indicador se o veículo foi autuado por inoperância ou mau funcionamento do sistema de ar condicionado"
+      - name: indicador_autuacao_seguranca
+        description: "Indicador se o veículo foi autuado por infração relacionada à segurança do veículo"
+      - name: indicador_autuacao_limpeza
+        description: "Indicador se o veículo foi autuado por infração relacionada à limpeza do veículo"
+      - name: indicador_autuacao_equipamento
+        description: "Indicador se o veículo foi autuado por infração relacionada à inoperância ou mau funcionamento de equipamentos do veículo"
+      - name: indicador_sensor_temperatura
+        description: "Indicador se o sensor de temperatura do veículo não estava em funcionamento conforme especificação da SMTR"
+      - name: indicador_validador_sbd
+        description: "Indicador se o veículo se encontra com o novo validador do Sistema de Bilhetagem Digital (SBD) instalado"
+      - name: status
+        description: "Classificação, observados os demais parâmetros para remuneração"
+      - name: subsidio_km
+        description: "Valor de subsídio de remuneração (R$/km)"
+      - name: irk
+        description: "Índice de Remuneração por km (R$/km)"
+      - name: data_inicio
+        description: "Data inicial do período de vigência dos demais atributos"
+      - name: data_fim
+        description: "Data final do período de vigência dos demais atributos"
+      - name: legislacao
+        description: "Legislação que estabelece o valor e regras de remuneração"
+      - name: ordem
+        description: "Ordem de prioridade de aplicação dos valores de remuneração"
