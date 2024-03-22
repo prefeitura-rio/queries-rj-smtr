@@ -26,5 +26,13 @@ SELECT
 FROM
   recursos_sppo_servico_dia_pago_agg
 WHERE
+  -- Quando o valor do recurso pago for $0, desconsidera-se o recurso, pois:
+    -- Recurso pode ter sido cancelado (pago e depois revertido)
+    -- Problema reporto não gerou impacto na operação (quando aparece apenas 1 vez)
   valor_pago != 0
-  AND tipo_recurso != "Algoritmo"
+  -- Desconsideram-se recursos do tipo "Algoritmo" (igual a apuração em produção, levantado pela TR/SUBTT/CMO) 
+  -- Desconsideram-se recursos do tipo "Viagem Individual" (não afeta serviço-dia)
+  AND tipo_recurso NOT IN ("Algoritmo", "Viagem Individual")
+  -- Desconsideram-se recursos de reprocessamento que já constam em produção
+  AND NOT (data BETWEEN "2022-06-01" AND "2022-06-30" 
+            AND tipo_recurso = "Reprocessamento")

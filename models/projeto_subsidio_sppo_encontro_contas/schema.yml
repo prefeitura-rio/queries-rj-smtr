@@ -1,8 +1,8 @@
 version: 2
 
 models:
-  - name: encontro_contas_consorcio_ano_2023_cenario_1
-    description: "Sumário Encontro de Contas por Consórcio - Cenário 1 (2023)"
+  - name: encontro_contas_consorcio_ano_cenario_1
+    description: "Sumário do encontro de contas por consórcio e ano - Cenário 1"
     columns:
       - name: ano
         description: "Ano"
@@ -20,10 +20,10 @@ models:
         description: "Receita total esperada - R$ (milhões)"
       - name: desconto_milhoes
         description: "Desconto total - R$ (milhões)"
-      - name: saldo
+      - name: saldo_milhoes
         description: "Saldo total - R$ (milhões)"
-  - name: encontro_contas_consorcio_ano_2023_cenario_2
-    description: "Sumário Encontro de Contas por Consórcio - Cenário 0 (2023)"
+  - name: encontro_contas_consorcio_ano_cenario_2
+    description: "Sumário do encontro de contas por consórcio e ano - Cenário 2"
     columns:
       - name: ano
         description: "Ano"
@@ -41,8 +41,96 @@ models:
         description: "Receita total esperada - R$ (milhões)"
       - name: desconto_milhoes
         description: "Desconto total - R$ (milhões)"
-      - name: saldo
+      - name: saldo_milhoes
         description: "Saldo total - R$ (milhões)"
+  - name: encontro_contas_consorcio_mes_cenario_1
+    description: "Sumário do encontro de contas por consórcio e mês - Cenário 1"
+    columns:
+      - name: ano
+        description: "Ano"
+      - name: mes
+        description: "Mês"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: km_milhoes
+        description: "Quilometragem apurada - km (milhões)"
+      - name: remuneracao_tarifaria_milhoes
+        description: "Remuneração tarifária - R$ (milhões)"
+      - name: subsidio_milhoes
+        description: "Subsídio apurado - R$ (milhões)"
+      - name: receita_aferida_milhoes
+        description: "Receita total aferida - R$ (milhões)"
+      - name: receita_esperada_milhoes
+        description: "Receita total esperada - R$ (milhões)"
+      - name: desconto_milhoes
+        description: "Desconto total - R$ (milhões)"
+      - name: saldo_milhoes
+        description: "Saldo total - R$ (milhões)"
+  - name: encontro_contas_consorcio_mes_cenario_2
+    description: "Sumário do encontro de contas por consórcio e mês - Cenário 2"
+    columns:
+      - name: ano
+        description: "Ano"
+      - name: mes
+        description: "Mês"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: km_milhoes
+        description: "Quilometragem apurada - km (milhões)"
+      - name: remuneracao_tarifaria_milhoes
+        description: "Remuneração tarifária - R$ (milhões)"
+      - name: subsidio_milhoes
+        description: "Subsídio apurado - R$ (milhões)"
+      - name: receita_aferida_milhoes
+        description: "Receita total aferida - R$ (milhões)"
+      - name: receita_esperada_milhoes
+        description: "Receita total esperada - R$ (milhões)"
+      - name: desconto_milhoes
+        description: "Desconto total - R$ (milhões)"
+      - name: saldo_milhoes
+        description: "Saldo total - R$ (milhões)"
+  - name: encontro_contas_consorcio_dia_cenario_1
+    description: "Sumário do encontro de contas por consórcio e dia - Cenário 1"
+    columns:
+      - name: data
+        description: "Data"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: km
+        description: "Quilometragem apurada - km"
+      - name: remuneracao_tarifaria
+        description: "Remuneração tarifária - R$"
+      - name: subsidio
+        description: "Subsídio apurado - R$"
+      - name: receita_aferida
+        description: "Receita total aferida - R$"
+      - name: receita_esperada
+        description: "Receita total esperada - R$"
+      - name: desconto
+        description: "Desconto total - R$"
+      - name: saldo
+        description: "Saldo total - R$"
+  - name: encontro_contas_consorcio_dia_cenario_2
+    description: "Sumário do encontro de contas por consórcio e dia - Cenário 2"
+    columns:
+      - name: data
+        description: "Data"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: km
+        description: "Quilometragem apurada - km"
+      - name: remuneracao_tarifaria
+        description: "Remuneração tarifária - R$"
+      - name: subsidio
+        description: "Subsídio apurado - R$"
+      - name: receita_aferida
+        description: "Receita total aferida - R$"
+      - name: receita_esperada
+        description: "Receita total esperada - R$"
+      - name: desconto
+        description: "Desconto total - R$"
+      - name: saldo
+        description: "Saldo total - R$"
   - name: subsidio_parametros_atualizada
     description: "Parâmetros de remuneração do subsídio dos serviços de ônibus (SPPO) por tipo de viagem"
     columns:
@@ -63,13 +151,7 @@ models:
       - name: indicador_validador_sbd
         description: "Indicador se o veículo se encontra com o novo validador do Sistema de Bilhetagem Digital (SBD) instalado"
       - name: status
-        description: "Classificação, observados os demais parâmetros - Categorias:\n
-        - Não licenciado\n
-        - Autuado por ar inoperante\n
-        - Autuado por segurança\n
-        - Autuado por limpeza/equipamento\n
-        - Sem ar e não autuado\n
-        - Com ar e não autuado"
+        description: "Classificação, observados os demais parâmetros para remuneração"
       - name: subsidio_km
         description: "Valor de subsídio de remuneração (R$/km)"
       - name: irk
