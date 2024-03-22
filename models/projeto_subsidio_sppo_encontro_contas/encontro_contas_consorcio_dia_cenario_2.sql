@@ -10,7 +10,7 @@
 /* Cenário 2: Balanço da receita aferida e esperada por dia considerando recursos já pagos 
 e recursos em avaliação pela TR/SUBTT/CMO (recursos_sppo_servico_dia_pago + recursos_sppo_servico_dia_avaliacao) */
 
--- Quando houver um recurso pago para Todos os serviços, desconsiderar o dia
+-- Quando houver um recurso pago para todos os serviços, desconsiderar o dia
 {% if execute %}
   {% set lista_datas_remover = run_query("SELECT DISTINCT DATA FROM " ~ ref('recursos_sppo_servico_dia_pago') ~ " WHERE servico = 'Todos'").columns[0].values() %}
 {% endif %}

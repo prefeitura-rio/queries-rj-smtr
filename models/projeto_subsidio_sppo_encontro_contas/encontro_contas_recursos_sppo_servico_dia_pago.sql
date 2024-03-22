@@ -26,7 +26,7 @@ SELECT
 FROM
   recursos_sppo_servico_dia_pago_agg
 WHERE
-  -- Quando o valor do recurso pago for $0, desconsidera-se o recurso, pois:
+  -- Quando o valor do recurso pago for R$ 0, desconsidera-se o recurso, pois:
     -- Recurso pode ter sido cancelado (pago e depois revertido)
     -- Problema reporto não gerou impacto na operação (quando aparece apenas 1 vez)
   valor_pago != 0
