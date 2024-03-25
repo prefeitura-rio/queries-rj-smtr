@@ -151,6 +151,7 @@ SELECT
     CASE
         WHEN t.tipo_transacao_smtr = "Gratuidade" THEN t.tipo_gratuidade
         WHEN t.tipo_transacao_smtr = "Integração" THEN "Integração"
+        WHEN t.tipo_transacao_smtr = "Transferência" THEN "Transferência"
         ELSE t.tipo_pagamento
     END AS tipo_transacao_detalhe_smtr,
     t.quantidade_passageiros

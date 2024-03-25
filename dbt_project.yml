@@ -222,3 +222,13 @@ models:
       +materialized: incremental
       +incremental_strategy: insert_overwrite
       +schema: gtfs
+    indicadores_continuados_egp_staging:
+      +materialized: incremental
+      +incremental_strategy: insert_overwrite
+      +schema: indicadores_continuados_egp_staging
+    indicadores_continuados_egp:
+      +materialized: view
+      +schema: indicadores_continuados_egp
+    projeto_subsidio_sppo_encontro_contas:
+      +materialized: table
+      +schema: projeto_subsidio_sppo_encontro_contas

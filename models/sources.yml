@@ -56,6 +56,8 @@ sources:
       - name: recursos_sppo_viagens_individuais
       - name: recursos_sppo_bloqueio_via
       - name: recursos_sppo_reprocessamento
+      - name: recursos_sppo_servico_dia_avaliacao
+      - name: recursos_sppo_servico_dia_pago
   
   - name: cadastro
     database: rj-smtr
@@ -69,4 +71,17 @@ sources:
     tables:
       - name: rho_registros_sppo
       - name: rho5_registros_stpl
-  
+
+  - name: br_rj_riodejaneiro_rdo
+    database: rj-smtr
+
+    tables:
+      - name: rdo40_tratado
+
+  - name: projeto_subsidio_sppo_encontro_contas
+    database: rj-smtr
+
+    tables:
+      - name: subsidio_parametros_atualizada
+
+
