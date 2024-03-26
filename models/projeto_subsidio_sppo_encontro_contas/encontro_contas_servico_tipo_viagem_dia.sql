@@ -4,7 +4,7 @@
   )
 }}
 
--- Cópia do modelo `sumario_servico_tipo_viagem_dia`. Entretanto, não altera o tipo de viagem e considera apenas as viagens remuneradas
+-- Cópia do modelo `sumario_servico_tipo_viagem_dia`. Entretanto, considera apenas as viagens remuneradas (descontadas viagens acima do teto de 120%/200% - RESOLUÇÃO SMTR Nº 3645/2023)
 
 {% set data_fim = "2023-12-31" %}
 
