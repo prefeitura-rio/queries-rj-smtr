@@ -211,7 +211,8 @@ SELECT
 FROM
   gps_licenciamento_autuacao AS gla
 LEFT JOIN
-  {{ ref("subsidio_parametros") }} AS p --`rj-smtr.dashboard_subsidio_sppo.subsidio_parametros` 
+  {{ ref("subsidio_parametros") }} AS p
+  --`rj-smtr.dashboard_subsidio_sppo.subsidio_parametros` AS p
 ON
   gla.indicadores.indicador_licenciado = p.indicador_licenciado
   AND gla.indicadores.indicador_vistoriado = p.indicador_vistoriado

@@ -20,7 +20,7 @@
             "tipo_combustivel",
             "tipo_veiculo",
             "status",
-            "ultima_timestamp_captura",
+            "timestamp_ultima_captura",
             "versao",
             "datetime_ultima_atualizacao"
         ]
