@@ -20,4 +20,4 @@ SELECT
   SAFE_CAST(JSON_VALUE(content,"$.guia") AS STRING) AS guia,
   SAFE_CAST(JSON_VALUE(content,"$.data_ultima_vistoria") AS DATE) AS data_ultima_vistoria
 FROM
-  {{ var("aux_sppo_licenciamento_cglf_staging") }} as t
+  {{ source("veiculo_staging", "sppo_licenciamento_cglf_aux") }} AS t
