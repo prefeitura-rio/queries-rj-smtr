@@ -26,7 +26,7 @@ WITH
       SAFE_CAST(JSON_VALUE(content,'$.status') AS STRING) status,
       IF(JSON_VALUE(content,'$.data_pagamento') = "", NULL, PARSE_DATE("%d/%m/%Y", JSON_VALUE(content,'$.data_pagamento'))) data_pagamento
     FROM
-      {{ var('sppo_infracao_staging') }} as t
+      {{ source("veiculo_staging", "sppo_infracao") }} AS t
   ),
   infracao_rn AS (
     SELECT
