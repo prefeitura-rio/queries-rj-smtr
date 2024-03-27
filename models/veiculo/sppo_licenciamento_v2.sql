@@ -63,16 +63,19 @@
         id,
         id_veiculo,
         placa,
-        permissao,
+        t.permissao,
         modo,      
         data_inicio_vinculo,
         CASE
-            WHEN DATA < DATE("{{ licenciamento_max_date }}") THEN DATA
+            WHEN t.data < DATE("{{ licenciamento_max_date }}") THEN t.data
         ELSE
             NULL
         END AS data_fim_vinculo,
-        data_ultima_vistoria,
-        ano_fabricacao,
+        CASE
+            WHEN t.data_ultima_vistoria IS NULL OR t.data_ultima_vistoria < c.data_ultima_vistoria THEN c.data_ultima_vistoria
+            ELSE t.data_ultima_vistoria
+        END AS data_ultima_vistoria,
+        t.ano_fabricacao,
         carroceria,
         id_carroceria,
         nome_chassi,
@@ -93,7 +96,11 @@
         "{{ var('version') }}" AS versao,
         CURRENT_DATETIME("America/Sao_Paulo") AS datetime_ultima_atualizacao,
     FROM
-        treated_rn
+        treated_rn AS t
+    LEFT JOIN
+        {{ ref("aux_sppo_licenciamento_cglf") }} AS c
+    USING
+        (id_veiculo, placa)
     WHERE
         rn = 1
 {%- else -%}
