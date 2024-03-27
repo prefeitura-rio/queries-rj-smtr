@@ -119,6 +119,7 @@ vars:
 
   ### Veiculos ###
   sppo_licenciamento_stu_staging: "rj-smtr-staging.veiculo_staging.sppo_licenciamento_stu"
+  aux_sppo_licenciamento_stu_staging: "rj-smtr-staging.veiculo_staging.aux_sppo_licenciamento_stu"
   sppo_licenciamento_solicitacao_staging: "rj-smtr-staging.veiculo_staging.sppo_licenciamento_solicitacao"
   sppo_licenciamento_vistoria_solicitacao_staging: "rj-smtr-staging.veiculo_staging.sppo_licenciamento_vistoria_solicitacao"
   sppo_infracao_staging: "rj-smtr-staging.veiculo_staging.sppo_infracao"
