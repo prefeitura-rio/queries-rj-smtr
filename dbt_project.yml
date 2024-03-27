@@ -232,3 +232,6 @@ models:
     indicadores_continuados_egp:
       +materialized: view
       +schema: indicadores_continuados_egp
+    projeto_subsidio_sppo_encontro_contas:
+      +materialized: table
+      +schema: projeto_subsidio_sppo_encontro_contas
