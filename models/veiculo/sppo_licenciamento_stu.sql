@@ -35,4 +35,4 @@ END
   SAFE_CAST(JSON_VALUE(content,"$.status") AS STRING) status,
   SAFE_CAST(DATETIME(TIMESTAMP_TRUNC(TIMESTAMP(timestamp_captura), SECOND), "America/Sao_Paulo") AS DATETIME) timestamp_captura,
 FROM
-  {{ var("sppo_licenciamento_stu_staging") }}
+  {{ source("veiculo_staging", "sppo_licenciamento_stu") }} AS t

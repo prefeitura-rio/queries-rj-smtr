@@ -118,13 +118,6 @@ vars:
   perc_conformidade_distancia_recurso_min: 50
 
   ### Veiculos ###
-  sppo_licenciamento_stu_staging: "rj-smtr-staging.veiculo_staging.sppo_licenciamento_stu"
-  sppo_licenciamento_solicitacao_staging: "rj-smtr-staging.veiculo_staging.sppo_licenciamento_solicitacao"
-  sppo_licenciamento_vistoria_solicitacao_staging: "rj-smtr-staging.veiculo_staging.sppo_licenciamento_vistoria_solicitacao"
-  sppo_infracao_staging: "rj-smtr-staging.veiculo_staging.sppo_infracao"
-  sppo_registro_agente_verao_staging: "rj-smtr-staging.veiculo_staging.sppo_registro_agente_verao"
-  aux_sppo_licenciamento_stu_staging: "rj-smtr-staging.veiculo_staging.aux_sppo_licenciamento_stu"
-  aux_sppo_licenciamento_cglf_staging: "rj-smtr-staging.veiculo_staging.aux_sppo_licenciamento_cglf"
   sppo_licenciamento_solicitacao_data_versao: "2023-02-06"
   stu_data_versao: ""
   licenciamento_max_date: ""
