@@ -25,7 +25,7 @@ SELECT
   perc_km_planejada AS perc_distancia_total_subsidio,
   -- Valor total sem glosas: quando existe subsidio (POD>80%),  adiciona o valor glosado por tipo de viagem ao total
   CASE
-    WHEN perc_km_planejada >= 80 THEN ROUND(COALESCE(valor_subsidio_pago, 0) + COALESCE(km_apurada_registrado_com_ar_inoperante * subsidio_km_sem_glosa, 0) + COALESCE(km_apurada_autuado_ar_inoperante * subsidio_km_sem_glosa, 0) + COALESCE(km_apurada_autuado_seguranca * subsidio_km_sem_glosa, 0) + COALESCE(km_apurada_autuado_limpezaequipamento * subsidio_km_sem_glosa, 0) + COALESCE(km_apurada_licenciado_sem_ar_n_autuado * (subsidio_km_sem_glosa - subsidio_km_sem_ar_n_autuado), 0) + COALESCE(km_apurada_nao_vistoriado * subsidio_km_sem_glosa, 0), 2)
+    WHEN perc_km_planejada >= 80 THEN ROUND(COALESCE(valor_subsidio_pago, 0) + COALESCE(km_apurada_registrado_com_ar_inoperante * subsidio_km_sem_glosa, 0) + COALESCE(km_apurada_autuado_ar_inoperante * subsidio_km_sem_glosa, 0) + COALESCE(km_apurada_autuado_seguranca * subsidio_km_sem_glosa, 0) + COALESCE(km_apurada_autuado_limpezaequipamento * subsidio_km_sem_glosa, 0) + COALESCE(km_apurada_licenciado_sem_ar_n_autuado * (subsidio_km_sem_glosa - subsidio_km_sem_ar_n_autuado), 0) + COALESCE(km_apurada_n_vistoriado * subsidio_km_sem_glosa, 0), 2)
   ELSE
   0
 END
@@ -44,8 +44,8 @@ END
   COALESCE(km_apurada_licenciado_com_ar_n_autuado, 0) AS km_apurada_licenciado_com_ar_n_autuado,
   COALESCE(viagens_registrado_com_ar_inoperante, 0) AS viagens_registrado_com_ar_inoperante,
   COALESCE(km_apurada_registrado_com_ar_inoperante, 0) AS km_apurada_registrado_com_ar_inoperante,
-  COALESCE(viagens_nao_vistoriado, 0) AS viagens_registrado_nao_vistoriado,
-  COALESCE(km_apurada_nao_vistoriado, 0) AS km_apurada_registrado_nao_vistoriado,
+  COALESCE(viagens_n_vistoriado, 0) AS viagens_registrado_n_vistoriado,
+  COALESCE(km_apurada_n_vistoriado, 0) AS km_apurada_registrado_n_vistoriado,
 FROM
   {{ ref("sumario_servico_dia_tipo") }} -- `rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_dia_tipo`
 LEFT JOIN
