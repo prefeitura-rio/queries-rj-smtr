@@ -104,7 +104,7 @@ SELECT
     dc.consorcio,
     do.id_operadora,
     do.operadora,
-    l.nr_linha AS servico,
+    t.cd_linha AS id_servico_jae,
     sentido,
     NULL AS id_veiculo,
     COALESCE(t.id_cliente, t.pan_hash) AS id_cliente,
@@ -123,11 +123,6 @@ SELECT
     '{{ var("version") }}' as versao
 FROM
     transacao_deduplicada AS t
-LEFT JOIN
-    {{ ref("staging_linha") }} AS l
-ON
-    t.cd_linha = l.cd_linha 
-    AND t.data_transacao >= l.datetime_inclusao
 LEFT JOIN 
     {{ source("cadastro", "modos") }} m
 ON

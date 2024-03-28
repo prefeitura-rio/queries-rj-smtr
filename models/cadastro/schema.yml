@@ -94,3 +94,30 @@ models:
         description: "Código de permissionário vindo do STU"
       - name: id_consorcio_jae
         description: "Código do consórcio no sistema da Jaé"
+  - name: servicos
+    description: "Tabela com dados unificados de serviços (linhas e estações)"
+    columns:
+      - name: id_servico_gtfs
+        description: "Identificador único do serviço no GTFS, podendo ser o stop_id (no caso de estações) ou o route_id (no caso de linhas)"
+      - name: id_servico_jae
+        description: "Identificador único do serviço no banco de dados da Jaé"
+      - name: servico
+        description: "Nome do serviço consolidado. Para linhas, é o nome curto da linha (ex: 010, 011SN). E para estações, é o stop_code do GTFS ou o código interno da estação no banco de dados da Jaé. (Caso o registro não exista no GTFS, busca o serviço na base de dados da Jaé)"
+      - name: servico_gtfs
+        description: "Nome do serviço consolidado. Para linhas, é a coluna route_short_name da tabela routes do GTFS, que contém o nome curto da linha (ex: 010, 011SN). Para estações, é a coluna stop_code da tabela stops do GTFS"
+      - name: servico_jae
+        description: "Nome do serviço consolidado. Código interno do cadastro de linhas e estações do banco de dados da Jaé"
+      - name: descricao_servico
+        description: "Nome completo do serviço consolidado. Para linhas é, primariamente o route_long_name da tabela routes do GTFS. Para estações é primariamente a coluna stop_name da tabela stops do GTFS. (Caso o registro não exista no GTFS, busca o nome do serviço na base de dados da Jaé)"
+      - name: descricao_servico_gtfs
+        description: "Nome completo do serviço no GTFS. Para linhas é, primariamente o route_long_name da tabela routes do GTFS. Para estações é primariamente a coluna stop_name da tabela stops do GTFS."
+      - name: descricao_servico_jae
+        description: "Nome completo do serviço no banco de dados da Jaé"
+      - name: latitude
+        description: "Latitude da estação na tabela stops do GTFS."
+      - name: longitude
+        description: "Longitude da estação na tabela stops do GTFS."
+      - name: tabela_origem_gtfs
+        description: "Tabela do GTFS de onde foram coletadas as informações (stops ou routes)"
+      - name: feed_start_date_gtfs
+        description: "Último feed_start_date do GTFS em que as informações do serviço estavam disponíveis"

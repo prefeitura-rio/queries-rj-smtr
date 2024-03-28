@@ -56,8 +56,10 @@ WITH transacao AS (
     WHERE
         {% if is_incremental() %}
             DATE(t.data) BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 1 DAY) AND DATE_ADD(DATE("{{var('date_range_end')}}"), INTERVAL 1 DAY)
+            AND t.data_processamento BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 1 DAY) AND DATE_ADD(DATE("{{var('date_range_end')}}"), INTERVAL 1 DAY)
         {% else %}
             DATE(t.data) <= CURRENT_DATE("America/Sao_Paulo")
+            AND DATE(t.data_processamento) <= CURRENT_DATE("America/Sao_Paulo")
         {% endif %}
 ),
 transacao_deduplicada AS (

@@ -64,7 +64,7 @@ integracao_melt AS (
                   {{ column }}_t{{ n }} AS {{ column }},
                 {% endif %}
               {% endfor %}
-              {{ n }} AS sequencia_integracao
+              {{ n + 1 }} AS sequencia_integracao
             ){% if not loop.last %},{% endif %}
           {% endfor %}
         ]
@@ -77,15 +77,19 @@ integracao_rn AS (
     i.datetime_processamento_integracao,
     i.datetime_captura,
     i.datetime_transacao,
+    TIMESTAMP_DIFF(
+      i.datetime_transacao,
+      LAG(i.datetime_transacao) OVER(PARTITION BY i.id_integracao ORDER BY sequencia_integracao),
+      MINUTE
+    ) AS intervalo_integracao,
     i.id_integracao,
     i.sequencia_integracao,
     m.modo,
-    CONCAT(i.id_integracao, '-', i.sequencia_integracao) AS id_integracao_sequencia,
     dc.id_consorcio,
     dc.consorcio,
     do.id_operadora,
     do.operadora,
-    l.nr_linha AS servico,
+    i.id_linha AS id_servico_jae,
     i.id_transacao,
     i.sentido,
     i.perc_rateio AS percentual_rateio,
@@ -98,13 +102,8 @@ integracao_rn AS (
     ROW_NUMBER() OVER (PARTITION BY id_transacao ORDER BY datetime_processamento_integracao DESC) AS rn
   FROM
     integracao_melt i
-  LEFT JOIN
-    {{ ref("staging_linha") }} AS l
-  ON
-    i.id_linha = l.cd_linha
-    AND i.datetime_transacao >= l.datetime_inclusao
   LEFT JOIN 
-      {{ source("cadastro", "modos") }} m
+    {{ source("cadastro", "modos") }} m
   ON
     i.id_tipo_modal = m.id_modo AND m.fonte = "jae"
   LEFT JOIN

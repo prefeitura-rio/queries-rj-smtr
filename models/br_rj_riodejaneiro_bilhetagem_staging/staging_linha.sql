@@ -8,7 +8,7 @@ WITH
     linha AS (
         SELECT
             data,
-            timestamp_captura,
+            DATETIME(PARSE_TIMESTAMP('%Y-%m-%d %H:%M:%S%Ez', timestamp_captura), "America/Sao_Paulo") AS timestamp_captura,
             SAFE_CAST(CD_LINHA AS STRING) AS cd_linha,
             DATETIME(PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%S%Ez', SAFE_CAST(JSON_VALUE(content, '$.DT_INCLUSAO') AS STRING)), "America/Sao_Paulo") AS datetime_inclusao,
             SAFE_CAST(JSON_VALUE(content, '$.CD_LINHA_OFICIAL') AS STRING) AS cd_linha_oficial,
@@ -24,7 +24,9 @@ WITH
             SAFE_CAST(JSON_VALUE(content, '$.LONGITUDE_ORIGEM') AS STRING) AS longitude_origem,
             SAFE_CAST(JSON_VALUE(content, '$.NM_LINHA') AS STRING) AS nm_linha,
             SAFE_CAST(JSON_VALUE(content, '$.NR_LINHA') AS STRING) AS nr_linha,
-            SAFE_CAST(JSON_VALUE(content, '$.QUANTIDADE_SECAO') AS STRING) AS quantidade_secao
+            SAFE_CAST(JSON_VALUE(content, '$.QUANTIDADE_SECAO') AS STRING) AS quantidade_secao,
+            SAFE_CAST(JSON_VALUE(content, '$.GTFS_ROUTE_ID') AS STRING) AS gtfs_route_id,
+            SAFE_CAST(JSON_VALUE(content, '$.GTFS_STOP_ID') AS STRING) AS gtfs_stop_id
         FROM
             {{ source("br_rj_riodejaneiro_bilhetagem_staging", "linha") }}
     ),
