@@ -13,15 +13,14 @@ WITH
   tabela_status_array AS (
   SELECT
     TO_JSON_STRING(STRUCT(indicador_licenciado,
-                          indicador_vistoriado,
-                          indicador_ar_condicionado,
-                          indicador_autuacao_ar_condicionado,
-                          indicador_autuacao_seguranca,
-                          indicador_autuacao_limpeza,
-                          indicador_autuacao_equipamento,
-                          indicador_sensor_temperatura,
-                          indicador_validador_sbd,
-                          indicador_registro_agente_verao_ar_condicionado )) AS indicadores,
+        indicador_ar_condicionado,
+        indicador_autuacao_ar_condicionado,
+        indicador_autuacao_seguranca,
+        indicador_autuacao_limpeza,
+        indicador_autuacao_equipamento,
+        indicador_sensor_temperatura,
+        indicador_validador_sbd,
+        indicador_registro_agente_verao_ar_condicionado )) AS indicadores,
     ARRAY_AGG(status) AS status_array
   FROM
     subsidio_parametros
@@ -124,15 +123,14 @@ WITH
   tabela_status_array AS (
   SELECT
     TO_JSON_STRING(STRUCT(indicador_licenciado,
-                          indicador_vistoriado,
-                          indicador_ar_condicionado,
-                          indicador_autuacao_ar_condicionado,
-                          indicador_autuacao_seguranca,
-                          indicador_autuacao_limpeza,
-                          indicador_autuacao_equipamento,
-                          indicador_sensor_temperatura,
-                          indicador_validador_sbd,
-                          indicador_registro_agente_verao_ar_condicionado )) AS indicadores,
+        indicador_ar_condicionado,
+        indicador_autuacao_ar_condicionado,
+        indicador_autuacao_seguranca,
+        indicador_autuacao_limpeza,
+        indicador_autuacao_equipamento,
+        indicador_sensor_temperatura,
+        indicador_validador_sbd,
+        indicador_registro_agente_verao_ar_condicionado )) AS indicadores,
     ARRAY_AGG(status) AS status_array
   FROM
     subsidio_parametros

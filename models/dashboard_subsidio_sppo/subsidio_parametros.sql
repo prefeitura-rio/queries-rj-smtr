@@ -6,7 +6,6 @@
 
 SELECT
   COALESCE(SAFE_CAST(indicador_licenciado AS BOOL), FALSE) indicador_licenciado,
-  COALESCE(SAFE_CAST(indicador_vistoriado AS BOOL), FALSE) indicador_vistoriado,
   COALESCE(SAFE_CAST(indicador_ar_condicionado AS BOOL), FALSE) indicador_ar_condicionado,
   COALESCE(SAFE_CAST(indicador_autuacao_ar_condicionado AS BOOL), FALSE) indicador_autuacao_ar_condicionado,
   COALESCE(SAFE_CAST(indicador_autuacao_seguranca AS BOOL), FALSE) indicador_autuacao_seguranca,
