@@ -279,6 +279,8 @@ models:
         description: "Data de fim do período de vistoria"
       - name: indicador_data_teorica
         description: "Indicador se a data de vistoria é efetiva ou teórica - Neste caso, a data foi inserida temporariamente de forma manual para fins de referência (Verdadeiro/Falso)"
+      - name: timestamp_primeira_captura
+        description: "Timestamp da primeira captura dos dados de licenciamento deste veículo"
   - name: sppo_licenciamento_vistoria_solicitacao
     description: "Tabela de veículos que solicitaram vistoria tempestivamente para ingresso no Sistema de Transporte Urbano (STU), mas ainda não foram vistoriados"
     columns:
