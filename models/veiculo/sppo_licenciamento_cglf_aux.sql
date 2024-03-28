@@ -18,6 +18,7 @@ SELECT
   SAFE_CAST(JSON_VALUE(content,"$.selo") AS STRING) AS selo,
   SAFE_CAST(JSON_VALUE(content,"$.darm") AS STRING) AS darm,
   SAFE_CAST(JSON_VALUE(content,"$.guia") AS STRING) AS guia,
-  SAFE_CAST(JSON_VALUE(content,"$.data_ultima_vistoria") AS DATE) AS data_ultima_vistoria
+  SAFE_CAST(JSON_VALUE(content,"$.data_ultima_vistoria") AS DATE) AS data_ultima_vistoria,
+  SAFE_CAST(DATETIME(TIMESTAMP_TRUNC(TIMESTAMP(timestamp_captura), SECOND), "America/Sao_Paulo" ) AS DATETIME) timestamp_captura,
 FROM
   {{ source("veiculo_staging", "sppo_licenciamento_cglf_aux") }} AS t

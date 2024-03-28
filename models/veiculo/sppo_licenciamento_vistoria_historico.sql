@@ -28,6 +28,7 @@ WITH stu AS (
         id_veiculo,
         placa,
         data_ultima_vistoria,
+        timestamp_captura,
         FALSE AS indicador_data_teorica
     FROM
         stu
@@ -36,6 +37,7 @@ WITH stu AS (
         id_veiculo,
         placa,
         data_ultima_vistoria,
+        timestamp_captura,
         TRUE AS indicador_data_teorica
     FROM
         {{ ref("sppo_licenciamento_cglf_aux") }}
@@ -48,7 +50,8 @@ WITH stu AS (
     placa,
     data_inicio_vinculo,
     data_ultima_vistoria,
-    indicador_data_teorica
+    indicador_data_teorica,
+    MIN(timestamp_captura) OVER (PARTITION BY id_veiculo, placa, data_inicio_vinculo ORDER BY timestamp_captura) AS timestamp_primeira_captura,
   FROM 
     sppo_licenciamento
   LEFT JOIN
@@ -70,6 +73,7 @@ SELECT
   data_inicio_vinculo,
   data_ultima_vistoria AS data_inicio_periodo_vistoria,
   DATE_SUB(LEAD(data_ultima_vistoria) OVER (PARTITION BY id ORDER BY data_ultima_vistoria), INTERVAL 1 DAY) AS data_fim_periodo_vistoria,
-  indicador_data_teorica
+  indicador_data_teorica,
+  timestamp_primeira_captura,
 FROM
   sppo_licenciamento_treated

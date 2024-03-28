@@ -11,6 +11,24 @@
 }}
 
 WITH
+  sppo_licenciamento_vistoria_historico AS (
+    SELECT
+      id_veiculo,
+      placa,
+      data_inicio_vinculo,
+      MAX(data_inicio_periodo_vistoria) AS data_inicio_periodo_vistoria
+    FROM
+      {{ ref("sppo_licenciamento_vistoria_historico") }} 
+    WHERE
+      timestamp_primeira_captura <= DATETIME_ADD("{{ var('run_date') }} 00:00:00", INTERVAL 5 DAY)
+      -- Alteração temporária para inclusão de veículos com data_ultima_vistoria em mar/2024
+      OR ((DATE("{{ var('run_date') }}") BETWEEN "2024-03-01" AND "2024-03-31") 
+          AND timestamp_primeira_captura <= DATETIME("2024-04-01 00:00:00"))
+    GROUP BY
+      1,
+      2,
+      3
+  ),
   licenciamento AS (
     SELECT
       DATE("{{ var('run_date') }}") AS data,
@@ -34,28 +52,25 @@ WITH
     USING
       (id_veiculo, placa)
     LEFT JOIN
-      {{ ref("sppo_licenciamento_vistoria_historico") }} AS v
+      sppo_licenciamento_vistoria_historico AS v
     ON
       l.id_veiculo = v.id_veiculo
       AND l.placa = v.placa
       AND l.data_inicio_vinculo = v.data_inicio_vinculo
-      AND (data_inicio_periodo_vistoria <= DATE("{{ var('run_date') }}"))
-      AND (data_fim_periodo_vistoria IS NULL
-        OR data_fim_periodo_vistoria >= DATE("{{ var('run_date') }}"))
     WHERE
       (l.data_inicio_vinculo IS NULL
         OR l.data_inicio_vinculo <= DATE("{{ var('run_date') }}"))
       AND (data_fim_vinculo IS NULL
         OR data_fim_vinculo >= DATE("{{ var('run_date') }}"))
-      AND timestamp_primeira_captura <= DATETIME_ADD("{{ var('run_date') }} 00:00:00", INTERVAL 5 DAY)
+      AND l.timestamp_primeira_captura <= DATETIME_ADD("{{ var('run_date') }} 00:00:00", INTERVAL 5 DAY)
   ),
   gps AS (
   SELECT
     DISTINCT data,
     id_veiculo
   FROM
-    --{{ ref("gps_sppo") }} 
-    `rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo`
+    {{ ref("gps_sppo") }} 
+    --`rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo`
   WHERE
     data = DATE("{{ var('run_date') }}")),
   autuacoes AS (
