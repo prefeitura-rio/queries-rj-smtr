@@ -44,8 +44,8 @@ END
   COALESCE(km_apurada_licenciado_com_ar_n_autuado, 0) AS km_apurada_licenciado_com_ar_n_autuado,
   COALESCE(viagens_registrado_com_ar_inoperante, 0) AS viagens_registrado_com_ar_inoperante,
   COALESCE(km_apurada_registrado_com_ar_inoperante, 0) AS km_apurada_registrado_com_ar_inoperante,
-  COALESCE(viagens_n_vistoriado, 0) AS viagens_registrado_n_vistoriado,
-  COALESCE(km_apurada_n_vistoriado, 0) AS km_apurada_registrado_n_vistoriado,
+  COALESCE(viagens_n_vistoriado, 0) AS viagens_n_vistoriado,
+  COALESCE(km_apurada_n_vistoriado, 0) AS km_apurada_n_vistoriado,
 FROM
   {{ ref("sumario_servico_dia_tipo") }} -- `rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_dia_tipo`
 LEFT JOIN
