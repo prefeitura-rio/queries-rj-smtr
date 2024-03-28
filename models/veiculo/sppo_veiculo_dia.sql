@@ -52,7 +52,7 @@ WITH
       indicador_ar_condicionado,
       TRUE AS indicador_licenciado,
       CASE
-        WHEN DATE("{{ var('run_date') }}") < "2024-03-01" THEN TRUE -- Apesar do indicador passar a ser considerado apenas após 2024-03-01, será considerado TRUE nos casos anteriores
+        WHEN DATE("{{ var('run_date') }}") < "2024-03-01" THEN NULL -- Indicador passou a ser considerado apenas após 2024-03-01
         WHEN data_ultima_vistoria IS NULL AND DATE_DIFF(DATE("{{ var('run_date') }}"), l.data_inicio_vinculo, DAY) <= 10 THEN TRUE -- Tolerância de 10 dias para vistoria inicial
         WHEN v.data_inicio_periodo_vistoria > "2022-12-31" THEN TRUE -- Apenas veículos com data_ultima_vistoria a partir de 2023 serão considerados válidos
         WHEN s.id_veiculo IS NOT NULL THEN TRUE -- Veículos com solicitação de vistoria pendente (exceção)
