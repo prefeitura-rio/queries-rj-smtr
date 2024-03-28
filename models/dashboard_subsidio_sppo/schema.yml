@@ -70,6 +70,10 @@ models:
         description: "Serviço realizado pelo veículo"
       - name: tipo_viagem
         description: "Tipo de viagem"
+      - name: tipo_viagem_atualizado
+        description: "Tipo de viagem atualizado conforme nomenclatura mais atual"
+      - name: indicador_ar_condicionado	
+        description: "Indicador de veículo com ar condicionado"
       - name: viagens
         description: "Quantidade de viagens apuradas"
       - name: km_apurada
