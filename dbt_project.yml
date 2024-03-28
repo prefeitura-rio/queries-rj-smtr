@@ -120,6 +120,7 @@ vars:
   ### Veiculos ###
   sppo_licenciamento_solicitacao_data_versao: "2023-02-06"
   stu_data_versao: ""
+  licenciamento_max_date: ""
 
   ### RDO ###
   rho_registros_sppo_staging: "rj-smtr-staging.br_rj_riodejaneiro_rdo_staging.rho_registros_sppo"

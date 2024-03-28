@@ -75,8 +75,6 @@ models:
       - name: km_apurada
         description: "Distância apurada do serviço (km)\n
                       Distância planejada da viagem multiplicada pela quantidade de viagens"
-      - name: indicador_ar_condicionado
-        description: "Indicador se o veículo foi licenciado com ar condicionado"
   - name: sumario_dia
     description: "sumario_dia"
     columns:
@@ -137,6 +135,9 @@ models:
         description: "Quantidade de viagens apuradas realizadas por veículo não licenciado."
       - name: km_apurada_n_licenciado
         description: "Distância apurada de viagens realizadas por veículo não licenciado (km)."
+      
+      
+
       - name: viagens_autuado_ar_inoperante
         description: "Quantidade de viagens apuradas realizadas por veículo licenciado com ar condicionado e autuado em razão de inoperância ou mau funcionamento deste."
       - name: km_apurada_autuado_ar_inoperante
@@ -157,14 +158,6 @@ models:
         description: "Quantidade de viagens apuradas realizadas por veículo licenciado com ar condicionado e não autuado em razão de inoperância ou mau funcionamento deste."
       - name: km_apurada_licenciado_com_ar_n_autuado
         description: "Distância apurada de viagens realizadas por veículo licenciado com ar condicionado e não autuado em razão de inoperância ou mau funcionamento deste (km)."       
-      - name: viagens_n_vistoriado
-        description: "Quantidade de viagens apuradas realizadas por veículo não vistoriado tempestivamente conforme calendário de vistoria."
-      - name: km_apurada_n_vistoriado
-        description: "Distância apurada de viagens realizadas por veículo não vistoriado tempestivamente conforme calendário de vistoria (km)."
-      - name: viagens_registrado_com_ar_inoperante
-        description: "Quantidade de viagens apuradas realizadas por veículo licenciado com ar condicionado e registrado por agente de verão (RESOLUÇÃO SMTR Nº 3.682/2024) em razão de inoperância ou mau funcionamento deste."
-      - name: km_apurada_registrado_com_ar_inoperante
-        description: "Distância apurada de viagens realizadas por veículo licenciado com ar condicionado e registrado por agente de verão (RESOLUÇÃO SMTR Nº 3.682/2024) em razão de inoperância ou mau funcionamento deste (km)."
   - name: valor_tipo_penalidade
     description: "Valores de penalidades de subsídio"
     columns:
@@ -222,10 +215,6 @@ models:
         description: "Legislação que estabelece o valor e regras de remuneração"
       - name: ordem
         description: "Ordem de prioridade de aplicação dos valores de remuneração"
-      - name: indicador_vistoriado
-        description: "Indicador se o veículo foi vistoriado tempestivamente conforme calendário de vistoria"
-      - name: indicador_registro_agente_verao_ar_condicionado
-        description: "Indicador se o veículo foi registrado por agente de verão (RESOLUÇÃO SMTR Nº 3.682/2024) com ar condicionado inoperante ou em mau funcionamento"
   - name: viagens_realizadas
     description: "Detalhes de todas as viagens completas identificadas."
     columns:
@@ -313,6 +302,8 @@ models:
         description: "Distância planejada para o serviço (km)."
       - name: distancia_total_subsidio
         description: "Distância apurada para o serviço (km)."
+      - name: valor_total_aferido
+        description: "."
       - name: perc_distancia_total_subsidio
         description: "Indicador percentual de quilometragem apurada em relação à planejada da linha."
       - name: valor_total_subsidio
@@ -341,29 +332,3 @@ models:
         description: "Quantidade de viagens de veículos com ar e não autuados."
       - name: km_apurada_licenciado_com_ar_n_autuado
         description: "Quilometragem apurada de viagens de veículos com ar e não autuados."
-      - name: viagens_n_vistoriado
-        description: "Quantidade de viagens apuradas realizadas por veículo não vistoriado tempestivamente conforme calendário de vistoria."
-      - name: km_apurada_n_vistoriado
-        description: "Distância apurada de viagens realizadas por veículo não vistoriado tempestivamente conforme calendário de vistoria (km)."
-      - name: viagens_registrado_com_ar_inoperante
-        description: "Quantidade de viagens apuradas realizadas por veículo licenciado com ar condicionado e registrado por agente de verão (RESOLUÇÃO SMTR Nº 3.682/2024) em razão de inoperância ou mau funcionamento deste."
-      - name: km_apurada_registrado_com_ar_inoperante
-        description: "Distância apurada de viagens realizadas por veículo licenciado com ar condicionado e registrado por agente de verão (RESOLUÇÃO SMTR Nº 3.682/2024) em razão de inoperância ou mau funcionamento deste (km)."
-  - name: viagens_remuneradas
-    description: "Tabela com indicação de remuneração de viagens para fins de verificação de teto de pagamento conforme regra de 120%/200% (RESOLUÇÃO SMTR Nº 3.645/2023)"
-    columns:
-      - name: data
-        description: "Data da viagem."
-      - name: servico
-        description: "Serviço realizado pelo veículo."
-      - name: tipo_viagem
-        description: "Classificação do tipo de viagem."
-      - name: id_viagem
-        description: "Código único identificador da viagem."
-      - name: distancia_planejada
-        description: "Distância planejada da viagem (km)."
-      - name: subsidio_km
-        description: "Valor de subsídio, conforme tipo de viagem (R$/km)."
-      - name: indicador_viagem_remunerada
-        description: "Indicador se a viagem foi remunerada ou não."
-

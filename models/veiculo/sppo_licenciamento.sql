@@ -28,7 +28,7 @@
 }}
 
 {%- if execute %}
-    {% set licenciamento_max_date = run_query("SELECT SAFE_CAST(MAX(DATA) AS DATE) FROM " ~ ref('sppo_licenciamento_stu') ~ " WHERE DATA >= DATE_SUB(DATE('" ~ var('run_date') ~ "'), INTERVAL 5 DAY)").columns[0].values()[0] %}
+    {% set licenciamento_max_date = run_query("SELECT SAFE_CAST(MAX(DATA) AS DATE) FROM " ~ ref('sppo_licenciamento_stu') ~ " WHERE DATA >= DATE_SUB('" ~ var('run_date') ~ "', INTERVAL 5 DAY)").columns[0].values()[0] %}
 {% endif -%}
 
 WITH

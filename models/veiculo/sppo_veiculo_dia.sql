@@ -10,20 +10,6 @@
   )
 }}
 
-/*
-- status
-  Classificação do veículo, observados os demais parâmetros - Categorias:
-  Não classificado - Veículo sem classificação
-  Não licenciado/Nao licenciado - Veículo que operou, mas não é licenciado
-  Autuado por segurança - Veículo que operou, foi licenciado, mas foi autuado por infração relacionada à segurança do veículo
-  Autuado por ar inoperante/Licenciado com ar e autuado (023.II) - Veículo que operou, foi licenciado com ar condicionado e foi autuado por inoperância ou mau funcionamento do sistema de ar condicionado (023.II)
-  Autuado por limpeza/equipamento - Veículo que operou, foi licenciado, mas foi autuado cumulativamente por infrações relacionadas à limpeza e equipamentos do veículo
-  Licenciado com ar e não autuado - Veículo que operou, foi licenciado com ar condicionado e não foi autuado
-  Licenciado sem ar e não autuado/Licenciado sem ar - Veículo que operou, foi licenciado sem ar condicionado e não foi autuado
-  Registrado com ar inoperante - Veículo que operou, foi licenciado com ar condicionado e foi registrado por inoperância ou mau funcionamento do sistema de ar condicionado por agente de verão (RESOLUÇÃO SMTR Nº 3.682/2024)
-  Não vistoriado - Veículo que operou, mas não foi vistoriado tempestivamente conforme calendário de vistoria"
-*/
-
 WITH
   sppo_licenciamento_vistoria_historico AS (
     SELECT
