@@ -360,6 +360,8 @@ models:
         description: "Classificação do tipo de viagem."
       - name: id_viagem
         description: "Código único identificador da viagem."
+      - name: distancia_planejada
+        description: "Distância planejada da viagem (km)."
       - name: subsidio_km
         description: "Valor de subsídio, conforme tipo de viagem (R$/km)."
       - name: indicador_viagem_remunerada
