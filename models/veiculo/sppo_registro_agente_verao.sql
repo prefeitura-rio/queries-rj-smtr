@@ -23,7 +23,7 @@ SELECT
   SAFE_CAST(DATETIME(TIMESTAMP_TRUNC(TIMESTAMP(timestamp_captura), SECOND), "America/Sao_Paulo" ) AS DATETIME) AS datetime_captura,
   "{{ var("version") }}" AS versao
 FROM
-  {{ var('sppo_registro_agente_verao_staging') }}
+  {{ source("veiculo_staging", "sppo_registro_agente_verao") }} AS t
 WHERE
-  data = (SELECT MAX(data) FROM rj-smtr-staging.veiculo_staging.sppo_registro_agente_verao)
+  data = (SELECT MAX(data) FROM {{ source("veiculo_staging", "sppo_registro_agente_verao") }} WHERE SAFE_CAST(data AS DATE) >= DATE_ADD(DATE("{{ var('run_date') }}"), INTERVAL 5 DAY))
   AND SAFE_CAST(JSON_VALUE(content,'$.validacao') AS BOOL) = TRUE

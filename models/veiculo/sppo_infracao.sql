@@ -26,7 +26,11 @@ WITH
       SAFE_CAST(JSON_VALUE(content,'$.status') AS STRING) status,
       IF(JSON_VALUE(content,'$.data_pagamento') = "", NULL, PARSE_DATE("%d/%m/%Y", JSON_VALUE(content,'$.data_pagamento'))) data_pagamento
     FROM
-      {{ var('sppo_infracao_staging') }} as t
+      {{ source("veiculo_staging", "sppo_infracao") }} AS t
+    {%- if is_incremental() %}
+    WHERE
+       SAFE_CAST(data AS DATE) = (SELECT MIN(SAFE_CAST(data AS DATE)) FROM {{ source("veiculo_staging", "sppo_infracao") }} WHERE SAFE_CAST(data AS DATE) >= DATE_ADD(DATE("{{var('run_date')}}"), INTERVAL 7 DAY))
+    {% endif -%}
   ),
   infracao_rn AS (
     SELECT
