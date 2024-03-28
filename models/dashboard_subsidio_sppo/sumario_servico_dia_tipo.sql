@@ -217,6 +217,3 @@ LEFT JOIN
 ON
   sd.data = pd.data
   AND sd.servico = pd.servico
-ORDER BY
-  DATA,
-  servico
