@@ -15,7 +15,7 @@ WITH
     2 )
 SELECT
   consorcio,
-  DATA,
+  data,
   tipo_dia,
   servico,
   viagens AS viagens_subsidio,
