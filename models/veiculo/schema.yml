@@ -232,13 +232,7 @@ models:
       - name: indicadores.indicador_validador_sbd
         description: "Indicador se o veículo se encontra com o novo validador do Sistema de Bilhetagem Digital (SBD) instalado"
       - name: status
-        description: "Classificação, observados os demais parâmetros - Categorias:\n
-                      - Não licenciado - Veículo que operou, mas não é licenciado\n
-                      - Autuado por ar inoperante - Veículo que operou, foi licenciado com ar condicionado e foi autuado por inoperância ou mau funcionamento do sistema de ar condicionado (023.II)\n
-                      - Autuado por segurança - Veículo que operou, foi licenciado, mas foi autuado por infração relacionada à segurança do veículo\n
-                      - Autuado por limpeza/equipamento - Veículo que operou, foi licenciado, mas foi autuado cumulativamente por infrações relacionadas à limpeza e equipamentos do veículo\n
-                      - Sem ar e não autuado - Veículo que operou, foi licenciado sem ar condicionado e não foi autuado\n
-                      - Com ar e não autuado - Veículo que operou, foi licenciado com ar condicionado e não foi autuado"
+        description: "Classificação, observados os demais parâmetros"
       - name: versao
         description: "SHA do repositório no Github"
   - name: sppo_registro_agente_verao
