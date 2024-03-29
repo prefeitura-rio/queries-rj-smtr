@@ -33,7 +33,7 @@ WITH
     indicador_ar_condicionado,
     TRUE AS indicador_licenciado,
     CASE
-      WHEN DATE("{{ var('run_date') }}") < "2024-03-01" THEN TRUE
+      WHEN DATE("{{ var('run_date') }}") < "2024-03-01" THEN NULL
       ELSE indicador_vistoria_valida
     END AS indicador_vistoriado,
   FROM
