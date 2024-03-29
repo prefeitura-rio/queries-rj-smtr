@@ -55,7 +55,16 @@ WITH
             stu_rn AS s
         {% if var("run_date") >= "2024-03-01" and var("run_date") <= "2024-03-31" %}
         LEFT JOIN
-            {{ ref("vistoria_tr_subtt_cglf_aux") }} AS c
+            (
+                SELECT
+                    id_veiculo, 
+                    placa,
+                    ano_ultima_vistoria
+                FROM
+                    {{ ref("vistoria_tr_subtt_cglf_aux") }}
+                WHERE
+                    data = "2024-03-28"
+            ) AS c
         USING
             (id_veiculo, placa)
         {% endif -%}
