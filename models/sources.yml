@@ -86,4 +86,10 @@ sources:
     tables:
       - name: subsidio_parametros_atualizada
 
+  - name: veiculo_staging
+    database: rj-smtr-staging
 
+    tables:
+      - name: vistoria_tr_subtt_cglf_2023
+      - name: vistoria_tr_subtt_cglf_2024
+      - name: vistoria_tr_subtt_cglf_pendentes_2024
