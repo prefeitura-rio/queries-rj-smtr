@@ -9,12 +9,12 @@
        unique_key=['data', 'id_auto_infracao'],
        incremental_strategy='insert_overwrite'
 )
+}}
 
 {%- if execute %}
-  {% set infracao_date = run_query("SELECT MIN(data) FROM " ~ ref("sppo_infracao") ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 7 DAY)").columns[0].values()[0] %}
+  {% set infracao_date = run_query("SELECT MIN(data) FROM " ~ var('sppo_infracao_staging') ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 7 DAY)").columns[0].values()[0] %}
 {% endif -%}
 
-}}
 WITH 
   infracao AS (
     SELECT
