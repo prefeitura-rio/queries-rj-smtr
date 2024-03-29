@@ -118,10 +118,6 @@ vars:
   perc_conformidade_distancia_recurso_min: 50
 
   ### Veiculos ###
-  sppo_licenciamento_stu_staging: "rj-smtr-staging.veiculo_staging.sppo_licenciamento_stu"
-  sppo_licenciamento_solicitacao_staging: "rj-smtr-staging.veiculo_staging.sppo_licenciamento_solicitacao"
-  sppo_infracao_staging: "rj-smtr-staging.veiculo_staging.sppo_infracao"
-  sppo_registro_agente_verao_staging: "rj-smtr-staging.veiculo_staging.sppo_registro_agente_verao"
   sppo_licenciamento_solicitacao_data_versao: "2023-02-06"
   stu_data_versao: ""
 
@@ -192,6 +188,9 @@ models:
     veiculo:
       +materialized: view
       +schema: veiculo
+    veiculo_staging:
+      +materialized: view
+      +schema: veiculo_staging
     br_rj_riodejaneiro_rdo:
       +materialized: view
       +schema: br_rj_riodejaneiro_rdo

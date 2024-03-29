@@ -86,4 +86,15 @@ sources:
     tables:
       - name: subsidio_parametros_atualizada
 
+  - name: veiculo_staging
+    database: rj-smtr-staging
+
+    tables:
+      - name: sppo_licenciamento_stu
+      - name: sppo_licenciamento_solicitacao
+      - name: sppo_infracao
+      - name: sppo_registro_agente_verao
+      - name: vistoria_tr_subtt_cglf_2023
+      - name: vistoria_tr_subtt_cglf_2024
+      - name: vistoria_tr_subtt_cglf_pendentes_2024
 

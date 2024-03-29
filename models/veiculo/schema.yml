@@ -5,7 +5,7 @@ models:
     description: "Tabela histórica de todas as multas aplicadas aos modos de transporte no município do Rio de Janeiro, com qualquer situação.
     Dados capturados diariamente de: https://www.data.rio/documents/multas-aplicadas-aos-modos-de-transporte-nos-%C3%BAltimos-cinco-anos"
     columns:
-      - name: DATA
+      - name: data
         description: "Data da captura (partição)"
       - name: timestamp_captura
         description: "Timestamp de captura dos dados de infração"
@@ -35,12 +35,12 @@ models:
       - name: data_pagamento
         description: "Data de pagamento"
   - name: sppo_licenciamento
-    description: "Tabela histórica de dados cadastrais dos veículos que operam o sistema de ônibus (BRT e SPPO),
+    description: "Tabela histórica de dados cadastrais dos veículos que operam o sistema de ônibus (SPPO),
                   considerando tanto os licenciados no Sistema de Transporte Urbano (STU) quanto as solicitações
                   válidas em andamento para ingresso no sistema"
     columns:
       - name: data
-        description: "Data da captura (partição)"
+        description: "Data corrente de referência"
       - name: modo
         description: "ÔNIBUS – nesse arquivo só constam os ônibus"
       - name: id_veiculo
@@ -86,6 +86,18 @@ models:
       - name: status
         description: "Licenciado - Veículo licenciado no Sistema de Transporte Urbano (STU)\n
                       Válido - Veículo com solicitação válida para ingresso no Sistema de Transporte Urbano (STU)"
+      - name: data_inicio_vinculo
+        description: "Data de início do vínculo do veículo no STU"
+      - name: versao
+        description: "SHA do repositório no Github"
+      - name: datetime_ultima_atualizacao
+        description: "Datetime da última atualização dos dados de licenciamento deste veículo"
+      - name: ano_ultima_vistoria_atualizado
+        description: "Ano atualizado da última vistoria realizada pelo veículo"
+      - name: indicador_vistoria_valida
+        description: "Indicador se a última vistoria realizada pelo veículo encontra-se válida (Verdadeiro/Falso)"
+      - name: timestamp_captura
+        description: "Timestamp da captura dos dados de licenciamento"
   - name: sppo_licenciamento_solicitacao
     description: "Tabela histórica de dados cadastrais das solicitações em andamento para ingresso no Sistema de Transporte Urbano (STU)"
     columns:

@@ -12,18 +12,33 @@
   )
 }}
 
+WITH 
+  registro AS (
+    SELECT
+      data,
+      datetime_registro,
+      SHA256(datetime_registro || "_" || email) AS id_registro,
+      id_veiculo,
+      servico,
+      link_foto,
+      validacao,
+      datetime_captura,
+      "{{ var("version") }}" AS versao
+    FROM
+      {{ ref("registro_agente_verao_tr_subtt") }}
+    WHERE
+      validacao = TRUE
+  ),
+  registro_rn AS (
+    SELECT
+      *,
+      ROW_NUMBER() OVER (PARTITION BY id_registro) AS rn
+    FROM
+      registro
+  )
 SELECT
-  SAFE_CAST(PARSE_DATETIME("%d/%m/%Y %H:%M:%S", datetime_registro) AS DATE) AS data,
-  SAFE_CAST(PARSE_DATETIME("%d/%m/%Y %H:%M:%S", datetime_registro) AS DATETIME) AS datetime_registro,
-  SHA256(PARSE_DATETIME("%d/%m/%Y %H:%M:%S", datetime_registro) || "_" || SAFE_CAST(email AS STRING)) AS id_registro,
-  SAFE_CAST(JSON_VALUE(content,'$.id_veiculo') AS STRING) AS id_veiculo,
-  SAFE_CAST(JSON_VALUE(content,'$.servico') AS STRING) AS servico,
-  SAFE_CAST(JSON_VALUE(content,'$.link_foto') AS STRING) AS link_foto,
-  SAFE_CAST(JSON_VALUE(content,'$.validacao') AS BOOL) AS validacao,
-  SAFE_CAST(DATETIME(TIMESTAMP_TRUNC(TIMESTAMP(timestamp_captura), SECOND), "America/Sao_Paulo" ) AS DATETIME) AS datetime_captura,
-  "{{ var("version") }}" AS versao
+  * EXCEPT(rn)
 FROM
-  {{ var('sppo_registro_agente_verao_staging') }}
+  registro_rn
 WHERE
-  data = (SELECT MAX(data) FROM rj-smtr-staging.veiculo_staging.sppo_registro_agente_verao)
-  AND SAFE_CAST(JSON_VALUE(content,'$.validacao') AS BOOL) = TRUE
+  rn = 1
