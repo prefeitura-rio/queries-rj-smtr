@@ -15,7 +15,8 @@ WITH
     placa,
     tipo_veiculo,
     indicador_ar_condicionado,
-    TRUE AS indicador_licenciado
+    TRUE AS indicador_licenciado,
+    indicador_vistoria_valida AS indicador_vistoriado,
   FROM
     {{ ref("sppo_licenciamento") }} --`rj-smtr`.`veiculo`.`sppo_licenciamento`
   {%- if var("stu_data_versao") != "" %}
@@ -34,7 +35,8 @@ WITH
     DISTINCT data,
     id_veiculo
   FROM
-    {{ ref("gps_sppo") }} -- `rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo`
+    {{ ref("gps_sppo") }} 
+    -- `rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo`
   WHERE
     data = DATE("{{ var('run_date') }}") ),
   autuacoes AS (
@@ -157,13 +159,46 @@ WITH
   SELECT
     data,
     id_veiculo,
-    STRUCT( COALESCE(l.indicador_licenciado, FALSE)                     AS indicador_licenciado,
+    {% if var("run_date") >= var('DATA_SUBSIDIO_V5_INICIO') %}
+      STRUCT( COALESCE(l.indicador_licenciado, FALSE)                     AS indicador_licenciado,
+              COALESCE(l.indicador_vistoriado, FALSE)                     AS indicador_vistoriado,
+              COALESCE(l.indicador_ar_condicionado, FALSE)                AS indicador_ar_condicionado,
+              COALESCE(a.indicador_autuacao_ar_condicionado, FALSE)       AS indicador_autuacao_ar_condicionado,
+              COALESCE(a.indicador_autuacao_seguranca, FALSE)             AS indicador_autuacao_seguranca,
+              COALESCE(a.indicador_autuacao_limpeza, FALSE)               AS indicador_autuacao_limpeza,
+              COALESCE(a.indicador_autuacao_equipamento, FALSE)           AS indicador_autuacao_equipamento,
+              COALESCE(r.indicador_registro_agente_verao_ar_condicionado, FALSE)   AS indicador_registro_agente_verao_ar_condicionado)
+      -- WHEN data >= DATE("DATA_SUBSIDIO_V4_INICIO") THEN
+      -- STRUCT( COALESCE(l.indicador_licenciado, FALSE)                     AS indicador_licenciado,
+      --         COALESCE(l.indicador_ar_condicionado, FALSE)                AS indicador_ar_condicionado,
+      --         COALESCE(a.indicador_autuacao_ar_condicionado, FALSE)       AS indicador_autuacao_ar_condicionado,
+      --         COALESCE(a.indicador_autuacao_seguranca, FALSE)             AS indicador_autuacao_seguranca,
+      --         COALESCE(a.indicador_autuacao_limpeza, FALSE)               AS indicador_autuacao_limpeza,
+      --         COALESCE(a.indicador_autuacao_equipamento, FALSE)           AS indicador_autuacao_equipamento,
+      --         COALESCE(r.indicador_registro_agente_verao_ar_condicionado, FALSE)   AS indicador_registro_agente_verao_ar_condicionado)
+      -- WHEN data >= DATE("DATA_SUBSIDIO_V3_INICIO") THEN
+      -- STRUCT( COALESCE(l.indicador_licenciado, FALSE)                     AS indicador_licenciado,
+      --         COALESCE(l.indicador_ar_condicionado, FALSE)                AS indicador_ar_condicionado,
+      --         COALESCE(a.indicador_autuacao_ar_condicionado, FALSE)       AS indicador_autuacao_ar_condicionado,
+      --         COALESCE(a.indicador_autuacao_seguranca, FALSE)             AS indicador_autuacao_seguranca,
+      --         COALESCE(a.indicador_autuacao_limpeza, FALSE)               AS indicador_autuacao_limpeza,
+      --         COALESCE(a.indicador_autuacao_equipamento, FALSE)           AS indicador_autuacao_equipamento)
+      -- WHEN data >= DATE("DATA_SUBSIDIO_V2_INICIO") THEN
+      -- STRUCT( COALESCE(l.indicador_licenciado, FALSE)                     AS indicador_licenciado,
+      --         COALESCE(l.indicador_ar_condicionado, FALSE)                AS indicador_ar_condicionado,
+      --         COALESCE(a.indicador_autuacao_ar_condicionado, FALSE)       AS indicador_autuacao_ar_condicionado)
+      -- ELSE
+      -- NULL
+    {% else %}
+        STRUCT( COALESCE(l.indicador_licenciado, FALSE)                     AS indicador_licenciado,
             COALESCE(l.indicador_ar_condicionado, FALSE)                AS indicador_ar_condicionado,
             COALESCE(a.indicador_autuacao_ar_condicionado, FALSE)       AS indicador_autuacao_ar_condicionado,
             COALESCE(a.indicador_autuacao_seguranca, FALSE)             AS indicador_autuacao_seguranca,
             COALESCE(a.indicador_autuacao_limpeza, FALSE)               AS indicador_autuacao_limpeza,
             COALESCE(a.indicador_autuacao_equipamento, FALSE)           AS indicador_autuacao_equipamento,
-            COALESCE(r.indicador_registro_agente_verao_ar_condicionado, FALSE)   AS indicador_registro_agente_verao_ar_condicionado) AS indicadores
+            COALESCE(r.indicador_registro_agente_verao_ar_condicionado, FALSE)   AS indicador_registro_agente_verao_ar_condicionado)
+    {% endif %}
+    AS indicadores
   FROM
     gps g
   LEFT JOIN
@@ -181,6 +216,7 @@ WITH
   USING
     (data,
       id_veiculo))
+{% if var("run_date") < var("DATA_SUBSIDIO_V5_INICIO") %}
 SELECT
   gla.* EXCEPT(indicadores),
   TO_JSON(indicadores) AS indicadores,
@@ -199,3 +235,22 @@ ON
   AND gla.indicadores.indicador_autuacao_equipamento = p.indicador_autuacao_equipamento
   AND gla.indicadores.indicador_registro_agente_verao_ar_condicionado = p.indicador_registro_agente_verao_ar_condicionado
   AND (data BETWEEN p.data_inicio AND p.data_fim)
+{% else %}
+SELECT
+  * EXCEPT(indicadores),
+  TO_JSON(indicadores) AS indicadores,
+  CASE
+    WHEN indicadores.indicador_licenciado IS FALSE THEN "Não licenciado"  
+    WHEN indicadores.indicador_vistoriado IS FALSE THEN "Não vistoriado"
+    WHEN indicadores.indicador_ar_condicionado IS TRUE AND indicadores.indicador_autuacao_ar_condicionado IS TRUE THEN "Autuado por ar inoperante"
+    WHEN indicadores.indicador_ar_condicionado IS TRUE AND indicadores.indicador_registro_agente_verao_ar_condicionado IS TRUE THEN "Registrado com ar inoperante"
+    WHEN indicadores.indicador_autuacao_seguranca IS TRUE THEN "Autuado por segurança"
+    WHEN indicadores.indicador_autuacao_limpeza IS TRUE AND indicadores.indicador_autuacao_equipamento IS TRUE THEN "Autuado por limpeza/equipamento"
+    WHEN indicadores.indicador_ar_condicionado IS FALSE THEN "Licenciado sem ar e não autuado"
+    WHEN indicadores.indicador_ar_condicionado IS TRUE THEN "Licenciado com ar e não autuado"
+    ELSE NULL
+  END AS status,
+  "{{ var("version") }}" AS versao
+FROM
+  gps_licenciamento_autuacao
+{% endif %}
