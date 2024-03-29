@@ -40,7 +40,7 @@ models:
                   válidas em andamento para ingresso no sistema"
     columns:
       - name: data
-        description: "Data corrente de referência"
+        description: "Data de operação"
       - name: modo
         description: "ÔNIBUS – nesse arquivo só constam os ônibus"
       - name: id_veiculo

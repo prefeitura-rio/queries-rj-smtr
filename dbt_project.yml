@@ -106,6 +106,7 @@ vars:
   frequencies_version: "YYYY-MM-DD"
   DATA_SUBSIDIO_V2_INICIO: "2023-01-16"
   DATA_SUBSIDIO_V3_INICIO: "2023-07-16"
+  DATA_SUBSIDIO_V4_INICIO: "2024-03-01"
   # valor_subsidio: "`rj-smtr-dev.projeto_subsidio_sppo.valor_subsidio`"
 
   # Recursos #
@@ -119,7 +120,15 @@ vars:
 
   ### Veiculos ###
   sppo_licenciamento_solicitacao_data_versao: "2023-02-06"
+  sppo_licenciamento_data_versao_mar_24: "2024-03-25"
+  vistoria_tr_subtt_cglf_data_versao_mar_24: "2024-03-28"
   stu_data_versao: ""
+  # Prazo para última vistoria realizada dentro do período válido
+  prazo_maximo_vistoria_anos: 1
+  # Tolerância de vistoria para veículos novos 
+  licenciamento_tolerancia_primeira_vistoria_dias: 15
+  infracao_limite_maximo_dias: 7
+  licenciamento_limite_maximo_dias: 5
 
   ### RDO ###
   rho_registros_sppo_staging: "rj-smtr-staging.br_rj_riodejaneiro_rdo_staging.rho_registros_sppo"
@@ -202,7 +211,7 @@ models:
       +schema: br_rj_riodejaneiro_bilhetagem
     br_rj_riodejaneiro_bilhetagem_staging:
       +materialized: view
-      +schema: br_rj_riodejaneiro_bilhetagem_staging
+      +schema: br_rj_riodejaneiro_bilhetagem_staging_dbt
     dashboard_bilhetagem_implantacao_jae:
       +materialized: table
       +schema: dashboard_bilhetagem_implantacao_jae

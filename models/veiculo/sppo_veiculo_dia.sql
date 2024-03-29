@@ -15,12 +15,15 @@
 */
 
 {{
-    config(
-        materialized="incremental",
-        partition_by={"field": "data", "data_type": "date", "granularity": "day"},
-        unique_key=["data", "id_veiculo"],
-        incremental_strategy="insert_overwrite",
-    )
+  config(
+    materialized="incremental",
+    partition_by={
+      "field": "data", 
+      "data_type": "date", 
+      "granularity": "day"
+    },
+    incremental_strategy="insert_overwrite",
+  )
 }}
 
 WITH
@@ -33,21 +36,22 @@ WITH
     indicador_ar_condicionado,
     TRUE AS indicador_licenciado,
     CASE
-      WHEN DATE("{{ var('run_date') }}") < "2024-03-01" THEN NULL
+      WHEN DATE("{{ var('run_date') }}") < DATE("{{ var('DATA_SUBSIDIO_V4_INICIO') }}") THEN NULL
       ELSE indicador_vistoria_valida
     END AS indicador_vistoriado,
+    -- TODO: 
   FROM
     {{ ref("sppo_licenciamento") }} --`rj-smtr`.`veiculo`.`sppo_licenciamento`
-  WHERE 
-    data = DATE("{{ var('run_date') }}")
+  WHERE
+    data BETWEEN DATE("{{ var('run_date') }}") AND DATE_ADD(DATE("{{ var('run_date') }}"), INTERVAL {{ var('licenciamento_limite_maximo_dias') }} DAY) 
   ),
   gps AS (
   SELECT
     DISTINCT data,
     id_veiculo
   FROM
-    {{ ref("gps_sppo") }}
-    --`rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo`
+    --{{ ref("gps_sppo") }}
+    `rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo`
   WHERE
     data = DATE("{{ var('run_date') }}") ),
   autuacoes AS (
@@ -58,10 +62,7 @@ WITH
   FROM
     {{ ref("sppo_infracao") }}
   WHERE
-  {%- if execute %}
-    {% set infracao_date = run_query("SELECT MIN(data) FROM " ~ ref("infracao_iplanrio_stu") ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 7 DAY)").columns[0].values()[0] %}
-  {% endif -%}
-    data = DATE("{{ infracao_date }}")
+    data BETWEEN DATE("{{ var('run_date') }}") AND DATE_ADD(DATE("{{ var('run_date') }}"), INTERVAL {{ var('infracao_limite_maximo_dias') }} DAY) 
     AND data_infracao = DATE("{{ var('run_date') }}")
     AND modo = "ONIBUS"),
   registros_agente_verao AS (
@@ -170,14 +171,14 @@ WITH
   SELECT
     data,
     id_veiculo,
-    STRUCT( COALESCE(l.indicador_licenciado, FALSE)                     AS indicador_licenciado,
-            COALESCE(l.indicador_vistoriado, FALSE)                     AS indicador_vistoriado,
-            COALESCE(l.indicador_ar_condicionado, FALSE)                AS indicador_ar_condicionado,
-            COALESCE(a.indicador_autuacao_ar_condicionado, FALSE)       AS indicador_autuacao_ar_condicionado,
-            COALESCE(a.indicador_autuacao_seguranca, FALSE)             AS indicador_autuacao_seguranca,
-            COALESCE(a.indicador_autuacao_limpeza, FALSE)               AS indicador_autuacao_limpeza,
-            COALESCE(a.indicador_autuacao_equipamento, FALSE)           AS indicador_autuacao_equipamento,
-            COALESCE(r.indicador_registro_agente_verao_ar_condicionado, FALSE)   AS indicador_registro_agente_verao_ar_condicionado) AS indicadores
+    STRUCT( COALESCE(l.indicador_licenciado, FALSE)                               AS indicador_licenciado,
+            l.indicador_vistoriado                                                AS indicador_vistoriado,
+            COALESCE(l.indicador_ar_condicionado, FALSE)                          AS indicador_ar_condicionado,
+            COALESCE(a.indicador_autuacao_ar_condicionado, FALSE)                 AS indicador_autuacao_ar_condicionado,
+            COALESCE(a.indicador_autuacao_seguranca, FALSE)                       AS indicador_autuacao_seguranca,
+            COALESCE(a.indicador_autuacao_limpeza, FALSE)                         AS indicador_autuacao_limpeza,
+            COALESCE(a.indicador_autuacao_equipamento, FALSE)                     AS indicador_autuacao_equipamento,
+            COALESCE(r.indicador_registro_agente_verao_ar_condicionado, FALSE)    AS indicador_registro_agente_verao_ar_condicionado) AS indicadores
   FROM
     gps g
   LEFT JOIN
@@ -206,7 +207,7 @@ LEFT JOIN
   {{ ref("subsidio_parametros") }} AS p --`rj-smtr.dashboard_subsidio_sppo.subsidio_parametros` 
 ON
   gla.indicadores.indicador_licenciado = p.indicador_licenciado
-  AND gla.indicadores.indicador_vistoriado = p.indicador_vistoriado
+  AND COALESCE(gla.indicadores.indicador_vistoriado, FALSE) = p.indicador_vistoriado
   AND gla.indicadores.indicador_ar_condicionado = p.indicador_ar_condicionado
   AND gla.indicadores.indicador_autuacao_ar_condicionado = p.indicador_autuacao_ar_condicionado
   AND gla.indicadores.indicador_autuacao_seguranca = p.indicador_autuacao_seguranca
