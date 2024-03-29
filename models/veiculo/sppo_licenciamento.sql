@@ -94,7 +94,7 @@ SELECT
     indicador_wifi,
     CASE 
         WHEN ano_ultima_vistoria_atualizado >= CAST(EXTRACT(YEAR FROM DATE_SUB("{{ var("run_date") }}", INTERVAL 1 YEAR)) AS INT64) THEN TRUE -- Última vistoria realizada dentro do período válido
-        WHEN data_ultima_vistoria IS NULL AND DATE_DIFF(DATE("{{ var('run_date') }}"), data_inicio_vinculo, DAY) <= 10 THEN TRUE -- Tolerância de 10 dias para vistoria inicial
+        WHEN data_ultima_vistoria IS NULL AND DATE_DIFF(DATE("{{ var('run_date') }}"), data_inicio_vinculo, DAY) <=  {{ var('licenciamento_tolerancia_primeira_vistoria') }} THEN TRUE
     ELSE FALSE
     END AS indicador_vistoria_valida,
     quantidade_lotacao_pe,
