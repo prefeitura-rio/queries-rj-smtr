@@ -100,7 +100,6 @@ WITH
     subsidio_km
   FROM
     {{ ref("subsidio_valor_km_tipo_viagem") }} ),
-    -- TODO: revisar valor subsidio
 -- 5. Viagens com tipo e valor de subsídio por km
   viagem_km_tipo AS (
   SELECT
