@@ -93,3 +93,9 @@ sources:
       - name: vistoria_tr_subtt_cglf_2023
       - name: vistoria_tr_subtt_cglf_2024
       - name: vistoria_tr_subtt_cglf_pendentes_2024
+  
+  - name: dashboard_subsidio_sppo_staging
+    database: rj-smtr-staging
+
+    tables:
+      - name: subsidio_valor_km_tipo_viagem

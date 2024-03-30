@@ -199,6 +199,9 @@ models:
     dashboard_subsidio_sppo:
       +materialized: view
       +schema: dashboard_subsidio_sppo
+    dashboard_subsidio_sppo_staging:
+      +materialized: view
+      +schema: dashboard_subsidio_sppo_staging
     veiculo:
       +materialized: view
       +schema: veiculo
