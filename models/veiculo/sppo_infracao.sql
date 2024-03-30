@@ -12,7 +12,7 @@
 }}
 
 {%- if execute %}
-  {% set infracao_date = run_query("SELECT MIN(data) FROM " ~ var('sppo_infracao_staging') ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 7 DAY)").columns[0].values()[0] %}
+  {% set infracao_date = run_query("SELECT MIN(SAFE_CAST(data AS DATE)) FROM " ~ var('sppo_infracao_staging') ~ " WHERE SAFE_CAST(data AS DATE) >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 7 DAY)").columns[0].values()[0] %}
 {% endif -%}
 
 WITH 
@@ -33,7 +33,7 @@ WITH
     FROM
       {{ var('sppo_infracao_staging') }} as t
     WHERE
-      data = DATE("{{ infracao_date }}")
+      SAFE_CAST(data AS DATE) = DATE("{{ infracao_date }}")
   ),
   infracao_rn AS (
     SELECT
