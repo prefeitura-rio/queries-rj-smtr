@@ -9,4 +9,4 @@ SELECT
   SAFE_CAST(darm AS STRING) AS darm,
   SAFE_CAST(ano_ultima_vistoria AS INT64) AS ano_ultima_vistoria,
 FROM
-  {{ source("veiculo_staging", "vistoria_tr_subtt_cglf_2024") }}
+  {{ source("veiculo_staging", "sppo_vistoria_tr_subtt_cglf_2024") }}
