@@ -18,14 +18,12 @@ with
         where
         {% if var("stu_data_versao") != "" %}
             data = date("{{ var('stu_data_versao') }}")
+        -- Versão fixa do STU em 2024-03-25 devido à falha de atualização na fonte da dados (SIURB)
+        {%- elif var("run_date") >= "2024-03-01" %}
+            data = "2024-03-25"
         {% else %}
-            -- Versão fixa do STU em 2024-03-25 devido à falha de atualização na fonte da dados (SIURB)
-            {%- if var("run_date") >= "2024-03-01" %}
-                {% set licenciamento_date = "2024-03-25" %}
-            {% else %}
-                {% if execute %}
-                    {% set licenciamento_date = run_query("SELECT MIN(data) FROM " ~ ref("sppo_licenciamento_stu") ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 5 DAY)").columns[0].values()[0] %}
-                {% endif %}
+            {% if execute %}
+                {% set licenciamento_date = run_query("SELECT MIN(data) FROM " ~ ref("sppo_licenciamento_stu") ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 5 DAY)").columns[0].values()[0] %}
             {% endif %}
 
             data = DATE("{{ licenciamento_date }}")

@@ -1,3 +1,4 @@
+-- depends_on: {{ ref('sppo_licenciamento_stu') }}
 {{
     config(
         materialized="incremental",
@@ -19,14 +20,16 @@ WITH
     indicador_vistoria_valida AS indicador_vistoriado,
   FROM
     {{ ref("sppo_licenciamento") }} --`rj-smtr`.`veiculo`.`sppo_licenciamento`
+  WHERE
   {%- if var("stu_data_versao") != "" %}
-  WHERE 
     data = DATE("{{ var('stu_data_versao') }}")
+  -- Versão fixa do STU em 2024-03-25 devido à falha de atualização na fonte da dados (SIURB)
+  {%- elif var("run_date") >= "2024-03-01" %}
+    data = "2024-03-25"
   {% else -%}
     {%- if execute %}
         {% set licenciamento_date = run_query("SELECT MIN(data) FROM " ~ ref("sppo_licenciamento") ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 5 DAY)").columns[0].values()[0] %}
     {% endif -%}
-  WHERE 
     data = DATE("{{ licenciamento_date }}")
   {% endif -%}  
   ),
@@ -35,7 +38,8 @@ WITH
     DISTINCT data,
     id_veiculo
   FROM
-    {{ ref("gps_sppo") }} -- `rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo`
+    -- {{ ref("gps_sppo") }} 
+    `rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo`
   WHERE
     data = DATE("{{ var('run_date') }}") ),
   autuacoes AS (
@@ -158,7 +162,7 @@ WITH
   SELECT
     data,
     id_veiculo,
-    {% if var("run_date") >= var('DATA_SUBSIDIO_V5_INICIO') %}
+    {% if var("run_date") >= var("DATA_SUBSIDIO_V5_INICIO") %}
       STRUCT( COALESCE(l.indicador_licenciado, FALSE)                     AS indicador_licenciado,
               COALESCE(l.indicador_vistoriado, FALSE)                     AS indicador_vistoriado,
               COALESCE(l.indicador_ar_condicionado, FALSE)                AS indicador_ar_condicionado,
