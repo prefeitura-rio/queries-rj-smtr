@@ -1,103 +1,19 @@
 version: 2
 
 models:
-  - name: encontro_contas_consorcio_ano_cenario_1
-    description: "Balanço da receita aferida e esperada por consórcio e ano - Cenário 1: Considerando apenas recursos pagos (recursos_sppo_servico_dia_pago)"
+  - name: encontro_contas_consorcio_ano
+    description: "Balanço da receita aferida e esperada por consórcio e ano - Considerando apenas recursos pagos (recursos_sppo_servico_dia_pago)"
     columns:
       - name: ano
         description: "Ano"
       - name: consorcio
         description: "Nome do consórcio"
-      - name: km_milhoes
-        description: "Quilometragem apurada - km (milhões)"
-      - name: remuneracao_tarifaria_milhoes
-        description: "Remuneração tarifária - R$ (milhões)"
-      - name: subsidio_milhoes
-        description: "Subsídio apurado - R$ (milhões)"
-      - name: receita_aferida_milhoes
-        description: "Receita total aferida - R$ (milhões)"
-      - name: receita_esperada_milhoes
-        description: "Receita total esperada - R$ (milhões)"
-      - name: desconto_milhoes
-        description: "Desconto total - R$ (milhões)"
-      - name: saldo_milhoes
-        description: "Saldo total - R$ (milhões)"
-  - name: encontro_contas_consorcio_ano_cenario_2
-    description: "Balanço da receita aferida e esperada por consórcio e ano - Cenário 2: Considerando recursos pagos + recursos em avaliação pela TR/SUBTT/CMO (recursos_sppo_servico_dia_pago + recursos_sppo_servico_dia_avaliacao)"
-    columns:
-      - name: ano
-        description: "Ano"
-      - name: consorcio
-        description: "Nome do consórcio"
-      - name: km_milhoes
-        description: "Quilometragem apurada - km (milhões)"
-      - name: remuneracao_tarifaria_milhoes
-        description: "Remuneração tarifária - R$ (milhões)"
-      - name: subsidio_milhoes
-        description: "Subsídio apurado - R$ (milhões)"
-      - name: receita_aferida_milhoes
-        description: "Receita total aferida - R$ (milhões)"
-      - name: receita_esperada_milhoes
-        description: "Receita total esperada - R$ (milhões)"
-      - name: desconto_milhoes
-        description: "Desconto total - R$ (milhões)"
-      - name: saldo_milhoes
-        description: "Saldo total - R$ (milhões)"
-  - name: encontro_contas_consorcio_mes_cenario_1
-    description: "Balanço da receita aferida e esperada por consórcio e mês - Cenário 1: Considerando apenas recursos pagos (recursos_sppo_servico_dia_pago)"
-    columns:
-      - name: ano
-        description: "Ano"
-      - name: mes
-        description: "Mês"
-      - name: consorcio
-        description: "Nome do consórcio"
-      - name: km_milhoes
-        description: "Quilometragem apurada - km (milhões)"
-      - name: remuneracao_tarifaria_milhoes
-        description: "Remuneração tarifária - R$ (milhões)"
-      - name: subsidio_milhoes
-        description: "Subsídio apurado - R$ (milhões)"
-      - name: receita_aferida_milhoes
-        description: "Receita total aferida - R$ (milhões)"
-      - name: receita_esperada_milhoes
-        description: "Receita total esperada - R$ (milhões)"
-      - name: desconto_milhoes
-        description: "Desconto total - R$ (milhões)"
-      - name: saldo_milhoes
-        description: "Saldo total - R$ (milhões)"
-  - name: encontro_contas_consorcio_mes_cenario_2
-    description: "Balanço da receita aferida e esperada por consórcio e mês - Cenário 2: Considerando recursos pagos + recursos em avaliação pela TR/SUBTT/CMO (recursos_sppo_servico_dia_pago + recursos_sppo_servico_dia_avaliacao)"
-    columns:
-      - name: ano
-        description: "Ano"
-      - name: mes
-        description: "Mês"
-      - name: consorcio
-        description: "Nome do consórcio"
-      - name: km_milhoes
-        description: "Quilometragem apurada - km (milhões)"
-      - name: remuneracao_tarifaria_milhoes
-        description: "Remuneração tarifária - R$ (milhões)"
-      - name: subsidio_milhoes
-        description: "Subsídio apurado - R$ (milhões)"
-      - name: receita_aferida_milhoes
-        description: "Receita total aferida - R$ (milhões)"
-      - name: receita_esperada_milhoes
-        description: "Receita total esperada - R$ (milhões)"
-      - name: desconto_milhoes
-        description: "Desconto total - R$ (milhões)"
-      - name: saldo_milhoes
-        description: "Saldo total - R$ (milhões)"
-  - name: encontro_contas_consorcio_dia_cenario_1
-    description: "Balanço da receita aferida e esperada por consórcio e dia - Cenário 1: Considerando apenas recursos pagos (recursos_sppo_servico_dia_pago)"
-    columns:
-      - name: data
-        description: "Data"
-      - name: consorcio
-        description: "Nome do consórcio"
-      - name: km
+      - name: km_apurada
         description: "Quilometragem apurada - km"
+      - name: km_planejada
+        description: "Quilometragem planejada - km"
+      - name: km_subsidiada
+        description: "Quilometragem apurada, descontadas viagens acima do teto de 120%/200% (RESOLUÇÃO SMTR Nº 3645/2023) - km"
       - name: remuneracao_tarifaria
         description: "Remuneração tarifária - R$"
       - name: subsidio
@@ -110,15 +26,23 @@ models:
         description: "Desconto total - R$"
       - name: saldo
         description: "Saldo total - R$"
-  - name: encontro_contas_consorcio_dia_cenario_2
-    description: "Balanço da receita aferida e esperada por consórcio e dia - Cenário 2: Considerando recursos pagos + recursos em avaliação pela TR/SUBTT/CMO (recursos_sppo_servico_dia_pago + recursos_sppo_servico_dia_avaliacao)"
+      - name: quantidade_passageiros_total
+        description: "Quantidade total de passageiros registrados"
+  - name: encontro_contas_consorcio_mes
+    description: "Balanço da receita aferida e esperada por consórcio e mês - Considerando apenas recursos pagos (recursos_sppo_servico_dia_pago)"
     columns:
-      - name: data
-        description: "Data"
+      - name: ano
+        description: "Ano"
+      - name: mes
+        description: "Mês"
       - name: consorcio
         description: "Nome do consórcio"
-      - name: km
+      - name: km_apurada
         description: "Quilometragem apurada - km"
+      - name: km_planejada
+        description: "Quilometragem planejada - km"
+      - name: km_subsidiada
+        description: "Quilometragem apurada, descontadas viagens acima do teto de 120%/200% (RESOLUÇÃO SMTR Nº 3645/2023) - km"
       - name: remuneracao_tarifaria
         description: "Remuneração tarifária - R$"
       - name: subsidio
@@ -131,6 +55,35 @@ models:
         description: "Desconto total - R$"
       - name: saldo
         description: "Saldo total - R$"
+      - name: quantidade_passageiros_total
+        description: "Quantidade total de passageiros registrados"
+  - name: encontro_contas_consorcio_dia
+    description: "Balanço da receita aferida e esperada por consórcio e dia - Considerando apenas recursos pagos (recursos_sppo_servico_dia_pago)"
+    columns:
+      - name: data
+        description: "Data"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: km_apurada
+        description: "Quilometragem apurada - km"
+      - name: km_planejada
+        description: "Quilometragem planejada - km"
+      - name: km_subsidiada
+        description: "Quilometragem apurada, descontadas viagens acima do teto de 120%/200% (RESOLUÇÃO SMTR Nº 3645/2023) - km"
+      - name: remuneracao_tarifaria
+        description: "Remuneração tarifária - R$"
+      - name: subsidio
+        description: "Subsídio apurado - R$"
+      - name: receita_aferida
+        description: "Receita total aferida - R$"
+      - name: receita_esperada
+        description: "Receita total esperada - R$"
+      - name: desconto
+        description: "Desconto total - R$"
+      - name: saldo
+        description: "Saldo total - R$"
+      - name: quantidade_passageiros_total
+        description: "Quantidade total de passageiros registrados"
   - name: subsidio_parametros_atualizada
     description: "Parâmetros de remuneração do subsídio dos serviços de ônibus (SPPO) por tipo de viagem"
     columns:
