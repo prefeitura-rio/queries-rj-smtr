@@ -8,26 +8,26 @@ models:
         description: "Ano"
       - name: consorcio
         description: "Nome do consórcio"
-      - name: km_apurada_milhoes
-        description: "Quilometragem apurada - km (milhões)"
-      - name: km_planejada_milhoes
-        description: "Quilometragem planejada - km (milhões)"
-      - name: km_subsidiada_milhoes
-        description: "Quilometragem apurada, descontadas viagens acima do teto de 120%/200% (RESOLUÇÃO SMTR Nº 3645/2023) - km (milhões)"
-      - name: remuneracao_tarifaria_milhoes
-        description: "Remuneração tarifária - R$ (milhões)"
-      - name: subsidio_milhoes
-        description: "Subsídio apurado - R$ (milhões)"
-      - name: receita_aferida_milhoes
-        description: "Receita total aferida - R$ (milhões)"
-      - name: receita_esperada_milhoes
-        description: "Receita total esperada - R$ (milhões)"
-      - name: desconto_milhoes
-        description: "Desconto total - R$ (milhões)"
-      - name: saldo_milhoes
-        description: "Saldo total - R$ (milhões)"
-      - name: quantidade_passageiros_total_milhoes
-        description: "Quantidade total de passageiros registrados - milhões"
+      - name: km_apurada
+        description: "Quilometragem apurada - km"
+      - name: km_planejada
+        description: "Quilometragem planejada - km"
+      - name: km_subsidiada
+        description: "Quilometragem apurada, descontadas viagens acima do teto de 120%/200% (RESOLUÇÃO SMTR Nº 3645/2023) - km"
+      - name: remuneracao_tarifaria
+        description: "Remuneração tarifária - R$"
+      - name: subsidio
+        description: "Subsídio apurado - R$"
+      - name: receita_aferida
+        description: "Receita total aferida - R$"
+      - name: receita_esperada
+        description: "Receita total esperada - R$"
+      - name: desconto
+        description: "Desconto total - R$"
+      - name: saldo
+        description: "Saldo total - R$"
+      - name: quantidade_passageiros_total
+        description: "Quantidade total de passageiros registrados"
   - name: encontro_contas_consorcio_mes
     description: "Balanço da receita aferida e esperada por consórcio e mês - Considerando apenas recursos pagos (recursos_sppo_servico_dia_pago)"
     columns:
@@ -37,28 +37,28 @@ models:
         description: "Mês"
       - name: consorcio
         description: "Nome do consórcio"
-      - name: km_apurada_milhoes
-        description: "Quilometragem apurada - km (milhões)"
-      - name: km_planejada_milhoes
-        description: "Quilometragem planejada - km (milhões)"
-      - name: km_subsidiada_milhoes
-        description: "Quilometragem apurada, descontadas viagens acima do teto de 120%/200% (RESOLUÇÃO SMTR Nº 3645/2023) - km (milhões)"
-      - name: remuneracao_tarifaria_milhoes
-        description: "Remuneração tarifária - R$ (milhões)"
-      - name: subsidio_milhoes
-        description: "Subsídio apurado - R$ (milhões)"
-      - name: receita_aferida_milhoes
-        description: "Receita total aferida - R$ (milhões)"
-      - name: receita_esperada_milhoes
-        description: "Receita total esperada - R$ (milhões)"
-      - name: desconto_milhoes
-        description: "Desconto total - R$ (milhões)"
-      - name: saldo_milhoes
-        description: "Saldo total - R$ (milhões)"
-      - name: quantidade_passageiros_total_milhoes
-        description: "Quantidade total de passageiros registrados - milhões"
+      - name: km_apurada
+        description: "Quilometragem apurada - km"
+      - name: km_planejada
+        description: "Quilometragem planejada - km"
+      - name: km_subsidiada
+        description: "Quilometragem apurada, descontadas viagens acima do teto de 120%/200% (RESOLUÇÃO SMTR Nº 3645/2023) - km"
+      - name: remuneracao_tarifaria
+        description: "Remuneração tarifária - R$"
+      - name: subsidio
+        description: "Subsídio apurado - R$"
+      - name: receita_aferida
+        description: "Receita total aferida - R$"
+      - name: receita_esperada
+        description: "Receita total esperada - R$"
+      - name: desconto
+        description: "Desconto total - R$"
+      - name: saldo
+        description: "Saldo total - R$"
+      - name: quantidade_passageiros_total
+        description: "Quantidade total de passageiros registrados"
   - name: encontro_contas_consorcio_dia
-    description: "Balanço da receita aferida e esperada por consórcio e dia - onsiderando apenas recursos pagos (recursos_sppo_servico_dia_pago)"
+    description: "Balanço da receita aferida e esperada por consórcio e dia - Considerando apenas recursos pagos (recursos_sppo_servico_dia_pago)"
     columns:
       - name: data
         description: "Data"
