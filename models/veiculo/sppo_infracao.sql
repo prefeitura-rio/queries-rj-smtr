@@ -10,6 +10,11 @@
        incremental_strategy='insert_overwrite'
 )
 }}
+
+{%- if execute %}
+  {% set infracao_date = run_query("SELECT MIN(SAFE_CAST(data AS DATE)) FROM " ~ var('sppo_infracao_staging') ~ " WHERE SAFE_CAST(data AS DATE) >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 7 DAY)").columns[0].values()[0] %}
+{% endif -%}
+
 WITH 
   infracao AS (
     SELECT
@@ -26,11 +31,9 @@ WITH
       SAFE_CAST(JSON_VALUE(content,'$.status') AS STRING) status,
       IF(JSON_VALUE(content,'$.data_pagamento') = "", NULL, PARSE_DATE("%d/%m/%Y", JSON_VALUE(content,'$.data_pagamento'))) data_pagamento
     FROM
-      {{ source("veiculo_staging", "sppo_infracao") }} AS t
-    {%- if is_incremental() %}
+      {{ var('sppo_infracao_staging') }} as t
     WHERE
-       SAFE_CAST(data AS DATE) = (SELECT MIN(SAFE_CAST(data AS DATE)) FROM {{ source("veiculo_staging", "sppo_infracao") }} WHERE SAFE_CAST(data AS DATE) >= DATE_ADD(DATE("{{var('run_date')}}"), INTERVAL 7 DAY))
-    {% endif -%}
+      SAFE_CAST(data AS DATE) = DATE("{{ infracao_date }}")
   ),
   infracao_rn AS (
     SELECT

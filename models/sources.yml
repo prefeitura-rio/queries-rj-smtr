@@ -90,9 +90,12 @@ sources:
     database: rj-smtr-staging
 
     tables:
-      - name: sppo_licenciamento_stu
-      - name: sppo_licenciamento_solicitacao
-      - name: sppo_licenciamento_vistoria_solicitacao
-      - name: sppo_infracao
-      - name: sppo_registro_agente_verao
-      - name: sppo_licenciamento_cglf_aux
+      - name: sppo_vistoria_tr_subtt_cglf_2023
+      - name: sppo_vistoria_tr_subtt_cglf_2024
+      - name: sppo_vistoria_tr_subtt_cglf_pendentes_2024
+  
+  - name: dashboard_subsidio_sppo_staging
+    database: rj-smtr-staging
+
+    tables:
+      - name: subsidio_valor_km_tipo_viagem

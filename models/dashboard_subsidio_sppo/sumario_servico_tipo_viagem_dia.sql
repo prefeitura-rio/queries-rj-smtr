@@ -44,57 +44,18 @@ WITH
   WHERE
     `data` BETWEEN DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
     AND DATE( "{{ var("end_date") }}" ) ),
-  subsidio_parametros AS (
-  SELECT
-    *
-  FROM
-    {{ ref("subsidio_parametros") }} --`rj-smtr`.`dashboard_subsidio_sppo`.`subsidio_parametros`
-  WHERE
-    status != "Não classificado"
-  ORDER BY
-    data_inicio DESC,
-    ordem),
-  tabela_status_array AS (
-  SELECT
-    TO_JSON_STRING(STRUCT(indicador_licenciado,
-                          indicador_vistoriado,
-                          indicador_ar_condicionado,
-                          indicador_autuacao_ar_condicionado,
-                          indicador_autuacao_seguranca,
-                          indicador_autuacao_limpeza,
-                          indicador_autuacao_equipamento,
-                          indicador_sensor_temperatura,
-                          indicador_validador_sbd,
-                          indicador_registro_agente_verao_ar_condicionado )) AS indicadores,
-    ARRAY_AGG(status) AS status_array
-  FROM
-    subsidio_parametros
-  GROUP BY
-    indicadores),
-  status_update AS (
-  SELECT
-    indicadores,
-    status_array,
-    status_array[OFFSET(0)] AS status
-  FROM
-    tabela_status_array),
-  status_flat AS (
-  SELECT
-    DISTINCT status_t,
-    status
-  FROM
-    status_update,
-    UNNEST(status_array) AS status_t),
   tipo_viagem_v2_atualizado AS (
   SELECT
     * EXCEPT(status),
-    u.status
+    CASE
+      WHEN status = "Nao licenciado" THEN "Não licenciado"
+      WHEN status = "Licenciado com ar e autuado (023.II)" THEN "Autuado por ar inoperante"
+      WHEN status = "Licenciado sem ar" THEN "Licenciado sem ar e não autuado"
+      WHEN status = "Licenciado com ar e não autuado (023.II)" THEN "Licenciado com ar e não autuado"
+    ELSE status
+    END AS status
   FROM
-    tipo_viagem_v2 AS k
-  LEFT JOIN
-    status_flat AS u
-  ON
-    u.status_t = k.status),
+    tipo_viagem_v2),
   sumario_v2 AS (
   SELECT
     v.`data`,

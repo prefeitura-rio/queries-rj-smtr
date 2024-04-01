@@ -203,13 +203,7 @@ models:
       - name: indicador_validador_sbd
         description: "Indicador se o veículo se encontra com o novo validador do Sistema de Bilhetagem Digital (SBD) instalado"
       - name: status
-        description: "Classificação, observados os demais parâmetros - Categorias:\n
-        - Não licenciado\n
-        - Autuado por ar inoperante\n
-        - Autuado por segurança\n
-        - Autuado por limpeza/equipamento\n
-        - Sem ar e não autuado\n
-        - Com ar e não autuado"
+        description: "Classificação, observados os demais parâmetros"
       - name: subsidio_km
         description: "Valor de subsídio de remuneração (R$/km)"
       - name: irk
@@ -222,8 +216,6 @@ models:
         description: "Legislação que estabelece o valor e regras de remuneração"
       - name: ordem
         description: "Ordem de prioridade de aplicação dos valores de remuneração"
-      - name: indicador_vistoriado
-        description: "Indicador se o veículo foi vistoriado tempestivamente conforme calendário de vistoria"
       - name: indicador_registro_agente_verao_ar_condicionado
         description: "Indicador se o veículo foi registrado por agente de verão (RESOLUÇÃO SMTR Nº 3.682/2024) com ar condicionado inoperante ou em mau funcionamento"
   - name: viagens_realizadas
@@ -313,6 +305,8 @@ models:
         description: "Distância planejada para o serviço (km)."
       - name: distancia_total_subsidio
         description: "Distância apurada para o serviço (km)."
+      - name: valor_total_aferido
+        description: "."
       - name: perc_distancia_total_subsidio
         description: "Indicador percentual de quilometragem apurada em relação à planejada da linha."
       - name: valor_total_subsidio
@@ -366,4 +360,3 @@ models:
         description: "Valor de subsídio, conforme tipo de viagem (R$/km)."
       - name: indicador_viagem_remunerada
         description: "Indicador se a viagem foi remunerada ou não."
-

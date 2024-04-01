@@ -1,112 +1,82 @@
--- depends_on: {{ ref('sppo_licenciamento_stu') }}
-
+-- depends_on: {{ ref('aux_sppo_licenciamento_vistoria_atualizada') }}
 {{
     config(
         materialized="incremental",
-        unique_key="id",
-        incremental_strategy="merge",
-        merge_update_columns = [
-            "permissao",
-            "modo",
-            "data_fim_vinculo",
-            "data_ultima_vistoria",
-            "id_planta",
-            "indicador_ar_condicionado",
-            "indicador_elevador",
-            "indicador_usb",
-            "indicador_wifi",
-            "quantidade_lotacao_pe",
-            "quantidade_lotacao_sentado",
-            "tipo_combustivel",
-            "tipo_veiculo",
-            "status",
-            "timestamp_ultima_captura",
-            "versao",
-            "datetime_ultima_atualizacao"
-        ]
+        partition_by={"field": "data", "data_type": "date", "granularity": "day"},
+        unique_key=["data", "id_veiculo"],
+        incremental_strategy="insert_overwrite",
     )
 }}
 
-{%- if execute %}
-    {% set licenciamento_max_date = run_query("SELECT SAFE_CAST(MAX(DATA) AS DATE) FROM " ~ ref('sppo_licenciamento_stu') ~ " WHERE DATA >= DATE_SUB(DATE('" ~ var('run_date') ~ "'), INTERVAL 5 DAY)").columns[0].values()[0] %}
-{% endif -%}
+with
+    -- Tabela de licenciamento
+    stu as (
+        select 
+            *
+        from
+            {{ ref("sppo_licenciamento_stu") }} as t
+        where
+        {% if var("stu_data_versao") != "" %}
+            data = date("{{ var('stu_data_versao') }}")
+        -- Versão fixa do STU em 2024-03-25 devido à falha de atualização na fonte da dados (SIURB)
+        {%- elif var("run_date") >= "2024-03-01" %}
+            data = "2024-03-25"
+        {% else %}
+            {% if execute %}
+                {% set licenciamento_date = run_query("SELECT MIN(data) FROM " ~ ref("sppo_licenciamento_stu") ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 5 DAY)").columns[0].values()[0] %}
+            {% endif %}
 
-WITH
-raw AS (
-    SELECT
-        id_veiculo || "_" || placa || "_" || data_inicio_vinculo AS id,
-        *
-    FROM
-        (
-            SELECT
-                *
-            FROM
-                {{ ref("sppo_licenciamento_stu") }}
-            WHERE
-                {%- if is_incremental() %}
-                DATA >= DATE("{{ var('run_date') }}")
-                AND
-                {% endif %}
-                tipo_veiculo NOT LIKE "%ROD%"
-                AND tipo_veiculo NOT LIKE "%BRT%"
-        )
-),
-treated_rn AS (
-    SELECT
-        *,
-        MIN(timestamp_captura) OVER (PARTITION BY id ORDER BY timestamp_captura) AS timestamp_primeira_captura,
-        ROW_NUMBER() OVER (PARTITION BY id ORDER BY data DESC) rn
-    FROM
-        raw
-)
-SELECT
-    id,
-    id_veiculo,
-    placa,
-    permissao,
-    modo,      
-    data_inicio_vinculo,
-    CASE
-        WHEN data < DATE("{{ licenciamento_max_date }}") AND data != "2024-03-24" THEN data 
-        /* Em 2024-03-24 foi realizada subida de extração manual realizada pela Satiê (IplanRio)
-        Há veículos que não se encontram nas capturas seguintes
-        TODO: ajustar após correção de captura via FTP */
-    ELSE
-        NULL
-    END AS data_fim_vinculo,
-    v.data_ultima_vistoria,
-    ano_fabricacao,
-    carroceria,
-    id_carroceria,
-    nome_chassi,
-    id_chassi,
-    id_fabricante_chassi,
-    id_interno_carroceria,
-    id_planta,
-    indicador_ar_condicionado,
-    indicador_elevador,
-    indicador_usb,
-    indicador_wifi,
-    quantidade_lotacao_pe,
-    quantidade_lotacao_sentado,
-    tipo_combustivel,
-    tipo_veiculo,
-    status,
-    timestamp_primeira_captura,
-    timestamp_captura AS timestamp_ultima_captura,
-    "{{ var('version') }}" AS versao,
-    CURRENT_DATETIME("America/Sao_Paulo") AS datetime_ultima_atualizacao,
-FROM
-    treated_rn AS t
-LEFT JOIN
-    (
+            data = DATE("{{ licenciamento_date }}")
+        {% endif %}
+            and tipo_veiculo not like "%ROD%"
+    ),
+    stu_rn AS (
+        select
+            * except (timestamp_captura),
+            EXTRACT(YEAR FROM data_ultima_vistoria) AS ano_ultima_vistoria,
+            ROW_NUMBER() OVER (PARTITION BY data, id_veiculo) rn
+        from
+            stu
+    ),
+    stu_ano_ultima_vistoria AS (
+        -- Temporariamente considerando os dados de vistoria enviados pela TR/SUBTT/CGLF
+        {% if var("run_date") >= "2024-03-01" %}
         SELECT
-            DISTINCT id,
-            MAX(data_inicio_periodo_vistoria) OVER (PARTITION BY id ORDER BY data_inicio_periodo_vistoria DESC) AS data_ultima_vistoria
+            s.* EXCEPT(ano_ultima_vistoria),
+            CASE 
+                WHEN c.ano_ultima_vistoria > s.ano_ultima_vistoria THEN c.ano_ultima_vistoria
+                ELSE COALESCE(s.ano_ultima_vistoria, c.ano_ultima_vistoria)
+            END AS ano_ultima_vistoria_atualizado,
         FROM
-            {{ ref("sppo_licenciamento_vistoria_historico") }}
-    ) AS v
-USING
-    (id)
-WHERE
-    rn = 1
+            stu_rn AS s
+        LEFT JOIN
+            (
+                SELECT
+                    id_veiculo, 
+                    placa,
+                    ano_ultima_vistoria
+                FROM
+                    {{ ref("aux_sppo_licenciamento_vistoria_atualizada") }}
+            ) AS c
+        USING
+            (id_veiculo, placa)
+        {% else %}
+        SELECT
+            s.* EXCEPT(ano_ultima_vistoria),
+            s.ano_ultima_vistoria AS ano_ultima_vistoria_atualizado,
+        FROM
+            stu_rn AS s
+        {% endif %}
+    )
+select
+  * except(rn, data_inicio_vinculo), 
+  CASE 
+    WHEN ano_ultima_vistoria_atualizado >= CAST(EXTRACT(YEAR FROM DATE_SUB("{{ var('run_date') }}", INTERVAL {{ var('sppo_licenciamento_validade_vistoria_ano') }} YEAR)) AS INT64) THEN TRUE -- Última vistoria realizada dentro do período válido
+    WHEN data_ultima_vistoria IS NULL AND DATE_DIFF(DATE("{{ var('run_date') }}"), data_inicio_vinculo, DAY) <=  {{ var('sppo_licenciamento_tolerancia_primeira_vistoria_dia') }} THEN TRUE -- Caso o veículo seja novo, existe a tolerância de 15 dias para a primeira vistoria
+  ELSE FALSE
+  END AS indicador_vistoria_valida,
+from
+  stu_ano_ultima_vistoria
+where
+  rn = 1
+
