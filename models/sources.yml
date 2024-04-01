@@ -82,7 +82,7 @@ sources:
       - name: rdo40_registros_sppo
 
   - name: projeto_subsidio_sppo_encontro_contas
-    database: rj-smtr
+    database: rj-smtr-dev # TODO: usar subsidio_valor_km_tipo_viagem em prod
 
     tables:
       - name: subsidio_parametros_atualizada

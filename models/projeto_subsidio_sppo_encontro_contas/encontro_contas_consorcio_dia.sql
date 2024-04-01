@@ -182,7 +182,7 @@ WITH
     rdo.data,
     rdo.consorcio,
     SUM(rdo.remuneracao_tarifaria) AS remuneracao_tarifaria,
-    SUM(rdo.quantidade_passageiros_total) AS quantidade_passageiros_total
+    SUM(rdo.quantidade_passageiros) AS quantidade_passageiros
   FROM (
     SELECT
       DATA,
@@ -194,7 +194,7 @@ WITH
     END
       AS servico,
       SUM(receita_buc) + SUM(receita_buc_supervia) + SUM(receita_cartoes_perna_unica_e_demais) + SUM(receita_especie) AS remuneracao_tarifaria,
-      SUM(qtd_passageiros_total) AS quantidade_passageiros_total
+      SUM(qtd_passageiros_total) AS quantidade_passageiros
     FROM
       {{ source("br_rj_riodejaneiro_rdo", "rdo40_registros_sppo") }}
     WHERE
@@ -231,19 +231,19 @@ SELECT
   km_apurada,
   km_planejada,
   km_subsidiada,
+  (receita_aferida - receita_esperada + desconto) AS saldo,
+  quantidade_passageiros,
   remuneracao_tarifaria,
   subsidio,
   receita_aferida,
   receita_esperada,
-  desconto,
-  (receita_aferida - receita_esperada + desconto) AS saldo,
-  quantidade_passageiros_total
+  desconto
 FROM (
   SELECT
     e.*,
     rdo.remuneracao_tarifaria,
     rdo.remuneracao_tarifaria + e.subsidio AS receita_aferida,
-    rdo.quantidade_passageiros_total
+    rdo.quantidade_passageiros
   FROM
     esperado e
   FULL JOIN
