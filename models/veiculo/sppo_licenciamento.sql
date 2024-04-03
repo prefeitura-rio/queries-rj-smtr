@@ -69,7 +69,7 @@ with
         {% endif %}
     )
 select
-  * except(rn), 
+  * except(rn),
 from
   stu_ano_ultima_vistoria
 where
