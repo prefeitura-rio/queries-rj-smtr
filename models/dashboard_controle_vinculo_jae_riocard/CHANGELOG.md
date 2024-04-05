@@ -3,4 +3,4 @@
 ## [1.0.0] - 2024-04-05
 
 ### Adicionado
-- Criada tabela de indicadores dos veículos: `veiculo_indicadores_dia.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/239)
+- Criada tabela de indicadores dos veículos: `veiculo_indicadores_dia.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/254)
