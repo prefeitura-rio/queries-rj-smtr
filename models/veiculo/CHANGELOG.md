@@ -19,6 +19,8 @@
   `sppo_veiculo_dia` para versão 5.0.0 do subsídio (https://github.com/prefeitura-rio/queries-rj-smtr/pull/239)
 - Atualiza documentação de tabelas e colunas (https://github.com/prefeitura-rio/queries-rj-smtr/pull/239)
 - Alterações feitas em https://github.com/prefeitura-rio/queries-rj-smtr/pull/229 e https://github.com/prefeitura-rio/queries-rj-smtr/pull/236 corrigidas em https://github.com/prefeitura-rio/queries-rj-smtr/pull/239
+- Altera a localização da verificação de validade da vistoria de `sppo_licenciamento` para `sppo_veiculo_dia` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/252)
+- Adiciona coluna `data_inicio_veiculo` na tabela `sppo_licenciamento` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/252)
 
 ## Corrigido
 
