@@ -20,6 +20,11 @@ sources:
       - name: tipo_modal
       - name: gps_validador
       - name: gratuidade
+      - name: ordem_rateio
+      - name: servico_motorista
+      - name: linha_sem_ressarcimento
+      - name: ordem_pagamento_consorcio_operadora
+      - name: ordem_pagamento_consorcio
 
   - name: br_rj_riodejaneiro_gtfs_staging
     database: rj-smtr-dev
@@ -53,6 +58,8 @@ sources:
       - name: recursos_sppo_viagens_individuais
       - name: recursos_sppo_bloqueio_via
       - name: recursos_sppo_reprocessamento
+      - name: recursos_sppo_servico_dia_avaliacao
+      - name: recursos_sppo_servico_dia_pago
   
   - name: cadastro
     database: rj-smtr
@@ -66,4 +73,30 @@ sources:
     tables:
       - name: rho_registros_sppo
       - name: rho5_registros_stpl
+
+  - name: br_rj_riodejaneiro_rdo
+    database: rj-smtr
+
+    tables:
+      - name: rdo40_tratado
+      - name: rdo40_registros_sppo
+
+  - name: projeto_subsidio_sppo_encontro_contas
+    database: rj-smtr
+
+    tables:
+      - name: subsidio_parametros_atualizada
+
+  - name: veiculo_staging
+    database: rj-smtr-staging
+
+    tables:
+      - name: sppo_vistoria_tr_subtt_cglf_2023
+      - name: sppo_vistoria_tr_subtt_cglf_2024
+      - name: sppo_vistoria_tr_subtt_cglf_pendentes_2024
   
+  - name: dashboard_subsidio_sppo_staging
+    database: rj-smtr-staging
+
+    tables:
+      - name: subsidio_valor_km_tipo_viagem

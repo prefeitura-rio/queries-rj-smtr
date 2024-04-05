@@ -99,7 +99,7 @@ WITH
     status,
     subsidio_km
   FROM
-    {{ ref("subsidio_parametros") }} ),
+    {{ ref("subsidio_valor_km_tipo_viagem") }} ),
 -- 5. Viagens com tipo e valor de subsídio por km
   viagem_km_tipo AS (
   SELECT

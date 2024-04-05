@@ -1,0 +1,119 @@
+version: 2
+
+models:
+  - name: encontro_contas_consorcio_ano
+    description: "Balanço da receita aferida e esperada por consórcio e ano - Considerando apenas recursos pagos (recursos_sppo_servico_dia_pago)"
+    columns:
+      - name: ano
+        description: "Ano"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: km_apurada
+        description: "Quilometragem apurada - km"
+      - name: km_planejada
+        description: "Quilometragem planejada - km"
+      - name: km_subsidiada
+        description: "Quilometragem apurada, descontadas viagens acima do teto de 120%/200% (RESOLUÇÃO SMTR Nº 3645/2023) - km"
+      - name: remuneracao_tarifaria
+        description: "Remuneração tarifária - R$"
+      - name: subsidio
+        description: "Subsídio apurado - R$"
+      - name: receita_aferida
+        description: "Receita total aferida - R$"
+      - name: receita_esperada
+        description: "Receita total esperada - R$"
+      - name: desconto
+        description: "Desconto total - R$"
+      - name: saldo
+        description: "Saldo total - R$"
+      - name: quantidade_passageiros_total
+        description: "Quantidade total de passageiros registrados"
+  - name: encontro_contas_consorcio_mes
+    description: "Balanço da receita aferida e esperada por consórcio e mês - Considerando apenas recursos pagos (recursos_sppo_servico_dia_pago)"
+    columns:
+      - name: ano
+        description: "Ano"
+      - name: mes
+        description: "Mês"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: km_apurada
+        description: "Quilometragem apurada - km"
+      - name: km_planejada
+        description: "Quilometragem planejada - km"
+      - name: km_subsidiada
+        description: "Quilometragem apurada, descontadas viagens acima do teto de 120%/200% (RESOLUÇÃO SMTR Nº 3645/2023) - km"
+      - name: remuneracao_tarifaria
+        description: "Remuneração tarifária - R$"
+      - name: subsidio
+        description: "Subsídio apurado - R$"
+      - name: receita_aferida
+        description: "Receita total aferida - R$"
+      - name: receita_esperada
+        description: "Receita total esperada - R$"
+      - name: desconto
+        description: "Desconto total - R$"
+      - name: saldo
+        description: "Saldo total - R$"
+      - name: quantidade_passageiros_total
+        description: "Quantidade total de passageiros registrados"
+  - name: encontro_contas_consorcio_dia
+    description: "Balanço da receita aferida e esperada por consórcio e dia - Considerando apenas recursos pagos (recursos_sppo_servico_dia_pago)"
+    columns:
+      - name: data
+        description: "Data"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: km_apurada
+        description: "Quilometragem apurada - km"
+      - name: km_planejada
+        description: "Quilometragem planejada - km"
+      - name: km_subsidiada
+        description: "Quilometragem apurada, descontadas viagens acima do teto de 120%/200% (RESOLUÇÃO SMTR Nº 3645/2023) - km"
+      - name: remuneracao_tarifaria
+        description: "Remuneração tarifária - R$"
+      - name: subsidio
+        description: "Subsídio apurado - R$"
+      - name: receita_aferida
+        description: "Receita total aferida - R$"
+      - name: receita_esperada
+        description: "Receita total esperada - R$"
+      - name: desconto
+        description: "Desconto total - R$"
+      - name: saldo
+        description: "Saldo total - R$"
+      - name: quantidade_passageiros_total
+        description: "Quantidade total de passageiros registrados"
+  - name: subsidio_parametros_atualizada
+    description: "Parâmetros de remuneração do subsídio dos serviços de ônibus (SPPO) por tipo de viagem"
+    columns:
+      - name: indicador_licenciado
+        description: "Indicador se o veículo encontra-se licenciado"
+      - name: indicador_ar_condicionado
+        description: "Indicador se o veículo foi licenciado com ar condicionado"
+      - name: indicador_autuacao_ar_condicionado
+        description: "Indicador se o veículo foi autuado por inoperância ou mau funcionamento do sistema de ar condicionado"
+      - name: indicador_autuacao_seguranca
+        description: "Indicador se o veículo foi autuado por infração relacionada à segurança do veículo"
+      - name: indicador_autuacao_limpeza
+        description: "Indicador se o veículo foi autuado por infração relacionada à limpeza do veículo"
+      - name: indicador_autuacao_equipamento
+        description: "Indicador se o veículo foi autuado por infração relacionada à inoperância ou mau funcionamento de equipamentos do veículo"
+      - name: indicador_sensor_temperatura
+        description: "Indicador se o sensor de temperatura do veículo não estava em funcionamento conforme especificação da SMTR"
+      - name: indicador_validador_sbd
+        description: "Indicador se o veículo se encontra com o novo validador do Sistema de Bilhetagem Digital (SBD) instalado"
+      - name: status
+        description: "Classificação, observados os demais parâmetros para remuneração"
+      - name: subsidio_km
+        description: "Valor de subsídio de remuneração (R$/km)"
+      - name: irk
+        description: "Índice de Remuneração por km (R$/km)"
+      - name: data_inicio
+        description: "Data inicial do período de vigência dos demais atributos"
+      - name: data_fim
+        description: "Data final do período de vigência dos demais atributos"
+      - name: legislacao
+        description: "Legislação que estabelece o valor e regras de remuneração"
+      - name: ordem
+        description: "Ordem de prioridade de aplicação dos valores de remuneração"

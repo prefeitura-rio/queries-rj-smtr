@@ -104,8 +104,14 @@ vars:
   subsidio_parametros: "`rj-smtr-staging.dashboard_subsidio_sppo_staging.subsidio_parametros`"
   shapes_version: "YYYY-MM-DD"
   frequencies_version: "YYYY-MM-DD"
+  # Feature penalidade de autuação por inoperância do ar condicionado (DECRETO RIO 51940/2023)
   DATA_SUBSIDIO_V2_INICIO: "2023-01-16"
-  DATA_SUBSIDIO_V3_INICIO: "2023-07-16"
+  # Feature penalidade de autuação por segurança e limpeza/equipamento (DECRETO RIO 52820/2023)
+  DATA_SUBSIDIO_V3_INICIO: "2023-07-04"
+  # Feature penalidade aplicada por agente de verão (DECRETO RIO 53856/2023 e RESOLUÇÃO SMTR 3682/2024)
+  DATA_SUBSIDIO_V4_INICIO: "2024-01-04"
+  # Feature penalidade de vistoria (RESOLUÇÃO SMTR 3683/2024)
+  DATA_SUBSIDIO_V5_INICIO: "2024-03-01"
   # valor_subsidio: "`rj-smtr-dev.projeto_subsidio_sppo.valor_subsidio`"
 
   # Recursos #
@@ -124,6 +130,10 @@ vars:
   sppo_registro_agente_verao_staging: "rj-smtr-staging.veiculo_staging.sppo_registro_agente_verao"
   sppo_licenciamento_solicitacao_data_versao: "2023-02-06"
   stu_data_versao: ""
+  # Prazo para última vistoria realizada dentro do período válido
+  sppo_licenciamento_validade_vistoria_ano: 1
+  # Tolerância de vistoria para veículos novos 
+  sppo_licenciamento_tolerancia_primeira_vistoria_dia: 15
 
   ### RDO ###
   rho_registros_sppo_staging: "rj-smtr-staging.br_rj_riodejaneiro_rdo_staging.rho_registros_sppo"
@@ -192,9 +202,15 @@ models:
     dashboard_subsidio_sppo:
       +materialized: view
       +schema: dashboard_subsidio_sppo
+    dashboard_subsidio_sppo_staging:
+      +materialized: view
+      +schema: dashboard_subsidio_sppo_staging
     veiculo:
       +materialized: view
       +schema: veiculo
+    veiculo_staging:
+      +materialized: view
+      +schema: veiculo_staging
     br_rj_riodejaneiro_rdo:
       +materialized: view
       +schema: br_rj_riodejaneiro_rdo
@@ -210,9 +226,16 @@ models:
     dashboard_bilhetagem_implantacao_jae:
       +materialized: table
       +schema: dashboard_bilhetagem_implantacao_jae
+    dashboard_bilhetagem_jae:
+      +materialized: view
+      +schema: dashboard_bilhetagem_jae
     br_rj_riodejaneiro_stu:
       +materialized: view
       +schema: br_rj_riodejaneiro_stu
+    cadastro_staging:
+      +schema: cadastro_staging
+    cadastro:
+      +schema: cadastro
     br_rj_riodejaneiro_recursos:
       +materialized: incremental
       +schema: br_rj_riodejaneiro_recursos
@@ -223,3 +246,13 @@ models:
       +materialized: incremental
       +incremental_strategy: insert_overwrite
       +schema: gtfs
+    indicadores_continuados_egp_staging:
+      +materialized: incremental
+      +incremental_strategy: insert_overwrite
+      +schema: indicadores_continuados_egp_staging
+    indicadores_continuados_egp:
+      +materialized: view
+      +schema: indicadores_continuados_egp
+    projeto_subsidio_sppo_encontro_contas:
+      +materialized: table
+      +schema: projeto_subsidio_sppo_encontro_contas

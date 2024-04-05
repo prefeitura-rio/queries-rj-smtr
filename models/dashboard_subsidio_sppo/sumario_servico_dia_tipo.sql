@@ -1,60 +1,3 @@
-{% set status_list_query %}
-WITH
-  subsidio_parametros AS (
-  SELECT
-    *
-  FROM
-    {{ ref("subsidio_parametros") }}
-  WHERE
-    status != "Não classificado"
-  ORDER BY
-    data_inicio DESC,
-    ordem),
-  tabela_status_array AS (
-  SELECT
-    TO_JSON_STRING(STRUCT(indicador_licenciado,
-        indicador_ar_condicionado,
-        indicador_autuacao_ar_condicionado,
-        indicador_autuacao_seguranca,
-        indicador_autuacao_limpeza,
-        indicador_autuacao_equipamento,
-        indicador_sensor_temperatura,
-        indicador_validador_sbd,
-        indicador_registro_agente_verao_ar_condicionado )) AS indicadores,
-    ARRAY_AGG(status) AS status_array
-  FROM
-    subsidio_parametros
-  GROUP BY
-    indicadores),
-    status_principal AS (
-SELECT
-  status_array[OFFSET(0)] AS status,
-  LOWER(
-    REGEXP_REPLACE(
-      TRANSLATE(
-        status_array[OFFSET(0)],
-        'áàâãäéèêëíìîïóòôõöúùûüçÁÀÂÃÄÉÈÊËÍÌÎÏÓÒÔÕÖÚÙÛÜÇ',
-        'aaaaaeeeeiiiiooooouuuucAAAAAEEEEIIIIOOOOOUUUUC'
-      ),
-      r'[^\w\s]', -- Remove caracteres não alfanuméricos e não espaços
-      ''
-    )
-  ) AS status_tratado
-FROM
-  tabela_status_array)
-SELECT DISTINCT
-  status,
-  REGEXP_REPLACE(
-      REGEXP_REPLACE(
-        REGEXP_REPLACE(status_tratado, r'\b(e|por)\b', ''), -- Remove "e" e "por"
-        r'\bnao\b', 'n'  -- Substitui "não" por "n"
-      ),
-  r'[_\s]+', '_' -- Substitui múltiplos espaços ou underscores por um único "_"
-  ) AS status_tratado 
-FROM
-  status_principal
-{% endset %}
-
 WITH
   planejado AS (
   SELECT
@@ -110,56 +53,19 @@ WITH
     1,
     2,
     3 ),
-  subsidio_parametros AS (
-  SELECT
-    *
-  FROM
-    {{ ref("subsidio_parametros") }}
-  WHERE
-    status != "Não classificado"
-  ORDER BY
-    data_inicio DESC,
-    ordem),
-  tabela_status_array AS (
-  SELECT
-    TO_JSON_STRING(STRUCT(indicador_licenciado,
-        indicador_ar_condicionado,
-        indicador_autuacao_ar_condicionado,
-        indicador_autuacao_seguranca,
-        indicador_autuacao_limpeza,
-        indicador_autuacao_equipamento,
-        indicador_sensor_temperatura,
-        indicador_validador_sbd,
-        indicador_registro_agente_verao_ar_condicionado )) AS indicadores,
-    ARRAY_AGG(status) AS status_array
-  FROM
-    subsidio_parametros
-  GROUP BY
-    indicadores),
-  status_update AS (
-  SELECT
-    indicadores,
-    status_array,
-    status_array[OFFSET(0)] AS status
-  FROM
-    tabela_status_array),
-  status_flat AS (
-  SELECT DISTINCT 
-    status_t, 
-    status 
-  FROM 
-    status_update, 
-    UNNEST(status_array) AS status_t),
   servico_km_tipo_atualizado AS (
   SELECT
-    k.* EXCEPT(tipo_viagem),
-    u.status AS tipo_viagem
+    * EXCEPT(tipo_viagem),
+    CASE
+      WHEN tipo_viagem = "Nao licenciado" THEN "Não licenciado"
+      WHEN tipo_viagem = "Licenciado com ar e autuado (023.II)" THEN "Autuado por ar inoperante"
+      WHEN tipo_viagem = "Licenciado sem ar" THEN "Licenciado sem ar e não autuado"
+      WHEN tipo_viagem = "Licenciado com ar e não autuado (023.II)" THEN "Licenciado com ar e não autuado"
+    ELSE tipo_viagem
+    END AS tipo_viagem
   FROM
-    servico_km_tipo AS k
-  LEFT JOIN
-    status_flat AS u
-  ON 
-    u.status_t = k.tipo_viagem),
+    servico_km_tipo
+  ),
   servico_km AS (
   SELECT
     p.data,
@@ -191,16 +97,14 @@ WITH
     FROM
       servico_km ) PIVOT(SUM(viagens) AS viagens,
       SUM(km_apurada) AS km_apurada FOR tipo_viagem IN (
-        {% if execute %}
-          {% set status_q = run_query(status_list_query) %}
-          {% set status_list = status_q.columns[0].values() %}
-          {% set status_treated_list = status_q.columns[1].values() %}
-          {% for index in range(status_list|length) %}
-            {% set status = status_list[index] %}
-            {% set status_treated = status_treated_list[index] %}
-            "{{ status }}" AS {{ status_treated }}{% if not loop.last %},{% endif %}
-          {% endfor %}
-        {% endif %}
+          "Registrado com ar inoperante" AS registrado_com_ar_inoperante,
+          "Não licenciado" AS n_licenciado,
+          "Autuado por ar inoperante" AS autuado_ar_inoperante,
+          "Autuado por segurança" AS autuado_seguranca,
+          "Autuado por limpeza/equipamento" AS autuado_limpezaequipamento,
+          "Licenciado sem ar e não autuado" AS licenciado_sem_ar_n_autuado,
+          "Licenciado com ar e não autuado" AS licenciado_com_ar_n_autuado,
+          "Não vistoriado" AS n_vistoriado
         )))
 SELECT
   sd.*,

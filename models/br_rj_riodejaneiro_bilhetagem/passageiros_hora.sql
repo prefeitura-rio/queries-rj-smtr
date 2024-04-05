@@ -81,7 +81,7 @@ transacao_agrupada AS (
         t.hora,
         t.modo,
         t.consorcio,
-        t.servico,
+        t.id_servico_jae,
         t.sentido,
         CASE
             WHEN i.id_integracao IS NOT NULL THEN "Integração"
@@ -106,7 +106,7 @@ transacao_agrupada AS (
         {% else %}
             t.data >= "2023-07-19"
         {% endif %}
-        AND t.servico NOT IN ("888888", "999999")
+        AND t.id_servico_jae NOT IN ("140", "142")
         AND t.id_operadora != "2"
         AND (t.modo = "BRT" OR (t.modo = "VLT" AND t.data >= DATE("2024-02-24")))
         AND t.tipo_transacao IS NOT NULL
@@ -127,7 +127,7 @@ transacao_tratada AS (
         t.hora,
         t.modo,
         t.consorcio,
-        t.servico,
+        t.id_servico_jae,
         t.sentido,
         CASE
             WHEN t.tipo_transacao = "Integração" THEN "Integração"
@@ -145,14 +145,16 @@ SELECT
     t.hora,
     t.modo,
     t.consorcio,
-    t.servico,
+    t.id_servico_jae,
     t.sentido,
     t.tipo_transacao_smtr,
     CASE
         WHEN t.tipo_transacao_smtr = "Gratuidade" THEN t.tipo_gratuidade
         WHEN t.tipo_transacao_smtr = "Integração" THEN "Integração"
+        WHEN t.tipo_transacao_smtr = "Transferência" THEN "Transferência"
         ELSE t.tipo_pagamento
     END AS tipo_transacao_detalhe_smtr,
-    t.quantidade_passageiros
+    t.quantidade_passageiros,
+    '{{ var("version") }}' as versao
 FROM
     transacao_tratada t

@@ -1,0 +1,71 @@
+version: 2
+
+models:
+  - name: view_passageiros_hora
+    description: "View criada para uso no painel de bilhetagem. Junta os dados da tabela br_rj_riodejaneiro_bilhetagem.passageiros_hora com a tabela cadastro.servicos"
+    columns:
+      - name: data
+        description: "Data da transação"
+      - name: hora
+        description: "Hora da transação"
+      - name: modo
+        description: "Tipo de transporte (Ônibus, Van, BRT)"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: operadora
+        description: "Nome da operadora de transporte (mascarado se for pessoa física)"
+      - name: id_servico_jae
+        description: "Identificador da linha no banco de dados da jaé (É possível cruzar os dados com a tabela rj-smtr.cadastro.servicos usando a coluna id_servico_jae)"
+      - name: servico
+        description: "Nome do serviço na tabela cadastro.servicos"
+      - name: descricao_servico
+        description: "Descrição do serviço na tabela cadastro.servicos"
+      - name: nome_completo_servico
+        description: "Concatenação das colunas servico e descricao_servico, separadas por ' - '"
+      - name: sentido
+        description: "Sentido de operação do serviço (0 = ida, 1 = volta)"
+      - name: tipo_transacao_smtr
+        description: "Tipo de transação realizada no padrão usado pela SMTR (Tarifa Cheia, Integração e Gratuidade)"
+      - name: tipo_transacao_detalhe_smtr
+        description: "Detalhamento sobre a transação, de acordo com o tipo (Tarifa Cheia = tipo do pagamento, Gratuidade = tipo da gratuidade)"
+      - name: quantidade_passageiros
+        description: "Quantidade de transações que aconteceram em determinada data e hora"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: view_integracao
+    description: "Tabela de integrações realizadas entre modos do sistema de transporte municipal, contendo os valores da repartição tarifária (quando houver). [Dados em fase de teste]"
+    columns:
+      - name: data
+        description: "Data da transação (partição)"
+      - name: hora
+        description: "Hora da transação"
+      - name: id_integracao
+        description: "Identificador único da integração"
+      - name: perna_origem
+        description: "Número da sequência da transação atual dentro da integração"
+      - name: modo_origem
+        description: "Tipo de transporte (Ônibus, Van, BRT) da transação atual da integração"
+      - name: modo_origem_perna
+        description: "Concatenação da colunas modo_origem e perna_origem"
+      - name: consorcio_origem
+        description: "Nome do consórcio da transação atual da integração"
+      - name: descricao_servico_origem
+        description: "Descrição do serviço da transação atual da integração (vindo da tabela cadastro.servicos)"
+      - name: descricao_servico_origem_perna
+        description: "Concatenação da colunas descricao_servico_origem e perna_origem"
+      - name: perna_destino
+        description: "Número da sequência da próxima transação dentro da integração"
+      - name: modo_destino
+        description: "Tipo de transporte (Ônibus, Van, BRT) da próxima transação da integração"
+      - name: modo_destino_perna
+        description: "Concatenação da colunas modo_destino e perna_destino"
+      - name: consorcio_destino
+        description: "Nome do consórcio da próxima transação da integração"
+      - name: descricao_servico_destino
+        description: "Descrição do serviço da próxima transação da integração (vindo da tabela cadastro.servicos)"
+      - name: descricao_servico_destino_perna
+        description: "Concatenação da colunas descricao_servico_destino e perna_destino"
+      - name: tempo_integracao_minutos
+        description: "Tempo em minutos entre a trasação atual e a próxima transação da integração"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
