@@ -88,8 +88,8 @@ models:
                       Válido - Veículo com solicitação válida para ingresso no Sistema de Transporte Urbano (STU)"
       - name: ano_ultima_vistoria_atualizado
         description: "Ano atualizado da última vistoria realizada pelo veículo"
-      - name: indicador_vistoria_valida
-        description: "Indicador se a última vistoria realizada pelo veículo encontra-se válida (Verdadeiro/Falso)"
+      - name: data_inicio_vinculo
+        description: "Data de início do vínculo do veículo no STU"
   - name: sppo_licenciamento_solicitacao
     description: "Tabela histórica de dados cadastrais das solicitações em andamento para ingresso no Sistema de Transporte Urbano (STU)"
     columns:
