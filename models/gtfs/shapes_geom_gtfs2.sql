@@ -31,71 +31,111 @@ shapes AS (
     SELECT 
         shape_id,
         feed_start_date,
-        ST_MAKELINE(ARRAY_AGG(ponto_shape)) AS shape
+        ST_MAKELINE(ARRAY_AGG(ponto_shape)) AS shape,
+        ARRAY_AGG(ponto_shape)[ORDINAL(1)] AS start_pt,
+        ARRAY_AGG(ponto_shape)[ORDINAL(ARRAY_LENGTH(ARRAY_AGG(ponto_shape)))] AS end_pt,
     FROM pts
     GROUP BY 1,
             2
 ),
-boundary AS (
-    -- EXTRACT START AND END POINTS FROM SHAPES
-    SELECT
-        c1.shape_id,
-        c1.ponto_shape start_pt,
-        c2.ponto_shape end_pt,
-        c1.feed_start_date
-    FROM 
-        (
-            SELECT *
-            FROM pts
-            WHERE shape_pt_sequence = 1
-        ) c1
-    JOIN 
-        (
-            SELECT *
-            FROM pts
-            WHERE shape_pt_sequence = final_pt_sequence
-        ) c2 
-    ON c1.shape_id = c2.shape_id
-    AND c1.feed_start_date = c2.feed_start_date
-),
-merged AS (
-    -- JOIN SHAPES AND BOUNDARY POINTS
-    SELECT 
-        s.*,
-        b.* EXCEPT(feed_start_date, shape_id),
-        ROUND(ST_LENGTH(shape), 1) shape_distance,
-    FROM 
-        shapes s
-    JOIN 
-        boundary b 
-    ON 
-        s.shape_id = b.shape_id
-    AND 
-        s.feed_start_date = b.feed_start_date
+shapes_half AS (
+    -- BUILD HALF LINESTRINGS OVER SHAPE POINTS
+    (
+        SELECT 
+            shape_id,
+            feed_start_date,
+            shape_id || "_0" AS new_shape_id,
+            ST_MAKELINE(ARRAY_AGG(ponto_shape)) AS shape,
+            ARRAY_AGG(ponto_shape)[ORDINAL(1)] AS start_pt,
+            ARRAY_AGG(ponto_shape)[ORDINAL(ARRAY_LENGTH(ARRAY_AGG(ponto_shape)))] AS end_pt,
+        FROM 
+            pts
+        WHERE 
+            shape_pt_sequence <= ROUND(final_pt_sequence / 2)
+        GROUP BY 
+            1,
+            2
+    )
+    UNION ALL
+    (
+        SELECT 
+            shape_id,
+            feed_start_date,
+            shape_id || "_1" AS new_shape_id,
+            ST_MAKELINE(ARRAY_AGG(ponto_shape)) AS shape,
+            ARRAY_AGG(ponto_shape)[ORDINAL(1)] AS start_pt,
+            ARRAY_AGG(ponto_shape)[ORDINAL(ARRAY_LENGTH(ARRAY_AGG(ponto_shape)))] AS end_pt,
+        FROM 
+            pts
+        WHERE 
+            shape_pt_sequence > ROUND(final_pt_sequence / 2)
+        GROUP BY 
+            1,
+            2
+    )
 ),
 ids AS (
-    SELECT 
-        fi.feed_version,
-        m.feed_start_date,
-        fi.feed_end_date,
-        m.shape_id,
-        m.shape,
-        m.shape_distance,
-        m.start_pt,
-        m.end_pt,
-        ROW_NUMBER() OVER(PARTITION BY m.feed_start_date, m.shape_id) rn
-    FROM 
-        merged m
-    JOIN 
-        {{ ref('feed_info_gtfs2') }} fi 
-    ON 
-        m.feed_start_date = fi.feed_start_date
-    {% if is_incremental() -%}
-        WHERE fi.feed_start_date = '{{ var("data_versao_gtfs") }}'
-    {%- endif %}
+    SELECT
+      * EXCEPT(rn)
+    FROM
+    (
+        SELECT 
+            feed_start_date,
+            shape_id,
+            shape,
+            start_pt,
+            end_pt,
+            ROW_NUMBER() OVER(PARTITION BY feed_start_date, shape_id) rn
+        FROM 
+            shapes
+    )
+    WHERE rn = 1
+),
+union_shapes AS (
+  (
+    SELECT
+        feed_start_date,
+        shape_id,
+        shape,
+        start_pt,
+        end_pt,
+    FROM
+        ids
+  )
+  UNION ALL
+  (
+    SELECT
+        feed_start_date,
+        new_shape_id AS shape_id,
+        s.shape,
+        s.start_pt,
+        s.end_pt,
+    FROM
+        ids AS i
+    LEFT JOIN
+        shapes_half AS s
+    USING
+        (feed_start_date, shape_id)
+    WHERE
+        ST_DISTANCE(i.start_pt, i.end_pt) <= 50
+  )
 )
 SELECT 
-    * EXCEPT(rn),
+    feed_version,
+    feed_start_date,
+    feed_end_date,
+    shape_id,
+    shape,
+    ROUND(ST_LENGTH(shape), 1) shape_distance,
+    start_pt,
+    end_pt,
     '{{ var("version") }}' as versao_modelo
-FROM ids
-WHERE rn = 1
+FROM union_shapes AS m
+LEFT JOIN 
+    {{ ref('feed_info_gtfs2') }} AS fi 
+USING
+    (feed_start_date)
+{% if is_incremental() -%}
+WHERE
+    fi.feed_start_date = '{{ var("data_versao_gtfs") }}'
+{%- endif %}
