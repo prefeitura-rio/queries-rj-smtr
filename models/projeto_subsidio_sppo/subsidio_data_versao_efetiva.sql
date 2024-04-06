@@ -236,7 +236,15 @@ WITH
           ELSE 2.81
         END
       )
-    END AS valor_subsidio_por_km
+    END AS valor_subsidio_por_km,
+    CASE
+      WHEN data BETWEEN DATE(2024,03,18) AND DATE(2024,03,31) THEN "2024-03-18"
+      ELSE NULL
+    END AS feed_version,
+    CASE
+      WHEN data BETWEEN DATE(2024,03,18) AND DATE(2024,03,31) THEN "Regular"
+      ELSE NULL
+    END AS tipo_os,
   FROM UNNEST(GENERATE_DATE_ARRAY("2022-06-01", "2024-12-31")) AS data),
   trips AS (
   SELECT
@@ -274,7 +282,10 @@ SELECT
   COALESCE(t.data_versao, DATE("{{ trips_date }}")) AS data_versao_trips,
   COALESCE(s.data_versao, DATE("{{ shapes_date }}")) AS data_versao_shapes,
   COALESCE(f.data_versao, DATE("{{ frequencies_date }}")) AS data_versao_frequencies,
-  valor_subsidio_por_km
+  valor_subsidio_por_km,
+  feed_version,
+  feed_start_date,
+  tipo_os,
 FROM
   dates AS d
 LEFT JOIN
@@ -289,6 +300,10 @@ LEFT JOIN
   frequencies AS f
 ON
   f.data_versao = d.data_versao_frequencies
+LEFT JOIN
+  {{ ref('feed_info_gtfs2') }} AS i
+USING
+  (feed_version)
 WHERE
 {% if is_incremental() %}
   data BETWEEN DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 1 DAY) AND DATE("{{ var("run_date") }}")
