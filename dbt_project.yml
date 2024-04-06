@@ -205,9 +205,9 @@ models:
     veiculo:
       +materialized: view
       +schema: veiculo
-    veiculo_staging:
-      +materialized: view
-      +schema: veiculo_staging
+      staging:
+        +materialized: view
+        +schema: veiculo_staging
     br_rj_riodejaneiro_rdo:
       +materialized: view
       +schema: br_rj_riodejaneiro_rdo
