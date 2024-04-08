@@ -14,7 +14,7 @@ with
         select 
             *
         from
-            {{ ref("sppo_licenciamento_stu") }} as t
+            {{ ref("sppo_licenciamento_stu_staging") }} as t
         where
         {% if var("stu_data_versao") != "" %}
             data = date("{{ var('stu_data_versao') }}")

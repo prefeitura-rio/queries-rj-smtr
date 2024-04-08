@@ -1,3 +1,9 @@
+
+{{ config(
+       materialized='view'
+)
+}}
+
 SELECT
    SAFE_CAST(data AS DATE) data,
    SAFE_CAST(DATETIME(TIMESTAMP_TRUNC(TIMESTAMP(timestamp_captura), SECOND), "America/Sao_Paulo" ) AS DATETIME) timestamp_captura,
