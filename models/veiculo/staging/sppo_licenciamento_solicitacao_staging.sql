@@ -1,5 +1,6 @@
 {{ config(
-       materialized='view'
+       materialized='view',
+       alias='sppo_licenciamento_solicitacao'
 )
 }}
 

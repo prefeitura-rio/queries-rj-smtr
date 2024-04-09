@@ -65,7 +65,7 @@ WITH
       id_veiculo,
       TRUE AS indicador_registro_agente_verao_ar_condicionado
     FROM
-      {{ ref("sppo_registro_agente_verao") }}
+      {{ ref("sppo_registro_agente_verao_staging") }}
     WHERE
       data = DATE("{{ var('run_date') }}") ),
   autuacao_ar_condicionado AS (

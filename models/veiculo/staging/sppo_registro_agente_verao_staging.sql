@@ -1,5 +1,6 @@
 {{ config(
-        materialized="view"
+        materialized="view",
+        alias='sppo_registro_agente_verao'
 )
 }}
 

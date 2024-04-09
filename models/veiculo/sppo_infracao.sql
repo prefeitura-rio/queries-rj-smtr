@@ -20,7 +20,7 @@ WITH
     SELECT
       *
     FROM
-      {{ ref('sppo_infracao_staging') }} as t
+      {{ ref("sppo_infracao_staging") }} as t
     WHERE
       SAFE_CAST(data AS DATE) = DATE("{{ infracao_date }}")
   ),
