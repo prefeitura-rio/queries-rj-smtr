@@ -160,13 +160,16 @@ on
     p.shape_id = s.shape_id
 and
     p.data = s.data
+
 {% else %}
+
 WITH
 -- 1. Define datas do período planejado
   data_versao_efetiva AS (
   SELECT
     DATA,
     tipo_dia,
+    subtipo_dia,
     feed_version,
     feed_start_date,
     tipo_os,
@@ -180,11 +183,29 @@ WITH
   SELECT
     *
   FROM
-    {{ ref("shapes_geom_gtfs2") }}
-    -- rj-smtr-dev.gtfs.shapes_geom
+    {{ ref("ordem_servico_gtfs2") }}
+    -- rj-smtr-dev.gtfs.ordem_servico
   WHERE
     feed_start_date IN (SELECT feed_start_date FROM data_versao_efetiva) ),
--- 3. Busca os shapes em formato geográfico
+-- 3. Busca trajetos alternativos
+  ordem_servico_trajeto_alternativo AS (
+  SELECT
+    feed_version,
+    feed_start_date,
+    servico,
+    vista,
+    evento,
+    distancia_planejada,
+    sentido,
+    horario_inicio,
+    horario_fim,
+  FROM
+    {{ ref("ordem_servico_trajeto_alternativo_gtfs2") }}
+    -- `rj-smtr-dev.gtfs.ordem_servico_trajeto_alternativo`
+  WHERE
+    feed_start_date IN (SELECT feed_start_date FROM data_versao_efetiva)
+  ),
+-- 4. Busca os shapes em formato geográfico
   shapes AS (
   SELECT
     *
@@ -193,56 +214,105 @@ WITH
     -- rj-smtr-dev.gtfs.shapes_geom
   WHERE
     feed_start_date IN (SELECT feed_start_date FROM data_versao_efetiva) ),
--- 4. Busca as trips de referência para cada serviço e sentido
+-- 5. Busca as trips de referência para cada serviço e sentido
   trips AS (
   SELECT
-    * EXCEPT(rn),
+    service_id,
+    trip_id,
+    trip_headsign,
+    trip_short_name,
+    direction_id,
+    shape_id,
+    feed_version,
+    indicador_trajeto_alternativo,
+    CASE
+      WHEN service_id LIKE "%U_%" THEN "Dia Útil"
+      WHEN service_id LIKE "%S_%" THEN "Sabado"
+      WHEN service_id LIKE "%D_%" THEN "Domingo"
+    ELSE
+    NULL
+  END
+    AS tipo_dia,
   FROM 
   (
-    SELECT
-      service_id,
-      trip_id,
-      trip_headsign,
-      trip_short_name,
-      direction_id,
-      shape_id,
-      feed_version,
-      -- TODO: ADD tipo_dia Verão
-      CASE
-        WHEN service_id LIKE "%U_%" THEN "Dia Útil"
-        WHEN service_id LIKE "%S_%" THEN "Sabado"
-        WHEN service_id LIKE "%D_%" THEN "Domingo"
-      ELSE
-      NULL
-    END
-      AS tipo_dia,
-      ROW_NUMBER() OVER (PARTITION BY feed_version, service_id, trip_short_name, direction_id ORDER BY trip_short_name, service_id, shape_id, direction_id) AS rn
-    FROM
-      {{ ref("trips_gtfs2") }}
-    --   rj-smtr-dev.gtfs.trips
-    WHERE
-      feed_start_date IN (SELECT feed_start_date FROM data_versao_efetiva)
-      AND trip_headsign NOT LIKE "%[%" -- Desconsidera trajetos alternativos
-      AND service_id NOT LIKE "%_DESAT_%"  -- Desconsidera service_ids desativados
+    -- 5.1. Trajetos regulares
+    (
+      SELECT
+        service_id,
+        trip_id,
+        trip_headsign,
+        trip_short_name,
+        direction_id,
+        shape_id,
+        feed_version,
+        FALSE AS indicador_trajeto_alternativo,
+        ROW_NUMBER() OVER (PARTITION BY feed_version, service_id, trip_short_name, direction_id ORDER BY trip_short_name, service_id, shape_id, direction_id) AS rn
+      FROM
+        {{ ref("trips_gtfs2") }}
+      --   rj-smtr-dev.gtfs.trips
+      WHERE
+        feed_start_date IN (SELECT feed_start_date FROM data_versao_efetiva)
+        AND trip_headsign NOT LIKE "%[%" -- Desconsidera trajetos alternativos
+        AND service_id NOT LIKE "%_DESAT_%"  -- Desconsidera service_ids desativados
+    )
+    UNION ALL
+    -- 5.2. Trajetos alternativos
+    (
+      SELECT
+        service_id,
+        trip_id,
+        trip_headsign,
+        trip_short_name,
+        direction_id,
+        shape_id,
+        feed_version,
+        TRUE AS indicador_trajeto_alternativo,
+        ROW_NUMBER() OVER (PARTITION BY feed_version, service_id, trip_short_name, direction_id ORDER BY trip_short_name, service_id, shape_id, direction_id) AS rn
+      FROM
+        {{ ref("trips_gtfs2") }}
+      --   rj-smtr-dev.gtfs.trips
+      WHERE
+        feed_start_date IN (SELECT feed_start_date FROM data_versao_efetiva)
+        AND trip_headsign LIKE "%[%" -- Considera apenas trajetos alternativos
+        AND service_id NOT LIKE "%_DESAT_%"  -- Desconsidera service_ids desativados
+    )
   )
   WHERE
     rn = 1 ),
--- 5. Trata a OS conforme data, inclui trip_ids e ajusta nomes das colunas
+-- 6. Trata a OS conforme data, inclui trip_ids e ajusta nomes das colunas
   ordem_servico_tratada AS (
   SELECT
     DATA,
-    d.tipo_dia,
+    CASE
+      WHEN subtipo_dia IS NOT NULL THEN CONCAT(d.tipo_dia, " - ", subtipo_dia)
+      ELSE d.tipo_dia
+    END AS tipo_dia,
     servico,
     vista,
     consorcio,
     sentido,
     distancia_planejada,
     distancia_total_planejada,
-    horario_inicio AS inicio_periodo,
-    horario_fim AS fim_periodo,
+    PARSE_TIME("%T", 
+        CONCAT(
+            CAST(MOD(CAST(SPLIT(horario_inicio, ":")[OFFSET(0)] AS INT64), 24) AS STRING), 
+            ":", 
+            SPLIT(horario_inicio, ":")[OFFSET(1)], 
+            ":", 
+            SPLIT(horario_inicio, ":")[OFFSET(2)]
+        )
+    ) AS inicio_periodo,
+    PARSE_TIME("%T", 
+        CONCAT(
+            CAST(MOD(CAST(SPLIT(horario_fim, ":")[OFFSET(0)] AS INT64), 24) AS STRING), 
+            ":", 
+            SPLIT(horario_fim, ":")[OFFSET(1)], 
+            ":", 
+            SPLIT(horario_fim, ":")[OFFSET(2)]
+        )
+    ) AS fim_periodo,
     trip_id,
     shape_id,
-    NULL AS data_shape,
     d.feed_version,
   FROM
     data_versao_efetiva AS d
@@ -267,7 +337,7 @@ WITH
     FALSE
   END
     ),
--- 6. Inclui trip_ids de ida e volta para trajetos circulares
+-- 7. Inclui trip_ids de ida e volta para trajetos circulares
   ordem_servico_trips AS (
   SELECT
     *
@@ -296,10 +366,10 @@ WITH
       trip_id AS trip_id_planejado,
       CONCAT(trip_id, "_1") AS trip_id,
     FROM
-      quadro
+      ordem_servico_tratada
     WHERE
       sentido = "C" ) ),
--- 7. Ajusta shape_id para trajetos circulares
+-- 8. Ajusta shape_id para trajetos circulares
   ordem_servico_trips_shapes AS (
   SELECT
     * EXCEPT(shape_id),
@@ -327,7 +397,7 @@ SELECT
   trip_id,
   shape_id,
   shape_id_planejado,
-  NULL AS data_shape,
+  SAFE_CAST(NULL AS DATE) AS data_shape,
   shape,
   CASE
     WHEN sentido = "C" AND SPLIT(shape_id, "_")[OFFSET(1)] = "0" THEN "I"
