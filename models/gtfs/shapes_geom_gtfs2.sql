@@ -117,7 +117,8 @@ union_shapes AS (
     USING
         (feed_start_date, shape_id)
     WHERE
-        ST_DISTANCE(i.start_pt, i.end_pt) <= 50
+        ROUND(ST_Y(i.start_pt),4) = ROUND(ST_Y(i.end_pt),4)
+        AND ROUND(ST_X(i.start_pt),4) = ROUND(ST_X(i.end_pt),4)
   )
 )
 SELECT 
