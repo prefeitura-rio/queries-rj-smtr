@@ -35,8 +35,9 @@ WITH
         {% if is_incremental() -%}
         feed_start_date = '{{ var("data_versao_gtfs") }}' AND
         {% endif %}
-        trip_headsign NOT LIKE "%[%"
-        AND service_id NOT LIKE "%_DESAT_%" )
+        AND trip_headsign NOT LIKE "%[%" -- Desconsidera trajetos alternativos
+        AND service_id NOT LIKE "%_DESAT_%"  -- Desconsidera service_ids desativados
+      )
     WHERE
       rn = 1 ),
     servico_trips_sentido AS (
@@ -48,7 +49,7 @@ WITH
           feed_version, 
           trip_short_name AS servico,
           CASE
-            WHEN ST_DISTANCE(start_pt, end_pt) <= 50 THEN "C"
+            WHEN ROUND(ST_Y(start_pt),4) = ROUND(ST_Y(end_pt),4) AND ROUND(ST_X(start_pt),4) = ROUND(ST_X(end_pt),4) THEN "C"
             WHEN direction_id = "0" THEN "I"
             WHEN direction_id = "1" THEN "V"
         END
