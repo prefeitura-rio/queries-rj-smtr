@@ -38,6 +38,11 @@ vars:
   sppo_realocacao_staging: "rj-smtr-staging.br_rj_riodejaneiro_onibus_gps_staging.realocacao"
   data_inicio_realocacao: "2022-11-15"
 
+  ### GPS ZIRIX ###
+  sppo_registros_zirix_staging: "rj-smtr-dev.br_rj_riodejaneiro_onibus_gps_zirix_staging.registros"
+  sppo_realocacao_zirix_staging: "rj-smtr-dev.br_rj_riodejaneiro_onibus_gps_zirix_staging.realocacao"
+
+
   # Parametros de intersecção do ônibus com rota
   ## Tamanho do buffer da rota
   tamanho_buffer_metros: 500 # flag_trajeto_correto
@@ -190,6 +195,9 @@ models:
     br_rj_riodejaneiro_onibus_gps:
       +materialized: view
       +schema: br_rj_riodejaneiro_onibus_gps
+    br_rj_riodejaneiro_onibus_gps_zirix:
+      +materialized: view
+      +schema: br_rj_riodejaneiro_onibus_gps_zirix
     br_rj_riodejaneiro_brt_gps:
       +materialized: view
       +schema: br_rj_riodejaneiro_brt_gps
