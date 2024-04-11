@@ -42,4 +42,4 @@ SELECT
   END
     AS data_inicio_vinculo,
  FROM
-     {{ var('sppo_licenciamento_stu_staging') }} as t
+    {{ source('veiculo_staging','sppo_licenciamento_stu') }} as t
