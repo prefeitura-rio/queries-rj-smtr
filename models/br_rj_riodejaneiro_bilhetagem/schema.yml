@@ -132,6 +132,8 @@ models:
         description: "Data e hora da captura da integração em GMT-3"
       - name: datetime_transacao
         description: "Data e hora da transação em GMT-3"
+      - name: intervalo_integracao
+        description: "Tempo de intervalo da integração em minutos"
       - name: id_integracao
         description: "Identificador único da integração"
       - name: sequencia_integracao
@@ -303,4 +305,135 @@ models:
         description: "Nome da coluna"
       - name: valor
         description: "Valor"
-        
+  - name: ordem_pagamento_consorcio_dia
+    description:
+    columns: 
+      - name: data_ordem
+        description: "Data da ordem de pagamento (partição)"
+      - name: id_consorcio
+        description: "Identificador do consórcio na tabela cadastro.consorcios"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: id_ordem_pagamento
+        description: "Identificador da ordem pagamento no banco de dados da Jaé"
+      - name: quantidade_transacao_debito
+        description: "Quantidade de transações feitas na modalidade débito"
+      - name: valor_debito
+        description: "Valor total das transações feitas na modalidade débito (R$)"
+      - name: quantidade_transacao_especie
+        description: "Quantidade de transações feitas em espécie"
+      - name: valor_especie
+        description: "Valor total das transações feitas em espécie (R$)"
+      - name: quantidade_transacao_gratuidade
+        description: "Quantidade de transações feitas com gratuidade"
+      - name: valor_gratuidade
+        description: "Valor total das transações feitas com gratuidade (R$)"
+      - name: quantidade_transacao_integracao
+        description: "Quantidade de transações feitas com integração"
+      - name: valor_integracao
+        description: "Valor total das transações feitas com integração (R$)"
+        # faltando preencher #
+      - name: quantidade_transacao_rateio_credito
+        description:
+      - name: valor_rateio_credito
+        description:
+      - name: quantidade_transacao_rateio_debito
+        description:
+      - name: valor_rateio_debito
+        description:
+        # ----------------- #
+      - name: valor_total_transacao_bruto
+        description: "Valor total das transações realizadas (R$)"
+      - name: valor_desconto_taxa
+        description: "Valor da taxa descontado do valor total (R$)"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+
+  - name: ordem_pagamento_consorcio_operador_dia
+    description:
+    columns:
+      - name: data_ordem
+        description: "Data da ordem de pagamento (partição)"
+      - name: id_consorcio
+        description: "Identificador do consórcio na tabela cadastro.consorcios"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: id_ordem_pagamento
+        description: "Identificador da ordem pagamento no banco de dados da Jaé"
+      - name: quantidade_transacao_debito
+        description: "Quantidade de transações feitas na modalidade débito"
+      - name: valor_debito
+        description: "Valor total das transações feitas na modalidade débito (R$)"
+      - name: quantidade_transacao_especie
+        description: "Quantidade de transações feitas em espécie"
+      - name: valor_especie
+        description: "Valor total das transações feitas em espécie (R$)"
+      - name: quantidade_transacao_gratuidade
+        description: "Quantidade de transações feitas com gratuidade"
+      - name: valor_gratuidade
+        description: "Valor total das transações feitas com gratuidade (R$)"
+      - name: quantidade_transacao_integracao
+        description: "Quantidade de transações feitas com integração"
+      - name: valor_integracao
+        description: "Valor total das transações feitas com integração (R$)"
+        # faltando preencher #
+      - name: quantidade_transacao_rateio_credito
+        description:
+      - name: valor_rateio_credito
+        description:
+      - name: quantidade_transacao_rateio_debito
+        description:
+      - name: valor_rateio_debito
+        description:
+        # ----------------- #
+      - name: valor_total_transacao_bruto
+        description: "Valor total das transações realizadas (R$)"
+      - name: valor_desconto_taxa
+        description: "Valor da taxa descontado do valor total (R$)"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: ordem_pagamento_dia
+    description:
+    columns:
+      - name: data_ordem
+        description: "Data da ordem de pagamento (partição)"
+      - name: id_ordem_pagamento
+        description: "Identificador da ordem pagamento no banco de dados da Jaé"
+      - name: quantidade_transacao_debito
+        description: "Quantidade de transações feitas na modalidade débito"
+      - name: valor_debito
+        description: "Valor total das transações feitas na modalidade débito (R$)"
+      - name: quantidade_transacao_especie
+        description: "Quantidade de transações feitas em espécie"
+      - name: valor_especie
+        description: "Valor total das transações feitas em espécie (R$)"
+      - name: quantidade_transacao_gratuidade
+        description: "Quantidade de transações feitas com gratuidade"
+      - name: valor_gratuidade
+        description: "Valor total das transações feitas com gratuidade (R$)"
+      - name: quantidade_transacao_integracao
+        description: "Quantidade de transações feitas com integração"
+      - name: valor_integracao
+        description: "Valor total das transações feitas com integração (R$)"
+        # faltando preencher #
+      - name: quantidade_transacao_rateio_credito
+        description:
+      - name: valor_rateio_credito
+        description:
+      - name: quantidade_transacao_rateio_debito
+        description:
+      - name: valor_rateio_debito
+        description:
+        # ----------------- #
+      - name: valor_total_transacao_bruto
+        description: "Valor total das transações realizadas (R$)"
+      - name: valor_desconto_taxa
+        description: "Valor da taxa descontado do valor total (R$)"
+      - name: valor_total_transacao_liquido
+        description: "Valor total das transações menos o valor_desconto_taxa (R$)"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: ordem_pagamento_servico_operador_dia
+    descriptions:
+    columns:
+      - name:
