@@ -109,7 +109,7 @@ sources:
       - name: relatorio_instalacao_jae
 
   - name: br_rj_riodejaneiro_onibus_gps_zirix_staging
-    database: rj-smtr-dev
+    database: rj-smtr-staging
 
     tables: 
       - name: registros
