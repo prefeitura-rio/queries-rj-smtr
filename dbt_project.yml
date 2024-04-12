@@ -113,7 +113,7 @@ vars:
   # Feature penalidade de vistoria (RESOLUÇÃO SMTR 3683/2024)
   DATA_SUBSIDIO_V5_INICIO: "2024-03-01"
   # Feature trajetos alternativos
-  DATA_SUBSIDIO_V6_INICIO: "2024-03-11"
+  DATA_SUBSIDIO_V6_INICIO: "2024-04-01"
   # valor_subsidio: "`rj-smtr-dev.projeto_subsidio_sppo.valor_subsidio`"
 
   # Recursos #
