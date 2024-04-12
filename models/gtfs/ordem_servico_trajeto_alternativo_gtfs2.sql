@@ -9,53 +9,34 @@
   ) 
 }} 
 
-WITH 
-  ordem_servico_trajeto_alternativo AS (
-    SELECT 
-      fi.feed_version,
-      SAFE_CAST(o.data_versao AS DATE) feed_start_date,
-      fi.feed_end_date,
-      SAFE_CAST(o.servico AS STRING) servico,
-      SAFE_CAST(JSON_VALUE(o.content, "$.ativacao") AS STRING) ativacao,
-      SAFE_CAST(JSON_VALUE(o.content, "$.consorcio") AS STRING) consorcio,
-      SAFE_CAST(JSON_VALUE(o.content, "$.descricao") AS STRING) descricao,
-      SAFE_CAST(JSON_VALUE(o.content, "$.evento") AS STRING) evento,
-      SAFE_CAST(JSON_VALUE(o.content, "$.extensao_ida") AS FLOAT64)/1000 extensao_ida,
-      SAFE_CAST(JSON_VALUE(o.content, "$.extensao_volta") AS FLOAT64)/1000 extensao_volta,
-      SAFE_CAST(JSON_VALUE(o.content, "$.horario_inicio") AS STRING) horario_inicio,
-      SAFE_CAST(JSON_VALUE(o.content, "$.horario_fim") AS STRING) horario_fim,
-      SAFE_CAST(JSON_VALUE(o.content, "$.vista") AS STRING) vista,
-    FROM 
-      {{ source("br_rj_riodejaneiro_gtfs_staging", "ordem_servico_trajeto_alternativo") }} O
-    LEFT JOIN 
-      {{ ref("feed_info_gtfs2") }} fi 
-    ON 
-      o.data_versao = CAST(fi.feed_start_date AS STRING)
-    {% if is_incremental() -%}
-      WHERE 
-        o.data_versao = "{{ var('data_versao_gtfs') }}"
-        AND fi.feed_start_date = "{{ var('data_versao_gtfs') }}"
-    {%- endif %}
-  ),
-  ordem_servico_trajeto_alternativo_sentido AS (
-    SELECT
-      *
-    FROM
-      ordem_servico_trajeto_alternativo
-    UNPIVOT 
-    (
-      (
-        distancia_planejada
-      ) FOR sentido IN (
-        (
-          extensao_ida
-        ) AS "I",
-        (
-          extensao_volta
-        ) AS "V"
-      )
-    )
-  )
+WITH ordem_servico_trajeto_alternativo AS (
+  SELECT 
+    fi.feed_version,
+    SAFE_CAST(o.data_versao AS DATE) feed_start_date,
+    fi.feed_end_date,
+    SAFE_CAST(o.servico AS STRING) servico,
+    SAFE_CAST(JSON_VALUE(o.content, "$.ativacao") AS STRING) ativacao,
+    SAFE_CAST(JSON_VALUE(o.content, "$.consorcio") AS STRING) consorcio,
+    SAFE_CAST(JSON_VALUE(o.content, "$.descricao") AS STRING) descricao,
+    SAFE_CAST(JSON_VALUE(o.content, "$.evento") AS STRING) evento,
+    SAFE_CAST(JSON_VALUE(o.content, "$.extensao_ida") AS FLOAT64) extensao_ida,
+    SAFE_CAST(JSON_VALUE(o.content, "$.extensao_volta") AS FLOAT64) extensao_volta,
+    SAFE_CAST(JSON_VALUE(o.content, "$.horario_inicio") AS STRING) horario_inicio,
+    SAFE_CAST(JSON_VALUE(o.content, "$.horario_fim") AS STRING) horario_fim,
+    SAFE_CAST(JSON_VALUE(o.content, "$.vista") AS STRING) vista,
+  FROM 
+    {{ source("br_rj_riodejaneiro_gtfs_staging", "ordem_servico_trajeto_alternativo") }} O
+  LEFT JOIN 
+    {{ ref("feed_info_gtfs2") }} fi 
+  ON 
+    o.data_versao = CAST(fi.feed_start_date AS STRING)
+  {% if is_incremental() -%}
+    WHERE 
+      o.data_versao = "{{ var('data_versao_gtfs') }}"
+      AND fi.feed_start_date = "{{ var('data_versao_gtfs') }}"
+  {%- endif %}
+)
+
 SELECT
   feed_version,
   feed_start_date,
@@ -65,34 +46,36 @@ SELECT
   vista,
   ativacao,
   descricao,
-  evento,
-  distancia_planejada,
   CASE
-    WHEN "C" IN UNNEST(sentido_array) THEN "C"
-    ELSE o.sentido
-  END AS sentido,
-  horario_inicio,
-  horario_fim,
-  "{{ var('version') }}" AS versao_modelo
+    WHEN evento LIKE '[%]' THEN LOWER(evento)
+    ELSE REGEXP_REPLACE(LOWER(evento), r"([a-záéíóúñüç]+)", r"[\1]")
+  END AS evento,
+  extensao_ida/1000 AS extensao_ida,
+  extensao_volta/1000 AS extensao_volta,
+  IF(horario_inicio IS NOT NULL AND ARRAY_LENGTH(SPLIT(horario_inicio, ":")) = 3, 
+      PARSE_TIME("%T", 
+                  CONCAT(
+                      CAST(MOD(CAST(SPLIT(horario_inicio, ":")[OFFSET(0)] AS INT64), 24) AS STRING), 
+                      ":", 
+                      SPLIT(horario_inicio, ":")[OFFSET(1)], 
+                      ":", 
+                      SPLIT(horario_inicio, ":")[OFFSET(2)]
+                  )
+                ), 
+                NULL
+  ) AS inicio_periodo,
+  IF(horario_fim IS NOT NULL AND ARRAY_LENGTH(SPLIT(horario_fim, ":")) = 3, 
+      PARSE_TIME("%T", 
+                  CONCAT(
+                      CAST(MOD(CAST(SPLIT(horario_fim, ":")[OFFSET(0)] AS INT64), 24) AS STRING), 
+                      ":", 
+                      SPLIT(horario_fim, ":")[OFFSET(1)], 
+                      ":", 
+                      SPLIT(horario_fim, ":")[OFFSET(2)]
+                  )
+                ), 
+                NULL
+  ) AS fim_periodo,
+  '{{ var("version") }}' AS versao_modelo
 FROM
-  ordem_servico_trajeto_alternativo_sentido AS o
-LEFT JOIN
-  (
-    SELECT
-      feed_start_date,
-      servico,
-      ARRAY_AGG(sentido) AS sentido_array,
-    FROM
-      {{ ref("ordem_servico_gtfs2") }}
-    GROUP BY
-      1,
-      2
-    {% if is_incremental() -%}
-      WHERE 
-        feed_start_date = "{{ var('data_versao_gtfs') }}"
-    {%- endif %}
-  ) AS s
-USING
-  (feed_start_date, servico)
-WHERE
-  distancia_planejada != 0
+  ordem_servico_trajeto_alternativo
