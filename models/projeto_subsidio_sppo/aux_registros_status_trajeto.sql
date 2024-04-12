@@ -13,7 +13,8 @@ with gps as (
         servico,
         {% endif %}
         substr(id_veiculo, 2, 3) as id_empresa,
-        ST_GEOGPOINT(longitude, latitude) posicao_veiculo_geo
+        ST_GEOGPOINT(longitude, latitude) posicao_veiculo_geo,
+        date_sub(date("{{ var("run_date") }}"), interval 1 day) as data_planejamento
     from 
         `rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo` g -- {{ ref('gps_sppo') }} g
     where (
@@ -68,7 +69,7 @@ status_viagem as (
             data between date_sub(date("{{ var("run_date") }}"), interval 1 day) and date("{{ var("run_date") }}")
     ) s
     on 
-        g.data = s.data
+        g.data_planejamento = s.data
         and g.servico = s.servico
 )
 select 
