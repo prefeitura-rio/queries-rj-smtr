@@ -329,7 +329,9 @@
         ELSE "Dia Útil"
       END AS tipo_dia,
       CASE
-        WHEN data BETWEEN DATE(2024,03,18) AND DATE(2024,03,31) THEN "2024-03-18"
+        WHEN data BETWEEN DATE(2024,03,11) AND DATE(2024,03,17) THEN "2024-03-11" -- OS mar/Q1
+        WHEN data BETWEEN DATE(2024,03,18) AND DATE(2024,03,29) THEN "2024-03-18" -- OS mar/Q2
+        WHEN data BETWEEN DATE(2024,03,30) AND DATE(2024,04,30) THEN "2024-03-30"  -- OS abr/Q1
         ELSE NULL
       END AS feed_version,
       CASE
