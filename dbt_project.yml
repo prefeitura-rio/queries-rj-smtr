@@ -190,6 +190,9 @@ models:
     br_rj_riodejaneiro_onibus_gps:
       +materialized: view
       +schema: br_rj_riodejaneiro_onibus_gps
+    br_rj_riodejaneiro_onibus_gps_zirix:
+      +materialized: view
+      +schema: br_rj_riodejaneiro_onibus_gps_zirix
     br_rj_riodejaneiro_brt_gps:
       +materialized: view
       +schema: br_rj_riodejaneiro_brt_gps
