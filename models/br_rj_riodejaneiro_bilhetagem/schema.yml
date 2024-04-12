@@ -332,16 +332,14 @@ models:
         description: "Quantidade de transações feitas com integração"
       - name: valor_integracao
         description: "Valor total das transações feitas com integração (R$)"
-        # faltando preencher #
       - name: quantidade_transacao_rateio_credito
-        description:
+        description: ""
       - name: valor_rateio_credito
-        description:
+        description: ""
       - name: quantidade_transacao_rateio_debito
-        description:
+        description: ""
       - name: valor_rateio_debito
-        description:
-        # ----------------- #
+        description: ""
       - name: valor_total_transacao_bruto
         description: "Valor total das transações realizadas (R$)"
       - name: valor_desconto_taxa
@@ -376,16 +374,14 @@ models:
         description: "Quantidade de transações feitas com integração"
       - name: valor_integracao
         description: "Valor total das transações feitas com integração (R$)"
-        # faltando preencher #
       - name: quantidade_transacao_rateio_credito
-        description:
+        description: ""
       - name: valor_rateio_credito
-        description:
+        description: ""
       - name: quantidade_transacao_rateio_debito
-        description:
+        description: ""
       - name: valor_rateio_debito
-        description:
-        # ----------------- #
+        description: ""
       - name: valor_total_transacao_bruto
         description: "Valor total das transações realizadas (R$)"
       - name: valor_desconto_taxa
@@ -415,16 +411,14 @@ models:
         description: "Quantidade de transações feitas com integração"
       - name: valor_integracao
         description: "Valor total das transações feitas com integração (R$)"
-        # faltando preencher #
       - name: quantidade_transacao_rateio_credito
-        description:
+        description: ""
       - name: valor_rateio_credito
-        description:
+        description: ""
       - name: quantidade_transacao_rateio_debito
-        description:
+        description: ""
       - name: valor_rateio_debito
-        description:
-        # ----------------- #
+        description: ""
       - name: valor_total_transacao_bruto
         description: "Valor total das transações realizadas (R$)"
       - name: valor_desconto_taxa
@@ -436,4 +430,93 @@ models:
   - name: ordem_pagamento_servico_operador_dia
     descriptions:
     columns:
-      - name:
+      - name: data_ordem
+        description: "Data da ordem de pagamento (partição)"
+      - name: id_consorcio
+        description: "Identificador do consórcio na tabela cadastro.consorcios"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: id_operadora
+        description: "Identificador da operadora na tabela cadastro.operadoras"
+      - name: operadora
+        description: "Nome da operadora de transporte (mascarado se for pessoa física)"
+      - name: id_servico_jae
+        description: "Identificador da linha no banco de dados da jaé (É possível cruzar os dados com a tabela rj-smtr.cadastro.servicos usando a coluna id_servico_jae)"
+      - name: id_ordem_pagamento
+        description: "Identificador da ordem pagamento no banco de dados da Jaé"
+      - name: id_ordem_ressarcimento
+        description:
+      - name: quantidade_transacao_debito
+        description: "Quantidade de transações feitas na modalidade débito"
+      - name: valor_debito
+        description: "Valor total das transações feitas na modalidade débito (R$)"
+      - name: quantidade_transacao_especie
+        description: "Quantidade de transações feitas em espécie"
+      - name: valor_especie
+        description: "Valor total das transações feitas em espécie (R$)"
+      - name: quantidade_transacao_gratuidade
+        description: "Quantidade de transações feitas com gratuidade"
+      - name: valor_gratuidade
+        description: "Valor total das transações feitas com gratuidade (R$)"
+      - name: quantidade_transacao_integracao
+        description: "Quantidade de transações feitas com integração"
+      - name: valor_integracao
+        description: "Valor total das transações feitas com integração (R$)"
+      - name: quantidade_transacao_rateio_credito
+        description: ""
+      - name: valor_rateio_credito
+        description: ""
+      - name: quantidade_transacao_rateio_debito
+        description: ""
+      - name: valor_rateio_debito
+        description: ""
+      - name: quantidade_total_transacao
+        description: "Quantidade total de transações realizadas"
+      - name: valor_total_transacao_bruto
+        description: "Valor total das transações realizadas (R$)"
+      - name: valor_desconto_taxa
+        description: "Valor da taxa descontado do valor total (R$)"
+      - name: valor_total_transacao_liquido
+        description: "Valor total das transações menos o valor_desconto_taxa (R$)"
+      - name: quantidade_total_transacao_captura
+        description: "Quantidade total de transações calculada pela captura de transações"
+      - name: valor_total_transacao_captura
+        description: "Valor total das transações realizadas calculada pela captura de transações (R$)"
+      - name: indicador_ordem_valida
+        description: "Indicador de validação da ordem de pagamento i.e. se a quantidade e valor total informados são encontrados na captura de transações individuais"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: transacao_riocard
+    columns:
+      - name: data
+        description: "Data da transação (partição)"
+      - name: hora
+        description: "Hora da transação"
+      - name: datetime_transacao
+        description: "Data e hora da transação em GMT-3 (formato YYYY-MM-ddTHH:mm:ss.ssssss)"
+      - name: datetime_processamento
+        description: "Data e hora de processamento da transação em GMT-3 (formato YYYY-MM-ddTHH:mm:ss.ssssss)"
+      - name: datetime_captura
+        description: "Timestamp de captura em GMT-3 (formato YYYY-MM-dd HH:mm:ssTZD)"
+      - name: id_consorcio_jae
+        description: "Código do consórcio no sistema da Jaé"
+      - name: id_operadora_jae
+        description: "Código do operador no sistema da Jaé"
+      - name: id_servico_jae
+        description: "Identificador da linha no banco de dados da jaé (É possível cruzar os dados com a tabela rj-smtr.cadastro.servicos usando a coluna id_servico_jae)"
+      - name: id_validador
+        description: "Número de série do validador"
+      - name: sentido
+        description: "Sentido de operação do serviço (0 = ida, 1 = volta)"
+      - name: id_cliente
+        description: "Identificador único do cliente"
+      - name: id_transacao
+        description: "Identificador único da transação"
+      - name: latitude
+        description: "Latitude da transação (WGS84)"
+      - name: longitude
+        description: "Longitude da transação (WGS84)"
+      - name: valor_transacao
+        description: "Valor debitado na transação atual (R$)"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"

@@ -1,5 +1,10 @@
 # Changelog - bilhetagem
 
+## [1.0.1] - 2024-04-11
+
+### Adicionado 
+- Adicionada descrições das colunas das tabelas: `ordem_pagamento_consorcio_dia`, `ordem_pagamento_consorcio_operador_dia`, `ordem_pagamento_dia`,`transacao_riocard`
+
 ## [1.0.0] - 2024-04-05
 
 ### Adicionado
