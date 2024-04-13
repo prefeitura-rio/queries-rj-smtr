@@ -56,8 +56,10 @@ WITH transacao AS (
     WHERE
         {% if is_incremental() %}
             DATE(t.data) BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 1 DAY) AND DATE_ADD(DATE("{{var('date_range_end')}}"), INTERVAL 1 DAY)
+            AND t.data_processamento BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 1 DAY) AND DATE_ADD(DATE("{{var('date_range_end')}}"), INTERVAL 1 DAY)
         {% else %}
             DATE(t.data) <= CURRENT_DATE("America/Sao_Paulo")
+            AND DATE(t.data_processamento) <= CURRENT_DATE("America/Sao_Paulo")
         {% endif %}
 ),
 transacao_deduplicada AS (
@@ -82,7 +84,7 @@ transacao_agg AS (
         t.cd_linha,
         t.cd_operadora,
         COUNT(*) AS quantidade_total_transacao_captura,
-        ROUND(SUM(t.valor_transacao), 2) AS valor_total_transacao_captura
+        SUM(t.valor_transacao) AS valor_total_transacao_captura
     FROM
         transacao_deduplicada t
     LEFT JOIN
@@ -108,7 +110,6 @@ transacao_agg AS (
 ordem_pagamento AS (
     SELECT
         r.data_ordem,
-        p.data_pagamento,
         r.id_consorcio,
         r.id_operadora,
         r.id_linha,
@@ -126,7 +127,7 @@ ordem_pagamento AS (
         COALESCE(rat.valor_rateio_compensacao_credito_total, r.valor_rateio_credito) AS valor_rateio_credito,
         COALESCE(rat.qtd_rateio_compensacao_debito_total, r.qtd_rateio_debito) AS quantidade_transacao_rateio_debito,
         COALESCE(rat.valor_rateio_compensacao_debito_total, r.valor_rateio_debito) AS valor_rateio_debito,
-        ROUND(r.valor_bruto, 2) AS valor_total_transacao_bruto,
+        r.valor_bruto AS valor_total_transacao_bruto,
         r.valor_taxa AS valor_desconto_taxa,
         r.valor_liquido AS valor_total_transacao_liquido
     FROM 
@@ -134,10 +135,6 @@ ordem_pagamento AS (
     LEFT JOIN
         {{ ref("staging_ordem_rateio") }} rat
     USING(data_ordem, id_consorcio, id_operadora, id_linha)
-    LEFT JOIN
-        {{ ref("staging_ordem_pagamento") }} p
-    ON
-        r.id_ordem_pagamento = p.id_ordem_pagamento
     {% if is_incremental() %}
         WHERE
             DATE(r.data) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
@@ -146,7 +143,6 @@ ordem_pagamento AS (
 ordem_pagamento_transacao AS (
     SELECT
         COALESCE(op.data_ordem, t.data_ordem) AS data_ordem,
-        op.data_pagamento,
         COALESCE(op.id_consorcio, t.cd_consorcio) AS id_consorcio,
         COALESCE(op.id_operadora, t.cd_operadora) AS id_operadora,
         COALESCE(op.id_linha, t.cd_linha) AS id_linha,
@@ -170,11 +166,11 @@ ordem_pagamento_transacao AS (
             + op.quantidade_transacao_gratuidade
             + op.quantidade_transacao_integracao
         ) AS quantidade_total_transacao,
-        op.valor_total_transacao_bruto,
+        op.valor_total_transacao_bruto + op.valor_rateio_debito + op.valor_rateio_credito AS valor_total_transacao_bruto,
+        op.valor_total_transacao_liquido + op.valor_rateio_debito + op.valor_rateio_credito AS valor_total_transacao_liquido,
         op.valor_desconto_taxa,
-        op.valor_total_transacao_liquido,
         t.quantidade_total_transacao_captura,
-        t.valor_total_transacao_captura
+        t.valor_total_transacao_captura + op.valor_rateio_credito + op.valor_rateio_debito AS valor_total_transacao_captura
     FROM
         ordem_pagamento op
     FULL OUTER JOIN
@@ -186,12 +182,11 @@ ordem_pagamento_transacao AS (
 )
 SELECT
     o.data_ordem,
-    o.data_pagamento,
     dc.id_consorcio,
     dc.consorcio,
     do.id_operadora,
     do.operadora,
-    l.nr_linha AS servico,
+    o.id_linha AS id_servico_jae,
     o.id_ordem_pagamento,
     o.id_ordem_ressarcimento,
     o.quantidade_transacao_debito,
@@ -207,14 +202,17 @@ SELECT
     o.quantidade_transacao_rateio_debito,
     o.valor_rateio_debito,
     o.quantidade_total_transacao,
-    o.valor_total_transacao_bruto,
+    valor_total_transacao_bruto,
     o.valor_desconto_taxa,
     o.valor_total_transacao_liquido,
     o.quantidade_total_transacao_captura,
     o.valor_total_transacao_captura,
     COALESCE(
-        (o.quantidade_total_transacao_captura = o.quantidade_total_transacao AND o.valor_total_transacao_captura = o.valor_total_transacao_bruto),
-        false
+        (
+            o.quantidade_total_transacao_captura = o.quantidade_total_transacao 
+            AND ROUND(o.valor_total_transacao_captura, 2) = ROUND(o.valor_total_transacao_bruto, 2)
+        ),
+        FALSE
     ) AS indicador_ordem_valida,
     '{{ var("version") }}' AS versao
 FROM
@@ -227,7 +225,3 @@ LEFT JOIN
     {{ ref("consorcios") }} AS dc
 ON
     o.id_consorcio = dc.id_consorcio_jae
-LEFT JOIN
-    {{ ref("staging_linha") }} AS l
-ON
-    o.id_linha = l.cd_linha

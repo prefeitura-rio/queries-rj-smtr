@@ -1,0 +1,60 @@
+version: 2
+
+models:
+  - name: sppo_vistoria_tr_subtt_cglf_2023
+    description: "sppo_vistoria_tr_subtt_cglf_2023"
+    columns:
+      - name: data
+        description: "Data da captura"
+      - name: id_veiculo
+        description: "Número de ordem do veículo, identificação que é exibida na lateral do ônibus"
+      - name: placa
+        description: "Placa do veículo"
+      - name: permissao
+        description: "Número da permissão do ônibus"
+      - name: chassi
+        description: "Chassi do veículo"
+      - name: ano_fabricacao
+        description: "Ano de fabricação do veículo"
+      - name: selo
+        description: "Selo"
+      - name: darm
+        description: "Código do Documento de Arrecadação de Receitas Municipais"
+      - name: ano_ultima_vistoria
+        description: "Ano da última vistoria realizada pelo veículo"
+  - name: sppo_vistoria_tr_subtt_cglf_2024
+    description: "sppo_vistoria_tr_subtt_cglf_2024"
+    columns:
+      - name: data
+        description: "Data da captura"
+      - name: id_veiculo
+        description: "Número de ordem do veículo, identificação que é exibida na lateral do ônibus"
+      - name: placa
+        description: "Placa do veículo"
+      - name: permissao
+        description: "Número da permissão do ônibus"
+      - name: chassi
+        description: "Chassi do veículo"
+      - name: ano_fabricacao
+        description: "Ano de fabricação do veículo"
+      - name: selo
+        description: "Selo"
+      - name: darm
+        description: "Código do Documento de Arrecadação de Receitas Municipais"
+      - name: ano_ultima_vistoria
+        description: "Ano da última vistoria realizada pelo veículo"
+  - name: sppo_vistoria_tr_subtt_cglf_pendentes_2024
+    description: "sppo_vistoria_tr_subtt_cglf_pendentes_2024"
+    columns:
+      - name: data
+        description: "Data da captura"
+      - name: id_veiculo
+        description: "Número de ordem do veículo, identificação que é exibida na lateral do ônibus"
+      - name: placa
+        description: "Placa do veículo"
+      - name: permissao
+        description: "Número da permissão do ônibus"
+      - name: empresa
+        description: "Empresa ao qual o veículo está vinculado"
+      - name: ano_ultima_vistoria
+        description: "Ano da última vistoria realizada pelo veículo"
