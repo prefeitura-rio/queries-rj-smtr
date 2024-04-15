@@ -123,7 +123,7 @@ models:
     description: "Tabela de integrações realizadas entre modos do sistema de transporte municipal, contendo os valores da repartição tarifária (quando houver). [Dados em fase de teste]"
     columns:
       - name: data
-        description: "Data da transação (partição)"
+        description: "Data da integração (partição)"
       - name: hora
         description: "Hora da transação"
       - name: datetime_processamento_integracao
@@ -131,7 +131,7 @@ models:
       - name: datetime_captura
         description: "Data e hora da captura da integração em GMT-3"
       - name: datetime_transacao
-        description: "Data e hora da transação em GMT-3"
+        description: "Data e hora da integração em GMT-3"
       - name: intervalo_integracao
         description: "Tempo de intervalo da integração em minutos"
       - name: id_integracao
