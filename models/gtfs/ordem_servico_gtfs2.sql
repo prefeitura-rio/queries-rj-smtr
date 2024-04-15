@@ -50,57 +50,38 @@ WITH ordem_servico AS (
       AND fi.feed_start_date = '{{ var("data_versao_gtfs") }}'
   {%- endif %}
 )
-
-SELECT 
-  feed_version,
-  feed_start_date,
-  feed_end_date,
-  servico,
-  vista,
-  consorcio,
-  IF(horario_inicio IS NOT NULL AND ARRAY_LENGTH(SPLIT(horario_inicio, ":")) = 3, 
-      PARSE_TIME("%T", 
-                  CONCAT(
-                      CAST(MOD(CAST(SPLIT(horario_inicio, ":")[OFFSET(0)] AS INT64), 24) AS STRING), 
-                      ":", 
-                      SPLIT(horario_inicio, ":")[OFFSET(1)], 
-                      ":", 
-                      SPLIT(horario_inicio, ":")[OFFSET(2)]
-                  )
-                ), 
-                NULL
-  ) AS inicio_periodo,
-  IF(horario_fim IS NOT NULL AND ARRAY_LENGTH(SPLIT(horario_fim, ":")) = 3, 
-      PARSE_TIME("%T", 
-                  CONCAT(
-                      CAST(MOD(CAST(SPLIT(horario_fim, ":")[OFFSET(0)] AS INT64), 24) AS STRING), 
-                      ":", 
-                      SPLIT(horario_fim, ":")[OFFSET(1)], 
-                      ":", 
-                      SPLIT(horario_fim, ":")[OFFSET(2)]
-                  )
-                ), 
-                NULL
-  ) AS fim_periodo,
-  extensao_ida,
-  extensao_volta,
-  partidas_ida_du,
-  partidas_volta_du,
-  viagens_du,
-  km_du,
-  partidas_ida_pf,
-  partidas_volta_pf,
-  viagens_pf,
-  km_pf,
-  partidas_ida_sabado,
-  partidas_volta_sabado,
-  viagens_sabado,
-  km_sabado,
-  partidas_ida_domingo,
-  partidas_volta_domingo,
-  viagens_domingo,
-  km_domingo,
-  tipo_os,
-  '{{ var("version") }}' AS versao_modelo
-FROM
-  ordem_servico
+SELECT *,
+  '{{ var("version") }}' as versao_modelo
+FROM ordem_servico UNPIVOT (
+    (
+      partidas_ida,
+      partidas_volta,
+      viagens_planejadas,
+      distancia_total_planejada
+    ) FOR tipo_dia IN (
+      (
+        partidas_ida_du,
+        partidas_volta_du,
+        viagens_du,
+        km_du
+      ) AS 'Dia Útil',
+      (
+        partidas_ida_pf,
+        partidas_volta_pf,
+        viagens_pf,
+        km_pf
+      ) AS 'Ponto Facultativo',
+      (
+        partidas_ida_sabado,
+        partidas_volta_sabado,
+        viagens_sabado,
+        km_sabado
+      ) AS 'Sabado',
+      (
+        partidas_ida_domingo,
+        partidas_volta_domingo,
+        viagens_domingo,
+        km_domingo
+      ) AS 'Domingo'
+    )
+  )
