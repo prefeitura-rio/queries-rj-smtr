@@ -6,6 +6,7 @@ sources:
 
     tables:
       - name: transacao
+      - name: transacao_riocard
       - name: linha
       - name: dicionario
       - name: consorcio
@@ -105,3 +106,16 @@ sources:
 
     tables:
       - name: subsidio_valor_km_tipo_viagem
+  
+  - name: dashboard_controle_vinculo_jae_riocard_staging
+    database: rj-smtr-staging
+    
+    tables:
+      - name: relatorio_instalacao_jae
+
+  - name: br_rj_riodejaneiro_onibus_gps_zirix_staging
+    database: rj-smtr-staging
+
+    tables: 
+      - name: registros
+      - name: realocacao
