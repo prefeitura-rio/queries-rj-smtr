@@ -365,9 +365,9 @@ ON
   END
 WHERE
 {% if is_incremental() %}
-  data BETWEEN DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 1 DAY) AND DATE("{{ var("run_date") }}")
+  data = DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 1 DAY)
 {% else %}
-  data <= DATE("{{ var("run_date") }}")
+  data <= DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 1 DAY)
 {% endif %}
 
 {% endif %}
