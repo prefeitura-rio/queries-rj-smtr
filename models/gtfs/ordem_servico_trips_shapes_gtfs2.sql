@@ -30,81 +30,91 @@ WITH
       feed_start_date = '{{ var("data_versao_gtfs") }}'
     {% endif -%}
   ),
-  -- 2. Busca as trips de referência para cada serviço e sentido
+  -- 2. Busca as trips
   trips AS (
     SELECT
-      * EXCEPT(rn),
-      CASE
-        WHEN service_id LIKE "%U_%" THEN "Dia Útil"
-        WHEN service_id LIKE "%S_%" THEN "Sabado"
-        WHEN service_id LIKE "%D_%" THEN "Domingo"
-      ELSE
-      NULL
-    END
-      AS tipo_dia,
-    FROM (
+      *
+    FROM
+    (
       SELECT
-        service_id,
-        trip_id,
-        trip_headsign,
-        trip_short_name,
-        direction_id,
-        shape_id,
-        feed_version,
-        ROW_NUMBER() OVER (PARTITION BY feed_version, trip_short_name, service_id, direction_id ORDER BY feed_version, trip_short_name, service_id, shape_id, direction_id) AS rn
+        * EXCEPT(rn),
+          CASE
+            WHEN service_id LIKE "%U_%" THEN "Dia Útil"
+            WHEN service_id LIKE "%S_%" THEN "Sabado"
+            WHEN service_id LIKE "%D_%" THEN "Domingo"
+          ELSE
+          NULL
+        END
+          AS tipo_dia
       FROM
-        {{ ref("trips_gtfs2") }}
-      WHERE
-        {% if is_incremental() -%}
-        feed_start_date = '{{ var("data_versao_gtfs") }}' AND
-        {% endif %}
-        {% for evento in eventos_trajetos_alternativos %}
-          trip_headsign NOT LIKE "%{{evento}}%" -- Desconsidera trajetos alternativos
-          {% if not loop.last %}AND{% endif %}
-        {% endfor %}
-        AND service_id NOT LIKE "%_DESAT_%"  -- Desconsidera service_ids desativados
-        AND service_id != "EXCEP"  -- Desconsidera service_id com trajetos alternativos
-      )
-    WHERE
-      rn = 1 ),
-  -- 3. Busca as trips de referência dos trajetos alternativos para cada serviço e sentido
-  trips_alternativo AS (
-    SELECT
-      * EXCEPT(rn),
-      CASE
-        WHEN service_id LIKE "%U_%" THEN "Dia Útil"
-        WHEN service_id LIKE "%S_%" THEN "Sabado"
-        WHEN service_id LIKE "%D_%" THEN "Domingo"
-      ELSE
-      NULL
-    END
-      AS tipo_dia,
-    FROM (
-      SELECT
-        service_id,
-        trip_id,
-        trip_headsign,
-        trip_short_name,
-        direction_id,
-        shape_id,
-        feed_version,
-        ROW_NUMBER() OVER (PARTITION BY feed_version, trip_short_name, service_id, shape_id, direction_id ORDER BY feed_version, trip_short_name, service_id, shape_id, direction_id) AS rn
-      FROM
-        {{ ref("trips_gtfs2") }}
-      WHERE
-        {% if is_incremental() -%}
-        feed_start_date = '{{ var("data_versao_gtfs") }}' AND
-        {% endif %}
+      -- 3. Busca as trips de referência para cada serviço, sentido, e tipo_dia
+      (
+        SELECT
+          *,
+          FALSE AS indicador_trajeto_alternativo
+        FROM 
         (
-        {% for evento in eventos_trajetos_alternativos %}
-          trip_headsign LIKE "%{{evento}}%" -- Considera trajetos alternativos
-          {% if not loop.last %}OR{% endif %}
-        {% endfor %}
-        )
-        AND service_id NOT LIKE "%_DESAT_%"  -- Desconsidera service_ids desativados
+          SELECT
+            service_id,
+            trip_id,
+            trip_headsign,
+            trip_short_name,
+            direction_id,
+            shape_id,
+            feed_version,
+            ROW_NUMBER() OVER (PARTITION BY feed_version, trip_short_name, service_id, direction_id ORDER BY feed_version, trip_short_name, service_id, shape_id, direction_id) AS rn
+          FROM
+            {{ ref("trips_gtfs2") }}
+          WHERE
+            {% if is_incremental() -%}
+            feed_start_date = '{{ var("data_versao_gtfs") }}' AND
+            {% endif %}
+            {% for evento in eventos_trajetos_alternativos %}
+              trip_headsign NOT LIKE "%{{evento}}%" -- Desconsidera trajetos alternativos
+              {% if not loop.last %}AND{% endif %}
+            {% endfor %}
+            AND service_id NOT LIKE "%_DESAT_%"  -- Desconsidera service_ids desativados
+            AND service_id != "EXCEP"  -- Desconsidera service_id com trajetos alternativos
+          )
+        WHERE
+          rn = 1
       )
-    WHERE
-      rn = 1 ),
+      UNION ALL
+      (
+        SELECT
+          *,
+          TRUE AS indicador_trajeto_alternativo
+        FROM
+        -- 4. Busca as trips de referência dos trajetos alternativos para cada serviço e sentido
+        (
+          SELECT
+            service_id,
+            trip_id,
+            trip_headsign,
+            trip_short_name,
+            direction_id,
+            shape_id,
+            feed_version,
+            ROW_NUMBER() OVER (PARTITION BY feed_version, trip_short_name, service_id, shape_id, direction_id ORDER BY feed_version, trip_short_name, service_id, shape_id, direction_id) AS rn
+          FROM
+            {{ ref("trips_gtfs2") }}
+          WHERE
+            {% if is_incremental() -%}
+            feed_start_date = '{{ var("data_versao_gtfs") }}' AND
+            {% endif %}
+            (
+            {% for evento in eventos_trajetos_alternativos %}
+              trip_headsign LIKE "%{{evento}}%" -- Considera trajetos alternativos
+              {% if not loop.last %}OR{% endif %}
+            {% endfor %}
+            )
+            AND service_id NOT LIKE "%_DESAT_%"  -- Desconsidera service_ids desativados
+          )
+      WHERE
+        rn = 1 
+      )
+    )
+  ),
   -- 4. Identifica o sentido de cada serviço
   servico_trips_sentido AS (
     SELECT
@@ -127,6 +137,8 @@ WITH
         USING
           (feed_version, 
             shape_id)
+        WHERE
+          indicador_trajeto_alternativo IS FALSE
       )   
     WHERE
       sentido = "C"
@@ -134,7 +146,31 @@ WITH
   -- 5. Busca principais informações na Ordem de Serviço (OS)
   ordem_servico AS (
     SELECT 
-      *
+      * EXCEPT(horario_inicio, horario_fim),
+      IF(horario_inicio IS NOT NULL AND ARRAY_LENGTH(SPLIT(horario_inicio, ":")) = 3, 
+          PARSE_TIME("%T", 
+                      CONCAT(
+                          CAST(MOD(CAST(SPLIT(horario_inicio, ":")[OFFSET(0)] AS INT64), 24) AS STRING), 
+                          ":", 
+                          SPLIT(horario_inicio, ":")[OFFSET(1)], 
+                          ":", 
+                          SPLIT(horario_inicio, ":")[OFFSET(2)]
+                      )
+                    ), 
+                    NULL
+      ) AS inicio_periodo,
+      IF(horario_fim IS NOT NULL AND ARRAY_LENGTH(SPLIT(horario_fim, ":")) = 3, 
+          PARSE_TIME("%T", 
+                      CONCAT(
+                          CAST(MOD(CAST(SPLIT(horario_fim, ":")[OFFSET(0)] AS INT64), 24) AS STRING), 
+                          ":", 
+                          SPLIT(horario_fim, ":")[OFFSET(1)], 
+                          ":", 
+                          SPLIT(horario_fim, ":")[OFFSET(2)]
+                      )
+                    ), 
+                    NULL
+      ) AS fim_periodo,
     FROM 
       {{ ref('ordem_servico_gtfs2') }}
     {% if is_incremental() -%}
@@ -142,50 +178,12 @@ WITH
         feed_start_date = '{{ var("data_versao_gtfs") }}'
     {%- endif %}
   ),
-  -- 6. Despivota ordem de serviço por tipo de dia
-  ordem_servico_tipo_dia AS (
-    SELECT 
-      *
-    FROM ordem_servico UNPIVOT (
-        (
-          partidas_ida,
-          partidas_volta,
-          viagens_planejadas,
-          distancia_total_planejada
-        ) FOR tipo_dia IN (
-          (
-            partidas_ida_du,
-            partidas_volta_du,
-            viagens_du,
-            km_du
-          ) AS 'Dia Útil',
-          (
-            partidas_ida_pf,
-            partidas_volta_pf,
-            viagens_pf,
-            km_pf
-          ) AS 'Ponto Facultativo',
-          (
-            partidas_ida_sabado,
-            partidas_volta_sabado,
-            viagens_sabado,
-            km_sabado
-          ) AS 'Sabado',
-          (
-            partidas_ida_domingo,
-            partidas_volta_domingo,
-            viagens_domingo,
-            km_domingo
-          ) AS 'Domingo'
-        )
-      )
-  ),
   -- 7. Despivota ordem de serviço por sentido
   ordem_servico_sentido AS (
     SELECT
       *
     FROM
-      ordem_servico_tipo_dia
+      ordem_servico
     UNPIVOT 
     (
       (
@@ -307,17 +305,13 @@ WITH
         t.feed_version = o.feed_version
         AND o.servico = t.trip_short_name
         AND 
-        CASE
-          WHEN o.tipo_dia = t.tipo_dia THEN TRUE
-          WHEN o.tipo_dia = "Ponto Facultativo" AND t.tipo_dia = "Dia Útil" THEN TRUE
-        ELSE FALSE
-      END
+          (o.tipo_dia = t.tipo_dia
+          OR (o.tipo_dia = "Ponto Facultativo" AND t.tipo_dia = "Dia Útil"))
         AND
-        CASE
-          WHEN o.sentido IN ("I", "C") AND t.direction_id = "0" THEN TRUE
-          WHEN o.sentido = "V" AND t.direction_id = "1" THEN TRUE
-        ELSE FALSE
-      END
+          ((o.sentido IN ("I", "C") AND t.direction_id = "0")
+          OR (o.sentido = "V" AND t.direction_id = "1"))
+      WHERE
+        indicador_trajeto_alternativo IS FALSE
       )
     UNION ALL
       (
@@ -345,32 +339,34 @@ WITH
           servico,
           sentido)
       LEFT JOIN
-        trips_alternativo AS t
+        trips AS t
       ON
         t.feed_version = o.feed_version
         AND o.servico = t.trip_short_name
         AND 
-        CASE
-          WHEN o.tipo_dia = t.tipo_dia THEN TRUE
-          WHEN o.tipo_dia = "Ponto Facultativo" AND t.tipo_dia = "Dia Útil" THEN TRUE
-        ELSE FALSE
-      END
+          (o.tipo_dia = t.tipo_dia
+          OR (o.tipo_dia = "Ponto Facultativo" AND t.tipo_dia = "Dia Útil"))
         AND
-        CASE
-          WHEN o.sentido IN ("I", "C") AND t.direction_id = "0" THEN TRUE
-          WHEN o.sentido = "V" AND t.direction_id = "1" THEN TRUE
-        ELSE FALSE
-      END
+          ((o.sentido IN ("I", "C") AND t.direction_id = "0")
+          OR (o.sentido = "V" AND t.direction_id = "1"))
         AND t.trip_headsign LIKE CONCAT("%", ot.evento, "%")
       WHERE
-        trip_id IS NOT NULL -- Remove serviços de tipo_dia sem planejamento
+        indicador_trajeto_alternativo IS TRUE
+        AND trip_id IS NOT NULL -- Remove serviços de tipo_dia sem planejamento
       )
     )
   ),
-  -- 13. Inclui trip_ids de ida e volta para trajetos circulares
+  -- 13. Inclui trip_ids de ida e volta para trajetos circulares e ajusta shape_id para trajetos circulares
   ordem_servico_trips AS (
   SELECT
-    *
+    * EXCEPT(shape_id),
+    shape_id AS shape_id_planejado,
+    CASE
+      WHEN sentido = "C" THEN shape_id || "_" || SPLIT(trip_id, "_")[OFFSET(1)]
+    ELSE
+    shape_id
+  END
+    AS shape_id,
   FROM (
     SELECT
       DISTINCT * EXCEPT(trip_id),
@@ -398,20 +394,7 @@ WITH
     FROM
       ordem_servico_tratada
     WHERE
-      sentido = "C" ) ),
-  -- 14. Ajusta shape_id para trajetos circulares
-  ordem_servico_trips_shapes AS (
-  SELECT
-    * EXCEPT(shape_id),
-    shape_id AS shape_id_planejado,
-    CASE
-      WHEN sentido = "C" THEN shape_id || "_" || SPLIT(trip_id, "_")[OFFSET(1)]
-    ELSE
-    shape_id
-  END
-    AS shape_id,
-  FROM
-    ordem_servico_trips )
+      sentido = "C" ) )
 SELECT
   feed_version,
   feed_start_date,
@@ -439,7 +422,7 @@ END
   start_pt,
   end_pt,
 FROM
-  ordem_servico_trips_shapes AS o
+  ordem_servico_trips AS o
 LEFT JOIN
   shapes
 USING
