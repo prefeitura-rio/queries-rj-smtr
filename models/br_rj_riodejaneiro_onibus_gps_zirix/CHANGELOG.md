@@ -4,7 +4,7 @@
 
 ### Alterado
 
-- Converte colunas de data e hora do modelo `sppo_realocacao_zirix` para o tipo adequado 
+- Converte colunas de data e hora do modelo `sppo_realocacao_zirix` para o tipo adequado (https://github.com/prefeitura-rio/queries-rj-smtr/pull/268)
 
 ## [1.0.0] - 2024-04-11
 
