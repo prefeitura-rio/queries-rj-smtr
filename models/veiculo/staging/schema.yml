@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: sppo_vistoria_tr_subtt_cglf_2023
+  - name: sppo_vistoria_tr_subtt_cglf_2023_staging
     description: "sppo_vistoria_tr_subtt_cglf_2023"
     columns:
       - name: data
@@ -22,7 +22,7 @@ models:
         description: "Código do Documento de Arrecadação de Receitas Municipais"
       - name: ano_ultima_vistoria
         description: "Ano da última vistoria realizada pelo veículo"
-  - name: sppo_vistoria_tr_subtt_cglf_2024
+  - name: sppo_vistoria_tr_subtt_cglf_2024_staging
     description: "sppo_vistoria_tr_subtt_cglf_2024"
     columns:
       - name: data
@@ -43,7 +43,7 @@ models:
         description: "Código do Documento de Arrecadação de Receitas Municipais"
       - name: ano_ultima_vistoria
         description: "Ano da última vistoria realizada pelo veículo"
-  - name: sppo_vistoria_tr_subtt_cglf_pendentes_2024
+  - name: sppo_vistoria_tr_subtt_cglf_pendentes_2024_staging
     description: "sppo_vistoria_tr_subtt_cglf_pendentes_2024"
     columns:
       - name: data

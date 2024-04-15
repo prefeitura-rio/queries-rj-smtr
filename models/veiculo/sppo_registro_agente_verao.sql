@@ -14,7 +14,7 @@
 }}
 
 {% if execute %}
-  {% set ultimaDataAgenteVerão = run_query("SELECT MAX(data) FROM " ~ ref('sppo_registro_agente_verao_staging'))[0][0] %}
+  {% set ultima_data_agente_verao = run_query("SELECT MAX(data) FROM " ~ ref('sppo_registro_agente_verao_staging'))[0][0] %}
 {% endif %}
 
 
@@ -24,5 +24,5 @@ FROM
   {{ ref('sppo_registro_agente_verao_staging') }}
 WHERE
   ---------------- rever este filtro para particionamento ---------------------
-  data = DATE('{{ ultimaDataAgenteVerão }}')
+  data = DATE('{{ ultima_data_agente_verao }}')
   AND validacao = TRUE
