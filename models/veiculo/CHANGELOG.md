@@ -1,5 +1,12 @@
 # Changelog - veiculo
 
+## [1.1.0] - 2024-04-15
+
+#### Alterado
+
+- Reorganizar modelos intermediários de licenciamento em staging (https://github.com/prefeitura-rio/queries-rj-smtr/pull/255)
+- Atualiza schema para refletir as alterações (https://github.com/prefeitura-rio/queries-rj-smtr/pull/255)
+
 ## [1.0.1] - 2024-04-05
 
 #### Alterado

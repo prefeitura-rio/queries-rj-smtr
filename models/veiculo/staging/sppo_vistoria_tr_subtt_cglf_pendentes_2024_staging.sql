@@ -1,3 +1,9 @@
+{{
+  config(
+    alias="sppo_vistoria_tr_subtt_cglf_pendentes_2024"
+  )
+}}
+
 SELECT
   SAFE_CAST(data AS DATE) AS data,
   SAFE_CAST(id_veiculo AS STRING) AS id_veiculo,
