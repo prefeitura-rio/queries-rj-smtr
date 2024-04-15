@@ -95,14 +95,14 @@ models:
         description: "Quantidade de transações feitas com integração"
       - name: valor_integracao
         description: "Valor total das transações feitas com integração (R$)"
-      - name: quantidade_transacao_rateio_credito
-        description: ""
+       - name: quantidade_transacao_rateio_credito
+        description: "Quantidade total de transações consideradas no crédito da repartição tarifária"
       - name: valor_rateio_credito
-        description: ""
+        description: "Valor total creditado em decorrência da repartição tarifária (R$)"
       - name: quantidade_transacao_rateio_debito
-        description: ""
+        description: "Quantidade total de transações consideradas no débito da repartição tarifária"
       - name: valor_rateio_debito
-        description: ""
+        description: "Valor total debitado em decorrência da repartição tarifária (R$)"
       - name: quantidade_total_transacao
         description: "Quantidade total de transações realizadas"
       - name: valor_total_transacao_bruto
@@ -306,7 +306,7 @@ models:
       - name: valor
         description: "Valor"
   - name: ordem_pagamento_consorcio_dia
-    description:
+    description: "Tabela com os valores totais de pagamento da Jaé agregados por consorcio e dia"
     columns: 
       - name: data_ordem
         description: "Data da ordem de pagamento (partição)"
@@ -332,23 +332,22 @@ models:
         description: "Quantidade de transações feitas com integração"
       - name: valor_integracao
         description: "Valor total das transações feitas com integração (R$)"
-      - name: quantidade_transacao_rateio_credito
-        description: ""
+       - name: quantidade_transacao_rateio_credito
+        description: "Quantidade total de transações consideradas no crédito da repartição tarifária"
       - name: valor_rateio_credito
-        description: ""
+        description: "Valor total creditado em decorrência da repartição tarifária (R$)"
       - name: quantidade_transacao_rateio_debito
-        description: ""
+        description: "Quantidade total de transações consideradas no débito da repartição tarifária"
       - name: valor_rateio_debito
-        description: ""
+        description: "Valor total debitado em decorrência da repartição tarifária (R$)"
       - name: valor_total_transacao_bruto
         description: "Valor total das transações realizadas (R$)"
       - name: valor_desconto_taxa
         description: "Valor da taxa descontado do valor total (R$)"
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)"
-
   - name: ordem_pagamento_consorcio_operador_dia
-    description:
+    description: "Tabela com os valores totais de pagamento da Jaé agregados por consorcio, operador e dia"
     columns:
       - name: data_ordem
         description: "Data da ordem de pagamento (partição)"
@@ -356,6 +355,10 @@ models:
         description: "Identificador do consórcio na tabela cadastro.consorcios"
       - name: consorcio
         description: "Nome do consórcio"
+      - name: id_operadora
+        description: "Identificador da operadora na tabela cadastro.operadoras"
+      - name: operadora
+        description: "Nome da operadora de transporte (mascarado se for pessoa física)"
       - name: id_ordem_pagamento
         description: "Identificador da ordem pagamento no banco de dados da Jaé"
       - name: quantidade_transacao_debito
@@ -374,14 +377,14 @@ models:
         description: "Quantidade de transações feitas com integração"
       - name: valor_integracao
         description: "Valor total das transações feitas com integração (R$)"
-      - name: quantidade_transacao_rateio_credito
-        description: ""
+       - name: quantidade_transacao_rateio_credito
+        description: "Quantidade total de transações consideradas no crédito da repartição tarifária"
       - name: valor_rateio_credito
-        description: ""
+        description: "Valor total creditado em decorrência da repartição tarifária (R$)"
       - name: quantidade_transacao_rateio_debito
-        description: ""
+        description: "Quantidade total de transações consideradas no débito da repartição tarifária"
       - name: valor_rateio_debito
-        description: ""
+        description: "Valor total debitado em decorrência da repartição tarifária (R$)"
       - name: valor_total_transacao_bruto
         description: "Valor total das transações realizadas (R$)"
       - name: valor_desconto_taxa
@@ -389,7 +392,7 @@ models:
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)"
   - name: ordem_pagamento_dia
-    description:
+    description: "Tabela com os valores totais de pagamento da Jaé agregados por dia"
     columns:
       - name: data_ordem
         description: "Data da ordem de pagamento (partição)"
@@ -411,14 +414,14 @@ models:
         description: "Quantidade de transações feitas com integração"
       - name: valor_integracao
         description: "Valor total das transações feitas com integração (R$)"
-      - name: quantidade_transacao_rateio_credito
-        description: ""
+       - name: quantidade_transacao_rateio_credito
+        description: "Quantidade total de transações consideradas no crédito da repartição tarifária"
       - name: valor_rateio_credito
-        description: ""
+        description: "Valor total creditado em decorrência da repartição tarifária (R$)"
       - name: quantidade_transacao_rateio_debito
-        description: ""
+        description: "Quantidade total de transações consideradas no débito da repartição tarifária"
       - name: valor_rateio_debito
-        description: ""
+        description: "Valor total debitado em decorrência da repartição tarifária (R$)"
       - name: valor_total_transacao_bruto
         description: "Valor total das transações realizadas (R$)"
       - name: valor_desconto_taxa
@@ -428,7 +431,7 @@ models:
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)"
   - name: ordem_pagamento_servico_operador_dia
-    descriptions:
+    descriptions: "Tabela com os valores totais de pagamento da Jaé agregados por serviço, operador e dia"
     columns:
       - name: data_ordem
         description: "Data da ordem de pagamento (partição)"
@@ -462,14 +465,14 @@ models:
         description: "Quantidade de transações feitas com integração"
       - name: valor_integracao
         description: "Valor total das transações feitas com integração (R$)"
-      - name: quantidade_transacao_rateio_credito
-        description: ""
+       - name: quantidade_transacao_rateio_credito
+        description: "Quantidade total de transações consideradas no crédito da repartição tarifária"
       - name: valor_rateio_credito
-        description: ""
+        description: "Valor total creditado em decorrência da repartição tarifária (R$)"
       - name: quantidade_transacao_rateio_debito
-        description: ""
+        description: "Quantidade total de transações consideradas no débito da repartição tarifária"
       - name: valor_rateio_debito
-        description: ""
+        description: "Valor total debitado em decorrência da repartição tarifária (R$)"
       - name: quantidade_total_transacao
         description: "Quantidade total de transações realizadas"
       - name: valor_total_transacao_bruto
@@ -487,6 +490,7 @@ models:
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)"
   - name: transacao_riocard
+    description: "Tabela com as transações feitas com RioCard que foram registradas pelo validador da Jaé."
     columns:
       - name: data
         description: "Data da transação (partição)"

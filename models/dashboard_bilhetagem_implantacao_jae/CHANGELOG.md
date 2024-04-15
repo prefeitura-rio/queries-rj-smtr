@@ -1,6 +1,6 @@
 # Changelog - dashboard_bilhetagem_implantacao_jae
 
-## [1.0.0] - 2024-04-12
+## [1.0.0] - 2024-04-15
 
 ### Adicionado 
 
