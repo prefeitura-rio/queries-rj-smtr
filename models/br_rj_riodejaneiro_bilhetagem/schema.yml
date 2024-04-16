@@ -275,7 +275,7 @@ models:
         description: "Quantidade de transações feitas com integração"
       - name: valor_integracao
         description: "Valor total das transações feitas com integração (R$)"
-       - name: quantidade_transacao_rateio_credito
+      - name: quantidade_transacao_rateio_credito
         description: "Quantidade total de transações consideradas no crédito da repartição tarifária"
       - name: valor_rateio_credito
         description: "Valor total creditado em decorrência da repartição tarifária (R$)"
@@ -285,6 +285,8 @@ models:
         description: "Valor total debitado em decorrência da repartição tarifária (R$)"
       - name: valor_total_transacao_bruto
         description: "Valor total das transações realizadas (R$)"
+      - name: valor_total_transacao_liquido
+        description: "Valor total das transações menos o valor_desconto_taxa (R$)"
       - name: valor_desconto_taxa
         description: "Valor da taxa descontado do valor total (R$)"
       - name: versao
@@ -320,7 +322,7 @@ models:
         description: "Quantidade de transações feitas com integração"
       - name: valor_integracao
         description: "Valor total das transações feitas com integração (R$)"
-       - name: quantidade_transacao_rateio_credito
+      - name: quantidade_transacao_rateio_credito
         description: "Quantidade total de transações consideradas no crédito da repartição tarifária"
       - name: valor_rateio_credito
         description: "Valor total creditado em decorrência da repartição tarifária (R$)"
@@ -332,6 +334,8 @@ models:
         description: "Valor total das transações realizadas (R$)"
       - name: valor_desconto_taxa
         description: "Valor da taxa descontado do valor total (R$)"
+      - name: valor_total_transacao_liquido
+        description: "Valor total das transações menos o valor_desconto_taxa (R$)"
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)"
   - name: ordem_pagamento_dia
@@ -339,6 +343,8 @@ models:
     columns:
       - name: data_ordem
         description: "Data da ordem de pagamento (partição)"
+      - name: data_pagamento
+        description: "Data de pagamento"
       - name: id_ordem_pagamento
         description: "Identificador da ordem pagamento no banco de dados da Jaé"
       - name: quantidade_transacao_debito
@@ -357,7 +363,7 @@ models:
         description: "Quantidade de transações feitas com integração"
       - name: valor_integracao
         description: "Valor total das transações feitas com integração (R$)"
-       - name: quantidade_transacao_rateio_credito
+      - name: quantidade_transacao_rateio_credito
         description: "Quantidade total de transações consideradas no crédito da repartição tarifária"
       - name: valor_rateio_credito
         description: "Valor total creditado em decorrência da repartição tarifária (R$)"
@@ -391,7 +397,7 @@ models:
       - name: id_ordem_pagamento
         description: "Identificador da ordem pagamento no banco de dados da Jaé"
       - name: id_ordem_ressarcimento
-        description:
+        description: "Identificador da ordem ressarcimento no banco de dados da Jaé"
       - name: quantidade_transacao_debito
         description: "Quantidade de transações feitas na modalidade débito"
       - name: valor_debito
@@ -408,7 +414,7 @@ models:
         description: "Quantidade de transações feitas com integração"
       - name: valor_integracao
         description: "Valor total das transações feitas com integração (R$)"
-       - name: quantidade_transacao_rateio_credito
+      - name: quantidade_transacao_rateio_credito
         description: "Quantidade total de transações consideradas no crédito da repartição tarifária"
       - name: valor_rateio_credito
         description: "Valor total creditado em decorrência da repartição tarifária (R$)"
