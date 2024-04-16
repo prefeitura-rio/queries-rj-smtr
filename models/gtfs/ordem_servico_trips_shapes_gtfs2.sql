@@ -347,7 +347,8 @@ WITH
         AND o.servico = t.trip_short_name
         AND 
           (o.tipo_dia = t.tipo_dia
-          OR (o.tipo_dia = "Ponto Facultativo" AND t.tipo_dia = "Dia Útil"))
+          OR (o.tipo_dia = "Ponto Facultativo" AND t.tipo_dia = "Dia Útil")
+          OR (t.tipo_dia IS NULL)) -- service_id "EXCEP"
         AND
           ((o.sentido IN ("I", "C") AND t.direction_id = "0")
           OR (o.sentido = "V" AND t.direction_id = "1"))
