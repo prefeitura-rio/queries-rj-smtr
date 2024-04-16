@@ -19,10 +19,17 @@
 
 
 SELECT
-  *
+  * EXCEPT(email, rn)
 FROM
-  {{ ref('sppo_registro_agente_verao_staging') }}
-WHERE
-  ---------------- rever este filtro para particionamento ---------------------
-  data = DATE('{{ ultima_data_agente_verao }}')
-  AND validacao = TRUE
+  (
+    SELECT
+      *,
+      ROW_NUMBER() OVER(PARTITION BY datetime_registro, email ORDER BY datetime_captura DESC) AS rn
+    FROM
+      {{ ref('sppo_registro_agente_verao_staging') }}
+    WHERE
+      ---------------- rever este filtro para particionamento ---------------------
+      data = DATE('{{ ultima_data_agente_verao }}')
+      AND validacao = TRUE
+  )
+WHERE rn = 1

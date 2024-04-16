@@ -1,5 +1,12 @@
 # Changelog - veiculo
 
+## [1.1.1] - 2024-04-16
+
+#### Alterado
+
+- Cria lógica de deduplicação na tabela `sppo_registro_agente_verao`
+
+
 ## [1.1.0] - 2024-04-15
 
 #### Alterado
