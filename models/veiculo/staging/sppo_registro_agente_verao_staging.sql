@@ -8,7 +8,6 @@ SELECT
   SAFE_CAST(PARSE_DATETIME("%d/%m/%Y %H:%M:%S", datetime_registro) AS DATE) AS data,
   SAFE_CAST(PARSE_DATETIME("%d/%m/%Y %H:%M:%S", datetime_registro) AS DATETIME) AS datetime_registro,
   SHA256(PARSE_DATETIME("%d/%m/%Y %H:%M:%S", datetime_registro) || "_" || SAFE_CAST(email AS STRING)) AS id_registro,
-  SAFE_CAST(email AS STRING) AS email,
   SAFE_CAST(JSON_VALUE(content,'$.id_veiculo') AS STRING) AS id_veiculo,
   SAFE_CAST(JSON_VALUE(content,'$.servico') AS STRING) AS servico,
   SAFE_CAST(JSON_VALUE(content,'$.link_foto') AS STRING) AS link_foto,

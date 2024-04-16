@@ -19,12 +19,12 @@
 
 
 SELECT
-  * EXCEPT(email, rn)
+  * EXCEPT(rn)
 FROM
   (
     SELECT
       *,
-      ROW_NUMBER() OVER(PARTITION BY datetime_registro, email ORDER BY datetime_captura DESC) AS rn
+      ROW_NUMBER() OVER(PARTITION BY id_registro ORDER BY datetime_captura DESC) AS rn
     FROM
       {{ ref('sppo_registro_agente_verao_staging') }}
     WHERE
