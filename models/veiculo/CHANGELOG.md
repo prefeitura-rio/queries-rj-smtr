@@ -2,9 +2,9 @@
 
 ## [1.1.1] - 2024-04-16
 
-#### Alterado
+#### Corrigido
 
-- Cria lógica de deduplicação na tabela `sppo_registro_agente_verao`
+- Cria lógica de deduplicação na tabela `sppo_registro_agente_verao` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/271)
 
 
 ## [1.1.0] - 2024-04-15
