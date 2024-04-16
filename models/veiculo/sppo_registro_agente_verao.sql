@@ -28,7 +28,6 @@ FROM
     FROM
       {{ ref('sppo_registro_agente_verao_staging') }}
     WHERE
-      ---------------- rever este filtro para particionamento ---------------------
       data = DATE('{{ ultima_data_agente_verao }}')
       AND validacao = TRUE
   )
