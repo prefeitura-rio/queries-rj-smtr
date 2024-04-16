@@ -177,7 +177,7 @@ WITH
     {{ ref("subsidio_data_versao_efetiva") }}
     -- rj-smtr-dev.projeto_subsidio_sppo.subsidio_data_versao_efetiva
   WHERE
-    data BETWEEN DATE_SUB("{{ var('run_date') }}", INTERVAL 1 DAY) AND DATE("{{ var('run_date') }}") )
+    data = DATE_SUB("{{ var('run_date') }}", INTERVAL 1 DAY) )
 SELECT
   d.data,
   CASE
