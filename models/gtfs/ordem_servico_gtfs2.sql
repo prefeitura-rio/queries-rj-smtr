@@ -34,7 +34,7 @@ WITH ordem_servico AS (
     SAFE_CAST(SAFE_CAST(JSON_VALUE(os.content, '$.partidas_volta_domingo') AS FLOAT64) AS INT64) partidas_volta_domingo,
     SAFE_CAST(JSON_VALUE(os.content, '$.viagens_domingo') AS FLOAT64) viagens_domingo,
     SAFE_CAST(JSON_VALUE(os.content, '$.km_domingo') AS FLOAT64) km_domingo,
-    SAFE_CAST(JSON_VALUE(os.content, '$.tipo_os') AS STRING) tipo_os,
+    COALESCE(SAFE_CAST(JSON_VALUE(os.content, '$.tipo_os') AS STRING), "Regular") tipo_os,
   FROM 
     {{ source(
       'br_rj_riodejaneiro_gtfs_staging',
