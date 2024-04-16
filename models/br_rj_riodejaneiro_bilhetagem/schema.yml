@@ -62,63 +62,6 @@ models:
         description: "Valor debitado na transação atual (R$)"
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)"
-  - name: ordem_pagamento
-    description: "Tabela de ordem de pagamento do banco de dados de dados da Jaé"
-    columns:
-      - name: data_ordem
-        description: "Data da ordem de pagamento (partição)"
-      - name: data_pagamento
-        description: "Data de pagamento da ordem"
-      - name: id_consorcio
-        description: "Identificador do consórcio na tabela cadastro.consorcios"
-      - name: id_operadora
-        description: "Identificador da operadora na tabela cadastro.operadoras"
-      - name: servico
-        description: "Nome curto da linha operada com variação de serviço (ex: 010, 011SN, ...)"
-      - name: id_ordem_pagamento
-        description: "Identificador da ordem pagamento no banco de dados da Jaé"
-      - name: id_ordem_ressarcimento
-        description: "Identificador da ordem ressarcimento no banco de dados da Jaé"
-      - name: quantidade_transacao_debito
-        description: "Quantidade de transações feitas na modalidade débito"
-      - name: valor_debito
-        description: "Valor total das transações feitas na modalidade débito (R$)"
-      - name: quantidade_transacao_especie
-        description: "Quantidade de transações feitas em espécie"
-      - name: valor_especie
-        description: "Valor total das transações feitas em espécie (R$)"
-      - name: quantidade_transacao_gratuidade
-        description: "Quantidade de transações feitas com gratuidade"
-      - name: valor_gratuidade
-        description: "Valor total das transações feitas com gratuidade (R$)"
-      - name: quantidade_transacao_integracao
-        description: "Quantidade de transações feitas com integração"
-      - name: valor_integracao
-        description: "Valor total das transações feitas com integração (R$)"
-       - name: quantidade_transacao_rateio_credito
-        description: "Quantidade total de transações consideradas no crédito da repartição tarifária"
-      - name: valor_rateio_credito
-        description: "Valor total creditado em decorrência da repartição tarifária (R$)"
-      - name: quantidade_transacao_rateio_debito
-        description: "Quantidade total de transações consideradas no débito da repartição tarifária"
-      - name: valor_rateio_debito
-        description: "Valor total debitado em decorrência da repartição tarifária (R$)"
-      - name: quantidade_total_transacao
-        description: "Quantidade total de transações realizadas"
-      - name: valor_total_transacao_bruto
-        description: "Valor total das transações realizadas (R$)"
-      - name: valor_desconto_taxa
-        description: "Valor da taxa descontado do valor total (R$)"
-      - name: valor_total_transacao_liquido
-        description: "Valor total das transações menos o valor_desconto_taxa (R$)"
-      - name: quantidade_total_transacao_captura
-        description: "Quantidade total de transações calculada pela captura de transações"
-      - name: valor_total_transacao_captura
-        description: "Valor total das transações realizadas calculada pela captura de transações (R$)"
-      - name: indicador_ordem_valida
-        description: "Indicador de validação da ordem de pagamento i.e. se a quantidade e valor total informados são encontrados na captura de transações individuais"
-      - name: versao
-        description: "Código de controle de versão do dado (SHA Github)"
   - name: integracao
     description: "Tabela de integrações realizadas entre modos do sistema de transporte municipal, contendo os valores da repartição tarifária (quando houver). [Dados em fase de teste]"
     columns:
@@ -133,7 +76,7 @@ models:
       - name: datetime_transacao
         description: "Data e hora da integração em GMT-3"
       - name: intervalo_integracao
-        description: "Tempo de intervalo da integração em minutos"
+        description: "Tempo entre a perna atual da integração e a anterior em minutos"
       - name: id_integracao
         description: "Identificador único da integração"
       - name: sequencia_integracao
