@@ -140,7 +140,11 @@ filtro_desvio as (
 FROM (
   SELECT
     *,
+    {% if var("run_date") > var("DATA_SUBSIDIO_V6_INICIO") %}
+    ROW_NUMBER() OVER(PARTITION BY id_veiculo, datetime_partida, datetime_chegada ORDER BY perc_conformidade_shape DESC, perc_conformidade_distancia DESC) AS rn
+    {% else %}
     ROW_NUMBER() OVER(PARTITION BY id_veiculo, datetime_partida, datetime_chegada ORDER BY perc_conformidade_shape DESC) AS rn
+    {% endif %}
   FROM
     viagem_comp_conf )
 WHERE
