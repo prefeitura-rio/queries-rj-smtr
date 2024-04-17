@@ -771,24 +771,23 @@ models:
       - name: data_versao
         description: "Data de referência do planejamento (versão)."
       - name: servico
-        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 006, 010, ...)"
+        description: "Nome curto do serviço operada pelo veículo com variação de serviço (ex: 006, 010, ...)."
       - name: vista
-        description: "Itinerário da linha (ex: Bananal ↔ Saens Peña)"
+        description: "Itinerário do serviço (ex: Bananal ↔ Saens Peña)"
       - name: consorcio
-        description: "Nome do consórcio responsável pela linha."
+        description: "Nome do consórcio responsável pelo serviço."
       - name: horario_inicio
-        description: "Horário inicial de funcionamento."
+        description: "Horário inicial de funcionamento do serviço."
       - name: horario_fim
-        description: "Horário da final de funcionamento."
+        description: "Horário da final de funcionamento do serviço."
       - name: distancia_planejada
-        description: "Distância planejada da linha."
+        description: "Distância planejada de uma viagem do serviço (km)."
       - name: sentido
         description: "Sentido planejado - categorias: I (ida), V (volta), C (circular)"
       - name: trip_id
-        description: "Código identificador do itinerário (trip)"
+        description: "Código identificador de trip de referência no GTFS"
       - name: tipo_dia
-        description: "Dia da semana considerado para o cálculo da
-        distância planejada - categorias: Dia Útil, Sabado, Domingo e Ponto Facultativo"
+        description: "Dia da semana - categorias: Dia Útil, Sabado, Domingo e Ponto Facultativo"
       - name: distancia_total_planejada
         description: "Distância total planejada do serviço em km (junta ida+volta multiplicado pela quantidade de viagens)."
       - name: versao_modelo 
