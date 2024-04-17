@@ -27,14 +27,8 @@ SELECT
     WHEN s.id_consorcio = '221000050' THEN "Consórcio BRT"
     ELSE j.nm_consorcio 
   END AS consorcio,
-  CASE
-    WHEN j.cd_consorcio = '1' THEN '44520687000161'
-    ELSE s.cnpj
-  END AS cnpj,
-  CASE
-    WHEN j.cd_consorcio = '1' THEN 'COMPANHIA MUNICIPAL DE TRANSPORTES COLETIVOS CMTC RIO'
-    ELSE s.razao_social
-  END AS razao_social,
+  s.cnpj,
+  s.razao_social,
   s.id_consorcio AS id_consorcio_stu,
   j.cd_consorcio AS id_consorcio_jae,
   s.processo AS id_processo,
