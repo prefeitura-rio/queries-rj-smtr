@@ -3,11 +3,11 @@
 ## [1.0.2] - 2024-04-17
 
 ### Modificado
-- Filtra transações inválidas ou de teste no modelo `transacao.sql`
+- Filtra transações inválidas ou de teste no modelo `transacao.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/275)
   - Transações inválidas:
     - datas anteriores a 2023-07-17
   - Transações teste:
-    - linhas sem ressarcimento 
+    - linhas sem ressarcimento
 
 ## [1.0.1] - 2024-04-16
 
