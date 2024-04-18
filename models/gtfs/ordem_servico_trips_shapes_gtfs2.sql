@@ -119,8 +119,6 @@ WITH
       CASE
         WHEN indicador_trajeto_alternativo IS FALSE THEN 0 -- Trajeto regular
         WHEN indicador_trajeto_alternativo IS TRUE THEN 1 -- Trajeto alternativo
-      ELSE
-      -1 -- Erro
     END
       AS id_tipo_trajeto,
     FROM 
