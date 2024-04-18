@@ -1,3 +1,6 @@
+/*
+  ordem_servico_gtfs2 com sentidos despivotados, ajustes nos horários e com atualização dos sentidos circulares
+*/
 {{
   config(
     materialized='ephemeral'

@@ -1,4 +1,9 @@
 -- depends_on: {{ ref('ordem_servico_trajeto_alternativo_gtfs2') }}
+/*
+Identificação de um trip de referência para cada serviço e sentido regular
+Identificação de todas as trips de referência para os trajetos alternativos
+*/
+
 {{
   config(
     materialized='ephemeral'

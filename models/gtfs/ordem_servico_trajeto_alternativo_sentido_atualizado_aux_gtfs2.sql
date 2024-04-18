@@ -1,3 +1,7 @@
+/*
+  ordem_servico_trajeto_alternativo_gtfs2 com sentidos despivotados e com atualização dos sentidos circulares
+*/
+
 {{
   config(
     materialized='ephemeral'
