@@ -7,6 +7,9 @@ WITH
   FROM
     {{ ref("viagem_planejada") }}
     --`rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada` 
+  WHERE
+    (id_tipo_trajeto = 0
+    OR id_tipo_trajeto IS NULL)
   ),
   -- v1: Valor do subsídio pré glosa por tipos de viagem (Antes de 2023-01-16)
   sumario_sem_glosa AS (
