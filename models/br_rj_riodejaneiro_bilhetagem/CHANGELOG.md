@@ -1,6 +1,6 @@
 # Changelog - bilhetagem
 
-## [1.0.2] - 2024-04-17
+## [1.0.2] - 2024-04-18
 
 ### Modificado
 - Filtra transações inválidas ou de teste no modelo `transacao.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/275)
