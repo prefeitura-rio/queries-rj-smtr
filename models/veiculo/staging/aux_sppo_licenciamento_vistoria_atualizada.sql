@@ -20,7 +20,7 @@ FROM
             placa,
             ano_ultima_vistoria,
         FROM
-            {{ ref("sppo_vistoria_tr_subtt_cglf_2023") }}
+            {{ ref("sppo_vistoria_tr_subtt_cglf_2023_staging") }}
         UNION ALL
         SELECT
             data,
@@ -28,7 +28,7 @@ FROM
             placa,
             ano_ultima_vistoria,
         FROM
-            {{ ref("sppo_vistoria_tr_subtt_cglf_2024") }}
+            {{ ref("sppo_vistoria_tr_subtt_cglf_2024_staging") }}
         UNION ALL
         SELECT
             data,
@@ -36,7 +36,7 @@ FROM
             placa,
             ano_ultima_vistoria,
         FROM
-            {{ ref("sppo_vistoria_tr_subtt_cglf_pendentes_2024") }}
+            {{ ref("sppo_vistoria_tr_subtt_cglf_pendentes_2024_staging") }}
     )
 GROUP BY
   1,

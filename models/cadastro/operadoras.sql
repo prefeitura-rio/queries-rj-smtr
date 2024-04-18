@@ -11,6 +11,11 @@ WITH operadora_jae AS (
     m.modo,
     ot.cd_tipo_modal,
     ot.ds_tipo_modal AS modo_jae,
+    -- STU considera BRT como Ônibus
+    CASE
+      WHEN ot.cd_tipo_modal = '3' THEN 'Ônibus'
+      ELSE m.modo
+    END AS modo_join,
     ot.in_situacao_atividade,
     CASE
       WHEN c.in_tipo_pessoa_fisica_juridica = 'F' THEN 'CPF'
@@ -51,7 +56,7 @@ stu_pessoa_juridica AS (
     "CNPJ" AS tipo_documento
   FROM
     {{ ref("staging_operadora_empresa") }}
-  WHERE perm_autor NOT IN ({{ var("ids_consorcios").keys()|join(", ") }})
+  WHERE perm_autor NOT IN ({{ var("ids_consorcios").keys()|reject("equalto", "'229000010'")|join(", ") }})
 ),
 stu_pessoa_fisica AS (
   SELECT
@@ -115,7 +120,7 @@ cadastro AS (
     operadora_jae AS j
   ON
     s.documento = j.nr_documento
-    AND s.modo = j.modo
+    AND s.modo = j.modo_join
 )
 SELECT
   id_operadora,
@@ -142,3 +147,5 @@ SELECT
   indicador_operador_ativo_jae
 FROM
   cadastro
+WHERE
+  modo NOT IN ("Escolar", "Táxi", "TEC", "Fretamento")

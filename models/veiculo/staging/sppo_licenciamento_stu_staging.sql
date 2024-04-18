@@ -1,3 +1,10 @@
+
+{{ config(
+       materialized='view',
+       alias='sppo_licenciamento_stu'
+)
+}}
+
 SELECT
    SAFE_CAST(data AS DATE) data,
    SAFE_CAST(DATETIME(TIMESTAMP_TRUNC(TIMESTAMP(timestamp_captura), SECOND), "America/Sao_Paulo" ) AS DATETIME) timestamp_captura,
@@ -35,4 +42,4 @@ SELECT
   END
     AS data_inicio_vinculo,
  FROM
-     {{ var('sppo_licenciamento_stu_staging') }} as t
+    {{ source('veiculo_staging','sppo_licenciamento_stu') }} as t

@@ -96,6 +96,11 @@ sources:
       - name: sppo_vistoria_tr_subtt_cglf_2023
       - name: sppo_vistoria_tr_subtt_cglf_2024
       - name: sppo_vistoria_tr_subtt_cglf_pendentes_2024
+      - name: sppo_registro_agente_verao
+      - name: sppo_infracao
+      - name: sppo_licenciamento_solicitacao
+      - name: sppo_licenciamento
+      - name: sppo_licenciamento_stu
   
   - name: dashboard_subsidio_sppo_staging
     database: rj-smtr-staging
@@ -108,3 +113,10 @@ sources:
     
     tables:
       - name: relatorio_instalacao_jae
+
+  - name: br_rj_riodejaneiro_onibus_gps_zirix_staging
+    database: rj-smtr-staging
+
+    tables: 
+      - name: registros
+      - name: realocacao

@@ -60,6 +60,11 @@ WITH
         WHEN data = "2024-01-01" THEN "Domingo - Réveillon"
         WHEN data = "2024-02-24" THEN "Sabado - Verão" -- OS de Verão - Despacho MTR-DES-2024/10516
         WHEN data = "2024-02-25" THEN "Domingo - Verão" -- OS de Verão - Despacho MTR-DES-2024/10516
+        WHEN data = "2024-03-16" THEN "Sabado - Verão" -- OS de Verão - Despacho MTR-DES-2024/15504
+        WHEN data = "2024-03-17" THEN "Domingo - Verão" -- OS de Verão - Despacho MTR-DES-2024/15504
+        WHEN data = "2024-03-22" THEN "Ponto Facultativo" -- Ponto Facultativo - DECRETO RIO Nº 54114/2024
+        WHEN data = "2024-03-28" THEN "Ponto Facultativo" -- Ponto Facultativo - DECRETO RIO Nº 54081/2024
+        WHEN data = "2024-03-29" THEN "Domingo" -- Feriado de Paixão de Cristo (Sexta-feira Santa)
         WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 1 THEN "Domingo" -- Dia de São Sebastião -- Art. 8°, I - Lei Municipal nº 5146/2010
         WHEN EXTRACT(DAY FROM data) = 23 AND EXTRACT(MONTH FROM data) = 4 THEN "Domingo" -- Dia de São Jorge -- Art. 8°, II - Lei Municipal nº 5146/2010 / Lei Estadual Nº 5198/2008 / Lei Estadual Nº 5645/2010
         WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 11 THEN "Domingo" -- Aniversário de morte de Zumbi dos Palmares / Dia da Consciência Negra -- Art. 8°, IV - Lei Municipal nº 5146/2010 / Lei Estadual nº 526/1982 / Lei Estadual nº 1929/1991 / Lei Estadual nº 4007/2002 / Lei Estadual Nº 5645/2010
@@ -107,7 +112,8 @@ WITH
       WHEN data BETWEEN DATE(2024,02,24) AND DATE(2024,02,25) THEN DATE(2024,02,25) -- OS fev/Q2 - TIG - OS Verão
       WHEN data BETWEEN DATE(2024,02,26) AND DATE(2024,03,01) THEN DATE(2024,02,24) -- OS fev/Q2 - TIG
       WHEN data BETWEEN DATE(2024,03,02) AND DATE(2024,03,10) THEN DATE(2024,03,02) -- OS mar/Q1
-      WHEN data BETWEEN DATE(2024,03,11) AND DATE(2024,03,17) THEN DATE(2024,03,11) -- OS mar/Q1
+      WHEN data BETWEEN DATE(2024,03,11) AND DATE(2024,03,15) THEN DATE(2024,03,11) -- OS mar/Q1
+      WHEN data BETWEEN DATE(2024,03,16) AND DATE(2024,03,17) THEN DATE(2024,03,12) -- OS mar/Q2
       WHEN data BETWEEN DATE(2024,03,18) AND DATE(2024,03,29) THEN DATE(2024,03,18) -- OS mar/Q2
       WHEN data BETWEEN DATE(2024,03,30) AND DATE(2024,04,30) THEN DATE(2024,03,30) -- OS abr/Q1
       -- 2022:
@@ -157,7 +163,8 @@ WITH
       WHEN data BETWEEN DATE(2024,02,24) AND DATE(2024,02,25) THEN DATE(2024,02,25) -- OS fev/Q2 - TIG - OS Verão
       WHEN data BETWEEN DATE(2024,02,26) AND DATE(2024,03,01) THEN DATE(2024,02,24) -- OS fev/Q2 - TIG
       WHEN data BETWEEN DATE(2024,03,02) AND DATE(2024,03,10) THEN DATE(2024,03,02) -- OS mar/Q1
-      WHEN data BETWEEN DATE(2024,03,11) AND DATE(2024,03,17) THEN DATE(2024,03,11) -- OS mar/Q1
+      WHEN data BETWEEN DATE(2024,03,11) AND DATE(2024,03,15) THEN DATE(2024,03,11) -- OS mar/Q1
+      WHEN data BETWEEN DATE(2024,03,16) AND DATE(2024,03,17) THEN DATE(2024,03,12) -- OS mar/Q2
       WHEN data BETWEEN DATE(2024,03,18) AND DATE(2024,03,29) THEN DATE(2024,03,18) -- OS mar/Q2
       WHEN data BETWEEN DATE(2024,03,30) AND DATE(2024,04,30) THEN DATE(2024,03,30) -- OS abr/Q1
       -- 2022:
@@ -207,7 +214,8 @@ WITH
       WHEN data BETWEEN DATE(2024,02,24) AND DATE(2024,02,25) THEN DATE(2024,02,25) -- OS fev/Q2 - TIG - OS Verão
       WHEN data BETWEEN DATE(2024,02,26) AND DATE(2024,03,01) THEN DATE(2024,02,24) -- OS fev/Q2 - TIG
       WHEN data BETWEEN DATE(2024,03,02) AND DATE(2024,03,10) THEN DATE(2024,03,02) -- OS mar/Q1
-      WHEN data BETWEEN DATE(2024,03,11) AND DATE(2024,03,17) THEN DATE(2024,03,11) -- OS mar/Q1
+      WHEN data BETWEEN DATE(2024,03,11) AND DATE(2024,03,15) THEN DATE(2024,03,11) -- OS mar/Q1
+      WHEN data BETWEEN DATE(2024,03,16) AND DATE(2024,03,17) THEN DATE(2024,03,12) -- OS mar/Q2
       WHEN data BETWEEN DATE(2024,03,18) AND DATE(2024,03,29) THEN DATE(2024,03,18) -- OS mar/Q2
       WHEN data BETWEEN DATE(2024,03,30) AND DATE(2024,04,30) THEN DATE(2024,03,30) -- OS abr/Q1
       -- 2022:

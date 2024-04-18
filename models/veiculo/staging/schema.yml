@@ -1,46 +1,71 @@
 version: 2
 
 models:
-  - name: sppo_infracao
-    description: "Tabela histórica de todas as multas aplicadas aos modos de transporte no município do Rio de Janeiro, com qualquer situação.
-    Dados capturados diariamente de: https://www.data.rio/documents/multas-aplicadas-aos-modos-de-transporte-nos-%C3%BAltimos-cinco-anos"
+  - name: sppo_vistoria_tr_subtt_cglf_2023_staging
+    description: "sppo_vistoria_tr_subtt_cglf_2023"
+    columns:
+      - name: data
+        description: "Data da captura"
+      - name: id_veiculo
+        description: "Número de ordem do veículo, identificação que é exibida na lateral do ônibus"
+      - name: placa
+        description: "Placa do veículo"
+      - name: permissao
+        description: "Número da permissão do ônibus"
+      - name: chassi
+        description: "Chassi do veículo"
+      - name: ano_fabricacao
+        description: "Ano de fabricação do veículo"
+      - name: selo
+        description: "Selo"
+      - name: darm
+        description: "Código do Documento de Arrecadação de Receitas Municipais"
+      - name: ano_ultima_vistoria
+        description: "Ano da última vistoria realizada pelo veículo"
+  - name: sppo_vistoria_tr_subtt_cglf_2024_staging
+    description: "sppo_vistoria_tr_subtt_cglf_2024"
+    columns:
+      - name: data
+        description: "Data da captura"
+      - name: id_veiculo
+        description: "Número de ordem do veículo, identificação que é exibida na lateral do ônibus"
+      - name: placa
+        description: "Placa do veículo"
+      - name: permissao
+        description: "Número da permissão do ônibus"
+      - name: chassi
+        description: "Chassi do veículo"
+      - name: ano_fabricacao
+        description: "Ano de fabricação do veículo"
+      - name: selo
+        description: "Selo"
+      - name: darm
+        description: "Código do Documento de Arrecadação de Receitas Municipais"
+      - name: ano_ultima_vistoria
+        description: "Ano da última vistoria realizada pelo veículo"
+  - name: sppo_vistoria_tr_subtt_cglf_pendentes_2024_staging
+    description: "sppo_vistoria_tr_subtt_cglf_pendentes_2024"
+    columns:
+      - name: data
+        description: "Data da captura"
+      - name: id_veiculo
+        description: "Número de ordem do veículo, identificação que é exibida na lateral do ônibus"
+      - name: placa
+        description: "Placa do veículo"
+      - name: permissao
+        description: "Número da permissão do ônibus"
+      - name: empresa
+        description: "Empresa ao qual o veículo está vinculado"
+      - name: ano_ultima_vistoria
+        description: "Ano da última vistoria realizada pelo veículo"
+  - name: sppo_licenciamento_stu_staging
+    description: "View de Dados cadastrais dos veículos que operam o sistema de ônibus (BRT e SPPO) no município do Rio de Janeiro.\n
+    Dados capturados diariamente de: https://www.data.rio/documents/c6c97d3c15434b5088965e25f85e27c3"
     columns:
       - name: data
         description: "Data da captura (partição)"
       - name: timestamp_captura
-        description: "Timestamp de captura dos dados de infração"
-      - name: modo
-        description: "ÔNIBUS – nesse arquivo só constam os ônibus"
-      - name: permissao
-        description: "Número da permissão do ônibus"
-      - name: placa
-        description: "Placa do veículo"
-      - name: id_auto_infracao
-        description: "Identificador do auto de infração da multa aplicada"
-      - name: data_infracao
-        description: "Data da infração"
-      - name: valor
-        description: "Valor devido (R$)"
-      - name: id_infracao
-        description: "Código da infração"
-      - name: infracao
-        description: "Descrição da infração"
-      - name: status
-        description: "CADASTRADA - Registrada no sistema sem guia de pagamento\n
-                      EM ABERTO - Com guia de pagamento e dentro do prazo de vencimento\n
-                      VENCIDA - Com guia de pagamento e fora do prazo de vencimento\n
-                      EM RECURSO - Possui Processo de Recurso aguardando julgamento\n
-                      PAGA - Com guia de pagamento efetivamente paga\n
-                      CANCELADA - Multa foi cancelada através de um Processo de Recurso"
-      - name: data_pagamento
-        description: "Data de pagamento"
-  - name: sppo_licenciamento
-    description: "Tabela histórica de dados cadastrais dos veículos que operam o sistema de ônibus (BRT e SPPO),
-                  considerando tanto os licenciados no Sistema de Transporte Urbano (STU) quanto as solicitações
-                  válidas em andamento para ingresso no sistema"
-    columns:
-      - name: data
-        description: "Data da captura (partição)"
+        description: "Timestamp de captura dos dados de licenciamento"
       - name: modo
         description: "ÔNIBUS – nesse arquivo só constam os ônibus"
       - name: id_veiculo
@@ -84,14 +109,44 @@ models:
       - name: tipo_veiculo
         description: "Tipo de veículo"
       - name: status
-        description: "Licenciado - Veículo licenciado no Sistema de Transporte Urbano (STU)\n
-                      Válido - Veículo com solicitação válida para ingresso no Sistema de Transporte Urbano (STU)"
-      - name: ano_ultima_vistoria_atualizado
-        description: "Ano atualizado da última vistoria realizada pelo veículo"
+        description: "Licenciado - Veículo licenciado no Sistema de Transporte Urbano (STU)"
       - name: data_inicio_vinculo
         description: "Data de início do vínculo do veículo no STU"
-  - name: sppo_licenciamento_solicitacao
-    description: "Tabela histórica de dados cadastrais das solicitações em andamento para ingresso no Sistema de Transporte Urbano (STU)"
+  - name: sppo_infracao_staging
+    description: "View de todas as multas aplicadas aos modos de transporte no município do Rio de Janeiro, com qualquer situação.
+    Dados capturados diariamente de: https://www.data.rio/documents/multas-aplicadas-aos-modos-de-transporte-nos-%C3%BAltimos-cinco-anos"
+    columns:
+      - name: data
+        description: "Data da captura (partição)"
+      - name: timestamp_captura
+        description: "Timestamp de captura dos dados de infração"
+      - name: modo
+        description: "ÔNIBUS – nesse arquivo só constam os ônibus"
+      - name: permissao
+        description: "Número da permissão do ônibus"
+      - name: placa
+        description: "Placa do veículo"
+      - name: id_auto_infracao
+        description: "Identificador do auto de infração da multa aplicada"
+      - name: data_infracao
+        description: "Data da infração"
+      - name: valor
+        description: "Valor devido (R$)"
+      - name: id_infracao
+        description: "Código da infração"
+      - name: infracao
+        description: "Descrição da infração"
+      - name: status
+        description: "CADASTRADA - Registrada no sistema sem guia de pagamento\n
+                      EM ABERTO - Com guia de pagamento e dentro do prazo de vencimento\n
+                      VENCIDA - Com guia de pagamento e fora do prazo de vencimento\n
+                      EM RECURSO - Possui Processo de Recurso aguardando julgamento\n
+                      PAGA - Com guia de pagamento efetivamente paga\n
+                      CANCELADA - Multa foi cancelada através de um Processo de Recurso"
+      - name: data_pagamento
+        description: "Data de pagamento"
+  - name: sppo_licenciamento_solicitacao_staging
+    description: "View de dados cadastrais das solicitações em andamento para ingresso no Sistema de Transporte Urbano (STU)"
     columns:
       - name: data
         description: "Data da captura (partição)"
@@ -146,43 +201,8 @@ models:
         description: "Inclusão - Solicitação de ingresso de veículo no Sistema de Transporte Urbano (STU)\n
                       Baixa - Solicitação de baixa de veículo já incluído no Sistema de Transporte Urbano (STU)\n
                       Renumeração - Solicitação de alteração de número de ordem de veículo já incluído no Sistema de Transporte Urbano (STU)"
-  - name: sppo_veiculo_dia
-    description: "Tabela resumo dos veículos que operaram no SPPO e seus respectivos indicadores"
-    columns:
-      - name: data
-        description: "Data de operação"
-      - name: id_veiculo
-        description: "Número de ordem do veículo, identificação que é exibida na lateral do ônibus"
-      - name: indicadores
-        description: "Indicadores para caraterização do status do veículo"
-      - name: indicadores.indicador_licenciado
-        description: "Indicador se o veículo encontra-se licenciado"
-      - name: indicadores.indicador_ar_condicionado
-        description: "Indicador se o veículo foi licenciado com ar condicionado"
-      - name: indicadores.indicador_autuacao_ar_condicionado
-        description: "Indicador se o veículo foi autuado por inoperância ou mau funcionamento do sistema de ar condicionado"
-      - name: indicadores.indicador_autuacao_seguranca
-        description: "Indicador se o veículo foi autuado por infração relacionada à segurança do veículo"
-      - name: indicadores.indicador_autuacao_limpeza
-        description: "Indicador se o veículo foi autuado por infração relacionada à limpeza do veículo"
-      - name: indicadores.indicador_autuacao_equipamento
-        description: "Indicador se o veículo foi autuado por infração relacionada à inoperância ou mau funcionamento de equipamentos do veículo"
-      - name: indicadores.indicador_sensor_temperatura
-        description: "Indicador se o sensor de temperatura do veículo não estava em funcionamento conforme especificação da SMTR"
-      - name: indicadores.indicador_validador_sbd
-        description: "Indicador se o veículo se encontra com o novo validador do Sistema de Bilhetagem Digital (SBD) instalado"
-      - name: status
-        description: "Classificação, observados os demais parâmetros - Categorias:\n
-                      - Não licenciado - Veículo que operou, mas não é licenciado\n
-                      - Autuado por ar inoperante - Veículo que operou, foi licenciado com ar condicionado e foi autuado por inoperância ou mau funcionamento do sistema de ar condicionado (023.II)\n
-                      - Autuado por segurança - Veículo que operou, foi licenciado, mas foi autuado por infração relacionada à segurança do veículo\n
-                      - Autuado por limpeza/equipamento - Veículo que operou, foi licenciado, mas foi autuado cumulativamente por infrações relacionadas à limpeza e equipamentos do veículo\n
-                      - Sem ar e não autuado - Veículo que operou, foi licenciado sem ar condicionado e não foi autuado\n
-                      - Com ar e não autuado - Veículo que operou, foi licenciado com ar condicionado e não foi autuado"
-      - name: versao
-        description: "SHA do repositório no Github"
-  - name: sppo_registro_agente_verao
-    description: "Tabela com registros de Agentes de Verão para fins de cálculo de subsídio nos termos da RESOLUÇÃO SMTR Nº 3.682/2024"
+  - name: sppo_registro_agente_verao_staging
+    description: "View com registros de Agentes de Verão para fins de cálculo de subsídio nos termos da RESOLUÇÃO SMTR Nº 3.682/2024"
     columns:
       - name: data
         description: "Data de registro pelo agente público"
