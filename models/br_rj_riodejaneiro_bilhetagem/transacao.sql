@@ -47,7 +47,8 @@ WITH transacao_deduplicada AS (
         FROM
             {{ transacao_staging }}
         {% if is_incremental() -%}
-            {{ incremental_filter }}
+            WHERE
+                {{ incremental_filter }}
         {%- endif %}
     )
     WHERE
@@ -73,7 +74,7 @@ gratuidade AS (
         {{ ref("gratuidade_aux") }}
     -- se for incremental pega apenas as partições necessárias
     {% if is_incremental() %}
-        {% if gratuidade_partition_list|length > 0 and gratuidade_partition_list|length < 1000 %}
+        {% if gratuidade_partition_list|length > 0 and gratuidade_partition_list|length < 10000 %}
             WHERE
                 id_cliente IN ({{ gratuidade_partition_list|join(', ') }})
         {% elif gratuidade_partition_list|length == 0 %}
