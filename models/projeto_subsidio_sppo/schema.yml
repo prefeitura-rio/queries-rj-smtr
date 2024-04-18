@@ -67,11 +67,6 @@ models:
           - not_null
           - accepted_values:
               values: ["I", "V", "C"]
-      - name: shape_id
-        description: "Código identificador do shape (trajeto) do serviço
-        realizado "
-        tests:
-          - not_null
       - name: shape
         description: "Linestring dos pontos gelocalizados do trajeto"
         tests:
@@ -85,10 +80,25 @@ models:
         tests:
           - not_null
           - greater_than_zero
+      - name: vista
+        description: "Itinerário do serviço (ex: Bananal ↔ Saens Peña)"
+      - name: trip_id_planejado
+        description: "Código identificador de trip de referência no GTFS"
       - name: trip_id
-        description: "Código identificador do itinerário (trip)"
-        tests:
-          - not_null
+        description: "Código identificador de trip de referência no GTFS com ajustes"
+      - name: shape_id
+        description: "Código identificador de shape no GTFS"
+      - name: shape_id_planejado
+        description: "Código identificador de shape no GTFS com ajustes"
+      - name: start_pt
+        description: "Ponto inicial do shape em formato geográfico (Point)."
+      - name: end_pt
+        description: "Ponto final do shape em formato geográfico (Point)."
+      - name: id_tipo_trajeto
+        description: "Tipo de trajeto (0 - Regular, 1 - Alternativo)"
+      - name: feed_version
+        description: "String que indica a versão atual do conjunto de dados GTFS."
+      
   - name: aux_registros_status_trajeto
     description: "Tabela auxiliar de classificação dos registros de GPS
     no trajeto (shape), com base no serviço informado pelo veículo (atualizada diariamente, sem histórico)."
@@ -792,3 +802,27 @@ models:
         description: "Distância total planejada do serviço em km (junta ida+volta multiplicado pela quantidade de viagens)."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
+
+  - name: subsidio_data_versao_efetiva
+    description: "Relacionamento entre datas de operação de planejamento dos serviços."
+    columns:
+      - name: data
+        description: "Data de Operação"
+      - name: tipo_dia
+        description: "Dia da semana - categorias: Dia Útil, Sabado, Domingo e Ponto Facultativo"
+      - name: subtipo_dia
+        description: "Subtipo de dia (ex: 'Verão')"
+      - name: data_versao_trips
+        description: "Data da versão de planejamento de trips"
+      - name: data_versao_shapes
+        description: "Data da versão de planejamento de shapes"
+      - name: data_versao_frequencies
+        description: "Data da versão de planejamento de frequencies"
+      - name: valor_subsidio_por_km
+        description: "Valor do subsídio (R$/km) (Descontinuado a partir de 2023-01-07)"
+      - name: feed_start_date
+        description: "(Partição) Data inicial do feed (versão)."
+      - name: feed_version
+        description: "String que indica a versão atual do conjunto de dados GTFS."
+      - name: tipo_os
+        description: "Tipo de Ordem de Serviço (ex: 'Regular', 'Extraordinária - Verão')"

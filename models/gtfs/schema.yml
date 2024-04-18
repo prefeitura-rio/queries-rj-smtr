@@ -143,7 +143,7 @@ models:
       - name: feed_contact_email
         description: "Endereço de e-mail para comunicação sobre o conjunto de dados gtfs e práticas de publicação de dados."
       - name: feed_contact_url
-        description: "n, um formulário web, suporte técnico ou outras ferramentas para comunicação sobre o conjunto de dados GTFS e práticas de publicação de dados."
+        description: "URL para informações de contato, um formulário web, uma mesa de suporte ou outras ferramentas de comunicação relativas ao conjunto de dados GTFS e práticas de publicação de dados."
       - name: feed_start_date
         description: "Data de referência do feed (versão)."
       - name: versao_modelo 
@@ -210,14 +210,26 @@ models:
         description: "Código de controle de versão (SHA do GitHub)."
 
   - name: shapes_geom_gtfs2
-    description: "Tabela com os shapes dos serviços."
+    description: "Shapes em formatos geográficos dos serviços."
     columns:
-      - name: shape_id
-        description: "Identifica uma forma."
       - name: feed_start_date
-        description: "Data de referência do feed (versão)."
+        description: "(Partição) Data inicial do feed (versão)."
+      - name: feed_end_date
+        description: "Data final do feed (versão)."
+      - name: feed_version
+        description: "String que indica a versão atual do conjunto de dados GTFS."
+      - name: shape_id
+        description: "Identificador de shape."
       - name: shape
-        description: "Dado geográfico construído com a query."
+        description: "Shape em formato geográfico (usualmente LineString)."
+      - name: shape_distance
+        description: "Extensão do shape."
+      - name: start_pt
+        description: "Ponto inicial do shape em formato geográfico (Point)."
+      - name: end_pt
+        description: "Ponto final do shape em formato geográfico (Point)."
+      - name: data_versao
+        description: "Data de referência do planejamento (versão)."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -388,8 +400,10 @@ models:
         description: "String que indica a versão atual do conjunto de dados GTFS."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
+      - name: tipo_os
+        description: "Tipo de Ordem de Serviço (ex: 'Regular', 'Extraordinária - Verão')"
 
-  - name: ordem_servico_trajeto_alternativo
+  - name: ordem_servico_trajeto_alternativo_gtfs2
     description: "Anexo da Ordem de Serviço (OS) com trajetos alternativos de serviços"
     columns:
       - name: feed_start_date
@@ -420,8 +434,8 @@ models:
         description: "Horário final de funcionamento do trajeto alternativo."
       - name: versao_modelo
         description: "Código de controle de versão (SHA do GitHub)."
-  - name: ordem_servico_trips_shapes
-    description: "ordem_servico_trips_shapes"
+  - name: ordem_servico_trips_shapes_gtfs2
+    description: "Junção da Ordem de Serviço (OS) com trips e shapes dos serviços"
     columns:
       - name: feed_start_date
         description: "(Partição) Data inicial do feed (versão)."
