@@ -151,6 +151,7 @@ select
     end as sentido_shape,
     s.start_pt,
     s.end_pt,
+    SAFE_CAST(NULL AS INT64) AS id_tipo_trajeto, -- Adaptação para formato da SUBSIDIO_V6
     NULL AS feed_version, -- Adaptação para formato da SUBSIDIO_V6
 from
     quadro_tratada p
@@ -201,6 +202,7 @@ SELECT
   sentido_shape,
   start_pt,
   end_pt,
+  id_tipo_trajeto,
   feed_version,
 FROM
   data_versao_efetiva AS d

@@ -20,7 +20,8 @@ with viagem_periodo as (
         v.*,
         p.inicio_periodo,
         p.fim_periodo,
-        0 as tempo_planejado
+        p.id_tipo_trajeto,
+        0 as tempo_planejado,
     from (
         select distinct
             consorcio,
@@ -30,7 +31,8 @@ with viagem_periodo as (
             trip_id_planejado as trip_id,
             servico,
             inicio_periodo,
-            fim_periodo
+            fim_periodo,
+            id_tipo_trajeto
         from
             {{ ref("viagem_planejada") }}
         {% if is_incremental() %}
@@ -85,6 +87,9 @@ select distinct
     perc_conformidade_registros,
     0 as perc_conformidade_tempo,
     -- round(100 * tempo_viagem/tempo_planejado, 2) as perc_conformidade_tempo,
+    {% if var("run_date") > var("DATA_SUBSIDIO_V6_INICIO") %}
+    id_tipo_trajeto,
+    {% endif %}
     '{{ var("version") }}' as versao_modelo
 from 
     viagem_periodo v
@@ -136,12 +141,16 @@ and
 -- 3. Filtra viagens com mesma chegada e partida pelo maior % de conformidade do shape
 filtro_desvio as (
   SELECT
-  * EXCEPT(rn)
+    {% if var("run_date") > var("DATA_SUBSIDIO_V6_INICIO") %}
+    * EXCEPT(rn, id_tipo_trajeto)
+    {% else %}
+    * EXCEPT(rn)
+    {% endif %}
 FROM (
   SELECT
     *,
     {% if var("run_date") > var("DATA_SUBSIDIO_V6_INICIO") %}
-    ROW_NUMBER() OVER(PARTITION BY id_veiculo, datetime_partida, datetime_chegada ORDER BY perc_conformidade_shape DESC, perc_conformidade_distancia DESC) AS rn
+    ROW_NUMBER() OVER(PARTITION BY id_veiculo, datetime_partida, datetime_chegada ORDER BY perc_conformidade_shape DESC, id_tipo_trajeto) AS rn
     {% else %}
     ROW_NUMBER() OVER(PARTITION BY id_veiculo, datetime_partida, datetime_chegada ORDER BY perc_conformidade_shape DESC) AS rn
     {% endif %}

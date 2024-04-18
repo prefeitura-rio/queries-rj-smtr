@@ -43,6 +43,7 @@ WITH
         fim_periodo,
         trip_id,
         shape_id,
+        indicador_trajeto_alternativo
       FROM
         {{ ref("ordem_servico_sentido_atualizado_aux_gtfs2") }} AS o
       LEFT JOIN
@@ -76,6 +77,7 @@ WITH
         COALESCE(ot.fim_periodo, o.fim_periodo) AS fim_periodo,
         trip_id,
         shape_id,
+        indicador_trajeto_alternativo
       FROM
         {{ ref("ordem_servico_trajeto_alternativo_sentido_atualizado_aux_gtfs2") }} AS ot
       LEFT JOIN
@@ -103,10 +105,10 @@ WITH
       )
     )
   ),
-  -- 3. Inclui trip_ids de ida e volta para trajetos circulares e ajusta shape_id para trajetos circulares
+  -- 3. Inclui trip_ids de ida e volta para trajetos circulares, ajusta shape_id para trajetos circulares e inclui id_tipo_trajeto
   ordem_servico_trips AS (
     SELECT
-      * EXCEPT(shape_id),
+      * EXCEPT(shape_id, indicador_trajeto_alternativo),
       shape_id AS shape_id_planejado,
       CASE
         WHEN sentido = "C" THEN shape_id || "_" || SPLIT(trip_id, "_")[OFFSET(1)]
@@ -114,6 +116,13 @@ WITH
       shape_id
     END
       AS shape_id,
+      CASE
+        WHEN indicador_trajeto_alternativo IS FALSE THEN 0 -- Trajeto regular
+        WHEN indicador_trajeto_alternativo IS TRUE THEN 1 -- Trajeto alternativo
+      ELSE
+      -1 -- Erro
+    END
+      AS id_tipo_trajeto,
     FROM 
     (
       (
@@ -177,6 +186,7 @@ END
   AS sentido_shape,
   s.start_pt,
   s.end_pt,
+  id_tipo_trajeto,
 FROM
   ordem_servico_trips AS o
 LEFT JOIN
