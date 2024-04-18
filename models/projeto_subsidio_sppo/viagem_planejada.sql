@@ -152,7 +152,7 @@ select
     s.start_pt,
     s.end_pt,
     SAFE_CAST(NULL AS INT64) AS id_tipo_trajeto, -- Adaptação para formato da SUBSIDIO_V6
-    NULL AS feed_version, -- Adaptação para formato da SUBSIDIO_V6
+    SAFE_CAST(NULL AS STRING) AS feed_version, -- Adaptação para formato da SUBSIDIO_V6
 from
     quadro_tratada p
 inner join
