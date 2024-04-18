@@ -76,7 +76,7 @@ gratuidade AS (
         {% if gratuidade_partition_list|length > 0 and gratuidade_partition_list|length < 1000 %}
             WHERE
                 id_cliente IN ({{ gratuidade_partition_list|join(', ') }})
-        {% elif gratuidade_partition_list|length = 0 %}
+        {% elif gratuidade_partition_list|length == 0 %}
             WHERE
                 id_cliente = 0
         {% endif %}
