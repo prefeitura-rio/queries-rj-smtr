@@ -477,3 +477,5 @@ models:
         description: "Ponto inicial do shape em formato geográfico (Point)."
       - name: end_pt
         description: "Ponto final do shape em formato geográfico (Point)."
+      - name: id_tipo_trajeto
+        description: "Tipo de trajeto (0 - Regular, 1 - Alternativo)"
