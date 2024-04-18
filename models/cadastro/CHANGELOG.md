@@ -1,6 +1,6 @@
 # Changelog - cadastro
 
-## [1.1.0] - 2024-04-16
+## [1.1.0] - 2024-04-18
 
 ### Modificado
 
