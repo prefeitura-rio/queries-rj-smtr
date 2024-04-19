@@ -8,7 +8,7 @@
 
 ### Corrigido
 
-- Corrige tratamento de colunas de tempo no modelo `ordem_servico_sentido_atualizado_aux_gtfs2.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/278)
+- Corrige tratamento de colunas de tempo dos modelos `ordem_servico_sentido_atualizado_aux_gtfs2.sql` e `ordem_servico_trajeto_alternativo_gtfs2.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/278)
 
 ## [1.0.0] - 2024-04-18
 
