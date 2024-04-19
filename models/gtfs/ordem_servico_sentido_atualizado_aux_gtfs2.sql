@@ -38,11 +38,11 @@ WITH
       IF(horario_inicio IS NOT NULL AND ARRAY_LENGTH(SPLIT(horario_inicio, ":")) = 3, 
           PARSE_TIME("%T", 
                       CONCAT(
-                          CAST(MOD(CAST(SPLIT(horario_inicio, ":")[OFFSET(0)] AS INT64), 24) AS STRING), 
+                          SAFE_CAST(MOD(SAFE_CAST(SPLIT(horario_inicio, ":")[OFFSET(0)] AS INT64), 24) AS INT64), 
                           ":", 
-                          SPLIT(horario_inicio, ":")[OFFSET(1)], 
+                          SAFE_CAST(SPLIT(horario_inicio, ":")[OFFSET(1)] AS INT64), 
                           ":", 
-                          SPLIT(horario_inicio, ":")[OFFSET(2)]
+                          SAFE_CAST(SPLIT(horario_inicio, ":")[OFFSET(2)] AS INT64)
                       )
                     ), 
                     NULL
@@ -50,11 +50,11 @@ WITH
       IF(horario_fim IS NOT NULL AND ARRAY_LENGTH(SPLIT(horario_fim, ":")) = 3, 
           PARSE_TIME("%T", 
                       CONCAT(
-                          CAST(MOD(CAST(SPLIT(horario_fim, ":")[OFFSET(0)] AS INT64), 24) AS STRING), 
+                          SAFE_CAST(MOD(SAFE_CAST(SPLIT(horario_fim, ":")[OFFSET(0)] AS INT64), 24) AS INT64), 
                           ":", 
-                          SPLIT(horario_fim, ":")[OFFSET(1)], 
+                          SAFE_CAST(SPLIT(horario_inicio, ":")[OFFSET(1)] AS INT64), 
                           ":", 
-                          SPLIT(horario_fim, ":")[OFFSET(2)]
+                          SAFE_CAST(SPLIT(horario_inicio, ":")[OFFSET(2)] AS INT64)
                       )
                     ), 
                     NULL

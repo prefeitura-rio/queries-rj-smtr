@@ -1,5 +1,15 @@
 # Changelog - gtfs
 
+## [1.0.1] - 2024-04-19
+
+### Alterado
+
+- Adiciona coluna `tipo_os` no modelo `ordem_servico_trips_shapes_gtfs2.sql` e atualiza descrição no `schema.yml` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/278)
+
+### Corrigido
+
+- Corrige tratamento de colunas de tempo dos modelos `ordem_servico_sentido_atualizado_aux_gtfs2.sql` e `ordem_servico_trajeto_alternativo_gtfs2.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/278)
+
 ## [1.0.0] - 2024-04-18
 
 ### Adicionado

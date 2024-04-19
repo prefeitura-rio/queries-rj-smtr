@@ -211,6 +211,7 @@ LEFT JOIN
 USING
   (feed_start_date,
    feed_version,
-    tipo_dia)
+    tipo_dia,
+    tipo_os)
 
 {% endif %}
