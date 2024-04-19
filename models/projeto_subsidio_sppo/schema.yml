@@ -95,9 +95,9 @@ models:
       - name: end_pt
         description: "Ponto final do shape em formato geográfico (Point)."
       - name: id_tipo_trajeto
-        description: "Tipo de trajeto (0 - Regular, 1 - Alternativo)"
+        description: "Tipo de trajeto (0 - Regular, 1 - Alternativo, válida a partir de 2024-04-01)."
       - name: feed_version
-        description: "String que indica a versão atual do conjunto de dados GTFS."
+        description: "String que indica a versão atual do conjunto de dados GTFS (Válida a partir de 2024-04-01)."
       
   - name: aux_registros_status_trajeto
     description: "Tabela auxiliar de classificação dos registros de GPS
