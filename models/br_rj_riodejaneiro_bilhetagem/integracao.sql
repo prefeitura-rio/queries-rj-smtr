@@ -115,9 +115,23 @@ integracao_rn AS (
   ON
     i.id_consorcio = dc.id_consorcio_jae
   WHERE i.id_transacao IS NOT NULL
+),
+integracoes_teste_invalidas AS (
+  SELECT DISTINCT
+    i.id_integracao
+  FROM
+    integracao_rn i
+  LEFT JOIN
+    {{ ref("staging_linha_sem_ressarcimento") }} l
+  ON
+    i.id_servico_jae = l.id_linha
+  WHERE
+    l.id_linha IS NOT NULL
+    OR i.data < "2023-07-17"
 )
 SELECT
   * EXCEPT(rn)
 FROM
   integracao_rn
 WHERE rn = 1
+AND id_integracao NOT IN (SELECT id_integracao FROM integracoes_teste_invalidas)
