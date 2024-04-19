@@ -1,5 +1,11 @@
 # Changelog - projeto_subsidio_sppo
 
+## [6.0.1] - 2024-04-19
+
+### Corrigido
+
+- Corrige união do modelo `viagem_planejada.sql` com o modelo o `ordem_servico_trips_shapes_gtfs2.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/278)
+
 ## [6.0.0] - 2024-04-18
 
 ### Adicionado
