@@ -47,8 +47,8 @@ WITH transacao_deduplicada AS (
         FROM
             {{ transacao_staging }}
         {% if is_incremental() -%}
-        WHERE
-            {{ incremental_filter }}
+            WHERE
+                {{ incremental_filter }}
         {%- endif %}
     )
     WHERE
@@ -74,13 +74,13 @@ gratuidade AS (
         {{ ref("gratuidade_aux") }}
     -- se for incremental pega apenas as partições necessárias
     {% if is_incremental() %}
-        WHERE
-            id_cliente
-            {% if gratuidade_partition_list|length > 0 %}
-                IN ({{ gratuidade_partition_list|join(', ') }})
-            {% else %}
-                = 0
-            {% endif %}
+        {% if gratuidade_partition_list|length > 0 and gratuidade_partition_list|length < 10000 %}
+            WHERE
+                id_cliente IN ({{ gratuidade_partition_list|join(', ') }})
+        {% elif gratuidade_partition_list|length == 0 %}
+            WHERE
+                id_cliente = 0
+        {% endif %}
     {% endif %}
 ),
 tipo_pagamento AS (
@@ -150,3 +150,10 @@ ON
     AND t.id_cliente = g.id_cliente
     AND t.data_transacao >= g.data_inicio_validade
     AND (t.data_transacao < g.data_fim_validade OR g.data_fim_validade IS NULL)
+LEFT JOIN
+    {{ ref("staging_linha_sem_ressarcimento") }} l
+ON
+    t.cd_linha = l.id_linha
+WHERE
+    l.id_linha IS NULL
+    AND DATE(data_transacao) >= "2023-07-17"
