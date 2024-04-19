@@ -13,7 +13,10 @@ with gps as (
         servico,
         {% endif %}
         substr(id_veiculo, 2, 3) as id_empresa,
-        ST_GEOGPOINT(longitude, latitude) posicao_veiculo_geo
+        ST_GEOGPOINT(longitude, latitude) posicao_veiculo_geo,
+        {% if var("run_date") > var("DATA_SUBSIDIO_V6_INICIO") %}
+        date_sub(date("{{ var("run_date") }}"), interval 1 day) as data_operacao
+        {% endif %}
     from 
         `rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo` g -- {{ ref('gps_sppo') }} g
     where (
@@ -30,7 +33,11 @@ with gps as (
 --    serviços de uma mesma empresa
 status_viagem as (
     select
+        {% if var("run_date") > var("DATA_SUBSIDIO_V6_INICIO") %}
+        data_operacao as data,
+        {% else %}
         g.data,
+        {% endif %}
         g.id_veiculo,
         g.id_empresa,
         g.timestamp_gps,
@@ -65,10 +72,18 @@ status_viagem as (
         from
             {{ ref("viagem_planejada") }}
         where
+            {% if var("run_date") > var("DATA_SUBSIDIO_V6_INICIO") %}
+            data = date_sub(date("{{ var("run_date") }}"), interval 1 day)
+            {% else %}
             data between date_sub(date("{{ var("run_date") }}"), interval 1 day) and date("{{ var("run_date") }}")
+            {% endif %}
     ) s
     on 
+        {% if var("run_date") > var("DATA_SUBSIDIO_V6_INICIO") %}
+        g.data_operacao = s.data
+        {% else %}
         g.data = s.data
+        {% endif %}
         and g.servico = s.servico
 )
 select 

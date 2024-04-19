@@ -20,23 +20,25 @@ WITH
   FROM
     {{ ref("subsidio_data_versao_efetiva") }} )
 SELECT
-  DATA,
+  data,
   sd.tipo_dia,
   servico,
   viagens_planejadas
 FROM
-  UNNEST(GENERATE_DATE_ARRAY((SELECT MIN(data_inicio) FROM data_versao), (SELECT MAX(data_fim) FROM data_versao))) AS DATA
+  UNNEST(GENERATE_DATE_ARRAY((SELECT MIN(data_inicio) FROM data_versao), (SELECT MAX(data_fim) FROM data_versao))) AS data
 LEFT JOIN
   data_versao AS d
 ON
-  DATA BETWEEN d.data_inicio
+  data BETWEEN d.data_inicio
   AND d.data_fim
 LEFT JOIN
   subsidio_data_versao_efetiva AS sd
-USING
-  (DATA)
+ON
+  data = sd.data
+  AND (d.feed_start_date = sd.feed_start_date
+      OR sd.feed_start_date IS NULL)
 LEFT JOIN
   {{ ref("ordem_servico_gtfs2") }} AS o
-USING
-  (feed_start_date,
-    tipo_dia)
+ON
+  d.feed_start_date = o.feed_start_date
+  AND sd.tipo_dia = o.tipo_dia

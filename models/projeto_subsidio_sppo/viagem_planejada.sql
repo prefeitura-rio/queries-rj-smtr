@@ -10,6 +10,8 @@
 )
 }}
 
+{% if var("run_date") <= var("DATA_SUBSIDIO_V6_INICIO") %}
+
 -- 1. Define datas do período planejado
 with data_efetiva as (
     select 
@@ -148,7 +150,9 @@ select
         when p.sentido = "I" or p.sentido = "V" then p.sentido
     end as sentido_shape,
     s.start_pt,
-    s.end_pt
+    s.end_pt,
+    SAFE_CAST(NULL AS INT64) AS id_tipo_trajeto, -- Adaptação para formato da SUBSIDIO_V6
+    SAFE_CAST(NULL AS STRING) AS feed_version, -- Adaptação para formato da SUBSIDIO_V6
 from
     quadro_tratada p
 inner join
@@ -157,3 +161,56 @@ on
     p.shape_id = s.shape_id
 and
     p.data = s.data
+
+{% else %}
+
+WITH
+-- 1. Define datas do período planejado
+  data_versao_efetiva AS (
+  SELECT
+    DATA,
+    tipo_dia,
+    subtipo_dia,
+    feed_version,
+    feed_start_date,
+    tipo_os,
+  FROM
+    {{ ref("subsidio_data_versao_efetiva") }}
+    -- rj-smtr-dev.projeto_subsidio_sppo.subsidio_data_versao_efetiva
+  WHERE
+    data = DATE_SUB("{{ var('run_date') }}", INTERVAL 1 DAY) )
+SELECT
+  d.data,
+  CASE
+    WHEN subtipo_dia IS NOT NULL THEN CONCAT(tipo_dia, " - ", subtipo_dia)
+    ELSE tipo_dia
+  END AS tipo_dia,
+  servico,
+  vista,
+  consorcio,
+  sentido,
+  distancia_planejada,
+  distancia_total_planejada,
+  inicio_periodo,
+  fim_periodo,
+  trip_id_planejado,
+  trip_id,
+  shape_id,
+  shape_id_planejado,
+  SAFE_CAST(NULL AS DATE) AS data_shape,
+  shape,
+  sentido_shape,
+  start_pt,
+  end_pt,
+  id_tipo_trajeto,
+  feed_version,
+FROM
+  data_versao_efetiva AS d
+LEFT JOIN
+  {{ ref("ordem_servico_trips_shapes_gtfs2") }} AS o
+USING
+  (feed_start_date,
+   feed_version,
+    tipo_dia)
+
+{% endif %}

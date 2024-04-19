@@ -10,6 +10,7 @@
   )
 }}
 
+{% if var("run_date") <= var("DATA_SUBSIDIO_V6_INICIO") %}
 {% if execute %}
   {% set trips_date = run_query("SELECT MAX(data_versao) FROM " ~ ref("subsidio_trips_desaninhada") ~ " WHERE data_versao >= DATE_TRUNC(DATE_SUB(DATE('" ~ var("run_date") ~ "'), INTERVAL 30 DAY), MONTH)").columns[0].values()[0] %}
   {% set shapes_date = run_query("SELECT MAX(data_versao) FROM " ~ var("subsidio_shapes") ~ " WHERE data_versao >= DATE_TRUNC(DATE_SUB(DATE('" ~ var("run_date") ~ "'), INTERVAL 30 DAY), MONTH)").columns[0].values()[0] %}
@@ -248,7 +249,7 @@ WITH
         END
       )
     END AS valor_subsidio_por_km
-  FROM UNNEST(GENERATE_DATE_ARRAY("2022-06-01", "2024-12-31")) AS data),
+  FROM UNNEST(GENERATE_DATE_ARRAY("2022-06-01", DATE_SUB("{{var('DATA_SUBSIDIO_V6_INICIO')}}", INTERVAL 1 DAY))) AS data),
   trips AS (
   SELECT
     DISTINCT data_versao
@@ -282,10 +283,14 @@ WITH
 SELECT
   data,
   tipo_dia,
+  SAFE_CAST(NULL AS STRING) AS subtipo_dia,
   COALESCE(t.data_versao, DATE("{{ trips_date }}")) AS data_versao_trips,
   COALESCE(s.data_versao, DATE("{{ shapes_date }}")) AS data_versao_shapes,
   COALESCE(f.data_versao, DATE("{{ frequencies_date }}")) AS data_versao_frequencies,
-  valor_subsidio_por_km
+  valor_subsidio_por_km,
+  SAFE_CAST(NULL AS STRING) AS feed_version,
+  SAFE_CAST(NULL AS DATE)AS feed_start_date,
+  SAFE_CAST(NULL AS STRING) AS tipo_os,
 FROM
   dates AS d
 LEFT JOIN
@@ -305,4 +310,72 @@ WHERE
   data BETWEEN DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 1 DAY) AND DATE("{{ var("run_date") }}")
 {% else %}
   data <= DATE("{{ var("run_date") }}")
+{% endif %}
+
+{% else %}
+{% if execute %}
+  {% set max_feed_version = run_query("SELECT feed_version FROM " ~ ref('feed_info_gtfs2') ~ " WHERE feed_start_date = (SELECT MAX(feed_start_date) FROM " ~ ref('feed_info_gtfs2') ~ " WHERE feed_start_date >= DATE_TRUNC(DATE_SUB(DATE('" ~ var("run_date") ~ "'), INTERVAL 30 DAY), MONTH))").columns[0].values()[0] %}
+{% endif %}
+
+WITH
+  dates AS (
+  SELECT 
+    data,
+    CASE
+      WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 1 THEN "Domingo" -- Dia de São Sebastião -- Art. 8°, I - Lei Municipal nº 5146/2010
+      WHEN EXTRACT(DAY FROM data) = 23 AND EXTRACT(MONTH FROM data) = 4 THEN "Domingo" -- Dia de São Jorge -- Art. 8°, II - Lei Municipal nº 5146/2010 / Lei Estadual Nº 5198/2008 / Lei Estadual Nº 5645/2010
+      WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 11 THEN "Domingo" -- Aniversário de morte de Zumbi dos Palmares / Dia da Consciência Negra -- Art. 8°, IV - Lei Municipal nº 5146/2010 / Lei Estadual nº 526/1982 / Lei Estadual nº 1929/1991 / Lei Estadual nº 4007/2002 / Lei Estadual Nº 5645/2010
+      WHEN EXTRACT(DAY FROM data) = 21 AND EXTRACT(MONTH FROM data) = 4 THEN "Domingo" -- Tiradentes -- Art. 1º, VI - PORTARIA ME Nº 11.090/2022
+      WHEN EXTRACT(DAY FROM data) = 1 AND EXTRACT(MONTH FROM data) = 5 THEN "Domingo" -- Dia Mundial do Trabalho -- Art. 1º, VII - PORTARIA ME Nº 11.090/2022
+      WHEN EXTRACT(DAY FROM data) = 7 AND EXTRACT(MONTH FROM data) = 9 THEN "Domingo" -- Independência do Brasil -- Art. 1º, IX - PORTARIA ME Nº 11.090/2022
+      WHEN EXTRACT(DAY FROM data) = 12 AND EXTRACT(MONTH FROM data) = 10 THEN "Domingo" -- Nossa Senhora Aparecida -- Art. 1º, X - PORTARIA ME Nº 11.090/2022
+      WHEN EXTRACT(DAY FROM data) = 2 AND EXTRACT(MONTH FROM data) = 11 THEN "Domingo" -- Finados -- Art. 1º, XII - PORTARIA ME Nº 11.090/2022
+      WHEN EXTRACT(DAY FROM data) = 15 AND EXTRACT(MONTH FROM data) = 11 THEN "Domingo" -- Proclamação da República -- Art. 1º, XIII - PORTARIA ME Nº 11.090/2022
+      WHEN EXTRACT(DAY FROM data) = 25 AND EXTRACT(MONTH FROM data) = 12 THEN "Domingo" -- Natal -- Art. 1º, XIV - PORTARIA ME Nº 11.090/2022
+      WHEN EXTRACT(DAYOFWEEK FROM data) = 1 THEN "Domingo"
+      WHEN EXTRACT(DAYOFWEEK FROM data) = 7 THEN "Sabado"
+      ELSE "Dia Útil"
+    END AS tipo_dia,
+    CASE
+      WHEN data BETWEEN DATE(2024,03,11) AND DATE(2024,03,17) THEN "2024-03-11" -- OS mar/Q1
+      WHEN data BETWEEN DATE(2024,03,18) AND DATE(2024,03,29) THEN "2024-03-18" -- OS mar/Q2
+      WHEN data BETWEEN DATE(2024,03,30) AND DATE(2024,04,30) THEN "2024-03-30"  -- OS abr/Q1
+      ELSE NULL
+    END AS feed_version,
+    CASE
+      WHEN data BETWEEN DATE(2024,03,18) AND DATE(2024,03,31) THEN "Regular"
+      ELSE "Regular"
+    END AS tipo_os,
+  FROM UNNEST(GENERATE_DATE_ARRAY("{{var('DATA_SUBSIDIO_V6_INICIO')}}", "2024-12-31")) AS data)
+SELECT
+  data,
+  tipo_dia,
+  CASE
+    WHEN tipo_os = "Extraordinária - Verão" THEN "Verão"
+    ELSE NULL
+  END AS subtipo_dia,
+  SAFE_CAST(NULL AS DATE) AS data_versao_trips,
+  SAFE_CAST(NULL AS DATE) AS data_versao_shapes,
+  SAFE_CAST(NULL AS DATE) AS data_versao_frequencies,
+  SAFE_CAST(NULL AS FLOAT64) AS valor_subsidio_por_km,
+  COALESCE(d.feed_version, "{{ max_feed_version }}") AS feed_version,
+  feed_start_date,
+  tipo_os,
+FROM
+  dates AS d
+LEFT JOIN
+  {{ ref('feed_info_gtfs2') }} AS i
+ON
+  CASE
+    WHEN d.feed_version IS NULL AND "{{ max_feed_version }}" = i.feed_version THEN TRUE
+    WHEN d.feed_version = i.feed_version THEN TRUE
+  ELSE FALSE
+  END
+WHERE
+{% if is_incremental() %}
+  data = DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 1 DAY)
+{% else %}
+  data <= DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 1 DAY)
+{% endif %}
+
 {% endif %}

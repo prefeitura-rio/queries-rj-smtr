@@ -67,11 +67,6 @@ models:
           - not_null
           - accepted_values:
               values: ["I", "V", "C"]
-      - name: shape_id
-        description: "Código identificador do shape (trajeto) do serviço
-        realizado "
-        tests:
-          - not_null
       - name: shape
         description: "Linestring dos pontos gelocalizados do trajeto"
         tests:
@@ -85,10 +80,25 @@ models:
         tests:
           - not_null
           - greater_than_zero
+      - name: vista
+        description: "Itinerário do serviço (ex: Bananal ↔ Saens Peña)"
+      - name: trip_id_planejado
+        description: "Código identificador de trip de referência no GTFS"
       - name: trip_id
-        description: "Código identificador do itinerário (trip)"
-        tests:
-          - not_null
+        description: "Código identificador de trip de referência no GTFS com ajustes"
+      - name: shape_id
+        description: "Código identificador de shape no GTFS"
+      - name: shape_id_planejado
+        description: "Código identificador de shape no GTFS com ajustes"
+      - name: start_pt
+        description: "Ponto inicial do shape em formato geográfico (Point)."
+      - name: end_pt
+        description: "Ponto final do shape em formato geográfico (Point)."
+      - name: id_tipo_trajeto
+        description: "Tipo de trajeto (0 - Regular, 1 - Alternativo, válida a partir de 2024-04-01)."
+      - name: feed_version
+        description: "String que indica a versão atual do conjunto de dados GTFS (Válida a partir de 2024-04-01)."
+      
   - name: aux_registros_status_trajeto
     description: "Tabela auxiliar de classificação dos registros de GPS
     no trajeto (shape), com base no serviço informado pelo veículo (atualizada diariamente, sem histórico)."
@@ -727,3 +737,92 @@ models:
         respectiva linha na tabela."
         tests:
           - not_null
+  - name: subsidio_shapes_geom
+    description: "Shapes em formatos geográficos dos serviços (Descontinuada a partir de 2024-04-01 [SUBSIDIO_V6])"
+    columns:
+      - name: shape_id
+        description: "Identificador de shape."
+      - name: shape
+        description: "Shape em formato geográfico (usualmente LineString)."
+      - name: shape_distance
+        description: "Extensão do shape."
+      - name: start_pt
+        description: "Ponto inicial do shape em formato geográfico (Point)."
+      - name: end_pt
+        description: "Ponto final do shape em formato geográfico (Point)."
+      - name: data_versao
+        description: "Data de referência do planejamento (versão)."
+      - name: versao_modelo 
+        description: "Código de controle de versão (SHA do GitHub)."
+  - name: subsidio_trips_desaninhada
+    description: "Viagens para cada serviço (Descontinuada a partir de 2024-04-01 [SUBSIDIO_V6])"
+    columns:
+      - name: trip_id
+        description: "Identifica uma viagem."
+      - name: route_id
+        description: "Identifica uma rota."
+      - name: trip_headsign
+        description: "Texto que aparece na sinalização identificando o destino da viagem aos passageiros."
+      - name: trip_short_name
+        description: "Texto voltado ao público usado para identificar a viagem aos passageiros, por exemplo, para identificar os números dos trens para viagens de trens suburbanos."
+      - name: shape_id
+        description: "Identifica uma forma geoespacial que descreve o caminho de deslocamento do veículo para uma viagem."
+      - name: wheelchair_accessible
+        description: "Indica acessibilidade para cadeiras de rodas."
+      - name: variacao_itinerario
+        description: "Apenas Dia Útil (DU)"
+      - name: data_versao
+        description: "Data de referência do planejamento (versão)."
+      - name: versao_modelo 
+        description: "Código de controle de versão (SHA do GitHub)."
+  - name: subsidio_quadro_horario
+    description: "Dados de planejamento operacional dos serviços (Descontinuada a partir de 2024-04-01 [SUBSIDIO_V6])"
+    columns:
+      - name: data_versao
+        description: "Data de referência do planejamento (versão)."
+      - name: servico
+        description: "Nome curto do serviço operada pelo veículo com variação de serviço (ex: 006, 010, ...)."
+      - name: vista
+        description: "Itinerário do serviço (ex: Bananal ↔ Saens Peña)"
+      - name: consorcio
+        description: "Nome do consórcio responsável pelo serviço."
+      - name: horario_inicio
+        description: "Horário inicial de funcionamento do serviço."
+      - name: horario_fim
+        description: "Horário da final de funcionamento do serviço."
+      - name: distancia_planejada
+        description: "Distância planejada de uma viagem do serviço (km)."
+      - name: sentido
+        description: "Sentido planejado - categorias: I (ida), V (volta), C (circular)"
+      - name: trip_id
+        description: "Código identificador de trip de referência no GTFS"
+      - name: tipo_dia
+        description: "Dia da semana - categorias: Dia Útil, Sabado, Domingo e Ponto Facultativo"
+      - name: distancia_total_planejada
+        description: "Distância total planejada do serviço em km (junta ida+volta multiplicado pela quantidade de viagens)."
+      - name: versao_modelo 
+        description: "Código de controle de versão (SHA do GitHub)."
+
+  - name: subsidio_data_versao_efetiva
+    description: "Relacionamento entre datas de operação de planejamento dos serviços."
+    columns:
+      - name: data
+        description: "(Partição) Data de Operação."
+      - name: tipo_dia
+        description: "Dia da semana - categorias: Dia Útil, Sabado, Domingo e Ponto Facultativo."
+      - name: subtipo_dia
+        description: "Subtipo de dia (ex: 'Verão', válida a partir de 2024-04-01)."
+      - name: data_versao_trips
+        description: "Data da versão de planejamento de trips (Descontinuada a partir de 2024-04-01)."
+      - name: data_versao_shapes
+        description: "Data da versão de planejamento de shapes (Descontinuada a partir de 2024-04-01)."
+      - name: data_versao_frequencies
+        description: "Data da versão de planejamento de frequencies (Descontinuada a partir de 2024-04-01)."
+      - name: valor_subsidio_por_km
+        description: "Valor do subsídio (R$/km) (Descontinuada a partir de 2023-01-07)."
+      - name: feed_start_date
+        description: "Data inicial do feed (versão, válida a partir de 2024-04-01)."
+      - name: feed_version
+        description: "String que indica a versão atual do conjunto de dados GTFS (Válida a partir de 2024-04-01)."
+      - name: tipo_os
+        description: "Tipo de Ordem de Serviço (ex: 'Regular', 'Extraordinária - Verão', válida a partir de 2024-04-01)."

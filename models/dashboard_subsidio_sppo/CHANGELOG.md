@@ -1,5 +1,10 @@
 # Changelog - dashboard_subsidio_sppo
 
+## [6.0.0] - 2024-04-18
+
+### Alterado
+
+- Adiciona novo filtro no modelo `sumario_servico_dia_historico.sql` em razão de alterações no modelo `viagem_planejada.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/261)
 ## [5.0.0] - 2024-03-30
 
 ### Adicionado
