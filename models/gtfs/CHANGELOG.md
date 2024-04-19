@@ -18,5 +18,8 @@
 ### Alterado
 
 - Adiciona coluna `tipo_os` no modelo `ordem_servico_gtfs2.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/261)
-- Refatora e otimiza modelo `shapes_geom_gtfs2.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/261)
 - Alterada descrição do modelo `feed_info_gtfs2.sql`, `shapes_geom_gtfs2.sql`, `ordem_servico_gtfs2.sql` no `schema.yml` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/261)
+
+### Corrigido
+
+- Refatora, otimiza e corrige quebra de shapes circulares no modelo `shapes_geom_gtfs2.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/261)
