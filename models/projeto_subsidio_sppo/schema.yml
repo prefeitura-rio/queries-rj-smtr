@@ -807,22 +807,22 @@ models:
     description: "Relacionamento entre datas de operação de planejamento dos serviços."
     columns:
       - name: data
-        description: "Data de Operação"
+        description: "(Partição) Data de Operação."
       - name: tipo_dia
-        description: "Dia da semana - categorias: Dia Útil, Sabado, Domingo e Ponto Facultativo"
+        description: "Dia da semana - categorias: Dia Útil, Sabado, Domingo e Ponto Facultativo."
       - name: subtipo_dia
-        description: "Subtipo de dia (ex: 'Verão')"
+        description: "Subtipo de dia (ex: 'Verão', válida a partir de 2024-04-01)."
       - name: data_versao_trips
-        description: "Data da versão de planejamento de trips"
+        description: "Data da versão de planejamento de trips (Descontinuada a partir de 2024-04-01)."
       - name: data_versao_shapes
-        description: "Data da versão de planejamento de shapes"
+        description: "Data da versão de planejamento de shapes (Descontinuada a partir de 2024-04-01)."
       - name: data_versao_frequencies
-        description: "Data da versão de planejamento de frequencies"
+        description: "Data da versão de planejamento de frequencies (Descontinuada a partir de 2024-04-01)."
       - name: valor_subsidio_por_km
-        description: "Valor do subsídio (R$/km) (Descontinuado a partir de 2023-01-07)"
+        description: "Valor do subsídio (R$/km) (Descontinuada a partir de 2023-01-07)."
       - name: feed_start_date
-        description: "(Partição) Data inicial do feed (versão)."
+        description: "Data inicial do feed (versão, válida a partir de 2024-04-01)."
       - name: feed_version
-        description: "String que indica a versão atual do conjunto de dados GTFS."
+        description: "String que indica a versão atual do conjunto de dados GTFS (Válida a partir de 2024-04-01)."
       - name: tipo_os
-        description: "Tipo de Ordem de Serviço (ex: 'Regular', 'Extraordinária - Verão')"
+        description: "Tipo de Ordem de Serviço (ex: 'Regular', 'Extraordinária - Verão', válida a partir de 2024-04-01)."
