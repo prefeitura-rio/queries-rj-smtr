@@ -479,3 +479,5 @@ models:
         description: "Ponto final do shape em formato geográfico (Point)."
       - name: id_tipo_trajeto
         description: "Tipo de trajeto (0 - Regular, 1 - Alternativo)"
+      - name: tipo_os
+        description: "Tipo de Ordem de Serviço (ex: 'Regular', 'Extraordinária - Verão')"
