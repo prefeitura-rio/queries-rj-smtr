@@ -29,8 +29,8 @@ WITH
       data,
       servico,
     FROM
-      {{ ref("sumario_servico_dia_historico") }}
-      --`rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_dia_historico`
+      -- {{ ref("sumario_servico_dia_historico") }}
+      `rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_dia_historico`
     WHERE
       perc_km_planejada >= 80
       AND DATA BETWEEN "{{ data_inicio }}"
@@ -52,8 +52,8 @@ WITH
       valor_subsidio_pago AS subsidio,
       irk,
     FROM
-      {{ ref("sumario_servico_dia_historico") }}
-      --`rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_dia_historico`
+      -- {{ ref("sumario_servico_dia_historico") }}
+      `rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_dia_historico`
     LEFT JOIN
       (
         SELECT DISTINCT
@@ -61,7 +61,7 @@ WITH
           data_fim,
           irk
         FROM
-          {{ source("projeto_subsidio_sppo_encontro_contas", "subsidio_parametros_atualizada") }}
+          {{ source("projeto_subsidio_sppo_encontro_contas_jan_24", "subsidio_parametros_atualizada") }}
       ) AS p
     ON
     (data BETWEEN p.data_inicio
@@ -83,8 +83,8 @@ WITH
             servico,
             distancia_planejada,
           FROM
-            {{ ref("viagens_remuneradas") }}
-            --`rj-smtr`.`dashboard_subsidio_sppo`.`viagens_remuneradas`
+            -- {{ ref("viagens_remuneradas") }}
+            `rj-smtr`.`dashboard_subsidio_sppo`.`viagens_remuneradas`
           WHERE
             DATA BETWEEN "{{ data_inicio }}"
             AND "{{ data_fim }}"
@@ -143,7 +143,7 @@ WITH
       irk_tarifa_publica,
       desconto_subsidio_km
     FROM
-      {{ source("projeto_subsidio_sppo_encontro_contas", "subsidio_parametros_atualizada") }} ) p
+      {{ source("projeto_subsidio_sppo_encontro_contas_jan_24", "subsidio_parametros_atualizada") }} ) p
   ON
     (s.data BETWEEN p.data_inicio
       AND p.data_fim)

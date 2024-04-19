@@ -14,7 +14,8 @@ WITH
     servico,
     SUM(valor_pago) AS valor_pago
   FROM
-    {{ ref("recursos_sppo_servico_dia_pago") }}
+    -- {{ ref("recursos_sppo_servico_dia_pago") }}
+    `rj-smtr.br_rj_riodejaneiro_recursos.recursos_sppo_servico_dia_pago`
   GROUP BY
     1,
     2,

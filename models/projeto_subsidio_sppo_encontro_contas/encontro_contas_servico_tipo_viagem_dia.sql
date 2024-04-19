@@ -16,8 +16,8 @@ WITH
     consorcio,
     servico
   FROM
-    {{ ref("sumario_servico_dia_historico") }}
-    --`rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_dia_historico`
+    -- {{ ref("sumario_servico_dia_historico") }}
+    `rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_dia_historico`
   WHERE
     `data` <= DATE("{{ data_fim }}")),
   sumario_v1 AS ( -- Viagens v1
@@ -29,8 +29,8 @@ WITH
     viagens,
     km_apurada
   FROM
-    {{ ref("sumario_servico_dia_historico") }}
-    --`rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_dia_historico`
+    -- {{ ref("sumario_servico_dia_historico") }}
+    `rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_dia_historico`
   WHERE
     `data` < DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" ) ),
   tipo_viagem_v2 AS ( -- Classifica os tipos de viagem (v2)
@@ -40,8 +40,8 @@ WITH
     status,
     SAFE_CAST(JSON_VALUE(indicadores,"$.indicador_ar_condicionado") AS BOOL) AS indicador_ar_condicionado
   FROM
-    --`rj-smtr`.`veiculo`.`sppo_veiculo_dia`
-    {{ ref("sppo_veiculo_dia") }}
+    -- {{ ref("sppo_veiculo_dia") }}
+    `rj-smtr`.`veiculo`.`sppo_veiculo_dia`
   WHERE
     `data` BETWEEN DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
     AND DATE("{{ data_fim }}") ),
@@ -53,8 +53,8 @@ WITH
     id_viagem,
     distancia_planejada
   FROM
-    --`rj-smtr`.`projeto_subsidio_sppo`.`viagem_completa`
-    {{ ref("viagem_completa") }}
+    -- {{ ref("viagem_completa") }}
+    `rj-smtr`.`projeto_subsidio_sppo`.`viagem_completa`
   WHERE
     `data` BETWEEN DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
     AND DATE("{{ data_fim }}") ),
@@ -62,8 +62,8 @@ WITH
   SELECT
     *
   FROM
-    --`rj-smtr`.`dashboard_subsidio_sppo`.`subsidio_parametros`
-    {{ ref("subsidio_parametros") }}
+    -- {{ ref("subsidio_parametros") }}
+    `rj-smtr`.`dashboard_subsidio_sppo`.`subsidio_parametros`
   WHERE
     status != "Não classificado"
   ORDER BY
@@ -124,8 +124,8 @@ WITH
   USING
     (data, id_veiculo)
   LEFT JOIN
-    {{ ref("viagens_remuneradas") }}
-    --`rj-smtr`.`dashboard_subsidio_sppo`.`viagens_remuneradas`
+    -- {{ ref("viagens_remuneradas") }}
+    `rj-smtr`.`dashboard_subsidio_sppo`.`viagens_remuneradas`
   USING
     (data, servico, id_viagem)
   WHERE

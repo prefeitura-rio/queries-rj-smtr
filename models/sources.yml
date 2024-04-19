@@ -82,7 +82,7 @@ sources:
       - name: rdo40_tratado
       - name: rdo40_registros_sppo
 
-  - name: projeto_subsidio_sppo_encontro_contas
+  - name: projeto_subsidio_sppo_encontro_contas_jan_24
     database: rj-smtr
 
     tables:
