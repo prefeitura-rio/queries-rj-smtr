@@ -322,6 +322,7 @@ WITH
   SELECT 
     data,
     CASE
+      WHEN data = "2024-04-22" THEN "Ponto Facultativo" -- Ponto Facultativo - DECRETO RIO Nº 54267/2024
       WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 1 THEN "Domingo" -- Dia de São Sebastião -- Art. 8°, I - Lei Municipal nº 5146/2010
       WHEN EXTRACT(DAY FROM data) = 23 AND EXTRACT(MONTH FROM data) = 4 THEN "Domingo" -- Dia de São Jorge -- Art. 8°, II - Lei Municipal nº 5146/2010 / Lei Estadual Nº 5198/2008 / Lei Estadual Nº 5645/2010
       WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 11 THEN "Domingo" -- Aniversário de morte de Zumbi dos Palmares / Dia da Consciência Negra -- Art. 8°, IV - Lei Municipal nº 5146/2010 / Lei Estadual nº 526/1982 / Lei Estadual nº 1929/1991 / Lei Estadual nº 4007/2002 / Lei Estadual Nº 5645/2010
@@ -339,26 +340,26 @@ WITH
     CASE
       WHEN data BETWEEN DATE(2024,03,11) AND DATE(2024,03,17) THEN "2024-03-11" -- OS mar/Q1
       WHEN data BETWEEN DATE(2024,03,18) AND DATE(2024,03,29) THEN "2024-03-18" -- OS mar/Q2
-      WHEN data BETWEEN DATE(2024,03,30) AND DATE(2024,04,30) THEN "2024-03-30"  -- OS abr/Q1
-      ELSE NULL
+      WHEN data BETWEEN DATE(2024,03,30) AND DATE(2024,04,14) THEN "2024-03-30"  -- OS abr/Q1
+      WHEN data BETWEEN DATE(2024,04,15) AND DATE(2024,04,30) THEN "2024-04-15"  -- OS abr/Q2
     END AS feed_version,
-    CASE
-      WHEN data BETWEEN DATE(2024,03,18) AND DATE(2024,03,31) THEN "Regular"
-      ELSE "Regular"
-    END AS tipo_os,
+    -- CASE
+    --   WHEN data BETWEEN DATE(2024,03,18) AND DATE(2024,03,31) THEN "Regular"
+    --   ELSE "Regular"
+    -- END AS tipo_os,
+    "Regular" AS tipo_os,
   FROM UNNEST(GENERATE_DATE_ARRAY("{{var('DATA_SUBSIDIO_V6_INICIO')}}", "2024-12-31")) AS data)
 SELECT
   data,
   tipo_dia,
   CASE
     WHEN tipo_os = "Extraordinária - Verão" THEN "Verão"
-    ELSE NULL
   END AS subtipo_dia,
   SAFE_CAST(NULL AS DATE) AS data_versao_trips,
   SAFE_CAST(NULL AS DATE) AS data_versao_shapes,
   SAFE_CAST(NULL AS DATE) AS data_versao_frequencies,
   SAFE_CAST(NULL AS FLOAT64) AS valor_subsidio_por_km,
-  COALESCE(d.feed_version, "{{ max_feed_version }}") AS feed_version,
+  COALESCE(i.feed_version, "{{ max_feed_version }}") AS feed_version,
   feed_start_date,
   tipo_os,
 FROM
@@ -366,11 +367,8 @@ FROM
 LEFT JOIN
   {{ ref('feed_info_gtfs2') }} AS i
 ON
-  CASE
-    WHEN d.feed_version IS NULL AND "{{ max_feed_version }}" = i.feed_version THEN TRUE
-    WHEN d.feed_version = i.feed_version THEN TRUE
-  ELSE FALSE
-  END
+  (d.feed_version = i.feed_version AND i.feed_version IS NOT NULL)
+  OR "{{ max_feed_version }}" = i.feed_version
 WHERE
 {% if is_incremental() %}
   data = DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 1 DAY)

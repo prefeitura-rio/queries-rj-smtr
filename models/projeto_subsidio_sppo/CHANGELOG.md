@@ -1,5 +1,16 @@
 # Changelog - projeto_subsidio_sppo
 
+## [6.0.2] - 2024-04-22
+
+### Adicionado
+
+- Adicionado planejamento de Abril/Q2/2024 no modelo `subsidio_data_versao_efetiva.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/279)
+- Adicionado `2024-04-22` como `Ponto Facultativo` em razão do [`DECRETO RIO Nº 54267/2024`](https://doweb.rio.rj.gov.br/apifront/portal/edicoes/imprimir_materia/1046645/6539) (https://github.com/prefeitura-rio/queries-rj-smtr/pull/279)
+
+### Corrigido
+
+- Corrigido e refatorado o tratamento do modelo `subsidio_data_versao_efetiva.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/279)
+
 ## [6.0.1] - 2024-04-19
 
 ### Corrigido
