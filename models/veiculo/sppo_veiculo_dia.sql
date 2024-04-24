@@ -34,17 +34,16 @@ WITH
   {%- elif var("run_date") >= "2024-03-17" and var("run_date") <= "2024-04-01"  %}
       data = "2024-04-09"
   {% else %}
-      -- Admite apenas versões do STU igual ou após 2024-04-09 a partir de abril/24 devido à falha de atualização na fonte da dados (SIURB)
-      {%- if var("run_date") >= "2024-04-02"  %}
-          {% set licenciamento_date_query = "SELECT MIN(data) FROM " ~ ref("sppo_licenciamento_stu_staging") ~ " WHERE data >= '2024-04-09' AND data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 5 DAY)" %}
-      {% else %}
-          {% set licenciamento_date_query = "SELECT MIN(data) FROM " ~ ref("sppo_licenciamento_stu_staging") ~ " WHERE AND data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 5 DAY)" %}
-      {% endif %}
-      {% if execute %}
-          {% set licenciamento_date = run_query(licenciamento_date_query).columns[0].values()[0] %}
-      {% endif %}
+    {% set licenciamento_date_query = "SELECT MIN(data) FROM " ~ ref("sppo_licenciamento_stu_staging") ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 5 DAY)" %}
+    -- Admite apenas versões do STU igual ou após 2024-04-09 a partir de abril/24 devido à falha de atualização na fonte da dados (SIURB)
+    {% if var("run_date") >= "2024-04-02" %}
+      {% set licenciamento_date_query = licenciamento_date_query ~ " AND data >= '2024-04-09'" %}
+    {% endif %}
+    {% if execute %}
+      {% set licenciamento_date = run_query(licenciamento_date_query).columns[0].values()[0] %}
+    {% endif %}
 
-      data = DATE("{{ licenciamento_date }}")
+    data = DATE("{{ licenciamento_date }}")
   {% endif %}
   ),
   gps AS (
