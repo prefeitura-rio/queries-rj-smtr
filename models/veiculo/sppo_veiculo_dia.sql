@@ -25,26 +25,7 @@ WITH
   FROM
     {{ ref("sppo_licenciamento") }} --`rj-smtr`.`veiculo`.`sppo_licenciamento`
   WHERE
-  {% if var("stu_data_versao") != "" %}
-      data = date("{{ var('stu_data_versao') }}")
-  --- Versão fixa do STU em 2024-03-25 para mar/Q1 devido à falha de atualização na fonte da dados (SIURB)
-  {%- elif var("run_date") >= "2024-03-02" and var("run_date") <= "2024-03-16" %}
-      data = "2024-03-25"
-  -- Versão fixa do STU em 2024-04-09 para mar/Q2 devido à falha de atualização na fonte da dados (SIURB)
-  {%- elif var("run_date") >= "2024-03-17" and var("run_date") <= "2024-04-01"  %}
-      data = "2024-04-09"
-  {% else %}
-    {% set licenciamento_date_query = "SELECT MIN(data) FROM " ~ ref("sppo_licenciamento_stu_staging") ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 5 DAY)" %}
-    -- Admite apenas versões do STU igual ou após 2024-04-09 a partir de abril/24 devido à falha de atualização na fonte da dados (SIURB)
-    {% if var("run_date") >= "2024-04-02" %}
-      {% set licenciamento_date_query = licenciamento_date_query ~ " AND data >= '2024-04-09'" %}
-    {% endif %}
-    {% if execute %}
-      {% set licenciamento_date = run_query(licenciamento_date_query).columns[0].values()[0] %}
-    {% endif %}
-
-    data = DATE("{{ licenciamento_date }}")
-  {% endif %}
+    data = DATE((SELECT licenciamento_date FROM {{ ref("sppo_licenciamento_calendario") }} WHERE run_date = "{{ var('run_date') }}"))
   ),
   gps AS (
   SELECT
