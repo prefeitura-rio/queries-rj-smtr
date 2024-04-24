@@ -1,4 +1,5 @@
 -- depends_on: {{ ref('aux_sppo_licenciamento_vistoria_atualizada') }}
+-- depends_on: {{ ref('sppo_licenciamento_calendario') }}
 {{
     config(
         materialized="incremental",
@@ -8,6 +9,10 @@
     )
 }}
 
+{% if execute %}
+  {% set licenciamento_date = run_query("SELECT licenciamento_date FROM " ~ ref("sppo_licenciamento_calendario") ~ " WHERE run_date = '" ~ var('run_date') ~ "'").columns[0].values()[0] %}
+{% endif %}
+
 with
     -- Tabela de licenciamento
     stu as (
@@ -16,7 +21,7 @@ with
         from
             {{ ref("sppo_licenciamento_stu_staging") }} as t
         where
-            data = DATE((SELECT licenciamento_date FROM {{ ref("sppo_licenciamento_calendario") }} WHERE run_date = "{{ var('run_date') }}"))
+            data = DATE("{{ licenciamento_date }}")
             and tipo_veiculo not like "%ROD%"
     ),
     stu_rn AS (

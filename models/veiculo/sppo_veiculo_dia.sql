@@ -1,3 +1,4 @@
+-- depends_on: {{ ref('sppo_licenciamento_calendario') }}
 {{
     config(
         materialized="incremental",
@@ -6,6 +7,10 @@
         incremental_strategy="insert_overwrite",
     )
 }}
+
+{% if execute %}
+  {% set licenciamento_date = run_query("SELECT licenciamento_date FROM " ~ ref("sppo_licenciamento_calendario") ~ " WHERE run_date = '" ~ var('run_date') ~ "'").columns[0].values()[0] %}
+{% endif %}
 
 WITH
   licenciamento AS (
@@ -25,7 +30,7 @@ WITH
   FROM
     {{ ref("sppo_licenciamento") }} --`rj-smtr`.`veiculo`.`sppo_licenciamento`
   WHERE
-    data = DATE((SELECT licenciamento_date FROM {{ ref("sppo_licenciamento_calendario") }} WHERE run_date = "{{ var('run_date') }}"))
+    data = DATE("{{ licenciamento_date }}")
   ),
   gps AS (
   SELECT
