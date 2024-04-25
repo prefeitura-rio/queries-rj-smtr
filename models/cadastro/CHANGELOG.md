@@ -1,5 +1,14 @@
 # Changelog - cadastro
 
+## [1.1.1] - 2024-04-25
+
+### Modificado
+
+- Adicionada coluna de modo na tabela `cadastro.consorcio`(https://github.com/prefeitura-rio/queries-rj-smtr/pull/282)
+- Adicionadas descrições das colunas modo e razão social no schema (https://github.com/prefeitura-rio/queries-rj-smtr/pull/282)
+- Adicionado source para `cadastro_staging.consorcio_modo` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/282)
+
+
 ## [1.1.0] - 2024-04-18
 
 ### Modificado
