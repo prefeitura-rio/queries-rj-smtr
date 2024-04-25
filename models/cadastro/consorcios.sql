@@ -48,8 +48,7 @@ SELECT
   c.id_consorcio_jae,
   c.id_processo
 FROM consorcio c
--- JOIN {{ source("cadastro-staging","consorcio_modo") }} AS cm
-JOIN `rj-smtr`.`cadastro-staging`.`consorcio_modo` AS cm
+JOIN {{ source("cadastro_staging","consorcio_modo") }} AS cm
 using (id_consorcio)
 JOIN {{ source("cadastro","modos") }} AS m
 ON m.id_modo = cm.id_modo

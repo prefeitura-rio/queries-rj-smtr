@@ -69,7 +69,7 @@ sources:
     tables:
       - name: modos
   
-  - name: cadastro-staging
+  - name: cadastro_staging
     database: rj-smtr
 
     tables:
