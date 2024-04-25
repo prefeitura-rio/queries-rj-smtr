@@ -1,5 +1,4 @@
 -- depends_on: {{ ref('aux_sppo_licenciamento_vistoria_atualizada') }}
--- depends_on: {{ ref('sppo_licenciamento_calendario') }}
 {{
     config(
         materialized="incremental",
@@ -10,7 +9,7 @@
 }}
 
 {% if execute %}
-  {% set licenciamento_date = run_query("SELECT licenciamento_date FROM " ~ ref("sppo_licenciamento_calendario") ~ " WHERE run_date = '" ~ var('run_date') ~ "'").columns[0].values()[0] %}
+  {% set licenciamento_date = run_query(get_license_date()).columns[0].values()[0] %}
 {% endif %}
 
 with
