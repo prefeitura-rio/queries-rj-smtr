@@ -48,8 +48,11 @@ SELECT
   c.id_consorcio_jae,
   c.id_processo
 FROM consorcio c
-JOIN {{ source("cadastro_staging","consorcio_modo") }} AS cm
-using (id_consorcio)
-JOIN {{ source("cadastro","modos") }} AS m
-ON m.id_modo = cm.id_modo
-AND cm.fonte_id_modo = m.fonte 
+LEFT JOIN 
+  {{ source("cadastro_staging","consorcio_modo") }} AS cm
+USING (id_consorcio)
+LEFT JOIN 
+  {{ source("cadastro","modos") }} AS m
+ON 
+  m.id_modo = cm.id_modo
+  AND cm.fonte_id_modo = m.fonte 
