@@ -8,29 +8,20 @@
     )
 }}
 
+{% if execute %}
+  {% set licenciamento_date = run_query(get_license_date()).columns[0].values()[0] %}
+{% endif %}
+
 with
     -- Tabela de licenciamento
     stu as (
         select 
-            *
+            * except(data),
+            date(data) AS data
         from
             {{ ref("sppo_licenciamento_stu_staging") }} as t
         where
-        {% if var("stu_data_versao") != "" %}
-            data = date("{{ var('stu_data_versao') }}")
-        -- Versão fixa do STU em 2024-03-25 para mar/Q1 devido à falha de atualização na fonte da dados (SIURB)
-        {%- elif var("run_date") >= "2024-03-01" and var("run_date") < "2024-03-16" %}
-            data = "2024-03-25"
-        -- Versão fixa do STU em 2024-04-09 para mar/Q2 devido à falha de atualização na fonte da dados (SIURB)
-        {%- elif var("run_date") >= "2024-03-16" %}
-            data = "2024-04-09"
-        {% else %}
-            {% if execute %}
-                {% set licenciamento_date = run_query("SELECT MIN(data) FROM " ~ ref("sppo_licenciamento_stu_staging") ~ " WHERE data >= DATE_ADD(DATE('" ~ var("run_date") ~ "'), INTERVAL 5 DAY)").columns[0].values()[0] %}
-            {% endif %}
-
-            data = DATE("{{ licenciamento_date }}")
-        {% endif %}
+            date(data) = date("{{ licenciamento_date }}")
             and tipo_veiculo not like "%ROD%"
     ),
     stu_rn AS (

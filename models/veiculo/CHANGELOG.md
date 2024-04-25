@@ -1,11 +1,20 @@
 # Changelog - veiculo
 
+## [1.1.2] - 2024-04-25
+
+#### Adicionado
+
+- Criada macro `get_license_date.sql` para retornar relacionamento entre `run_date` e data de licenciamento dos modelos `sppo_licenciamento_stu_staging.sql`, `sppo_licenciamento.sql` e `sppo_veiculo_dia.sql`. Nesta macro, serão admitidas apenas versões do STU igual ou após 2024-04-09 a partir de abril/24 devido à falha de atualização na fonte da dados (SIURB) (https://github.com/prefeitura-rio/queries-rj-smtr/pull/280)
+
+#### Corrigido
+
+- Altera lógica de particionamento nos modelos `sppo_licenciamento_stu_staging.sql`, `sppo_licenciamento.sql`, `sppo_infracao_staging.sql` e `sppo_infracao.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/280)
+
 ## [1.1.1] - 2024-04-16
 
 #### Corrigido
 
 - Cria lógica de deduplicação na tabela `sppo_registro_agente_verao` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/271)
-
 
 ## [1.1.0] - 2024-04-15
 
@@ -13,6 +22,12 @@
 
 - Reorganizar modelos intermediários de licenciamento em staging (https://github.com/prefeitura-rio/queries-rj-smtr/pull/255)
 - Atualiza schema para refletir as alterações (https://github.com/prefeitura-rio/queries-rj-smtr/pull/255)
+
+## [1.0.2] - 2024-04-12
+
+#### Alterado
+
+- Fixa versão do STU em `2024-04-09` para mar/Q2 devido à falha de atualização na fonte da dados (SIURB) nos modelos `sppo_licenciamento.sql` e `sppo_veiculo_dia.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/264)
 
 ## [1.0.1] - 2024-04-05
 
