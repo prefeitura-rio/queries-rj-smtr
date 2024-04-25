@@ -1,14 +1,10 @@
 # Changelog - veiculo
 
-## [1.1.2] - 2024-04-24
+## [1.1.2] - 2024-04-25
 
 ### Adicionado
 
-- Criado modelo `ephemeral` `sppo_licenciamento_calendario.sql` como modelo de relacionamento entre `run_date` e data de licenciamento dos modelos `sppo_licenciamento_stu_staging.sql`, `sppo_licenciamento.sql` e `sppo_veiculo_dia.sql`. Neste modelo, serão admitidas apenas versões do STU igual ou após 2024-04-09 a partir de abril/24 devido à falha de atualização na fonte da dados (SIURB) (https://github.com/prefeitura-rio/queries-rj-smtr/pull/280)
-
-#### Corrigido
-
-- Corrige intervalo de datas fixadas com versão do STU em `2024-04-09` para mar/24 devido à falha de atualização na fonte da dados (SIURB) no novo modelo `sppo_licenciamento_calendario.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/280)
+- Criada macro `get_license_date.sql` para retornar relacionamento entre `run_date` e data de licenciamento dos modelos `sppo_licenciamento_stu_staging.sql`, `sppo_licenciamento.sql` e `sppo_veiculo_dia.sql`. Nesta macro, serão admitidas apenas versões do STU igual ou após 2024-04-09 a partir de abril/24 devido à falha de atualização na fonte da dados (SIURB) (https://github.com/prefeitura-rio/queries-rj-smtr/pull/280)
 
 ## [1.1.1] - 2024-04-16
 
