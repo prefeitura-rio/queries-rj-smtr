@@ -16,11 +16,12 @@ with
     -- Tabela de licenciamento
     stu as (
         select 
-            *
+            * except(data),
+            date(data) AS data
         from
             {{ ref("sppo_licenciamento_stu_staging") }} as t
         where
-            data = DATE("{{ licenciamento_date }}")
+            date(data) = date("{{ licenciamento_date }}")
             and tipo_veiculo not like "%ROD%"
     ),
     stu_rn AS (

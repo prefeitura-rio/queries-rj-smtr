@@ -18,11 +18,12 @@
 WITH 
   infracao AS (
     SELECT
-      *
+      * EXCEPT(data),
+      SAFE_CAST(data AS DATE) AS data
     FROM
       {{ ref("sppo_infracao_staging") }} as t
     WHERE
-      SAFE_CAST(data AS DATE) = DATE("{{ infracao_date }}")
+      DATE(data) = DATE("{{ infracao_date }}")
   ),
   infracao_rn AS (
     SELECT
