@@ -84,12 +84,16 @@ models:
         description: "Identificador único do consórcio, podendo ser o código de permissionário ou código da Jaé"
       - name: consorcio
         description: "Nome do consórcio"
+      - name: modo
+        description: "Modo de transporte do consórcio"
       - name: id_processo
         description: "Número do processo no STU"
       - name: data_processo
         description: "Data do processo no STU"
       - name: cnpj
         description: "CNPJ do consórcio"
+      - name: razao_social
+        description: "Razão social do consórcio"
       - name: id_consorcio_stu
         description: "Código de permissionário vindo do STU"
       - name: id_consorcio_jae

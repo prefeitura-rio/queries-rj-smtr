@@ -69,6 +69,12 @@ sources:
     tables:
       - name: modos
   
+  - name: cadastro-staging
+    database: rj-smtr
+
+    tables:
+      - name: consorcio_modo
+  
   - name: br_rj_riodejaneiro_rdo_staging
     database: rj-smtr-staging
 

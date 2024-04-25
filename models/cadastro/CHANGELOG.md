@@ -1,5 +1,14 @@
 # Changelog - cadastro
 
+## [1.1.1] - 2024-04-25
+
+### Modificado
+
+- Adicionada coluna de modo na tabela `cadastro.consorcio`
+- Adicionadas descrições das colunas modo e razão social no schema
+- Adicionado source para `cadastro_staging.consorcio_modo`
+
+
 ## [1.1.0] - 2024-04-18
 
 ### Modificado
