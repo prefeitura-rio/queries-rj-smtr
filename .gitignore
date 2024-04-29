@@ -15,4 +15,3 @@ dbt-env/
 # DEV
 scripts/
 *dev/
-dev/run.py
