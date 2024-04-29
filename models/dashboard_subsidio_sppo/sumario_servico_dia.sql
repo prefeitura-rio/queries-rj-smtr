@@ -24,6 +24,8 @@ WITH
     AND DATE( "{{ var("end_date") }}" )
     AND ( distancia_total_planejada > 0
       OR distancia_total_planejada IS NULL )
+    AND (id_tipo_trajeto = 0
+      OR id_tipo_trajeto IS NULL)
   ),
 -- 2. Viagens realizadas
   viagem AS (
