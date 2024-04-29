@@ -1,5 +1,11 @@
 # Changelog - gtfs
 
+## [1.0.2] - 2024-04-29
+
+### Corrigido
+
+- Corrige tratamento por partição do modelo `ordem_servico_trips_shapes_gtfs2.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/283)
+
 ## [1.0.1] - 2024-04-19
 
 ### Alterado

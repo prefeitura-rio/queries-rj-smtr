@@ -196,3 +196,7 @@ USING
   (feed_version,
     feed_start_date,
     shape_id)
+{% if is_incremental() -%}
+WHERE
+  feed_start_date = '{{ var("data_versao_gtfs") }}'
+{% endif -%}
