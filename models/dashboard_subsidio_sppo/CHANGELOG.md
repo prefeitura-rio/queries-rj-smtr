@@ -1,7 +1,5 @@
 # Changelog - dashboard_subsidio_sppo
 
-# Changelog - dashboard_subsidio_sppo
-
 ## [6.0.2] - 2024-04-29
 
 ### Corrigido
