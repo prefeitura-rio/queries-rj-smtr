@@ -1,5 +1,11 @@
 # Changelog - dashboard_subsidio_sppo
 
+## [6.0.2] - 2024-04-29
+
+### Corrigido
+
+- Corrigido referência no modelo `viagens_remuneradas.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/284)
+
 ## [6.0.1] - 2024-04-29
 
 ### Adicionado

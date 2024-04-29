@@ -36,7 +36,7 @@ WITH
     partidas_volta,
     tipo_os,
   FROM
-      {{ ref("ordem_servico_gtfs") }}
+      {{ ref("ordem_servico_gtfs2") }}
   WHERE
     feed_start_date BETWEEN DATE_TRUNC(DATE("{{ var("start_date") }}"), MONTH)
     AND DATE( "{{ var("end_date") }}" )
