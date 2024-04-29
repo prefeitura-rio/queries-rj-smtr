@@ -367,8 +367,8 @@ FROM
 LEFT JOIN
   {{ ref('feed_info_gtfs2') }} AS i
 ON
-  (d.feed_version = i.feed_version AND i.feed_version IS NOT NULL)
-  OR "{{ max_feed_version }}" = i.feed_version
+  (d.feed_version = i.feed_version)
+  OR (i.feed_version IS NULL AND "{{ max_feed_version }}" = i.feed_version)
 WHERE
 {% if is_incremental() %}
   data = DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 1 DAY)
