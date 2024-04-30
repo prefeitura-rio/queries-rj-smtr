@@ -8,6 +8,6 @@ models:
         description: data da transação
       - name: hora
         description: hora da transação
-      - name: Qtde_transacoes
-        description: quantidade de transações feitas agregado por hora
+      - name: quantidade_transacoes
+        description: quantidade de transações realizadas agregado por hora
       

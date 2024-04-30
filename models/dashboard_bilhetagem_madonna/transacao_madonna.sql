@@ -1,8 +1,3 @@
-{{
-  config(
-    alias="transacao"
-  )
-}}
 
 WITH transacao_deduplicada AS (
     SELECT 
@@ -15,7 +10,7 @@ WITH transacao_deduplicada AS (
         FROM
             {{ ref('staging_transacao') }}
         where
-            data >= "{{ var('run_date') }}"
+            DATE(data) BETWEEN DATE("{{ var('run_date') }}") and DATE_ADD(DATE("{{ var('run_date') }}"), INTERVAL 1 DAY)
     )
     WHERE
         rn = 1
@@ -26,12 +21,11 @@ WITH transacao_deduplicada AS (
 SELECT
   EXTRACT(DATE FROM data_transacao) AS data,
   EXTRACT(HOUR FROM data_transacao) AS hora,
-  COUNT(*) AS Qtde_transacoes
+  COUNT(*) AS quantidade_transacoes
 FROM
   transacao_deduplicada
 WHERE
-  data >= "2024-05-04"
-  AND cd_operadora = "2359"
+  cd_operadora = "2359"
   AND cd_linha = "1126"
 GROUP BY
   data,
