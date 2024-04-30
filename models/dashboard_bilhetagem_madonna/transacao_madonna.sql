@@ -26,7 +26,7 @@ WITH transacao_deduplicada AS (
 SELECT
   EXTRACT(DATE FROM data_transacao) AS data,
   EXTRACT(HOUR FROM data_transacao) AS hora,
-  COUNT(*) AS Qtde_Passageiros_hora
+  COUNT(*) AS Qtde_transacoes
 FROM
   transacao_deduplicada
 WHERE
