@@ -227,7 +227,7 @@ models:
       +schema: br_rj_riodejaneiro_bilhetagem
     br_rj_riodejaneiro_bilhetagem_staging:
       +materialized: view
-      +schema: br_rj_riodejaneiro_bilhetagem_staging
+      +schema: br_rj_riodejaneiro_bilhetagem_staging_dbt
     dashboard_bilhetagem_implantacao_jae:
       +materialized: table
       +schema: dashboard_bilhetagem_implantacao_jae
@@ -264,3 +264,6 @@ models:
     dashboard_controle_vinculo_jae_riocard:
       +materialized: incremental
       +schema: dashboard_controle_vinculo_jae_riocard
+    validacao_dados_jae:
+      +materialized: incremental
+      +schema: validacao_dados_jae
