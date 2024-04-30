@@ -4,4 +4,4 @@
 
 ### Adicionado
 
-- Criada tabela de contagem de transações por hora do serviço 1126 para a data '2024-05-04' 
+- Criada tabela de contagem de transações por hora do serviço 1126 para a data '2024-05-04' (https://github.com/prefeitura-rio/queries-rj-smtr/pull/291)
