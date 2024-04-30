@@ -1,0 +1,13 @@
+version: 2
+
+models:
+  - name: transacao_madonna
+    description: Tabela que armazena a quantidade de transações feitas com o cartão da jae para o serviço 1126 no dia 2024-05-04
+    columns:
+      - name: data
+        description: data da transação
+      - name: hora
+        description: hora da transação
+      - name: Qtde_transacoes
+        description: quantidade de transações feitas agregado por hora
+      
