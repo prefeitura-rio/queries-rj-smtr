@@ -10,7 +10,7 @@ WITH transacao_deduplicada AS (
         FROM
             {{ ref('staging_transacao') }}
         where
-            DATE(data) BETWEEN DATE("{{ var('run_date') }}") and DATE_ADD(DATE("{{ var('run_date') }}"), INTERVAL 1 DAY)
+            data in ("2024-05-04", "2024-05-05")
     )
     WHERE
         rn = 1
