@@ -22,5 +22,4 @@ SELECT
 FROM
   transacao_deduplicada
 WHERE
-  cd_operadora = "2359"
-  AND cd_linha = "1126"
+  cd_linha = "1033"
