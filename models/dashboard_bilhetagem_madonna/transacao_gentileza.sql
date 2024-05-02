@@ -17,7 +17,7 @@ WITH transacao_deduplicada AS (
 )
 SELECT
   EXTRACT(DATE FROM data_transacao) AS data,
-  EXTRACT(HOUR FROM data_transacao) AS hora,
+  FORMAT_TIMESTAMP("%H:%M:%S", data_transacao) AS hora,
   id as id_transacao  
 FROM
   transacao_deduplicada
