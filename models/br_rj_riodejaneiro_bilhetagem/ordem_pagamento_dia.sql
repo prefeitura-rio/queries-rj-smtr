@@ -27,9 +27,9 @@ SELECT
     o.valor_rateio_credito AS valor_rateio_credito,
     o.qtd_rateio_debito AS quantidade_transacao_rateio_debito,
     o.valor_rateio_debito AS valor_rateio_debito,
-    ROUND(o.valor_bruto + 0.0005, 2) AS valor_total_transacao_bruto,
+    o.valor_bruto AS valor_total_transacao_bruto,
     o.valor_taxa AS valor_desconto_taxa,
-    ROUND(o.valor_liquido + 0.0005, 2) AS valor_total_transacao_liquido,
+    o.valor_liquido AS valor_total_transacao_liquido,
     '{{ var("version") }}' AS versao
 FROM 
     {{ ref('staging_ordem_pagamento') }} o
