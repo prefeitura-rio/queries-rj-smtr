@@ -20,15 +20,15 @@ WITH ordem_pagamento_consorcio_operadora AS (
     SAFE_CAST(JSON_VALUE(content, '$.qtd_rateio_credito') AS INTEGER) AS qtd_rateio_credito,
     SAFE_CAST(JSON_VALUE(content, '$.qtd_rateio_debito') AS INTEGER) AS qtd_rateio_debito,
     SAFE_CAST(JSON_VALUE(content, '$.qtd_vendaabordo') AS INTEGER) AS qtd_vendaabordo,
-    SAFE_CAST(JSON_VALUE(content, '$.valor_bruto') AS FLOAT64) AS valor_bruto,
-    SAFE_CAST(JSON_VALUE(content, '$.valor_debito') AS FLOAT64) AS valor_debito,
-    SAFE_CAST(JSON_VALUE(content, '$.valor_gratuidade') AS FLOAT64) AS valor_gratuidade,
-    SAFE_CAST(JSON_VALUE(content, '$.valor_integracao') AS FLOAT64) AS valor_integracao,
-    SAFE_CAST(JSON_VALUE(content, '$.valor_liquido') AS FLOAT64) AS valor_liquido,
-    SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_credito') AS FLOAT64) AS valor_rateio_credito,
-    SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_debito') AS FLOAT64) AS valor_rateio_debito,
-    SAFE_CAST(JSON_VALUE(content, '$.valor_taxa') AS FLOAT64) AS valor_taxa,
-    SAFE_CAST(JSON_VALUE(content, '$.valor_vendaabordo') AS FLOAT64) AS valor_vendaabordo
+    SAFE_CAST(JSON_VALUE(content, '$.valor_bruto') AS NUMERIC) AS valor_bruto,
+    SAFE_CAST(JSON_VALUE(content, '$.valor_debito') AS NUMERIC) AS valor_debito,
+    SAFE_CAST(JSON_VALUE(content, '$.valor_gratuidade') AS NUMERIC) AS valor_gratuidade,
+    SAFE_CAST(JSON_VALUE(content, '$.valor_integracao') AS NUMERIC) AS valor_integracao,
+    SAFE_CAST(JSON_VALUE(content, '$.valor_liquido') AS NUMERIC) AS valor_liquido,
+    SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_credito') AS NUMERIC) AS valor_rateio_credito,
+    SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_debito') AS NUMERIC) AS valor_rateio_debito,
+    SAFE_CAST(JSON_VALUE(content, '$.valor_taxa') AS NUMERIC) AS valor_taxa,
+    SAFE_CAST(JSON_VALUE(content, '$.valor_vendaabordo') AS NUMERIC) AS valor_vendaabordo
   FROM
       {{ source("br_rj_riodejaneiro_bilhetagem_staging", "ordem_pagamento_consorcio_operadora") }}
 ),

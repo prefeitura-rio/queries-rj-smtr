@@ -30,18 +30,18 @@ WITH ordem_rateio AS (
         SAFE_CAST(SAFE_CAST(JSON_VALUE(content, '$.qtd_rateio_compensacao_debito_t3') AS FLOAT64) AS INTEGER) AS qtd_rateio_compensacao_debito_t3,
         SAFE_CAST(SAFE_CAST(JSON_VALUE(content, '$.qtd_rateio_compensacao_debito_t4') AS FLOAT64) AS INTEGER) AS qtd_rateio_compensacao_debito_t4,
         SAFE_CAST(SAFE_CAST(JSON_VALUE(content, '$.qtd_rateio_compensacao_debito_total') AS FLOAT64) AS INTEGER) AS qtd_rateio_compensacao_debito_total,
-        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_credito_t0') AS FLOAT64) AS valor_rateio_compensacao_credito_t0,
-        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_credito_t1') AS FLOAT64) AS valor_rateio_compensacao_credito_t1,
-        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_credito_t2') AS FLOAT64) AS valor_rateio_compensacao_credito_t2,
-        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_credito_t3') AS FLOAT64) AS valor_rateio_compensacao_credito_t3,
-        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_credito_t4') AS FLOAT64) AS valor_rateio_compensacao_credito_t4,
-        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_credito_total') AS FLOAT64) AS valor_rateio_compensacao_credito_total,
-        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_debito_t0') AS FLOAT64) AS valor_rateio_compensacao_debito_t0,
-        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_debito_t1') AS FLOAT64) AS valor_rateio_compensacao_debito_t1,
-        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_debito_t2') AS FLOAT64) AS valor_rateio_compensacao_debito_t2,
-        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_debito_t3') AS FLOAT64) AS valor_rateio_compensacao_debito_t3,
-        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_debito_t4') AS FLOAT64) AS valor_rateio_compensacao_debito_t4,
-        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_debito_total') AS FLOAT64) AS valor_rateio_compensacao_debito_total
+        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_credito_t0') AS NUMERIC) AS valor_rateio_compensacao_credito_t0,
+        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_credito_t1') AS NUMERIC) AS valor_rateio_compensacao_credito_t1,
+        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_credito_t2') AS NUMERIC) AS valor_rateio_compensacao_credito_t2,
+        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_credito_t3') AS NUMERIC) AS valor_rateio_compensacao_credito_t3,
+        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_credito_t4') AS NUMERIC) AS valor_rateio_compensacao_credito_t4,
+        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_credito_total') AS NUMERIC) AS valor_rateio_compensacao_credito_total,
+        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_debito_t0') AS NUMERIC) AS valor_rateio_compensacao_debito_t0,
+        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_debito_t1') AS NUMERIC) AS valor_rateio_compensacao_debito_t1,
+        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_debito_t2') AS NUMERIC) AS valor_rateio_compensacao_debito_t2,
+        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_debito_t3') AS NUMERIC) AS valor_rateio_compensacao_debito_t3,
+        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_debito_t4') AS NUMERIC) AS valor_rateio_compensacao_debito_t4,
+        SAFE_CAST(JSON_VALUE(content, '$.valor_rateio_compensacao_debito_total') AS NUMERIC) AS valor_rateio_compensacao_debito_total
   FROM
     {{ source('br_rj_riodejaneiro_bilhetagem_staging', 'ordem_rateio') }}
 )
