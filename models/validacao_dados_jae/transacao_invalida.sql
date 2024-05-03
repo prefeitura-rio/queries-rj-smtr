@@ -27,6 +27,8 @@ WITH transacao AS (
     t.id_transacao,
     t.longitude,
     t.latitude,
+    IFNULL(t.longitude, 0) AS longitude_tratada,
+    IFNULL(t.latitude, 0) AS latitude_tratada,
     s.longitude AS longitude_servico,
     s.latitude AS latitude_servico,
     s.id_servico_gtfs
@@ -42,24 +44,34 @@ WITH transacao AS (
 ),
 indicadores AS (
   SELECT
-    * EXCEPT(id_servico_gtfs),
-    CASE
-      WHEN
-        latitude = 0 OR latitude IS NULL OR longitude = 0 OR longitude IS NULL THEN "Geolocalização zerada"
-      WHEN
-        ST_INTERSECTSBOX(ST_GEOGPOINT(longitude, latitude), -43.87, -23.13, -43.0, -22.59) = FALSE THEN "Geolocalização fora do município"
-      WHEN
-        modo = "BRT" AND ST_DISTANCE(ST_GEOGPOINT(longitude, latitude), ST_GEOGPOINT(longitude_servico, latitude)) > 90 THEN "Geolocalização fora do stop"
-    END AS tipo_transacao_invalida,
-    id_servico_gtfs IS NOT NULL AS indicador_servico_gtfs
+    * EXCEPT(id_servico_gtfs, latitude_tratada, longitude_tratada),
+    latitude_tratada = 0 OR longitude_tratada = 0 AS indicador_geolocalizacao_zerada,
+    (
+      (latitude_tratada != 0 OR longitude_tratada != 0)
+      AND NOT ST_INTERSECTSBOX(ST_GEOGPOINT(longitude_tratada, latitude_tratada), -43.87, -23.13, -43.0, -22.59)
+    ) AS indicador_geolocalizacao_fora_rj,
+    (
+      (latitude_tratada != 0 OR longitude_tratada != 0)
+      AND modo = "BRT"
+      AND ST_DISTANCE(ST_GEOGPOINT(longitude_tratada, latitude_tratada), ST_GEOGPOINT(longitude_servico, latitude_servico)) > 100
+    ) AS indicador_geolocalizacao_fora_stop,
+    id_servico_gtfs IS NULL AND modo IN ("Ônibus", "BRT") AS indicador_servico_fora_gtfs
   FROM
     transacao
 )
 SELECT
-  *,
+  * EXCEPT(indicador_servico_fora_gtfs),
+  CASE
+    WHEN indicador_geolocalizacao_zerada = TRUE THEN "Geolocalização zerada"
+    WHEN indicador_geolocalizacao_fora_rj = TRUE THEN "Geolocalização fora do município"
+    WHEN indicador_geolocalizacao_fora_stop = TRUE THEN "Geolocalização fora do stop"
+  END AS descricao_geolocalizacao_invalida,
+  indicador_servico_fora_gtfs,
   '{{ var("version") }}' as versao
 FROM
   indicadores
 WHERE
-  tipo_transacao_invalida IS NOT NULL
-  OR indicador_servico_gtfs = FALSE
+  indicador_geolocalizacao_zerada = TRUE
+  OR indicador_geolocalizacao_fora_rj = TRUE
+  OR indicador_geolocalizacao_fora_stop = TRUE
+  OR indicador_servico_fora_gtfs = TRUE

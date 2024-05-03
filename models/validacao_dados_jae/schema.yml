@@ -12,8 +12,10 @@ models:
         description: "Sequência modos das transações presentes na integração (separado por ', ')"
       - name: indicador_fora_matriz
         description: "Indica se a sequência de modos não aparece na tabela br_rj_riodejaneiro_bilhetagem.matriz_integracao"
-      - name: tipo_tempo_invalido
-        description: "Indica se a integração durou mais que 3 horas ou se houve transações com tempo menor que 5 minutos entre elas"
+      - name: indicador_tempo_integracao_invalido
+        description: "Indica se o tempo entre a primeira e a última transação da integração é maior que 3 horas"
+      - name: indicador_intervalo_transacao_baixo
+        description: "Indica se existe algum intervalo entre transações menor que 5 minutos dentro da integração"
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)" 
   - name: transacao_invalida
@@ -55,10 +57,16 @@ models:
         description: "Longitude do stop no GTFS (WGS84)"
       - name: latitude_servico
         description: "Latitude do stop no GTFS (WGS84)"
-      - name: tipo_transacao_invalida
-        description: "Indica se a transação está com geolocalização zerada, fora do município ou fora da estação indicada (BRT)"
-      - name: indicador_servico_gtfs
-        description: "Indica se o serviço tem correspondência com as tabela 'trips' ou 'stops' do GTFS"
+      - name: indicador_geolocalizacao_zerada
+        description: "Indica se a transação está com geolocalização zerada ou nula"
+      - name: indicador_geolocalizacao_fora_rj
+        description: "Indica se a transação está com geolocalização fora do município (transações com geolocalização zeradas não se enquadram)"
+      - name: indicador_geolocalizacao_fora_stop
+        description: "Indica se a transação do modo BRT está com geolocalização a mais de 100m da estação (transações com geolocalização zeradas não se enquadram)"
+      - name: descricao_geolocalizacao_invalida
+        description: "Resumo do tipo de geolocalização inválida de acordo com as colunas indicadoras"
+      - name: indicador_servico_fora_gtfs
+        description: "Indica se o serviço não tem correspondência com as tabela 'trips' ou 'stops' do GTFS"
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)"
         

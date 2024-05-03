@@ -23,8 +23,8 @@ integracao_agg AS (
     DATE(datetime_processamento_integracao) AS data,
     id_integracao,
     STRING_AGG(modo, ', ' ORDER BY sequencia_integracao) AS modos,
-    MAX(datetime_transacao) AS datetime_primeira_transacao,
-    MIN(datetime_transacao) AS datetime_ultima_transacao,
+    MIN(datetime_transacao) AS datetime_primeira_transacao,
+    MAX(datetime_transacao) AS datetime_ultima_transacao,
     MIN(intervalo_integracao) AS menor_intervalo
   FROM
     {{ ref("integracao") }}
@@ -43,10 +43,8 @@ indicadores AS (
     id_integracao,
     modos,
     modos NOT IN (SELECT DISTINCT modos FROM sequencias_validas) AS indicador_fora_matriz,
-    CASE
-      WHEN TIMESTAMP_DIFF(datetime_ultima_transacao, datetime_primeira_transacao, MINUTE) > 180 THEN "Integração maior que 3 horas"
-      WHEN menor_intervalo < 5 THEN "Tempo entre pernas menor que 5 minutos"
-    END AS tipo_tempo_invalido
+    TIMESTAMP_DIFF(datetime_ultima_transacao, datetime_primeira_transacao, MINUTE) > 180 AS indicador_tempo_integracao_invalido,
+    menor_intervalo < 5 AS indicador_intervalo_transacao_baixo
   FROM
     integracao_agg
 )
@@ -57,4 +55,5 @@ FROM
   indicadores
 WHERE
   indicador_fora_matriz = TRUE
-  OR tipo_tempo_invalido IS NOT NULL
+  OR indicador_tempo_integracao_invalido = TRUE
+  OR indicador_intervalo_transacao_baixo = TRUE
