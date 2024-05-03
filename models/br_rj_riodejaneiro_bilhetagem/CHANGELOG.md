@@ -1,5 +1,21 @@
 # Changelog - bilhetagem
 
+## [1.0.3] - 2024-05-03
+
+### Corrigido
+- Removido tratamento de arredondamento nos valores totais (https://github.com/prefeitura-rio/queries-rj-smtr/pull/294):
+  - `bilhetagem.ordem_pagamento_dia`
+  - `bilhetagem.ordem_pagamento_consorcio_operador_dia`
+  - `bilhetagem.ordem_pagamento_consorcio_dia`
+
+### Modificado
+- Alterado cast de float para numeric (https://github.com/prefeitura-rio/queries-rj-smtr/pull/294):
+  - `bilhetagem_staging.staging_ordem_pagamento`
+  - `bilhetagem_staging.staging_ordem_pagamento_consorcio`
+  - `bilhetagem_staging.staging_ordem_pagamento_consorcio_operadora`
+  - `bilhetagem_staging.staging_ordem_rateio`
+  - `bilhetagem_staging.staging_ordem_ressarcimento` 
+
 ## [1.0.2] - 2024-04-18
 
 ### Modificado
