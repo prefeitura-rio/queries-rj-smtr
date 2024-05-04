@@ -24,3 +24,4 @@ FROM
 WHERE
   cd_operadora = "2359"
   AND cd_linha = "1126"
+  AND EXTRACT(DATE FROM data_transacao) = "2024-05-04"
