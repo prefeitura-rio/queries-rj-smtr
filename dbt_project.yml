@@ -267,3 +267,6 @@ models:
     validacao_dados_jae:
       +materialized: incremental
       +schema: validacao_dados_jae
+      staging:
+        +materialized: incremental
+        +schema: validacao_dados_jae_staging
