@@ -36,9 +36,9 @@ SELECT
         + o.qtd_gratuidade
         + o.qtd_integracao
     ) AS quantidade_total_transacao,
-    ROUND(o.valor_bruto + 0.0005, 2) AS valor_total_transacao_bruto,
+    o.valor_bruto AS valor_total_transacao_bruto,
     o.valor_taxa AS valor_desconto_taxa,
-    ROUND(o.valor_liquido + 0.0005, 2) AS valor_total_transacao_liquido,
+    o.valor_liquido AS valor_total_transacao_liquido,
     '{{ var("version") }}' AS versao
 FROM 
     {{ ref('staging_ordem_pagamento_consorcio_operadora') }} o

@@ -1,5 +1,11 @@
 # Changelog - projeto_subsidio_sppo
 
+## [6.0.3] - 2024-04-29
+
+### Corrigido
+
+- Corrigido tratamento do modelo `subsidio_data_versao_efetiva.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/283)
+
 ## [6.0.2] - 2024-04-22
 
 ### Adicionado

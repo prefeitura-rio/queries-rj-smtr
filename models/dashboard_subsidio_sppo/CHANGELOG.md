@@ -1,10 +1,27 @@
 # Changelog - dashboard_subsidio_sppo
 
+## [6.0.2] - 2024-04-29
+
+### Corrigido
+
+- Corrigido referência no modelo `viagens_remuneradas.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/284)
+
+## [6.0.1] - 2024-04-29
+
+### Adicionado
+
+- Adicionados filtros nos modelos `sumario_servico_dia_tipo.sql`, `sumario_servico_dia.sql` e `viagens_remuneradas.sql` em razão de alterações no modelo `viagem_planejada.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/283)
+
+### Corrigido
+
+- Corrigido modelo `viagens_remuneradas.sql` em razão de alterações nos modelos `subsidio_data_versao_efetiva.sql` e `ordem_servico_gtfs2.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/283)
+
 ## [6.0.0] - 2024-04-18
 
 ### Alterado
 
 - Adiciona novo filtro no modelo `sumario_servico_dia_historico.sql` em razão de alterações no modelo `viagem_planejada.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/261)
+
 ## [5.0.0] - 2024-03-30
 
 ### Adicionado
