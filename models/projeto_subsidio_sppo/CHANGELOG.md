@@ -1,5 +1,16 @@
 # Changelog - projeto_subsidio_sppo
 
+## [6.0.4] - 2024-05-08
+
+### Adicionado
+
+- Adicionado planejamento de Maio/Q1/2024 no modelo `subsidio_data_versao_efetiva.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/299)
+- Adicionado planejamento específico de `2024-05-04` e `2024-05-05` em razão do evento "Madonna · The Celebration Tour in Rio" (Processo Rio MTR-PRO-2024/06338) no modelo `subsidio_data_versao_efetiva.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/299)
+
+### Corrigido
+
+- Corrigido tratamento do modelo `subsidio_data_versao_efetiva.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/299)
+
 ## [6.0.3] - 2024-04-29
 
 ### Corrigido
