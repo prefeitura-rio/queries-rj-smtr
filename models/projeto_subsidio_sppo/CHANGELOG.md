@@ -1,5 +1,11 @@
 # Changelog - projeto_subsidio_sppo
 
+## [6.0.5] - 2024-05-08
+
+### Removido
+
+- Removido planejamento específico de `2024-05-04` e `2024-05-05` em razão do evento "Madonna · The Celebration Tour in Rio" (Processo Rio MTR-PRO-2024/06338) no modelo `subsidio_data_versao_efetiva.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/300)
+
 ## [6.0.4] - 2024-05-08
 
 ### Adicionado
