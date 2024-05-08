@@ -255,7 +255,7 @@ models:
       +schema: indicadores_continuados_egp
     projeto_subsidio_sppo_encontro_contas:
       +materialized: table
-      +schema: projeto_subsidio_sppo_encontro_contas_check
+      +schema: projeto_subsidio_sppo_encontro_contas
     dashboard_controle_vinculo_jae_riocard:
       +materialized: incremental
       +schema: dashboard_controle_vinculo_jae_riocard
