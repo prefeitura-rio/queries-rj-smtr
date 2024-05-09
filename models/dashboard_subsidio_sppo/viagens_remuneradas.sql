@@ -7,6 +7,10 @@
     )
 }}
 
+{%- if execute %}
+  {% set feed_start_dates = run_query("SELECT DISTINCT COALESCE(feed_start_date, data_versao_trips, data_versao_shapes, data_versao_frequencies) FROM `rj-smtr`.`projeto_subsidio_sppo`.`subsidio_data_versao_efetiva` WHERE data BETWEEN DATE('" ~ var('start_date') ~ "') AND DATE('" ~ var("end_date") ~ "')").columns[0].values() %}
+{% endif -%}
+
 WITH
 -- 1. Viagens planejadas (agrupadas por data e serviço)
   planejado AS (
@@ -38,8 +42,7 @@ WITH
   FROM
       {{ ref("ordem_servico_gtfs2") }}
   WHERE
-    feed_start_date BETWEEN DATE_TRUNC(DATE("{{ var("start_date") }}"), MONTH)
-    AND DATE( "{{ var("end_date") }}" )
+    feed_start_date IN ('{{ feed_start_dates|join("', '") }}')
   ),
   data_versao_efetiva AS (
   SELECT
