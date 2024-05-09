@@ -24,7 +24,7 @@ WITH servico_operador_dia_validacao AS (
     1,
     2
 ),
-WITH consorcio_operador_dia_validacao AS (
+consorcio_operador_dia_validacao AS (
   SELECT
     data_ordem,
     id_ordem_pagamento,
@@ -39,7 +39,7 @@ WITH consorcio_operador_dia_validacao AS (
     1,
     2
 ),
-WITH consorcio_dia_validacao AS (
+consorcio_dia_validacao AS (
   SELECT
     data_ordem,
     id_ordem_pagamento,
@@ -68,34 +68,41 @@ ordem_pagamento_dia AS (
     WHERE
       data_ordem BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
   {% endif %}
+),
+validacao AS (
+  SELECT
+    cd.data_ordem,
+    cd.id_ordem_pagamento,
+    ROUND(cd.valor_total_transacao_liquido, 2) != ROUND(d.valor_total_transacao_liquido, 2) OR cd.quantidade_total_transacao != d.quantidade_total_transacao AS indicador_agregacao_invalida,
+    indicador_servico_operador_invalido,
+    indicador_consorcio_operador_invalido,
+    indicador_consorcio_invalido
+  FROM
+    ordem_pagamento_dia d
+  LEFT JOIN
+    consorcio_dia_validacao cd
+  ON
+    d.data_ordem = cd.data_ordem
+    AND d.id_ordem_pagamento = cd.id_ordem_pagamento
+  LEFT JOIN
+    consorcio_operador_dia_validacao cod
+  ON
+    d.data_ordem = cod.data_ordem
+    AND d.id_ordem_pagamento = cod.id_ordem_pagamento
+  LEFT JOIN
+    servico_operador_dia_validacao sod
+  ON
+    d.data_ordem = sod.data_ordem
+    AND d.id_ordem_pagamento = sod.id_ordem_pagamento
 )
 SELECT
-  cd.data_ordem,
-  cd.id_ordem_pagamento,
-  ROUND(cd.valor_total_transacao_liquido, 2) != ROUND(d.valor_total_transacao_liquido, 2) OR cd.quantidade_total_transacao != d.quantidade_total_transacao AS indicador_agregacao_invalida
-  indicador_servico_operador_invalido,
-  indicador_consorcio_operador_invalido,
-  indicador_consorcio_invalido,
+  *,
   (
     indicador_agregacao_invalida
     OR indicador_servico_operador_invalido
     OR indicador_consorcio_operador_invalido
     OR indicador_consorcio_invalido
-  ) AS indicador_ordem_invalida
+  ) AS indicador_ordem_invalida,
+  '{{ var("version") }}' AS versao
 FROM
-  ordem_pagamento_dia d
-LEFT JOIN
-  consorcio_dia_validacao cd
-ON
-  d.data_ordem = cd.data_ordem
-  AND d.id_ordem_pagamento = cd.id_ordem_pagamento
-LEFT JOIN
-  consorcio_operador_dia_validacao cod
-ON
-  d.data_ordem = cod.data_ordem
-  AND d.id_ordem_pagamento = cod.id_ordem_pagamento
-LEFT JOIN
-  servico_operador_dia_validacao sod
-ON
-  d.data_ordem = sod.data_ordem
-  AND d.id_ordem_pagamento = sod.id_ordem_pagamento
+  validacao

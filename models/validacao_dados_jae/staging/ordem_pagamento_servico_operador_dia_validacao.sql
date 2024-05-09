@@ -36,11 +36,11 @@ WITH transacao AS (
         DATE(t.data_processamento) AS data_processamento,
         t.data_processamento AS datetime_processamento,
         t.cd_linha,
-        t.cd_operadora,
+        do.id_operadora,
         t.valor_transacao,
         t.tipo_transacao,
         t.id_tipo_modal,
-        t.cd_consorcio,
+        dc.id_consorcio,
         -- sm.dt_fechamento AS datetime_fechamento_servico,
         -- sm.cd_linha AS cd_linha_servico,
         -- sm.cd_operadora AS cd_operadora_servico,
@@ -52,6 +52,14 @@ WITH transacao AS (
     -- ON
     --     sm.id_servico = t.id_servico
     --     AND sm.nr_logico_midia = t.nr_logico_midia_operador
+    LEFT JOIN
+      {{ ref("operadoras") }} AS do
+    ON
+      t.cd_operadora = do.id_operadora_jae
+    LEFT JOIN
+      {{ ref("consorcios") }} AS dc
+    ON
+      t.cd_consorcio = dc.id_consorcio_jae
     WHERE
         {% if is_incremental() %}
             DATE(t.data) BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 1 DAY) AND DATE_ADD(DATE("{{var('date_range_end')}}"), INTERVAL 1 DAY)
@@ -79,9 +87,9 @@ transacao_deduplicada AS (
 transacao_agg AS (
     SELECT
         t.data_ordem,
-        ANY_VALUE(t.cd_consorcio) AS id_consorcio,
+        ANY_VALUE(t.id_consorcio) AS id_consorcio,
         t.cd_linha AS id_servico_jae,
-        t.cd_operadora AS id_operadora,
+        t.id_operadora,
         COUNT(*) AS quantidade_total_transacao_captura,
         SUM(t.valor_transacao) AS valor_total_transacao_captura
     FROM
@@ -104,7 +112,7 @@ transacao_agg AS (
     GROUP BY
         t.data_ordem,
         t.cd_linha,
-        t.cd_operadora
+        t.id_operadora
 ),
 ordem_pagamento AS (
   SELECT
@@ -137,7 +145,7 @@ transacao_ordem AS (
     op.valor_total_transacao_bruto,
     op.valor_total_transacao_liquido,
     t.quantidade_total_transacao_captura,
-    t.valor_total_transacao_captura + op.valor_rateio_credito + op.valor_rateio_debito AS valor_total_transacao_captura
+    CAST(t.valor_total_transacao_captura+ op.valor_rateio_credito + op.valor_rateio_debito AS NUMERIC) AS valor_total_transacao_captura
   FROM
     ordem_pagamento op
   FULL OUTER JOIN
@@ -160,7 +168,7 @@ SELECT
       quantidade_total_transacao_captura != quantidade_total_transacao 
       OR ROUND(valor_total_transacao_captura, 2) != ROUND(valor_total_transacao_bruto, 2)
     ),
-    FALSE
+    TRUE
   ) AS indicador_captura_invalida,
   '{{ var("version") }}' AS versao
 FROM

@@ -49,7 +49,8 @@ SELECT
   cod.quantidade_total_transacao,
   cod.valor_total_transacao_liquido,
   cod.indicador_captura_invalida,
-  ROUND(cd.valor_total_transacao_liquido, 2) != ROUND(cod.valor_total_transacao_liquido, 2) OR cd.quantidade_total_transacao != cod.quantidade_total_transacao AS indicador_agregacao_invalida
+  ROUND(cd.valor_total_transacao_liquido, 2) != ROUND(cod.valor_total_transacao_liquido, 2) OR cd.quantidade_total_transacao != cod.quantidade_total_transacao AS indicador_agregacao_invalida,
+  '{{ var("version") }}' AS versao
 FROM
   ordem_pagamento_consorcio_dia cd
 LEFT JOIN
