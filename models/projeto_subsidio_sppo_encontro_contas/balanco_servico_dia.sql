@@ -1,3 +1,8 @@
+{{ 
+  config(
+    alias="balanco_servico_dia_rdo_tratada"
+  )
+}}
 -- 0. Lista servicos e dias atípicos (pagos por recurso)
 WITH
   recursos AS (
@@ -100,7 +105,7 @@ rdo AS (
     ELSE
     CONCAT( IFNULL(REGEXP_EXTRACT(linha, r"[B-Z]+"), ""), IFNULL(REGEXP_EXTRACT(linha, r"[0-9]+"), "") )
   END
-    AS servico,
+    AS servico_rdo,
     round(SUM(receita_buc) + SUM(receita_buc_supervia) + SUM(receita_cartoes_perna_unica_e_demais) + SUM(receita_especie), 0) AS receita_tarifaria_aferida
   FROM
     `rj-smtr`.`br_rj_riodejaneiro_rdo`.`rdo40_registros_sppo`
@@ -110,6 +115,14 @@ rdo AS (
     and consorcio in ("Internorte", "Intersul", "Santa Cruz", "Transcarioca")
   group by 1,2,3
 ),
+-- Corrige servicos do RDO para match com subsídio (i.e. servicos da OS)
+rdo_tratada as (
+    select rdo.* except(servico_rdo), sro.servico_os as servico
+    from rdo
+    left join `rj-smtr-dev.projeto_subsidio_sppo_encontro_contas.servico_rdo_os` sro
+    using (servico_rdo)
+),
+
 parametros as (
   SELECT
     DISTINCT data_inicio,
@@ -139,7 +152,7 @@ parametros as (
     from
       km_subsidiada_filtrada ks
     left join
-      rdo
+      rdo_tratada as rdo
     using 
       (data, servico)
     left join
