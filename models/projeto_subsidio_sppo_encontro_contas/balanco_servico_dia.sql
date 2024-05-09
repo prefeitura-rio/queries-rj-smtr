@@ -141,7 +141,7 @@ parametros as (
     left join
       rdo
     using 
-      (data, servico, consorcio)
+      (data, servico)
     left join
       parametros par
     on
