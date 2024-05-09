@@ -8,7 +8,7 @@
 }}
 
 {%- if execute %}
-  {% set feed_start_dates = run_query("SELECT DISTINCT COALESCE(feed_start_date, data_versao_trips, data_versao_shapes, data_versao_frequencies) FROM `rj-smtr`.`projeto_subsidio_sppo`.`subsidio_data_versao_efetiva` WHERE data BETWEEN DATE('" ~ var('start_date') ~ "') AND DATE('" ~ var("end_date") ~ "')").columns[0].values() %}
+  {% set feed_start_dates = run_query("SELECT DISTINCT COALESCE(feed_start_date, data_versao_trips, data_versao_shapes, data_versao_frequencies) FROM " ~ ref('subsidio_data_versao_efetiva') ~ " WHERE data BETWEEN DATE('" ~ var('start_date') ~ "') AND DATE('" ~ var("end_date") ~ "')").columns[0].values() %}
 {% endif -%}
 
 WITH
