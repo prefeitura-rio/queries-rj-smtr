@@ -1,5 +1,11 @@
 # Changelog - dashboard_subsidio_sppo
 
+## [6.0.3] - 2024-05-09
+
+### Corrigido
+
+- Corrigido filtro da CTE `viagens_planejadas` no modelo `viagens_remuneradas.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/302)
+
 ## [6.0.2] - 2024-04-29
 
 ### Corrigido
