@@ -1,6 +1,6 @@
 {{ 
   config(
-    alias="balanco_servico_dia_rdo_tratada"
+    alias="balanco_servico_dia_tratada"
   )
 }}
 -- 0. Lista servicos e dias atípicos (pagos por recurso)
@@ -117,10 +117,14 @@ rdo AS (
 ),
 -- Corrige servicos do RDO para match com subsídio (i.e. servicos da OS)
 rdo_tratada as (
-    select rdo.* except(servico_rdo), sro.servico_os as servico
+  select 
+      rdo.data,
+      sro.servico_os as servico,
+      sum(rdo.receita_tarifaria_aferida) as receita_tarifaria_aferida
     from rdo
     left join `rj-smtr-dev.projeto_subsidio_sppo_encontro_contas.servico_rdo_os` sro
     using (servico_rdo)
+    group by 1,2
 ),
 
 parametros as (
