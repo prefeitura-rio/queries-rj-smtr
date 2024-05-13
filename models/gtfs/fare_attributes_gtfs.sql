@@ -3,7 +3,6 @@
     'data_type' :'date',
     'granularity': 'day' },
     unique_key = ['fare_id', 'feed_start_date'],
-    alias = 'fare_attributes'
 )}} 
 
 
@@ -25,7 +24,7 @@ FROM
     'fare_attributes'
   )}} fa
 JOIN
-  {{ ref('feed_info_gtfs2') }} fi 
+  {{ ref('feed_info_gtfs') }} fi 
 ON 
   fa.data_versao = CAST(fi.feed_start_date AS STRING)
 {% if is_incremental() -%}

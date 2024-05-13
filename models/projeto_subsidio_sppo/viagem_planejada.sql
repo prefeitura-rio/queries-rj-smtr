@@ -207,7 +207,7 @@ SELECT
 FROM
   data_versao_efetiva AS d
 LEFT JOIN
-  {{ ref("ordem_servico_trips_shapes_gtfs2") }} AS o
+  {{ ref("ordem_servico_trips_shapes_gtfs") }} AS o
 USING
   (feed_start_date,
    feed_version,

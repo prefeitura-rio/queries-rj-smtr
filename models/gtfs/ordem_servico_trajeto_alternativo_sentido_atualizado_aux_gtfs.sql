@@ -1,5 +1,5 @@
 /*
-  ordem_servico_trajeto_alternativo_gtfs2 com sentidos despivotados e com atualização dos sentidos circulares
+  ordem_servico_trajeto_alternativo_gtfs com sentidos despivotados e com atualização dos sentidos circulares
 */
 
 {{
@@ -14,7 +14,7 @@ WITH
     SELECT 
       *
     FROM 
-      {{ ref("ordem_servico_trajeto_alternativo_gtfs2") }}
+      {{ ref("ordem_servico_trajeto_alternativo_gtfs") }}
     {% if is_incremental() -%}
       WHERE 
         feed_start_date = "{{ var('data_versao_gtfs') }}"
@@ -56,7 +56,7 @@ LEFT JOIN
         servico,
         ARRAY_AGG(DISTINCT sentido) AS sentido_array,
     FROM
-        {{ ref("ordem_servico_sentido_atualizado_aux_gtfs2") }}
+        {{ ref("ordem_servico_sentido_atualizado_aux_gtfs") }}
     GROUP BY
         1,
         2

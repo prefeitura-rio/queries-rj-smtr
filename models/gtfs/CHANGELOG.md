@@ -1,5 +1,11 @@
 # Changelog - gtfs
 
+## [1.1.0] - 2024-05-13
+
+### Alterado
+
+- Altera nomes das tabelas do dataset `gtfs` e suas referencias em outras tabelas removendo o 2 do final e o alias
+
 ## [1.0.2] - 2024-04-29
 
 ### Corrigido

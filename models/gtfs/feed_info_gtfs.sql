@@ -3,7 +3,6 @@
   partition_by = { 'field' :'feed_start_date',
   'data_type' :'date',
   'granularity': 'day' },
-  alias = 'feed_info'
 )}} 
 
 

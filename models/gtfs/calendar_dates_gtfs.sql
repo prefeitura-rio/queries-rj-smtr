@@ -3,7 +3,6 @@
     'data_type' :'date',
     'granularity': 'day' },
     unique_key = ['service_id', 'date', 'feed_start_date'],
-    alias = 'calendar_dates'
 ) }}
 
 
@@ -21,7 +20,7 @@ FROM
     'calendar_dates'
   ) }} cd
 JOIN 
-  {{ ref('feed_info_gtfs2') }} fi 
+  {{ ref('feed_info_gtfs') }} fi 
 ON
   cd.data_versao = CAST(fi.feed_start_date AS STRING)
 {% if is_incremental() -%}

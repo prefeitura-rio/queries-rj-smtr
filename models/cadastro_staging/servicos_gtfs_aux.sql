@@ -5,7 +5,7 @@
     )
 }}
 
-{% set gtfs_partiton_table = ref('feed_info_gtfs2') %}
+{% set gtfs_partiton_table = ref('feed_info_gtfs') %}
 {% if execute %}
     {% if is_incremental() %}
         {% set gtfs_partition_query %}
@@ -36,7 +36,7 @@ WITH routes_gtfs AS (
             '{{ var("version") }}' as versao,
             ROW_NUMBER() OVER (PARTITION BY route_id ORDER BY feed_start_date DESC) AS rn
         FROM
-            {{ ref("routes_gtfs2") }}
+            {{ ref("routes_gtfs") }}
         {% if is_incremental() %}
             WHERE
                 feed_start_date = '{{ gtfs_last_partition }}'
@@ -60,7 +60,7 @@ stops_gtfs AS (
             '{{ var("version") }}' as versao,
             ROW_NUMBER() OVER (PARTITION BY stop_id ORDER BY feed_start_date DESC) AS rn
         FROM
-            {{ ref("stops_gtfs2") }}
+            {{ ref("stops_gtfs") }}
         WHERE
             location_type = '1'
             {% if is_incremental() %}

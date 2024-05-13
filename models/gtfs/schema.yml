@@ -3,7 +3,7 @@ sources:
   - name: "gtfs"
 
 models:
-  - name: agency_gtfs2
+  - name: agency_gtfs
     description: "Agência de transporte público com serviços representados neste conjunto de dados."
     columns:
       - name: agency_id
@@ -25,7 +25,7 @@ models:
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
-  - name: calendar_gtfs2
+  - name: calendar_gtfs
     description: "Datas de serviço especificadas usando uma programação semanal com datas de início e término."
     columns:
       - name: service_id
@@ -57,7 +57,7 @@ models:
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
-  - name: calendar_dates_gtfs2
+  - name: calendar_dates_gtfs
     description: "Exceções para os serviços definidos no calendar.txt."
     columns:
       - name: service_id
@@ -75,7 +75,7 @@ models:
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
-  - name: fare_attributes_gtfs2
+  - name: fare_attributes_gtfs
     description: "Informações sobre tarifas para rotas de uma agência de transporte público."
     columns:
       - name: fare_id
@@ -101,7 +101,7 @@ models:
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
-  - name: fare_rules_gtfs2
+  - name: fare_rules_gtfs
     description: "Regras para aplicação de tarifas de itinerários."
     columns:
       - name: fare_id
@@ -123,7 +123,7 @@ models:
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
-  - name: feed_info_gtfs2
+  - name: feed_info_gtfs
     description: "Metadados do conjunto de dados, incluindo informações sobre editor, versão e expiração."
     columns:
       - name: feed_publisher_name
@@ -149,7 +149,7 @@ models:
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
-  - name: frequencies_gtfs2
+  - name: frequencies_gtfs
     description: "Intervalo (tempo entre viagens) para serviço baseado em intervalo ou uma representação compactada de serviço com horário fixo."
     columns:
       - name: trip_id
@@ -171,7 +171,7 @@ models:
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
-  - name: routes_gtfs2
+  - name: routes_gtfs
     description: "Rotas de trânsito. Uma rota é um grupo de viagens exibidas aos passageiros como um único serviço."
     columns:
       - name: route_id
@@ -209,7 +209,7 @@ models:
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
-  - name: shapes_geom_gtfs2
+  - name: shapes_geom_gtfs
     description: "Shapes em formatos geográficos dos serviços."
     columns:
       - name: feed_start_date
@@ -233,7 +233,7 @@ models:
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
-  - name: shapes_gtfs2
+  - name: shapes_gtfs
     description: "Regras para mapear caminhos de deslocamento de veículos, às vezes chamados de alinhamentos de rotas."
     columns:
       - name: shape_id
@@ -255,7 +255,7 @@ models:
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
-  - name: stops_gtfs2
+  - name: stops_gtfs
     description: "Paradas onde os veículos pegam ou deixam os passageiros. Também define estações e entradas de estação."
     columns:
       - name: stop_id
@@ -297,7 +297,7 @@ models:
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
-  - name: stop_times_gtfs2
+  - name: stop_times_gtfs
     description: "Horários em que um veículo chega e sai das paradas de cada viagem."
     columns:
       - name: trip_id
@@ -333,7 +333,7 @@ models:
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
-  - name: trips_gtfs2
+  - name: trips_gtfs
     description: "Viagens para cada rota."
     columns:
       - name: trip_id
@@ -365,7 +365,7 @@ models:
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
-  - name: ordem_servico_gtfs2
+  - name: ordem_servico_gtfs
     description: "Dados das linhas presentes no município."
     columns:
       - name: servico
@@ -403,7 +403,7 @@ models:
       - name: tipo_os
         description: "Tipo de Ordem de Serviço (ex: 'Regular', 'Extraordinária - Verão')"
 
-  - name: ordem_servico_trajeto_alternativo_gtfs2
+  - name: ordem_servico_trajeto_alternativo_gtfs
     description: "Anexo da Ordem de Serviço (OS) com trajetos alternativos de serviços"
     columns:
       - name: feed_start_date
@@ -434,7 +434,7 @@ models:
         description: "Horário final de funcionamento do trajeto alternativo."
       - name: versao_modelo
         description: "Código de controle de versão (SHA do GitHub)."
-  - name: ordem_servico_trips_shapes_gtfs2
+  - name: ordem_servico_trips_shapes_gtfs
     description: "Junção da Ordem de Serviço (OS) com trips e shapes dos serviços"
     columns:
       - name: feed_start_date
