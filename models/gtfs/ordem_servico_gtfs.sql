@@ -3,6 +3,7 @@
     'data_type' :'date',
     'granularity': 'day' },
   unique_key = ['servico', 'feed_start_date'],
+  alias = 'ordem_servico'
 ) }}
 
 WITH ordem_servico AS (

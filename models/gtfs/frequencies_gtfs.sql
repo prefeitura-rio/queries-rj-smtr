@@ -3,6 +3,7 @@
     'data_type' :'date',
     'granularity': 'day' },
     unique_key = ['trip_id', 'start_time', 'feed_start_date'],
+    alias = 'frequencies'
 )}} 
 
 

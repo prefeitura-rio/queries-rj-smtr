@@ -3,6 +3,7 @@
   'data_type' :'date',
   'granularity': 'day' },
   unique_key = ['agency_id', 'feed_start_date'],
+  alias = 'agency'
 ) }} 
 
 

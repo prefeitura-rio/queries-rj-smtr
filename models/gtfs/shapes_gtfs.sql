@@ -3,6 +3,7 @@
     'data_type' :'date',
     'granularity': 'day' },
     unique_key = ['shape_id', 'shape_pt_sequence', 'feed_start_date'],
+    alias = 'shapes'
 )}}
 
 
