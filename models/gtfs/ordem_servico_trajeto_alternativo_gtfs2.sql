@@ -9,30 +9,51 @@
   ) 
 }} 
 
-WITH ordem_servico_trajeto_alternativo AS (
+-- TBD: Alterar tabela em staging ou manter o tratamento assim?
+WITH
+  ordem_servico_trajeto_alternativo_array AS (
+    SELECT
+      data_versao,
+      servico,
+      ARRAY(
+        SELECT
+          CONCAT('{', TRIM(item, '{}'), '}')
+        FROM
+          UNNEST(SPLIT(content, "},{")) AS item
+      ) AS content
+    FROM
+      {{ source("br_rj_riodejaneiro_gtfs_staging", "ordem_servico_trajeto_alternativo") }}
+    {% if is_incremental() -%}
+      WHERE 
+        data_versao = '{{ var("data_versao_gtfs") }}'
+    {%- endif %}
+  ),
+  ordem_servico_trajeto_alternativo AS (
   SELECT 
     fi.feed_version,
-    SAFE_CAST(o.data_versao AS DATE) feed_start_date,
+    SAFE_CAST(data_versao AS DATE) feed_start_date,
     fi.feed_end_date,
-    SAFE_CAST(o.servico AS STRING) servico,
-    SAFE_CAST(JSON_VALUE(o.content, "$.ativacao") AS STRING) ativacao,
-    SAFE_CAST(JSON_VALUE(o.content, "$.consorcio") AS STRING) consorcio,
-    SAFE_CAST(JSON_VALUE(o.content, "$.descricao") AS STRING) descricao,
-    SAFE_CAST(JSON_VALUE(o.content, "$.evento") AS STRING) evento,
-    SAFE_CAST(JSON_VALUE(o.content, "$.extensao_ida") AS FLOAT64) extensao_ida,
-    SAFE_CAST(JSON_VALUE(o.content, "$.extensao_volta") AS FLOAT64) extensao_volta,
-    SAFE_CAST(JSON_VALUE(o.content, "$.horario_inicio") AS STRING) horario_inicio,
-    SAFE_CAST(JSON_VALUE(o.content, "$.horario_fim") AS STRING) horario_fim,
-    SAFE_CAST(JSON_VALUE(o.content, "$.vista") AS STRING) vista,
+    SAFE_CAST(servico AS STRING) servico,
+    SAFE_CAST(JSON_VALUE(content, "$.ativacao") AS STRING) ativacao,
+    SAFE_CAST(JSON_VALUE(content, "$.consorcio") AS STRING) consorcio,
+    SAFE_CAST(JSON_VALUE(content, "$.descricao") AS STRING) descricao,
+    SAFE_CAST(JSON_VALUE(content, "$.evento") AS STRING) evento,
+    SAFE_CAST(JSON_VALUE(content, "$.extensao_ida") AS FLOAT64) extensao_ida,
+    SAFE_CAST(JSON_VALUE(content, "$.extensao_volta") AS FLOAT64) extensao_volta,
+    SAFE_CAST(JSON_VALUE(content, "$.horario_inicio") AS STRING) horario_inicio,
+    SAFE_CAST(JSON_VALUE(content, "$.horario_fim") AS STRING) horario_fim,
+    SAFE_CAST(JSON_VALUE(content, "$.vista") AS STRING) vista,
+    COALESCE(SAFE_CAST(JSON_VALUE(content, '$.tipo_os') AS STRING), "Regular") tipo_os,
   FROM 
-    {{ source("br_rj_riodejaneiro_gtfs_staging", "ordem_servico_trajeto_alternativo") }} O
+    ordem_servico_trajeto_alternativo_array,
+    UNNEST(content) AS content
   LEFT JOIN 
     {{ ref("feed_info_gtfs2") }} fi 
   ON 
-    o.data_versao = CAST(fi.feed_start_date AS STRING)
+    data_versao = CAST(fi.feed_start_date AS STRING)
   {% if is_incremental() -%}
     WHERE 
-      o.data_versao = "{{ var('data_versao_gtfs') }}"
+      data_versao = "{{ var('data_versao_gtfs') }}"
       AND fi.feed_start_date = "{{ var('data_versao_gtfs') }}"
   {%- endif %}
 )
@@ -52,30 +73,9 @@ SELECT
   END AS evento,
   extensao_ida/1000 AS extensao_ida,
   extensao_volta/1000 AS extensao_volta,
-  IF(horario_inicio IS NOT NULL AND ARRAY_LENGTH(SPLIT(horario_inicio, ":")) = 3, 
-      PARSE_TIME("%T", 
-                  CONCAT(
-                      SAFE_CAST(MOD(SAFE_CAST(SPLIT(horario_inicio, ":")[OFFSET(0)] AS INT64), 24) AS INT64), 
-                      ":", 
-                      SAFE_CAST(SPLIT(horario_inicio, ":")[OFFSET(1)] AS INT64), 
-                      ":", 
-                      SAFE_CAST(SPLIT(horario_inicio, ":")[OFFSET(2)] AS INT64)
-                  )
-                ), 
-                NULL
-  ) AS inicio_periodo,
-  IF(horario_fim IS NOT NULL AND ARRAY_LENGTH(SPLIT(horario_fim, ":")) = 3, 
-      PARSE_TIME("%T", 
-                  CONCAT(
-                      SAFE_CAST(MOD(SAFE_CAST(SPLIT(horario_fim, ":")[OFFSET(0)] AS INT64), 24) AS INT64), 
-                      ":", 
-                      SAFE_CAST(SPLIT(horario_fim, ":")[OFFSET(1)] AS INT64), 
-                      ":", 
-                      SAFE_CAST(SPLIT(horario_fim, ":")[OFFSET(2)] AS INT64)
-                  )
-                ), 
-                NULL
-  ) AS fim_periodo,
+  horario_inicio AS inicio_periodo,
+  horario_fim AS fim_periodo,
+  tipo_os,
   '{{ var("version") }}' AS versao_modelo
 FROM
   ordem_servico_trajeto_alternativo
