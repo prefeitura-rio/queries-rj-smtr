@@ -93,7 +93,7 @@ sources:
     database: rj-smtr
 
     tables:
-      - name: subsidio_parametros_atualizada
+      - name: parametros_km
 
   - name: veiculo_staging
     database: rj-smtr-staging
