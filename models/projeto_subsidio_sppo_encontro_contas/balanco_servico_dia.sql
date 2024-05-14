@@ -104,38 +104,34 @@ km_subsidiada_filtrada as (
 rdo AS (
   SELECT
     data,
-    CASE
-      WHEN LENGTH(linha) < 3 THEN LPAD(linha, 3, "0")
-    ELSE
-    CONCAT( IFNULL(REGEXP_EXTRACT(linha, r"[B-Z]+"), ""), IFNULL(REGEXP_EXTRACT(linha, r"[0-9]+"), "") )
-  END
-    AS servico_rdo,
-    SUM(receita_buc) + SUM(receita_buc_supervia) + SUM(receita_cartoes_perna_unica_e_demais) + SUM(receita_especie) AS receita_tarifaria_aferida
+    servico,
+    -- servico as servico_rdo,
+    receita_tarifaria_total as receita_tarifaria_aferida
   FROM
-    `rj-smtr`.`br_rj_riodejaneiro_rdo`.`rdo40_registros_sppo`
+    `rj-smtr.br_rj_riodejaneiro_rdo_staging.rdo_servico_dia`
   WHERE
     DATA BETWEEN "2022-06-01" AND "2023-12-31"
     AND DATA NOT IN ("2022-10-02", "2022-10-30", '2023-02-07', '2023-02-08', '2023-02-10', '2023-02-13', '2023-02-17', '2023-02-18', '2023-02-19', '2023-02-20', '2023-02-21', '2023-02-22')
     and consorcio in ("Internorte", "Intersul", "Santa Cruz", "Transcarioca")
-  group by 1,2
+  -- group by 1,2
 ),
--- Corrige servicos do RDO para match com subsídio (i.e. servicos da OS)
--- e agrega servicos na linha mãe (ex: SN474 -> 474)
-rdo_tratada as (
-  select 
-      rdo.data,
-    CASE
-        WHEN REGEXP_CONTAINS(sro.servico_os, "S[A-Z](|[A-Z])[0-9]{3}") THEN REGEXP_EXTRACT(sro.servico_os, r"[0-9]+")
-      ELSE
-      sro.servico_os
-    END
-      AS servico,
-      sum(rdo.receita_tarifaria_aferida) as receita_tarifaria_aferida
-    from rdo
-    left join `rj-smtr-dev.projeto_subsidio_sppo_encontro_contas.servico_rdo_os` sro
-    using (servico_rdo)
-    group by 1,2
-),
+-- -- Corrige servicos do RDO para match com subsídio (i.e. servicos da OS)
+-- -- e agrega servicos na linha mãe (ex: SN474 -> 474)
+-- rdo_tratada as (
+--   select 
+--       rdo.data,
+--     CASE
+--         WHEN REGEXP_CONTAINS(sro.servico_os, "S[A-Z](|[A-Z])[0-9]{3}") THEN REGEXP_EXTRACT(sro.servico_os, r"[0-9]+")
+--       ELSE
+--       sro.servico_os
+--     END
+--       AS servico,
+--       sum(rdo.receita_tarifaria_aferida) as receita_tarifaria_aferida
+--     from rdo
+--     left join `rj-smtr-dev.projeto_subsidio_sppo_encontro_contas.servico_rdo_os` sro
+--     using (servico_rdo)
+--     group by 1,2
+-- ),
 
 parametros as (
   SELECT
@@ -166,7 +162,8 @@ parametros as (
     from
       km_subsidiada_filtrada ks
     left join
-      rdo_tratada as rdo
+      rdo
+      -- rdo_tratada as rdo
     using 
       (data, servico)
     left join
