@@ -1,4 +1,4 @@
--- depends_on: {{ ref('ordem_servico_trajeto_alternativo_gtfs2') }}
+-- depends_on: {{ ref('ordem_servico_trajeto_alternativo_gtfs') }}
 /*
 Identificação de um trip de referência para cada serviço e sentido regular
 Identificação de todas as trips de referência para os trajetos alternativos
@@ -12,9 +12,9 @@ Identificação de todas as trips de referência para os trajetos alternativos
 
 {% if execute -%}
   {% if is_incremental() -%}
-    {%- set query = "SELECT DISTINCT evento FROM " ~ ref('ordem_servico_trajeto_alternativo_gtfs2') ~ " WHERE feed_start_date = '" ~ var('data_versao_gtfs')  ~ "'" -%}
+    {%- set query = "SELECT DISTINCT evento FROM " ~ ref('ordem_servico_trajeto_alternativo_gtfs') ~ " WHERE feed_start_date = '" ~ var('data_versao_gtfs')  ~ "'" -%}
   {% else %}
-    {%- set query = "SELECT DISTINCT evento FROM " ~ ref('ordem_servico_trajeto_alternativo_gtfs2') -%}
+    {%- set query = "SELECT DISTINCT evento FROM " ~ ref('ordem_servico_trajeto_alternativo_gtfs') -%}
   {% endif -%}
   {%- set eventos_trajetos_alternativos = run_query(query).columns[0].values() -%}
 {% endif %}
@@ -25,7 +25,7 @@ WITH
     SELECT
       *
     FROM
-      {{ ref("shapes_geom_gtfs2") }}
+      {{ ref("shapes_geom_gtfs") }}
     {% if is_incremental() -%}
     WHERE 
       feed_start_date = '{{ var("data_versao_gtfs") }}'
@@ -69,7 +69,7 @@ WITH
       END
         AS indicador_trajeto_alternativo,
       FROM
-        {{ ref("trips_gtfs2") }}
+        {{ ref("trips_gtfs") }}
       LEFT JOIN
         shapes
       USING

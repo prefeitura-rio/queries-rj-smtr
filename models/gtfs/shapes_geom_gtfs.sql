@@ -13,7 +13,7 @@ WITH contents AS (
         ST_GEOGPOINT(shape_pt_lon, shape_pt_lat) AS ponto_shape,
         shape_pt_sequence,
         feed_start_date,
-    FROM {{ref('shapes_gtfs2')}} s
+    FROM {{ref('shapes_gtfs')}} s
     {% if is_incremental() -%}
         WHERE feed_start_date = '{{ var("data_versao_gtfs") }}'
     {%- endif %}
@@ -133,7 +133,7 @@ SELECT
     '{{ var("version") }}' as versao_modelo
 FROM union_shapes AS m
 LEFT JOIN 
-    {{ ref('feed_info_gtfs2') }} AS fi 
+    {{ ref('feed_info_gtfs') }} AS fi 
 USING
     (feed_start_date)
 {% if is_incremental() -%}

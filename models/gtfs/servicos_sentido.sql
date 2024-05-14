@@ -7,7 +7,7 @@ WITH
     SELECT
       DISTINCT servico
     FROM
-      {{ ref("ordem_servico_gtfs2") }}
+      {{ ref("ordem_servico_gtfs") }}
     WHERE
       tipo_dia = "Dia Útil"
       AND viagens_planejadas = 0),
@@ -16,9 +16,9 @@ WITH
       * EXCEPT(versao_modelo,
         shape)
     FROM
-      {{ ref("trips_gtfs2") }} AS t
+      {{ ref("trips_gtfs") }} AS t
     LEFT JOIN
-      {{ ref("shapes_geom_gtfs2") }} AS s
+      {{ ref("shapes_geom_gtfs") }} AS s
     USING
       (feed_start_date,
         shape_id)

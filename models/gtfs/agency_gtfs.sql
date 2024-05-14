@@ -3,7 +3,7 @@
   'data_type' :'date',
   'granularity': 'day' },
   unique_key = ['agency_id', 'feed_start_date'],
-  alias = 'agency',
+  alias = 'agency'
 ) }} 
 
 
@@ -20,7 +20,7 @@ SELECT
 FROM 
   {{ source('br_rj_riodejaneiro_gtfs_staging', 'agency') }} a
 JOIN 
-  {{ ref('feed_info_gtfs2') }} fi 
+  {{ ref('feed_info_gtfs') }} fi 
 ON 
   a.data_versao = CAST(fi.feed_start_date AS STRING)
 {% if is_incremental() -%}

@@ -12,7 +12,7 @@ WITH
     SELECT
       DISTINCT feed_start_date,
     FROM
-      {{ ref("ordem_servico_gtfs2") }} )),
+      {{ ref("ordem_servico_gtfs") }} )),
   subsidio_data_versao_efetiva AS (
   SELECT
     * EXCEPT(tipo_dia),
@@ -38,7 +38,7 @@ ON
   AND (d.feed_start_date = sd.feed_start_date
       OR sd.feed_start_date IS NULL)
 LEFT JOIN
-  {{ ref("ordem_servico_gtfs2") }} AS o
+  {{ ref("ordem_servico_gtfs") }} AS o
 ON
   d.feed_start_date = o.feed_start_date
   AND sd.tipo_dia = o.tipo_dia

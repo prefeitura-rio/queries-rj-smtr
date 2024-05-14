@@ -33,7 +33,7 @@ FROM
         'stops'
     ) }} s
 JOIN
-    {{ ref('feed_info_gtfs2') }} fi 
+    {{ ref('feed_info_gtfs') }} fi 
 ON 
     s.data_versao = CAST(fi.feed_start_date AS STRING)
 {% if is_incremental() -%}

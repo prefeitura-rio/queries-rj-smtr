@@ -40,7 +40,7 @@ WITH
     partidas_volta,
     tipo_os,
   FROM
-      {{ ref("ordem_servico_gtfs2") }}
+      {{ ref("ordem_servico_gtfs") }}
   WHERE
     feed_start_date IN ('{{ feed_start_dates|join("', '") }}')
   ),

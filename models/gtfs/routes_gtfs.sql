@@ -4,7 +4,6 @@
     'granularity': 'day' },
     unique_key = ['route_id', 'feed_start_date'],
     alias = 'routes'
-
 )}} 
 
 
@@ -32,7 +31,7 @@ SELECT
     'routes'
   ) }} r 
 JOIN
-  {{ ref('feed_info_gtfs2') }} fi 
+  {{ ref('feed_info_gtfs') }} fi 
 ON 
   r.data_versao = CAST(fi.feed_start_date AS STRING)
 {% if is_incremental() -%}

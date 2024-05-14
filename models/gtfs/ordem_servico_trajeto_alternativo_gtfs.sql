@@ -5,7 +5,7 @@
       "data_type": "date",
       "granularity": "day"
     },
-    alias = "ordem_servico_trajeto_alternativo",
+    alias = "ordem_servico_trajeto_alternativo"
   ) 
 }} 
 
@@ -27,7 +27,7 @@ WITH ordem_servico_trajeto_alternativo AS (
   FROM 
     {{ source("br_rj_riodejaneiro_gtfs_staging", "ordem_servico_trajeto_alternativo") }} O
   LEFT JOIN 
-    {{ ref("feed_info_gtfs2") }} fi 
+    {{ ref("feed_info_gtfs") }} fi 
   ON 
     o.data_versao = CAST(fi.feed_start_date AS STRING)
   {% if is_incremental() -%}

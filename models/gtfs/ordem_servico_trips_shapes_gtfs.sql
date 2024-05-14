@@ -15,7 +15,7 @@ WITH
     SELECT
       *
     FROM
-      {{ ref("shapes_geom_gtfs2") }}
+      {{ ref("shapes_geom_gtfs") }}
     {% if is_incremental() -%}
     WHERE 
       feed_start_date = '{{ var("data_versao_gtfs") }}'
@@ -46,9 +46,9 @@ WITH
         shape_id,
         indicador_trajeto_alternativo
       FROM
-        {{ ref("ordem_servico_sentido_atualizado_aux_gtfs2") }} AS o
+        {{ ref("ordem_servico_sentido_atualizado_aux_gtfs") }} AS o
       LEFT JOIN
-        {{ ref("trips_filtrada_aux_gtfs2") }} AS t
+        {{ ref("trips_filtrada_aux_gtfs") }} AS t
       ON
         t.feed_version = o.feed_version
         AND o.servico = t.trip_short_name
@@ -81,15 +81,15 @@ WITH
         shape_id,
         indicador_trajeto_alternativo
       FROM
-        {{ ref("ordem_servico_trajeto_alternativo_sentido_atualizado_aux_gtfs2") }} AS ot
+        {{ ref("ordem_servico_trajeto_alternativo_sentido_atualizado_aux_gtfs") }} AS ot
       LEFT JOIN
-        {{ ref("ordem_servico_sentido_atualizado_aux_gtfs2") }} AS o
+        {{ ref("ordem_servico_sentido_atualizado_aux_gtfs") }} AS o
       USING
         (feed_version,
           servico,
           sentido)
       LEFT JOIN
-        {{ ref("trips_filtrada_aux_gtfs2") }} AS t
+        {{ ref("trips_filtrada_aux_gtfs") }} AS t
       ON
         t.feed_version = o.feed_version
         AND o.servico = t.trip_short_name

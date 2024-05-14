@@ -1,5 +1,5 @@
 /*
-  ordem_servico_gtfs2 com sentidos despivotados, ajustes nos horários e com atualização dos sentidos circulares
+  ordem_servico_gtfs com sentidos despivotados, ajustes nos horários e com atualização dos sentidos circulares
 */
 {{
   config(
@@ -24,7 +24,7 @@ WITH
         END
           AS sentido
         FROM
-          {{ ref("trips_filtrada_aux_gtfs2") }}
+          {{ ref("trips_filtrada_aux_gtfs") }}
         WHERE
           indicador_trajeto_alternativo IS FALSE
       )   
@@ -60,7 +60,7 @@ WITH
                     NULL
       ) AS fim_periodo,
     FROM 
-      {{ ref('ordem_servico_gtfs2') }}
+      {{ ref('ordem_servico_gtfs') }}
     {% if is_incremental() -%}
       WHERE 
         feed_start_date = '{{ var("data_versao_gtfs") }}'
