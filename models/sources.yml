@@ -82,11 +82,11 @@ sources:
       - name: rdo40_tratado
       - name: rdo40_registros_sppo
 
-  - name: projeto_subsidio_sppo_encontro_contas_jan_24
+  - name: projeto_subsidio_sppo_encontro_contas
     database: rj-smtr
 
     tables:
-      - name: subsidio_parametros_atualizada
+      - name: parametros_km
 
   - name: veiculo_staging
     database: rj-smtr-staging
