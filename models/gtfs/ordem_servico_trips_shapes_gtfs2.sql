@@ -86,6 +86,7 @@ WITH
         {{ ref("ordem_servico_sentido_atualizado_aux_gtfs2") }} AS o
       USING
         (feed_version,
+          tipo_os,
           servico,
           sentido)
       LEFT JOIN
