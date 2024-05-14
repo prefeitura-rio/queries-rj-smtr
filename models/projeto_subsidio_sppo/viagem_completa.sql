@@ -136,6 +136,10 @@ and
         -- 3. Viagens que nao sao afetadas pelo fechamento das vias
         (inicio_periodo = "00:00:00" and fim_periodo = "23:59:59")
     )
+{% elif var("run_date") in ("2024-05-05", "2024-05-06") %}
+-- Apuração "Madonna · The Celebration Tour in Rio"
+and
+    (datetime_partida between inicio_periodo and fim_periodo)
 {% endif %}
 ),
 -- 3. Filtra viagens com mesma chegada e partida pelo maior % de conformidade do shape

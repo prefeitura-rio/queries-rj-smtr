@@ -153,6 +153,7 @@ select
     s.end_pt,
     SAFE_CAST(NULL AS INT64) AS id_tipo_trajeto, -- Adaptação para formato da SUBSIDIO_V6
     SAFE_CAST(NULL AS STRING) AS feed_version, -- Adaptação para formato da SUBSIDIO_V6
+    SAFE_CAST(NULL AS DATETIME) AS datetime_ultima_atualizacao -- Adaptação para formato da SUBSIDIO_V7
 from
     quadro_tratada p
 inner join
@@ -191,8 +192,42 @@ SELECT
   sentido,
   distancia_planejada,
   distancia_total_planejada,
-  inicio_periodo,
-  fim_periodo,
+  IF(inicio_periodo IS NOT NULL AND ARRAY_LENGTH(SPLIT(inicio_periodo, ":")) = 3, 
+    DATETIME_ADD(
+        DATETIME(
+            d.data, 
+            PARSE_TIME("%T", 
+                CONCAT(
+                SAFE_CAST(MOD(SAFE_CAST(SPLIT(inicio_periodo, ":")[OFFSET(0)] AS INT64), 24) AS INT64), 
+                ":", 
+                SAFE_CAST(SPLIT(inicio_periodo, ":")[OFFSET(1)] AS INT64), 
+                ":", 
+                SAFE_CAST(SPLIT(inicio_periodo, ":")[OFFSET(2)] AS INT64)
+                )
+            )
+        ),
+        INTERVAL DIV(SAFE_CAST(SPLIT(inicio_periodo, ":")[OFFSET(0)] AS INT64), 24) DAY
+    ), 
+    NULL
+  ) AS inicio_periodo,
+  IF(fim_periodo IS NOT NULL AND ARRAY_LENGTH(SPLIT(fim_periodo, ":")) = 3, 
+    DATETIME_ADD(
+        DATETIME(
+            d.data, 
+            PARSE_TIME("%T", 
+                CONCAT(
+                SAFE_CAST(MOD(SAFE_CAST(SPLIT(fim_periodo, ":")[OFFSET(0)] AS INT64), 24) AS INT64), 
+                ":", 
+                SAFE_CAST(SPLIT(fim_periodo, ":")[OFFSET(1)] AS INT64), 
+                ":", 
+                SAFE_CAST(SPLIT(fim_periodo, ":")[OFFSET(2)] AS INT64)
+                )
+            )
+        ),
+        INTERVAL DIV(SAFE_CAST(SPLIT(fim_periodo, ":")[OFFSET(0)] AS INT64), 24) DAY
+    ), 
+    NULL
+  ) AS fim_periodo,
   trip_id_planejado,
   trip_id,
   shape_id,
@@ -204,6 +239,7 @@ SELECT
   end_pt,
   id_tipo_trajeto,
   feed_version,
+  CURRENT_DATETIME("America/Sao_Paulo") AS datetime_ultima_atualizacao
 FROM
   data_versao_efetiva AS d
 LEFT JOIN

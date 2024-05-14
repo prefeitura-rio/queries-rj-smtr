@@ -344,14 +344,15 @@ WITH
       WHEN data BETWEEN DATE(2024,03,18) AND DATE(2024,03,29) THEN "2024-03-18" -- OS mar/Q2
       WHEN data BETWEEN DATE(2024,03,30) AND DATE(2024,04,14) THEN "2024-03-30"  -- OS abr/Q1
       WHEN data BETWEEN DATE(2024,04,15) AND DATE(2024,05,02) THEN "2024-04-15"  -- OS abr/Q2
-      WHEN data BETWEEN DATE(2024,05,03) AND DATE(2024,05,31) THEN "2024-05-03"  -- OS maio/Q1
+      WHEN data BETWEEN DATE(2024,05,03) AND DATE(2024,05,03) THEN "2024-05-03"  -- OS maio/Q1
+      WHEN data BETWEEN DATE(2024,05,04) AND DATE(2024,05,04) THEN "2024-05-04"  -- OS maio/Q1 (Madonna · The Celebration Tour in Rio)
+      WHEN data BETWEEN DATE(2024,05,05) AND DATE(2024,05,31) THEN "2024-05-03"  -- OS maio/Q1
     END AS feed_version,
-    -- CASE
-    --   WHEN data = DATE(2024,05,04) THEN "Madonna 2024-05-04"
-    --   WHEN data = DATE(2024,05,05) THEN "Madonna 2024-05-05"
-    --   ELSE "Regular"
-    -- END AS tipo_os,
-    "Regular" AS tipo_os,
+    CASE
+      WHEN data = DATE(2024,05,04) THEN "Madonna 2024-05-04"
+      WHEN data = DATE(2024,05,05) THEN "Madonna 2024-05-05"
+      ELSE "Regular"
+    END AS tipo_os,
   FROM UNNEST(GENERATE_DATE_ARRAY("{{var('DATA_SUBSIDIO_V6_INICIO')}}", "2024-12-31")) AS data)
 SELECT
   data,
