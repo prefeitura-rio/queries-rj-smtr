@@ -18,7 +18,11 @@ SELECT
     id_operadora,
     operadora,
     servico,
-    id_veiculo,
+    CASE
+      WHEN modo = "VLT" THEN SUBSTRING(id_veiculo, 1, 3)
+      WHEN modo = "BRT" THEN NULL
+      ELSE id_veiculo
+    END AS id_veiculo,
     id_validador,
     id_transmissao_gps,
     latitude,
@@ -39,6 +43,9 @@ FROM
       WHERE
           DATE(data) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
           AND datetime_captura > DATETIME("{{var('date_range_start')}}") AND datetime_captura <= DATETIME("{{var('date_range_end')}}")
+    {% else %}
+      WHERE
+        DATE(data) >= DATE("2024-03-27")
     {% endif %}
 )
 WHERE
