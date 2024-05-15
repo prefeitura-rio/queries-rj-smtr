@@ -182,9 +182,11 @@ models:
         description: "Data inicial da quinzena"
       - name: data_final_quinzena
         description: "Data final da quinzena"
+      - name: consorcio_rdo
+        description: "Consórcio informado no RDO"
       - name: servico_tratado_rdo
         description: "Serviço tratado com base no campo linha do RDO,
-        utilizado para cruzamento com o plano operacional."
+        utilizado para cruzamento com o plano operacional"
       - name: linha_rdo
         description: "Linha conforme RDO"
       - name: tipo_servico_rdo
