@@ -1,3 +1,9 @@
+{{
+    config(
+        materialized="ephemeral",
+    )
+}}
+
 -- 0. Lista servicos e dias atípicos (pagos por recurso)
 WITH
   recursos AS (
