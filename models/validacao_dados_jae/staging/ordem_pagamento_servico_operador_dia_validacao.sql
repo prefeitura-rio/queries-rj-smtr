@@ -62,8 +62,8 @@ WITH transacao AS (
       t.cd_consorcio = dc.id_consorcio_jae
     WHERE
         {% if is_incremental() %}
-            DATE(t.data) BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 1 DAY) AND DATE_ADD(DATE("{{var('date_range_end')}}"), INTERVAL 1 DAY)
-            AND t.data_processamento BETWEEN DATE_SUB(DATE("{{var('date_range_start')}}"), INTERVAL 1 DAY) AND DATE_ADD(DATE("{{var('date_range_end')}}"), INTERVAL 1 DAY)
+            DATE(t.data) BETWEEN DATE_SUB(DATE("{{var('run_date')}}"), INTERVAL 2 DAY) AND DATE("{{var('run_date')}}"))
+            AND t.data_processamento BETWEEN DATE_SUB(DATE("{{var('run_date')}}"), INTERVAL 2 DAY) AND DATE("{{var('run_date')}}")
         {% else %}
             DATE(t.data) <= CURRENT_DATE("America/Sao_Paulo")
             AND DATE(t.data_processamento) <= CURRENT_DATE("America/Sao_Paulo")
@@ -101,7 +101,7 @@ transacao_agg AS (
     WHERE
         -- Remove dados com data de ordem de pagamento maiores que a execução do modelo
         {% if is_incremental() %}
-            t.data_ordem <= DATE("{{var('date_range_end')}}")
+            t.data_ordem <= DATE("{{var('run_date')}}")
         {% else %}
             t.data_ordem <= CURRENT_DATE("America/Sao_Paulo")
         {% endif %}
@@ -121,7 +121,7 @@ ordem_pagamento AS (
     {{ ref("ordem_pagamento_servico_operador_dia") }}
   {% if is_incremental() %}
     WHERE
-      data_ordem BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+      data_ordem = DATE("{{var('run_date')}}")
   {% endif %}
 ),
 id_ordem_pagamento AS (
@@ -132,7 +132,7 @@ id_ordem_pagamento AS (
     {{ ref("ordem_pagamento_dia") }}
   {% if is_incremental() %}
     WHERE
-      data_ordem BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+      data_ordem = DATE("{{var('run_date')}}")
   {% endif %}
 ),
 transacao_ordem AS (

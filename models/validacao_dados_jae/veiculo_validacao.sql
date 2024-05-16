@@ -15,8 +15,8 @@ WITH licenciamento AS (
     REGEXP_REPLACE(id_veiculo, r'[^0-9]', '') AS id_veiculo,
     status
   FROM
-    -- {{ ref("sppo_veiculo_dia") }} l
-    rj-smtr.veiculo.sppo_veiculo_dia
+    {{ ref("sppo_veiculo_dia") }} l
+    -- rj-smtr.veiculo.sppo_veiculo_dia
   WHERE
     {% if is_incremental() %}
       data BETWEEN DATE_SUB("{{var('date_range_start')}}", INTERVAL 7 DAY) AND DATE_SUB("{{var('date_range_end')}}", INTERVAL 7 DAY)
@@ -30,8 +30,8 @@ gps_sppo AS (
     REGEXP_REPLACE(id_veiculo, r'[^0-9]', '') AS id_veiculo,
     COUNT(DISTINCT CONCAT(id_veiculo, timestamp_gps, servico)) AS quantidade_gps_onibus
   FROM
-    -- {{ ref("gps_sppo") }}
-    rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo
+    {{ ref("gps_sppo") }}
+    -- rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo
   WHERE
     {% if is_incremental() %}
       data BETWEEN DATE_SUB("{{var('date_range_start')}}", INTERVAL 7 DAY) AND DATE_SUB("{{var('date_range_end')}}", INTERVAL 7 DAY)
@@ -52,7 +52,8 @@ transacao AS (
     {{ ref("transacao") }}
   WHERE
     {% if is_incremental() %}
-      data BETWEEN DATE_SUB("{{var('date_range_start')}}", INTERVAL 5 DAY) AND DATE_SUB("{{var('date_range_end')}}", INTERVAL 7 DAY)
+      data = DATE_SUB(DATE("{{var('run_date')}}"), INTERVAL 7 DAY) 
+      -- BETWEEN DATE_SUB("{{var('date_range_start')}}", INTERVAL 5 DAY) AND DATE_SUB("{{var('date_range_end')}}", INTERVAL 7 DAY)
     {% else %}
       data BETWEEN DATE("2024-04-01") AND DATE_SUB(CURRENT_DATE("America/Sao_Paulo"), INTERVAL 7 DAY)
     {% endif %}
@@ -71,7 +72,8 @@ gps_validador AS (
     {{ ref("gps_validador") }}
   WHERE
     {% if is_incremental() %}
-      data BETWEEN DATE_SUB("{{var('date_range_start')}}", INTERVAL 7 DAY) AND DATE_SUB("{{var('date_range_end')}}", INTERVAL 7 DAY)
+      data = DATE_SUB(DATE("{{var('run_date')}}"), INTERVAL 7 DAY)
+      -- data BETWEEN DATE_SUB("{{var('date_range_start')}}", INTERVAL 7 DAY) AND DATE_SUB("{{var('date_range_end')}}", INTERVAL 7 DAY)
     {% else %}
       data BETWEEN DATE("2024-04-01") AND DATE_SUB(CURRENT_DATE("America/Sao_Paulo"), INTERVAL 7 DAY)
     {% endif %}

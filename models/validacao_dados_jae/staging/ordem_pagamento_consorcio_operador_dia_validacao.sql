@@ -22,7 +22,8 @@ WITH ordem_pagamento_servico_operador_dia AS (
     {{ ref("ordem_pagamento_servico_operador_dia_validacao") }}
   {% if is_incremental() %}
     WHERE
-      data_ordem BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+      data_ordem = DATE("{{var('run_date')}}")
+      -- data_ordem BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
   {% endif %}
   GROUP BY
     1,
@@ -42,7 +43,8 @@ ordem_pagamento_consorcio_operador_dia AS (
     {{ ref("ordem_pagamento_consorcio_operador_dia") }}
   {% if is_incremental() %}
     WHERE
-      data_ordem BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+      data_ordem = DATE("{{var('run_date')}}")
+      -- data_ordem BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
   {% endif %}
 )
 SELECT
