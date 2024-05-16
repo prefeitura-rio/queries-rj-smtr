@@ -14,7 +14,7 @@ models:
         description: "Indica se a sequência de modos não aparece na tabela br_rj_riodejaneiro_bilhetagem.matriz_integracao"
       - name: indicador_tempo_integracao_invalido
         description: "Indica se o tempo entre a primeira e a última transação da integração é maior que 3 horas"
-      - name: indicador_intervalo_transacao_baixo
+      - name: indicador_intervalo_transacao_suspeito
         description: "Indica se existe algum intervalo entre transações menor que 5 minutos dentro da integração"
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)" 
@@ -69,4 +69,42 @@ models:
         description: "Indica se o serviço não tem correspondência com as tabela 'trips' ou 'stops' do GTFS"
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)"
+  - name: ordem_pagamento_validacao
+    description: "Tabela para validação dos dados da ordem de pagamento da Jaé"
+    columns:
+      - name: data_ordem
+        description: "Data da ordem de pagamento (partição)"
+      - name: id_ordem_pagamento
+        description: "Identificador único da ordem de pagamento"
+      - name: indicador_agregacao_invalida
+        description: "Indica se a soma dos valores de todos os consórcios pagos no dia é igual ao valor total do dia informado pela Jaé"
+      - name: indicador_servico_operador_invalido
+        description: "Indica se as informações da tabela ordem_pagamento_servico_operador_dia estão válidas"
+      - name: indicador_consorcio_operador_invalido
+        description: "Indica se as informações da tabela ordem_pagamento_consorcio_operador_dia estão válidas"
+      - name: indicador_consorcio_invalido
+        description: "Indica se as informações da tabela ordem_pagamento_consorcio_dia estão válidas"
+      - name: indicador_ordem_invalida
+        description: "Indica se a ordem de pagamento é válida"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: veiculo_validacao
+    description: "Tabela para validação dos dados de veículos da Jaé"
+    columns:
+      - name: data
+        description: "Data das informações enviadas pelo validador da Jaé (partição)"
+      - name: id_validador
+        description: "Número de série do validador"
+      - name: id_veiculo
+        description: "Código identificador do veículo (número de ordem)"
+      - name: quantidade_gps_validador
+        description: "Quantidade de registros de GPS do validador da Jaé no dia"
+      - name: quantidade_gps_onibus
+        description: "Quantidade de registros de GPS do veículo no dia"
+      - name: quantidade_transacao
+        description: "Quantidade de transações feitas utilizando o validador da Jaé no dia"
+      - name: indicador_veiculo_licenciado
+        description: "Indica se o veículo estava licenciado no dia"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)" 
         
