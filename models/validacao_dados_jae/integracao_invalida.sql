@@ -44,7 +44,7 @@ indicadores AS (
     modos,
     modos NOT IN (SELECT DISTINCT modos FROM sequencias_validas) AS indicador_fora_matriz,
     TIMESTAMP_DIFF(datetime_ultima_transacao, datetime_primeira_transacao, MINUTE) > 180 AS indicador_tempo_integracao_invalido,
-    menor_intervalo < 5 AS indicador_intervalo_transacao_baixo
+    menor_intervalo < 5 AS indicador_intervalo_transacao_suspeito
   FROM
     integracao_agg
 )
