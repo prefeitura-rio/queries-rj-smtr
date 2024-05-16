@@ -62,7 +62,7 @@ WITH transacao AS (
       t.cd_consorcio = dc.id_consorcio_jae
     WHERE
         {% if is_incremental() %}
-            DATE(t.data) BETWEEN DATE_SUB(DATE("{{var('run_date')}}"), INTERVAL 2 DAY) AND DATE("{{var('run_date')}}"))
+            DATE(t.data) BETWEEN DATE_SUB(DATE("{{var('run_date')}}"), INTERVAL 2 DAY) AND DATE("{{var('run_date')}}")
             AND t.data_processamento BETWEEN DATE_SUB(DATE("{{var('run_date')}}"), INTERVAL 2 DAY) AND DATE("{{var('run_date')}}")
         {% else %}
             DATE(t.data) <= CURRENT_DATE("America/Sao_Paulo")

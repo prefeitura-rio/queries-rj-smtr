@@ -53,7 +53,6 @@ consorcio_dia_validacao AS (
   {% if is_incremental() %}
     WHERE
       data_ordem = DATE("{{var('run_date')}}")
-      -- data_ordem BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
   {% endif %}
   GROUP BY
     1,
@@ -70,7 +69,6 @@ ordem_pagamento_dia AS (
   {% if is_incremental() %}
     WHERE
       data_ordem = DATE("{{var('run_date')}}")
-      -- data_ordem BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
   {% endif %}
 ),
 validacao AS (

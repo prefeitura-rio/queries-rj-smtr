@@ -23,7 +23,6 @@ WITH ordem_pagamento_servico_operador_dia AS (
   {% if is_incremental() %}
     WHERE
       data_ordem = DATE("{{var('run_date')}}")
-      -- data_ordem BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
   {% endif %}
   GROUP BY
     1,
@@ -44,7 +43,6 @@ ordem_pagamento_consorcio_operador_dia AS (
   {% if is_incremental() %}
     WHERE
       data_ordem = DATE("{{var('run_date')}}")
-      -- data_ordem BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
   {% endif %}
 )
 SELECT

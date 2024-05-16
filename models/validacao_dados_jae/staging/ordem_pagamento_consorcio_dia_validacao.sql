@@ -40,7 +40,6 @@ ordem_pagamento_consorcio_dia AS (
   {% if is_incremental() %}
     WHERE
       data_ordem = DATE("{{var('run_date')}}") 
-      -- data_ordem BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
   {% endif %}
 )
 SELECT
