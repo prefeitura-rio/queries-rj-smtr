@@ -16,12 +16,11 @@ WITH licenciamento AS (
     status
   FROM
     {{ ref("sppo_veiculo_dia") }} l
-    -- rj-smtr.veiculo.sppo_veiculo_dia
   WHERE
     {% if is_incremental() %}
-      data BETWEEN DATE_SUB("{{var('date_range_start')}}", INTERVAL 7 DAY) AND DATE_SUB("{{var('date_range_end')}}", INTERVAL 7 DAY)
+      data = DATE_SUB(DATE("{{var('run_date')}}"), INTERVAL 7 DAY)
     {% else %}
-      data >= "2024-04-01"
+      data >= "2024-01-01"
     {% endif %}
 ),
 gps_sppo AS (
@@ -31,12 +30,11 @@ gps_sppo AS (
     COUNT(DISTINCT CONCAT(id_veiculo, timestamp_gps, servico)) AS quantidade_gps_onibus
   FROM
     {{ ref("gps_sppo") }}
-    -- rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo
   WHERE
     {% if is_incremental() %}
-      data BETWEEN DATE_SUB("{{var('date_range_start')}}", INTERVAL 7 DAY) AND DATE_SUB("{{var('date_range_end')}}", INTERVAL 7 DAY)
+      data = DATE_SUB(DATE("{{var('run_date')}}"), INTERVAL 7 DAY)
     {% else %}
-      data BETWEEN DATE("2024-04-01") AND DATE_SUB(CURRENT_DATE("America/Sao_Paulo"), INTERVAL 7 DAY)
+      data BETWEEN DATE("2024-01-01") AND DATE_SUB(CURRENT_DATE("America/Sao_Paulo"), INTERVAL 7 DAY)
     {% endif %}
   GROUP BY
     1,
@@ -53,9 +51,8 @@ transacao AS (
   WHERE
     {% if is_incremental() %}
       data = DATE_SUB(DATE("{{var('run_date')}}"), INTERVAL 7 DAY) 
-      -- BETWEEN DATE_SUB("{{var('date_range_start')}}", INTERVAL 5 DAY) AND DATE_SUB("{{var('date_range_end')}}", INTERVAL 7 DAY)
     {% else %}
-      data BETWEEN DATE("2024-04-01") AND DATE_SUB(CURRENT_DATE("America/Sao_Paulo"), INTERVAL 7 DAY)
+      data BETWEEN DATE("2024-01-01") AND DATE_SUB(CURRENT_DATE("America/Sao_Paulo"), INTERVAL 7 DAY)
     {% endif %}
   GROUP BY
     1,
@@ -73,9 +70,8 @@ gps_validador AS (
   WHERE
     {% if is_incremental() %}
       data = DATE_SUB(DATE("{{var('run_date')}}"), INTERVAL 7 DAY)
-      -- data BETWEEN DATE_SUB("{{var('date_range_start')}}", INTERVAL 7 DAY) AND DATE_SUB("{{var('date_range_end')}}", INTERVAL 7 DAY)
     {% else %}
-      data BETWEEN DATE("2024-04-01") AND DATE_SUB(CURRENT_DATE("America/Sao_Paulo"), INTERVAL 7 DAY)
+      data BETWEEN DATE("2024-01-01") AND DATE_SUB(CURRENT_DATE("America/Sao_Paulo"), INTERVAL 7 DAY)
     {% endif %}
     AND modo = "Ônibus"
   GROUP BY
@@ -90,7 +86,8 @@ SELECT
   gv.quantidade_gps_validador,
   IFNULL(g.quantidade_gps_onibus, 0) AS quantidade_gps_onibus,
   IFNULL(t.quantidade_transacao, 0) AS quantidade_transacao,
-  l.id_veiculo IS NOT NULL AND l.status NOT IN ('Nao licenciado', 'Não licenciado') AS indicador_veiculo_licenciado
+  l.id_veiculo IS NOT NULL AND l.status NOT IN ('Nao licenciado', 'Não licenciado') AS indicador_veiculo_licenciado,
+  '{{ var("version") }}' AS versao
 FROM
   gps_validador gv
 LEFT JOIN
