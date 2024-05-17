@@ -43,9 +43,6 @@ FROM
       WHERE
           DATE(data) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
           AND datetime_captura > DATETIME("{{var('date_range_start')}}") AND datetime_captura <= DATETIME("{{var('date_range_end')}}")
-    {% else %}
-      WHERE
-        DATE(data) >= DATE("2024-03-27")
     {% endif %}
 )
 WHERE
