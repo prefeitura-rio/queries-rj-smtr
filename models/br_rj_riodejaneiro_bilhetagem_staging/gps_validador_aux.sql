@@ -12,7 +12,8 @@ SELECT
     g.timestamp_captura AS datetime_captura,
     do.id_operadora,
     do.operadora,
-    l.nr_linha AS servico,
+    g.codigo_linha_veiculo AS id_servico_jae,
+    s.servico,
     prefixo_veiculo AS id_veiculo,
     g.numero_serie_equipamento AS id_validador,
     g.id AS id_transmissao_gps,
@@ -28,6 +29,6 @@ LEFT JOIN
 ON
     g.codigo_operadora = do.id_operadora_jae
 LEFT JOIN
-    {{ ref("staging_linha") }} AS l
+    {{ ref("servicos") }} AS s
 ON
-    g.codigo_linha_veiculo = l.cd_linha
+    g.codigo_linha_veiculo = s.id_servico_jae

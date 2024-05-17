@@ -22,7 +22,7 @@ WITH transacao AS (
     t.id_operadora,
     t.operadora,
     t.id_servico_jae,
-    s.servico,
+    t.servico,
     s.descricao_servico,
     t.id_transacao,
     t.longitude,
@@ -34,9 +34,6 @@ WITH transacao AS (
     s.id_servico_gtfs
   FROM
     {{ ref("transacao") }} t
-  LEFT JOIN
-    {{ ref("servicos") }} s
-  USING (id_servico_jae)
   {% if is_incremental() %}
     WHERE 
       data = DATE_SUB(DATE("{{var('run_date')}}"), INTERVAL 1 DAY)

@@ -17,6 +17,7 @@ SELECT
     datetime_captura,
     id_operadora,
     operadora,
+    id_servico_jae,
     servico,
     CASE
       WHEN modo = "VLT" THEN SUBSTRING(id_veiculo, 1, 3)

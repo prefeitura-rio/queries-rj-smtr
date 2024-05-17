@@ -82,6 +82,7 @@ transacao_agrupada AS (
         t.modo,
         t.consorcio,
         t.id_servico_jae,
+        t.servico,
         t.sentido,
         CASE
             WHEN i.id_integracao IS NOT NULL THEN "Integração"
@@ -128,6 +129,7 @@ transacao_tratada AS (
         t.modo,
         t.consorcio,
         t.id_servico_jae,
+        t.servico,
         t.sentido,
         CASE
             WHEN t.tipo_transacao = "Integração" THEN "Integração"

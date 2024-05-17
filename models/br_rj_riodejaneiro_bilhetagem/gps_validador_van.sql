@@ -17,6 +17,7 @@ SELECT
     datetime_captura,
     id_operadora,
     operadora,
+    id_servico_jae,
     servico,
     id_veiculo,
     id_validador,
