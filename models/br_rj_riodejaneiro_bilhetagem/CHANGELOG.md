@@ -11,6 +11,7 @@
 - Adiciona coluna id_servico_jae nos modelos (https://github.com/prefeitura-rio/queries-rj-smtr/pull/311):
   -  `gps_validador.sql`
   -  `gps_validador_van.sql`
+  -  `staging/gps_validador_aux.sql`
 
 - Muda tratamento da coluna `servico` no modelo de `staging/gps_validador_aux.sql` para pegar o dado da tabela de cadastro 
 
