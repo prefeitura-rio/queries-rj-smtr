@@ -18,7 +18,11 @@ SELECT
     id_operadora,
     operadora,
     servico,
-    id_veiculo,
+    CASE
+      WHEN modo = "VLT" THEN SUBSTRING(id_veiculo, 1, 3)
+      WHEN modo = "BRT" THEN NULL
+      ELSE id_veiculo
+    END AS id_veiculo,
     id_validador,
     id_transmissao_gps,
     latitude,

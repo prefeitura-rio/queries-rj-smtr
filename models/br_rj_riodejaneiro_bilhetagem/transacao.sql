@@ -106,7 +106,12 @@ SELECT
     do.operadora,
     t.cd_linha AS id_servico_jae,
     sentido,
-    NULL AS id_veiculo,
+    CASE
+      WHEN m.modo = "VLT" THEN SUBSTRING(t.veiculo_id, 1, 3)
+      WHEN m.modo = "BRT" THEN NULL
+      ELSE t.veiculo_id
+    END AS id_veiculo,
+    t.numero_serie_validador AS id_validador,
     COALESCE(t.id_cliente, t.pan_hash) AS id_cliente,
     id AS id_transacao,
     tp.tipo_pagamento,

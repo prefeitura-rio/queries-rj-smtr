@@ -30,6 +30,12 @@ SELECT
     o.valor_rateio_credito AS valor_rateio_credito,
     o.qtd_rateio_debito AS quantidade_transacao_rateio_debito,
     o.valor_rateio_debito AS valor_rateio_debito,
+    (
+        o.qtd_debito
+        + o.qtd_vendaabordo 
+        + o.qtd_gratuidade
+        + o.qtd_integracao
+    ) AS quantidade_total_transacao,
     o.valor_bruto AS valor_total_transacao_bruto,
     o.valor_taxa AS valor_desconto_taxa,
     o.valor_liquido AS valor_total_transacao_liquido,
