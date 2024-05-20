@@ -1,19 +1,22 @@
 # Changelog - bilhetagem
 
-## [1.2.0] - 2024-05-17
+## [1.2.0] - 2024-05-20
 
 ### Alterado
-- Adiciona coluna `servico` nos modelos (https://github.com/prefeitura-rio/queries-rj-smtr/pull/311):
+- Adiciona colunas `servico_jae` e `descricao_servico_jae` nos modelos (https://github.com/prefeitura-rio/queries-rj-smtr/pull/311):
   - `transacao.sql`
   - `integracao.sql`
   - `ordem_pagamento_servico_operador_dia.sql`
   - `passageiros_hora.sql`
+  -  `gps_validador.sql`
+  -  `gps_validador_van.sql`
+  -  `staging/gps_validador_aux.sql`
 - Adiciona coluna id_servico_jae nos modelos (https://github.com/prefeitura-rio/queries-rj-smtr/pull/311):
   -  `gps_validador.sql`
   -  `gps_validador_van.sql`
   -  `staging/gps_validador_aux.sql`
 
-- Muda tratamento da coluna `servico` no modelo de `staging/gps_validador_aux.sql` para pegar o dado da tabela de cadastro 
+- Remove coluna `servico` no modelo de `staging/gps_validador_aux.sql` para pegar o dado da tabela de cadastro 
 
 ## [1.1.0] - 2024-05-16
 
