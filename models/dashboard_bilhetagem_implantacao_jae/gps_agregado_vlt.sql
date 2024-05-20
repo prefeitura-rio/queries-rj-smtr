@@ -7,7 +7,7 @@
 WITH gps_agregado AS (
     SELECT
         data,
-        servico,
+        servico_jae AS servico,
         id_validador,
         latitude,
         longitude,

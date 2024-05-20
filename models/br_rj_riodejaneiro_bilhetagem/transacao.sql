@@ -167,9 +167,9 @@ ON
     AND t.data_transacao >= g.data_inicio_validade
     AND (t.data_transacao < g.data_fim_validade OR g.data_fim_validade IS NULL)
 LEFT JOIN
-    {{ ref("staging_linha_sem_ressarcimento") }} l
+    {{ ref("staging_linha_sem_ressarcimento") }} lsr
 ON
     t.cd_linha = l.id_linha
 WHERE
-    l.id_linha IS NULL
+    lsr.id_linha IS NULL
     AND DATE(data_transacao) >= "2023-07-17"
