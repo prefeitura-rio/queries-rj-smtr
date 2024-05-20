@@ -3,7 +3,7 @@
 ## [1.2.1] - 2024-05-20
 
 ### Corrigido
-- Altera alias da da tabela `linha_sem_ressarcimento` no modelo `transacao.sql`
+- Altera alias da tabela `linha_sem_ressarcimento` no modelo `transacao.sql`
 
 ## [1.2.0] - 2024-05-20
 
