@@ -56,4 +56,4 @@ FROM
 WHERE
   indicador_fora_matriz = TRUE
   OR indicador_tempo_integracao_invalido = TRUE
-  OR indicador_intervalo_transacao_baixo = TRUE
+  OR indicador_intervalo_transacao_suspeito = TRUE

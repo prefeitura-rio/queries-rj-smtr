@@ -51,7 +51,7 @@ indicadores AS (
     (
       (latitude_tratada != 0 OR longitude_tratada != 0)
       AND NOT ST_INTERSECTSBOX(ST_GEOGPOINT(longitude_tratada, latitude_tratada), -43.87, -23.13, -43.0, -22.59)
-    ) AS indicador_geolocalizacao_fora_rj,
+    ) AS indicador_geolocalizacao_fora_rio,
     (
       (latitude_tratada != 0 OR longitude_tratada != 0)
       AND modo = "BRT"
@@ -65,7 +65,7 @@ SELECT
   * EXCEPT(indicador_servico_fora_gtfs),
   CASE
     WHEN indicador_geolocalizacao_zerada = TRUE THEN "Geolocalização zerada"
-    WHEN indicador_geolocalizacao_fora_rj = TRUE THEN "Geolocalização fora do município"
+    WHEN indicador_geolocalizacao_fora_rio = TRUE THEN "Geolocalização fora do município"
     WHEN indicador_geolocalizacao_fora_stop = TRUE THEN "Geolocalização fora do stop"
   END AS descricao_geolocalizacao_invalida,
   indicador_servico_fora_gtfs,
@@ -74,6 +74,6 @@ FROM
   indicadores
 WHERE
   indicador_geolocalizacao_zerada = TRUE
-  OR indicador_geolocalizacao_fora_rj = TRUE
+  OR indicador_geolocalizacao_fora_rio = TRUE
   OR indicador_geolocalizacao_fora_stop = TRUE
   OR indicador_servico_fora_gtfs = TRUE

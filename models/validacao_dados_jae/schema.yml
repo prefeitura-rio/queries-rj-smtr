@@ -63,7 +63,7 @@ models:
         description: "Latitude do stop no GTFS (WGS84)"
       - name: indicador_geolocalizacao_zerada
         description: "Indica se a transação está com geolocalização zerada ou nula"
-      - name: indicador_geolocalizacao_fora_rj
+      - name: indicador_geolocalizacao_fora_rio
         description: "Indica se a transação está com geolocalização fora do município (transações com geolocalização zeradas não se enquadram)"
       - name: indicador_geolocalizacao_fora_stop
         description: "Indica se a transação do modo BRT está com geolocalização a mais de 100m da estação (transações com geolocalização zeradas não se enquadram)"
