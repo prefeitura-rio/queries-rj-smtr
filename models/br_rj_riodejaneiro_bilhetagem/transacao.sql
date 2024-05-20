@@ -105,6 +105,9 @@ SELECT
     do.id_operadora,
     do.operadora,
     t.cd_linha AS id_servico_jae,
+    -- s.servico,
+    l.nr_linha AS servico_jae,
+    l.nm_linha AS descricao_servico_jae,
     sentido,
     CASE
       WHEN m.modo = "VLT" THEN SUBSTRING(t.veiculo_id, 1, 3)
@@ -140,6 +143,14 @@ LEFT JOIN
     {{ ref("consorcios") }} AS dc
 ON
     t.cd_consorcio = dc.id_consorcio_jae
+LEFT JOIN
+    {{ ref("staging_linha") }} AS l
+ON
+    t.cd_linha = l.cd_linha
+-- LEFT JOIN
+--     {{ ref("servicos") }} AS s
+-- ON
+--     t.cd_linha = s.id_servico_jae
 LEFT JOIN
     tipo_transacao AS tt
 ON

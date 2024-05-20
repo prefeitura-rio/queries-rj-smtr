@@ -1,7 +1,26 @@
 # Changelog - bilhetagem
 
+## [1.2.0] - 2024-05-20
+
+### Alterado
+- Adiciona colunas `servico_jae` e `descricao_servico_jae` nos modelos (https://github.com/prefeitura-rio/queries-rj-smtr/pull/311):
+  - `transacao.sql`
+  - `integracao.sql`
+  - `ordem_pagamento_servico_operador_dia.sql`
+  - `passageiros_hora.sql`
+  -  `gps_validador.sql`
+  -  `gps_validador_van.sql`
+  -  `staging/gps_validador_aux.sql`
+- Adiciona coluna id_servico_jae nos modelos (https://github.com/prefeitura-rio/queries-rj-smtr/pull/311):
+  -  `gps_validador.sql`
+  -  `gps_validador_van.sql`
+  -  `staging/gps_validador_aux.sql`
+
+- Remove coluna `servico` no modelo de `staging/gps_validador_aux.sql` para pegar o dado da tabela de cadastro 
+
 ## [1.1.0] - 2024-05-16
 
+### Alterado
 - Adiciona tratamento da coluna id_veiculo nos modelos ` transacao.sql` e `gps_validador.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/297)
 - Adiciona coluna `quantidade_total_transacao` nos modelos `ordem_pagamento_consorcio_dia.sql`, `ordem_pagamento_consorcio_operador_dia.sql` e `ordem_pagamento_dia.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/297)
 - Remove validação do modelo `ordem_pagamento_servico_operador_dia.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/297)
