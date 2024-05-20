@@ -4,7 +4,7 @@
 
 ### Corrigido
 - Altera alias da tabela `linha_sem_ressarcimento` no modelo `transacao.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/317)
-- Corrige select servico no modelo `ordem_pagamento_servico_operador_dia.sql` ((https://github.com/prefeitura-rio/queries-rj-smtr/pull/317))
+- Corrige select servico no modelo `ordem_pagamento_servico_operador_dia.sql` ((https://github.com/prefeitura-rio/queries-rj-smtr/pull/317)
 
 ## [1.2.0] - 2024-05-20
 
