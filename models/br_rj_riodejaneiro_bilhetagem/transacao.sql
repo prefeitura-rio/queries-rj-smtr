@@ -169,7 +169,7 @@ ON
 LEFT JOIN
     {{ ref("staging_linha_sem_ressarcimento") }} lsr
 ON
-    t.cd_linha = l.id_linha
+    t.cd_linha = lsr.id_linha
 WHERE
     lsr.id_linha IS NULL
     AND DATE(data_transacao) >= "2023-07-17"
