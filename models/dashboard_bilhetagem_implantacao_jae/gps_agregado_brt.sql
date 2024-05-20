@@ -7,7 +7,7 @@
 WITH gps_agregado AS (
     SELECT
         data,
-        servico_jae AS servico_jae,
+        servico_jae AS servico,
         id_validador,
         latitude,
         longitude,
@@ -31,8 +31,8 @@ WITH gps_agregado AS (
         (
             SELECT
                 *,
-                MIN(datetime_gps) OVER (PARTITION BY servico, id_validador) AS primeiro_datetime_gps,
-                MAX(datetime_gps) OVER (PARTITION BY servico, id_validador) AS ultimo_datetime_gps,
+                MIN(datetime_gps) OVER (PARTITION BY servico_jae, id_validador) AS primeiro_datetime_gps,
+                MAX(datetime_gps) OVER (PARTITION BY servico_jae, id_validador) AS ultimo_datetime_gps,
                 ROW_NUMBER() OVER (PARTITION BY id_transmissao_gps ORDER BY datetime_captura DESC) AS rn
             FROM
                 {{ ref("gps_validador") }}
