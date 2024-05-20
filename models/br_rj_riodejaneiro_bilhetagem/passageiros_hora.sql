@@ -82,7 +82,8 @@ transacao_agrupada AS (
         t.modo,
         t.consorcio,
         t.id_servico_jae,
-        t.servico,
+        t.servico_jae,
+        t.descricao_servico_jae,
         t.sentido,
         CASE
             WHEN i.id_integracao IS NOT NULL THEN "Integração"
@@ -120,7 +121,9 @@ transacao_agrupada AS (
         6,
         7,
         8,
-        9
+        9,
+        10,
+        11
 ),
 transacao_tratada AS (
     SELECT
@@ -129,7 +132,8 @@ transacao_tratada AS (
         t.modo,
         t.consorcio,
         t.id_servico_jae,
-        t.servico,
+        t.servico_jae,
+        t.descricao_servico_jae,
         t.sentido,
         CASE
             WHEN t.tipo_transacao = "Integração" THEN "Integração"
@@ -148,6 +152,8 @@ SELECT
     t.modo,
     t.consorcio,
     t.id_servico_jae,
+    t.servico_jae,
+    t.descricao_servico_jae,
     t.sentido,
     t.tipo_transacao_smtr,
     CASE

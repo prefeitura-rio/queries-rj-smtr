@@ -18,7 +18,9 @@ SELECT
     id_operadora,
     operadora,
     id_servico_jae,
-    servico,
+    -- s.servico,
+    l.nr_linha AS servico_jae,
+    l.nm_linha AS descricao_servico_jae,
     CASE
       WHEN modo = "VLT" THEN SUBSTRING(id_veiculo, 1, 3)
       WHEN modo = "BRT" THEN NULL

@@ -18,7 +18,9 @@ WITH ordem_pagamento AS (
         do.id_operadora,
         do.operadora,
         r.id_linha AS id_servico_jae,
-        s.servico,
+        -- s.servico,
+        l.nr_linha AS servico_jae,
+        l.nm_linha AS descricao_servico_jae,
         r.id_ordem_pagamento AS id_ordem_pagamento,
         r.id_ordem_ressarcimento AS id_ordem_ressarcimento,
         r.qtd_debito AS quantidade_transacao_debito,
@@ -56,9 +58,13 @@ WITH ordem_pagamento AS (
     ON
         r.id_consorcio = dc.id_consorcio_jae
     LEFT JOIN
-        {{ ref("servicos") }} AS s
+        {{ ref("staging_linha") }} AS l
     ON
-        r.id_linha = s.id_servico_jae
+        r.id_linha = l.cd_linha
+    -- LEFT JOIN
+    --     {{ ref("servicos") }} AS s
+    -- ON
+    --     r.id_linha = s.id_servico_jae
     {% if is_incremental() %}
         WHERE
             DATE(r.data) BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")

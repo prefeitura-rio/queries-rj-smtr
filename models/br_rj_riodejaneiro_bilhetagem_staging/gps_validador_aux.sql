@@ -13,7 +13,9 @@ SELECT
     do.id_operadora,
     do.operadora,
     g.codigo_linha_veiculo AS id_servico_jae,
-    s.servico,
+    -- s.servico,
+    l.nr_linha AS servico_jae,
+    l.nm_linha AS descricao_servico_jae,
     prefixo_veiculo AS id_veiculo,
     g.numero_serie_equipamento AS id_validador,
     g.id AS id_transmissao_gps,
@@ -29,6 +31,10 @@ LEFT JOIN
 ON
     g.codigo_operadora = do.id_operadora_jae
 LEFT JOIN
-    {{ ref("servicos") }} AS s
+    {{ ref("staging_linha") }} AS l
 ON
-    g.codigo_linha_veiculo = s.id_servico_jae
+    g.codigo_linha_veiculo = l.cd_linha
+-- LEFT JOIN
+--     {{ ref("servicos") }} AS s
+-- ON
+--     g.codigo_linha_veiculo = s.id_servico_jae

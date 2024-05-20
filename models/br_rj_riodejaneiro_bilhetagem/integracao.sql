@@ -90,7 +90,9 @@ integracao_rn AS (
     do.id_operadora,
     do.operadora,
     i.id_linha AS id_servico_jae,
-    s.servico,
+    -- s.servico,
+    l.nr_linha AS servico_jae,
+    l.nm_linha AS descricao_servico_jae,
     i.id_transacao,
     i.sentido,
     i.perc_rateio AS percentual_rateio,
@@ -116,9 +118,13 @@ integracao_rn AS (
   ON
     i.id_consorcio = dc.id_consorcio_jae
   LEFT JOIN
-    {{ ref("servicos") }} AS s
+    {{ ref("staging_linha") }} AS l
   ON
-    i.id_linha = s.id_servico_jae
+      i.id_linha = l.cd_linha
+  -- LEFT JOIN
+  --   {{ ref("servicos") }} AS s
+  -- ON
+  --   i.id_linha = s.id_servico_jae
   WHERE i.id_transacao IS NOT NULL
 ),
 integracoes_teste_invalidas AS (
