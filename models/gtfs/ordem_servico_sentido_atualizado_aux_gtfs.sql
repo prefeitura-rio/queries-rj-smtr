@@ -80,7 +80,4 @@ USING
 WHERE
     distancia_planejada != 0
     AND distancia_total_planejada != 0
-    {% if var("data_versao_gtfs") != "2024-05-04" %}
-    -- Apuração "Madonna · The Celebration Tour in Rio"
-      AND partidas != 0
-    {% endif %}
+    AND (partidas != 0 OR partidas IS NULL)
