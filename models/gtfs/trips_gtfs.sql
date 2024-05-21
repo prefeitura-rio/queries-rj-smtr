@@ -6,6 +6,10 @@
     alias = 'trips'
 )}}
 
+{% if execute and is_incremental() %}
+  {% set results = run_query("SELECT MAX(feed_start_date) FROM " ~ ref('feed_info_gtfs') ~ " WHERE feed_start_date < " ~ '{{ var("data_versao_gtfs") }}') %}
+  {% set last_feed_version = results.columns[0].values()[0] %}
+{% endif %}
 
 SELECT 
     fi.feed_version,
@@ -33,6 +37,6 @@ ON
     t.data_versao = CAST(fi.feed_start_date AS STRING)
 {% if is_incremental() -%}
     WHERE 
-        t.data_versao = '{{ var("data_versao_gtfs") }}'
-    AND fi.feed_start_date = '{{ var("data_versao_gtfs") }}'
+        t.data_versao IN ('{{ last_feed_version }}', '{{ var("data_versao_gtfs") }}')
+        AND fi.feed_start_date IN ('{{ last_feed_version }}', '{{ var("data_versao_gtfs") }}')
 {%- endif %}
