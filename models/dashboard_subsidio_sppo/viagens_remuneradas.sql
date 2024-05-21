@@ -8,7 +8,10 @@
 }}
 
 {%- if execute %}
-  {% set feed_start_dates = run_query("SELECT DISTINCT COALESCE(feed_start_date, data_versao_trips, data_versao_shapes, data_versao_frequencies) FROM " ~ ref('subsidio_data_versao_efetiva') ~ " WHERE data BETWEEN DATE('" ~ var('start_date') ~ "') AND DATE('" ~ var("end_date") ~ "')").columns[0].values() %}
+  {% set query = "SELECT DISTINCT COALESCE(feed_start_date, data_versao_trips, data_versao_shapes, data_versao_frequencies) FROM " ~ ref('subsidio_data_versao_efetiva') ~ " WHERE data BETWEEN DATE('" ~ var('start_date') ~ "') AND DATE('" ~ var("end_date") ~ "')"%}
+  {{- log(query, info=True) -}}
+  {% set feed_start_dates = run_query(query).columns[0].values() %}
+  {{- log(feed_start_dates, info=True) -}}
 {% endif -%}
 
 WITH
@@ -96,7 +99,8 @@ WITH
     id_veiculo,
     status
   FROM
-    {{ ref("sppo_veiculo_dia") }}
+    -- {{ ref("sppo_veiculo_dia") }}
+    `rj-smtr`.`veiculo`.`sppo_veiculo_dia`
   WHERE
     data BETWEEN DATE("{{ var("start_date") }}")
     AND DATE("{{ var("end_date") }}") ),
