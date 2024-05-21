@@ -120,7 +120,7 @@ parametros as (
       else coalesce(irk_tarifa_publica, irk - (subsidio_km + desconto_subsidio_km)) end as irk_tarifa_publica,
     (subsidio_km + desconto_subsidio_km) as subsidio_km
   FROM
-    `rj-smtr.projeto_subsidio_sppo_encontro_contas_jan_24.subsidio_parametros_atualizada` -- TODO: mover tabela para dataset correto
+    `rj-smtr.projeto_subsidio_sppo_encontro_contas.parametros_km`
   where data_inicio >= "2022-06-01" and data_fim <= "2023-12-31"
 )
   select
