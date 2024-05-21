@@ -6,6 +6,9 @@
     alias = 'shapes_geom'
 ) }} 
 
+{% if execute and is_incremental() %}
+  {% set last_feed_version = get_last_feed_start_date(var("data_versao_gtfs")) %}
+{% endif %}
 
 WITH contents AS (
     SELECT 
@@ -15,7 +18,7 @@ WITH contents AS (
         feed_start_date,
     FROM {{ref('shapes_gtfs')}} s
     {% if is_incremental() -%}
-        WHERE feed_start_date = '{{ var("data_versao_gtfs") }}'
+        WHERE feed_start_date IN ('{{ last_feed_version }}', '{{ var("data_versao_gtfs") }}')
     {%- endif %}
 ),
 pts AS (
@@ -138,5 +141,5 @@ USING
     (feed_start_date)
 {% if is_incremental() -%}
 WHERE
-    fi.feed_start_date = '{{ var("data_versao_gtfs") }}'
+    fi.feed_start_date IN ('{{ last_feed_version }}', '{{ var("data_versao_gtfs") }}')
 {%- endif %}

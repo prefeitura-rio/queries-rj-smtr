@@ -7,8 +7,7 @@
 )}}
 
 {% if execute and is_incremental() %}
-  {% set results = run_query("SELECT MAX(feed_start_date) FROM " ~ ref('feed_info_gtfs') ~ " WHERE feed_start_date < " ~ '{{ var("data_versao_gtfs") }}') %}
-  {% set last_feed_version = results.columns[0].values()[0] %}
+  {% set last_feed_version = get_last_feed_start_date(var("data_versao_gtfs")) %}
 {% endif %}
 
 SELECT 
