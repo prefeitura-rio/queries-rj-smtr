@@ -1,5 +1,12 @@
 # Changelog - dashboard_subsidio_sppo
 
+## [7.0.0] - 2024-05-21
+
+### Adicionado
+
+- Enriquece logs do modelo `viagens_remuneradas.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
+- Inclui critérios específicos para serviço `SE001` em `2024-05-04` em razão do evento "Madonna · The Celebration Tour in Rio" no modelo `sumario_servico_dia.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
+
 ## [6.0.3] - 2024-05-09
 
 ### Corrigido
