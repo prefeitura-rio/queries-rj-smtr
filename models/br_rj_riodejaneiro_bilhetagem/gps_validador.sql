@@ -17,8 +17,15 @@ SELECT
     datetime_captura,
     id_operadora,
     operadora,
-    servico,
-    id_veiculo,
+    id_servico_jae,
+    -- s.servico,
+    servico_jae,
+    descricao_servico_jae,
+    CASE
+      WHEN modo = "VLT" THEN SUBSTRING(id_veiculo, 1, 3)
+      WHEN modo = "BRT" THEN NULL
+      ELSE id_veiculo
+    END AS id_veiculo,
     id_validador,
     id_transmissao_gps,
     latitude,

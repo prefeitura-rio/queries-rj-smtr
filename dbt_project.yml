@@ -185,10 +185,6 @@ models:
       deprecated:
         +materialized: view
         +schema: projeto_subsidio_sppo
-    br_rj_riodejaneiro_gtfs:
-      +materialized: incremental
-      +incremental_strategy: insert_overwrite
-      +schema: br_rj_riodejaneiro_gtfs
     br_rj_riodejaneiro_sigmob:
       +materialized: view
       +schema: br_rj_riodejaneiro_sigmob
@@ -264,3 +260,9 @@ models:
     dashboard_controle_vinculo_jae_riocard:
       +materialized: incremental
       +schema: dashboard_controle_vinculo_jae_riocard
+    validacao_dados_jae:
+      +materialized: incremental
+      +schema: validacao_dados_jae
+      staging:
+        +materialized: incremental
+        +schema: validacao_dados_jae_staging

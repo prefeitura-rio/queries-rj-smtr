@@ -1,12 +1,27 @@
 # Changelog - gtfs
 
-## [1.0.3] - 2024-05-14
+## [1.1.2] - 2024-05-21
 
 ### Alterado
 
 - Alterado tratamento das colunas `inicio_periodo` e `fim_periodo`, mantendo como STRING nos modelos `ordem_servico_sentido_atualizado_aux_gtfs2.sql` e `ordem_servico_trajeto_alternativo_gtfs2.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
-- Incluída coluna `tipo_os` no modelo `ordem_servico_trajeto_alternativo_gtfs2.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
 - Incluída coluna `tipo_os` no JOIN da CTE `ordem_servico_tratada` no modelo `ordem_servico_trips_shapes_gtfs2.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
+
+## [1.1.1] - 2024-05-21
+
+### Adicionado
+
+- Adiciona coluna `tipo_os` no modelo `ordem_servico_trajeto_alternativo_gtfs.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/318)
+
+### Corrigido
+
+- Corrige tratamento da coluna `tipo_os` do modelo `ordem_servico_gtfs.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/318)
+
+## [1.1.0] - 2024-05-13
+
+### Alterado
+
+- Altera nomes das tabelas do dataset `gtfs` e suas referencias em outras tabelas removendo o 2 do final e o alias
 
 ## [1.0.2] - 2024-04-29
 
