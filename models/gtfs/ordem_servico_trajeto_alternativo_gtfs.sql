@@ -42,6 +42,7 @@ SELECT
   feed_version,
   feed_start_date,
   feed_end_date,
+  tipo_os,
   servico,
   consorcio,
   vista,

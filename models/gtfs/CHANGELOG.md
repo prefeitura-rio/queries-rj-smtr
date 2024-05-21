@@ -1,5 +1,15 @@
 # Changelog - gtfs
 
+## [1.1.2] - 2024-05-21
+
+### Adicionado
+
+- Adiciona coluna `tipo_os` no `schema.yml` em relação ao modelo `ordem_servico_trajeto_alternativo_gtfs.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/320)
+
+### Corrigido
+
+- Corrige tratamento da coluna `tipo_os` do modelo `ordem_servico_trajeto_alternativo_gtfs.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/320)
+
 ## [1.1.1] - 2024-05-21
 
 ### Adicionado
