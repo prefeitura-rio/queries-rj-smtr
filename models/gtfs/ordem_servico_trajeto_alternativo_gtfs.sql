@@ -54,30 +54,8 @@ SELECT
   END AS evento,
   extensao_ida/1000 AS extensao_ida,
   extensao_volta/1000 AS extensao_volta,
-  IF(horario_inicio IS NOT NULL AND ARRAY_LENGTH(SPLIT(horario_inicio, ":")) = 3, 
-      PARSE_TIME("%T", 
-                  CONCAT(
-                      SAFE_CAST(MOD(SAFE_CAST(SPLIT(horario_inicio, ":")[OFFSET(0)] AS INT64), 24) AS INT64), 
-                      ":", 
-                      SAFE_CAST(SPLIT(horario_inicio, ":")[OFFSET(1)] AS INT64), 
-                      ":", 
-                      SAFE_CAST(SPLIT(horario_inicio, ":")[OFFSET(2)] AS INT64)
-                  )
-                ), 
-                NULL
-  ) AS inicio_periodo,
-  IF(horario_fim IS NOT NULL AND ARRAY_LENGTH(SPLIT(horario_fim, ":")) = 3, 
-      PARSE_TIME("%T", 
-                  CONCAT(
-                      SAFE_CAST(MOD(SAFE_CAST(SPLIT(horario_fim, ":")[OFFSET(0)] AS INT64), 24) AS INT64), 
-                      ":", 
-                      SAFE_CAST(SPLIT(horario_fim, ":")[OFFSET(1)] AS INT64), 
-                      ":", 
-                      SAFE_CAST(SPLIT(horario_fim, ":")[OFFSET(2)] AS INT64)
-                  )
-                ), 
-                NULL
-  ) AS fim_periodo,
+  horario_inicio AS inicio_periodo,
+  horario_fim AS fim_periodo,
   '{{ var("version") }}' AS versao_modelo
 FROM
   ordem_servico_trajeto_alternativo
