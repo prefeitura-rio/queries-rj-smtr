@@ -1,5 +1,22 @@
 # Changelog - gtfs
 
+## [1.1.3] - 2024-05-21
+
+### Corrigido
+- Corrige atualização incremental da coluna `feed_end_date` nos modelos (https://github.com/prefeitura-rio/queries-rj-smtr/pull/321):
+  - `agency_gtfs.sql`
+  - `calendar_dates_gtfs.sql`
+  - `fare_attributes_gtfs.sql`
+  - `fare_rules_gtfs.sql`
+  - `frequencies_gtfs.sql`
+  - `routes_gtfs.sql`
+  - `shapes_geom_gtfs.sql`
+  - `shapes_gtfs.sql`
+  - `stop_times_gtfs.sql`
+  - `stops_gtfs.sql`
+  - `trips_gtfs.sql`
+
+
 ## [1.1.2] - 2024-05-21
 
 ### Adicionado
