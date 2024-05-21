@@ -1,5 +1,13 @@
 # Changelog - gtfs
 
+## [1.1.4] - 2024-05-21
+
+### Alterado
+
+- Alterado tratamento das colunas `inicio_periodo` e `fim_periodo`, mantendo como STRING nos modelos `ordem_servico_sentido_atualizado_aux_gtfs2.sql` e `ordem_servico_trajeto_alternativo_gtfs2.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
+- Incluída coluna `tipo_os` no JOIN da CTE `ordem_servico_tratada` no modelo `ordem_servico_trips_shapes_gtfs2.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
+- Incluídos serviços com quantidade de partidas nulas no modelo `ordem_servico_sentido_atualizado_aux_gtfs.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
+
 ## [1.1.3] - 2024-05-21
 
 ### Corrigido
@@ -26,14 +34,6 @@
 ### Corrigido
 
 - Corrige tratamento da coluna `tipo_os` do modelo `ordem_servico_trajeto_alternativo_gtfs.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/320)
-
-## [1.1.2] - 2024-05-21
-
-### Alterado
-
-- Alterado tratamento das colunas `inicio_periodo` e `fim_periodo`, mantendo como STRING nos modelos `ordem_servico_sentido_atualizado_aux_gtfs2.sql` e `ordem_servico_trajeto_alternativo_gtfs2.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
-- Incluída coluna `tipo_os` no JOIN da CTE `ordem_servico_tratada` no modelo `ordem_servico_trips_shapes_gtfs2.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
-- Incluídos serviços com quantidade de partidas nulas no modelo `ordem_servico_sentido_atualizado_aux_gtfs.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
 
 ## [1.1.1] - 2024-05-21
 
