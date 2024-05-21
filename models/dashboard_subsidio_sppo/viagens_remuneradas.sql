@@ -99,8 +99,7 @@ WITH
     id_veiculo,
     status
   FROM
-    -- {{ ref("sppo_veiculo_dia") }}
-    `rj-smtr`.`veiculo`.`sppo_veiculo_dia`
+    {{ ref("sppo_veiculo_dia") }}
   WHERE
     data BETWEEN DATE("{{ var("start_date") }}")
     AND DATE("{{ var("end_date") }}") ),
