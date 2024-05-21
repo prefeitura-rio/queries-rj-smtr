@@ -4,7 +4,8 @@ WITH
     id_consorcio,
     case when id_consorcio = "221000050" then "Consórcio BRT" else consorcio end as consorcio
   FROM
-    rj-smtr.cadastro.consorcios )
+    -- rj-smtr.cadastro.consorcios
+    {{ ref("consorcios") }} )
 SELECT
   data,
   ano,
