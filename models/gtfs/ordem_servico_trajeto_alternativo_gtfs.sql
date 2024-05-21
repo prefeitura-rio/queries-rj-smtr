@@ -14,6 +14,7 @@ WITH ordem_servico_trajeto_alternativo AS (
     fi.feed_version,
     SAFE_CAST(o.data_versao AS DATE) feed_start_date,
     fi.feed_end_date,
+    COALESCE(SAFE_CAST(tipo_os) AS STRING), "Regular") tipo_os,
     SAFE_CAST(o.servico AS STRING) servico,
     SAFE_CAST(JSON_VALUE(o.content, "$.ativacao") AS STRING) ativacao,
     SAFE_CAST(JSON_VALUE(o.content, "$.consorcio") AS STRING) consorcio,
