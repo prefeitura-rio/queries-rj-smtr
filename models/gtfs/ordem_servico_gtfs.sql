@@ -11,7 +11,7 @@ WITH ordem_servico AS (
     fi.feed_version,
     SAFE_CAST(os.data_versao AS DATE) as feed_start_date,
     fi.feed_end_date,
-    COALESCE(SAFE_CAST(tipo_os) AS STRING), "Regular") tipo_os,
+    SAFE_CAST(tipo_os AS STRING) tipo_os,
     SAFE_CAST(os.servico AS STRING) servico,
     SAFE_CAST(JSON_VALUE(os.content, '$.vista') AS STRING) vista,
     SAFE_CAST(JSON_VALUE(os.content, '$.consorcio') AS STRING) consorcio,
