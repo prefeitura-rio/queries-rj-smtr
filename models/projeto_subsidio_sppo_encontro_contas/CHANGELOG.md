@@ -2,6 +2,6 @@
 
 ## [1.0.0] - 2024-05-21
 
-### Adicionado
+### Alterado
 
-- Adiciona modelo `rdo40_registros.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/319)
+- Altera referências dos modelos (https://github.com/prefeitura-rio/queries-rj-smtr/pull/319)
