@@ -21,7 +21,7 @@ WITH ordem_pagamento_consorcio_operador_dia AS (
     {{ ref("ordem_pagamento_consorcio_operador_dia_validacao") }}
   {% if is_incremental() %}
     WHERE
-      data_ordem BETWEEN DATE("{{var('date_range_start')}}") AND DATE("{{var('date_range_end')}}")
+      data_ordem = DATE("{{var('run_date')}}")
   {% endif %}
   GROUP BY
     1,
@@ -43,12 +43,12 @@ ordem_pagamento_consorcio_dia AS (
   {% endif %}
 )
 SELECT
-  cod.data_ordem,
-  cod.id_consorcio,
-  cod.id_ordem_pagamento,
-  cod.quantidade_total_transacao,
-  cod.valor_total_transacao_liquido,
-  cod.indicador_captura_invalida,
+  cd.data_ordem,
+  cd.id_consorcio,
+  cd.id_ordem_pagamento,
+  cd.quantidade_total_transacao,
+  cd.valor_total_transacao_liquido,
+  cd.indicador_captura_invalida,
   ROUND(cd.valor_total_transacao_liquido, 2) != ROUND(cod.valor_total_transacao_liquido, 2) OR cd.quantidade_total_transacao != cod.quantidade_total_transacao AS indicador_agregacao_invalida,
   '{{ var("version") }}' AS versao
 FROM
