@@ -3,15 +3,18 @@
 ## [7.0.0] - 2024-05-22
 
 ### Adicionado
+
 - Adicionada parametrização do intervalo para dados de GPS a depender da data no modelo `aux_registros_status_trajeto.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
 - Incluído filtro de viagens a depender da data no modelo `viagem_completa.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
 - Incluída coluna `datetime_ultima_atualizacao` no modelo `viagem_planejada.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
 
 ### Alterado
+
 - Alterado datatype das colunas `inicio_periodo` e `fim_periodo` de STRING para DATETIME no modelo `viagem_planejada.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
 - Altera ordem de prioridade para seleção de viagens no modelo `viagem_completa.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
 
 ### Removido
+
 - Removido filtro de viagens realizadas na data de apuração a depender da data no modelo `aux_viagem_inicio_fim.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
 
 ## [6.0.5] - 2024-05-08
