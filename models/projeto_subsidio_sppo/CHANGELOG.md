@@ -1,18 +1,32 @@
 # Changelog - projeto_subsidio_sppo
 
+## [7.0.1] - 2024-05-22
+
+### Adicionado
+
+- Adicionada coluna `datetime_ultima_atualizacao` no modelo `viagem_completa.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/324)
+
+### Alterado
+
+- Alterada descrição dos modelos `viagem_planejada.sql` e `viagem_completa.sql` no `schema.yml` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/324)
+
+### Corrigido
+
+- Corrigido tratamento da coluna `id_tipo_trajeto` no modelo `viagem_completa.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/324)
+
 ## [7.0.0] - 2024-05-22
 
 ### Adicionado
 
 - Adicionada parametrização do intervalo para dados de GPS a depender da data no modelo `aux_registros_status_trajeto.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
-- Incluído filtro de viagens a depender da data no modelo `viagem_completa.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
-- Incluída coluna `datetime_ultima_atualizacao` no modelo `viagem_planejada.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
+- Adicionado filtro de viagens a depender da data no modelo `viagem_completa.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
+- Adicionada coluna `datetime_ultima_atualizacao` no modelo `viagem_planejada.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
 
 ### Alterado
 
 - Alterado datatype das colunas `inicio_periodo` e `fim_periodo` de STRING para DATETIME no modelo `viagem_planejada.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
 - Alterado datatype das colunas `horario_inicio` e `horario_fim` de TIME para STRING no modelo `deprecated.subsidio_quadro_horario.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
-- Altera ordem de prioridade para seleção de viagens no modelo `viagem_completa.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
+- Alterada ordem de prioridade para seleção de viagens no modelo `viagem_completa.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
 
 ### Removido
 
