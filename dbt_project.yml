@@ -266,6 +266,6 @@ models:
       staging:
         +materialized: incremental
         +schema: validacao_dados_jae_staging
-    controle_financeiro:
+    controle_financeiro_staging:
       +materialized: view
-      +schema: controle_financeiro
+      +schema: controle_financeiro_staging
