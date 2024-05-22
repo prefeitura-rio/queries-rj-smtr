@@ -2,6 +2,7 @@
 
 ## [1.0.2] - 2024-05-22
 
+### Corrigido
 - Corrige variável de data no modelo `ordem_pagamento_consorcio_dia_validacao.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/323)
 - Corrige referências nos modelos `ordem_pagamento_consorcio_dia_validacao.sql` e `ordem_pagamento_validacao.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/323)
 
@@ -11,7 +12,7 @@
 - Adiciona colunas `servico_jae` e `descricao_servico_jae` do modelo `transacao_invalida.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/311)
 - Altera nome da coluna `indicador_geolocalizacao_fora_rj` para `indicador_geolocalizacao_fora_rio` no modelo `transacao_invalida.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/311)
 
- ### Corrigido
+### Corrigido
 - Remove comentários do modelo `ordem_pagamento_validacao.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/311)
 - Corrige nome da coluna `indicador_intervalo_transacao_suspeito` no filtro final do modelo `integracao_invalida.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/311)
 
