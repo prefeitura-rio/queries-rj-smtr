@@ -1,6 +1,6 @@
 # Changelog - projeto_subsidio_sppo
 
-## [7.0.0] - 2024-05-21
+## [7.0.0] - 2024-05-22
 
 ### Adicionado
 - Adicionada parametrização do intervalo para dados de GPS a depender da data no modelo `aux_registros_status_trajeto.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
