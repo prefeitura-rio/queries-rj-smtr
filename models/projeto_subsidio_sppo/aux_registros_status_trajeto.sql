@@ -1,3 +1,10 @@
+{% if var("run_date") == "2024-05-05" %}
+-- Apuração "Madonna · The Celebration Tour in Rio"
+    {% set gps_interval = 7 %}
+{% else %}
+    {% set gps_interval = 3 %}
+{% endif %}
+
 -- 1. Seleciona sinais de GPS registrados no período
 with gps as (
     select 
@@ -25,7 +32,7 @@ with gps as (
     -- Limita range de busca do gps de D-2 às 00h até D-1 às 3h
     and (
         timestamp_gps between datetime_sub(datetime_trunc("{{ var("run_date") }}", day), interval 1 day)
-        and datetime_add(datetime_trunc("{{ var("run_date") }}", day), interval 3 hour)
+        and datetime_add(datetime_trunc("{{ var("run_date") }}", day), interval {{ gps_interval }} hour)
     )
     and status != "Parado garagem"
 ),

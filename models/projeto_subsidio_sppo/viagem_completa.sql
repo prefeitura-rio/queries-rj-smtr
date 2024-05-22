@@ -136,6 +136,10 @@ and
         -- 3. Viagens que nao sao afetadas pelo fechamento das vias
         (inicio_periodo = "00:00:00" and fim_periodo = "23:59:59")
     )
+{% elif var("run_date") in ("2024-05-05", "2024-05-06") %}
+-- Apuração "Madonna · The Celebration Tour in Rio"
+and
+    (datetime_partida between inicio_periodo and fim_periodo)
 {% endif %}
 ),
 -- 3. Filtra viagens com mesma chegada e partida pelo maior % de conformidade do shape
@@ -149,7 +153,10 @@ filtro_desvio as (
 FROM (
   SELECT
     *,
-    {% if var("run_date") > var("DATA_SUBSIDIO_V6_INICIO") %}
+    {% if var("run_date") > var("DATA_SUBSIDIO_V7_INICIO") %}
+    -- Apuração "Madonna · The Celebration Tour in Rio"
+    ROW_NUMBER() OVER(PARTITION BY id_veiculo, datetime_partida, datetime_chegada ORDER BY perc_conformidade_shape DESC, id_tipo_trajeto, distancia_planejada DESC) AS rn
+    {% elif var("run_date") > var("DATA_SUBSIDIO_V6_INICIO") %}
     ROW_NUMBER() OVER(PARTITION BY id_veiculo, datetime_partida, datetime_chegada ORDER BY perc_conformidade_shape DESC, id_tipo_trajeto) AS rn
     {% else %}
     ROW_NUMBER() OVER(PARTITION BY id_veiculo, datetime_partida, datetime_chegada ORDER BY perc_conformidade_shape DESC) AS rn

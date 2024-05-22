@@ -1,15 +1,38 @@
 WITH
   viagem_planejada AS (
-  SELECT
-    DISTINCT `data`,
-    servico,
-    vista
-  FROM
-    {{ ref("viagem_planejada") }}
-    --`rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada` 
-  WHERE
-    (id_tipo_trajeto = 0
-    OR id_tipo_trajeto IS NULL)
+    (
+      SELECT
+        DISTINCT v.data,
+        v.servico,
+        o.vista
+      FROM
+        {{ ref("viagem_planejada") }} AS v
+        --`rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada` 
+      LEFT JOIN
+        {{ ref("subsidio_data_versao_efetiva") }}
+      USING
+        (data)
+      LEFT JOIN
+        {{ ref("ordem_servico_gtfs") }} AS o
+      USING
+        (feed_start_date, servico, tipo_os)
+      WHERE
+        data >= "{{ var('DATA_SUBSIDIO_V7_INICIO') }}"
+    )
+  UNION ALL
+    (
+      SELECT
+        DISTINCT `data`,
+        servico,
+        vista
+      FROM
+        {{ ref("viagem_planejada") }}
+        --`rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada` 
+      WHERE
+        (id_tipo_trajeto = 0
+        OR id_tipo_trajeto IS NULL)
+        AND data < "{{ var('DATA_SUBSIDIO_V7_INICIO') }}"
+    )
   ),
   -- v1: Valor do subsídio pré glosa por tipos de viagem (Antes de 2023-01-16)
   sumario_sem_glosa AS (
