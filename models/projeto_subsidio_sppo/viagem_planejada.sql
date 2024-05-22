@@ -29,8 +29,42 @@ quadro as (
         e.data,
         e.tipo_dia,
         p.* except(tipo_dia, data_versao, horario_inicio, horario_fim),
-        horario_inicio as inicio_periodo,
-        horario_fim as fim_periodo
+        IF(horario_inicio IS NOT NULL AND ARRAY_LENGTH(SPLIT(horario_inicio, ":")) = 3, 
+            DATETIME_ADD(
+                DATETIME(
+                    e.data, 
+                    PARSE_TIME("%T", 
+                        CONCAT(
+                        SAFE_CAST(MOD(SAFE_CAST(SPLIT(horario_inicio, ":")[OFFSET(0)] AS INT64), 24) AS INT64), 
+                        ":", 
+                        SAFE_CAST(SPLIT(horario_inicio, ":")[OFFSET(1)] AS INT64), 
+                        ":", 
+                        SAFE_CAST(SPLIT(horario_inicio, ":")[OFFSET(2)] AS INT64)
+                        )
+                    )
+                ),
+                INTERVAL DIV(SAFE_CAST(SPLIT(horario_inicio, ":")[OFFSET(0)] AS INT64), 24) DAY
+            ), 
+            NULL
+        ) AS inicio_periodo,
+        IF(horario_fim IS NOT NULL AND ARRAY_LENGTH(SPLIT(horario_fim, ":")) = 3, 
+            DATETIME_ADD(
+                DATETIME(
+                    e.data, 
+                    PARSE_TIME("%T", 
+                        CONCAT(
+                        SAFE_CAST(MOD(SAFE_CAST(SPLIT(horario_fim, ":")[OFFSET(0)] AS INT64), 24) AS INT64), 
+                        ":", 
+                        SAFE_CAST(SPLIT(horario_fim, ":")[OFFSET(1)] AS INT64), 
+                        ":", 
+                        SAFE_CAST(SPLIT(horario_fim, ":")[OFFSET(2)] AS INT64)
+                        )
+                    )
+                ),
+                INTERVAL DIV(SAFE_CAST(SPLIT(horario_fim, ":")[OFFSET(0)] AS INT64), 24) DAY
+            ), 
+            NULL
+        ) AS fim_periodo
     from 
         data_efetiva e
     inner join (
