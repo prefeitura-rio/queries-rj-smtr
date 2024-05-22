@@ -126,3 +126,10 @@ sources:
     tables: 
       - name: registros
       - name: realocacao
+  
+  - name: controle_financeiro_staging
+    database: rj-smtr-staging
+
+    tables:
+      - name: CB
+      - name: CETT
