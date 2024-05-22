@@ -87,10 +87,9 @@ select distinct
     perc_conformidade_registros,
     0 as perc_conformidade_tempo,
     -- round(100 * tempo_viagem/tempo_planejado, 2) as perc_conformidade_tempo,
-    {% if var("run_date") > var("DATA_SUBSIDIO_V6_INICIO") %}
     id_tipo_trajeto,
-    {% endif %}
-    '{{ var("version") }}' as versao_modelo
+    '{{ var("version") }}' as versao_modelo,
+    CURRENT_DATETIME("America/Sao_Paulo") as datetime_ultima_atualizacao
 from 
     viagem_periodo v
 where (
