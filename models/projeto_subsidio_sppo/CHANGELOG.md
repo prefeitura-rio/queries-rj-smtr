@@ -11,6 +11,7 @@
 ### Alterado
 
 - Alterado datatype das colunas `inicio_periodo` e `fim_periodo` de STRING para DATETIME no modelo `viagem_planejada.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
+- Alterado datatype das colunas `horario_inicio` e `horario_fim` de TIME para STRING no modelo `deprecated.subsidio_quadro_horario.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
 - Altera ordem de prioridade para seleção de viagens no modelo `viagem_completa.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
 
 ### Removido
