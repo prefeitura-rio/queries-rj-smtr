@@ -24,13 +24,6 @@ WITH
     AND DATE( "{{ var("end_date") }}" )
     AND ( distancia_total_planejada > 0
       OR distancia_total_planejada IS NULL )
-    AND (id_tipo_trajeto = 0
-        OR id_tipo_trajeto IS NULL
-    {% if "2024-05-04" >= var("start_date") and "2024-05-04" <= var("end_date") %}
-      -- Apuração "Madonna · The Celebration Tour in Rio"
-        OR servico = "SE001"      
-    {% endif %}
-    )
   ),
 -- 2. Viagens realizadas
   viagem AS (

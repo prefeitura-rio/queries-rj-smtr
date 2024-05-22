@@ -13,8 +13,7 @@ WITH
     AND DATE( "{{ var("end_date") }}" )
     AND (distancia_total_planejada > 0
     OR distancia_total_planejada IS NOT NULL)
-    AND (id_tipo_trajeto = 0
-      OR id_tipo_trajeto IS NULL)
+
   ),
   veiculos AS (
   SELECT
