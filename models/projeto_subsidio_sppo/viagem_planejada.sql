@@ -187,7 +187,7 @@ select
     s.end_pt,
     SAFE_CAST(NULL AS INT64) AS id_tipo_trajeto, -- Adaptação para formato da SUBSIDIO_V6
     SAFE_CAST(NULL AS STRING) AS feed_version, -- Adaptação para formato da SUBSIDIO_V6
-    SAFE_CAST(NULL AS DATETIME) AS datetime_ultima_atualizacao -- Adaptação para formato da SUBSIDIO_V7
+    CURRENT_DATETIME("America/Sao_Paulo") AS datetime_ultima_atualizacao -- Adaptação para formato da SUBSIDIO_V7
 from
     quadro_tratada p
 inner join
