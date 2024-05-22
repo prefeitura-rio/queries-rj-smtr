@@ -90,7 +90,7 @@ vars:
   trips_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.trips"
 
   ## GTFS
-  data_versao_gtfs: "YYYY-MM-DD"
+  data_versao_gtfs: "2024-05-03" # fixada última data disponível
 
   ### Subsídio SPPO (Ônibus) ###
   buffer: 500 # distância em metros para buffer
