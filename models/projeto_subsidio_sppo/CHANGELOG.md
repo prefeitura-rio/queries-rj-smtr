@@ -1,5 +1,11 @@
 # Changelog - projeto_subsidio_sppo
 
+## [6.0.5] - 2024-05-23
+
+### Adicionado
+
+- Adicionado a view de quantidade de viagens planejada e viagens apuradas agrupadas por hora no modelo `quantidade_viagem_hora.sql` 
+
 ## [6.0.5] - 2024-05-08
 
 ### Removido
