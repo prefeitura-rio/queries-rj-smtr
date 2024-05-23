@@ -1,6 +1,6 @@
 # Changelog - projeto_subsidio_sppo
 
-## [6.0.5] - 2024-05-23
+## [6.1.0] - 2024-05-23
 
 ### Adicionado
 
