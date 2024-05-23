@@ -11,7 +11,6 @@ WITH
     EXTRACT(Hour
     FROM
       inicio_periodo) AS hora,
-    servico
   FROM
     {{ref('viagem_planejada')}}
 ),
@@ -21,7 +20,6 @@ WITH
     EXTRACT(Hour
     FROM
       inicio_periodo) AS hora,
-    servico_realizado AS servico
   FROM
     {{ref('viagem_completa')}}
 )
@@ -35,8 +33,8 @@ FULL OUTER JOIN
   viagem_completa_hora vc
 USING
   (data,
-    hora,servico)
+    hora)
 GROUP BY
   data,
-  hora, servico
+  hora
 order by data, hora
