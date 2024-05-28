@@ -73,7 +73,8 @@ SELECT
     vehicle_id,
     longitude,
     latitude,
-    tile_id
+    tile_id,
+    geometry
 
 FROM h3_gps
 WHERE tile_entry = 1
