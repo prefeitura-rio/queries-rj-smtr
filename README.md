@@ -74,7 +74,7 @@ Leia:
 
 **Antes de fazer o merge da branch, garanta que os devidos metadados
 para a(s) nova(s) tabela(s) estão preenchidos no portal
-<https://meta.dados.rio/>**. Caso ontrário, não será gerada a documentação
+<https://meta.dados.rio/>**. Caso contrário, não será gerada a documentação
 da tabela.
 
 #### Documentação
