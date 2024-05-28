@@ -1,0 +1,30 @@
+version: 2
+
+models:
+  - name: veiculo_indicadores_dia
+    description: "Tabela de indicadores para acompanhar o vínculo do validador da Jaé com o validador da RioCard em cada veículo"
+    columns:
+      - name: data
+        description: "data"
+      - name: id_veiculo
+        description: "Número de ordem do veículo"
+      - name: empresa
+        description: "Nome da empresa operadora de ônibus"
+      - name: numero_serie_validador
+        description: "Número de sério do validador da Jaé instalado no veículo"
+      - name: indicador_veiculo_licenciamento
+        description: "Indica se o veículo está licenciado"
+      - name: indicador_veiculo_gps_sppo
+        description: "Indica se o veículo emitiu sinal de GPS no dia"
+      - name: indicador_veiculo_controle_ronald
+        description: "Indica se o veículo está listado na planilha de controle de instalação de validadores da Jaé"
+      - name: indicador_validador_ativo
+        description: "Indica se o validador foi ligado no dia"
+      - name: quantidade_transacao_riocard
+        description: "Quantidade de transações do RioCard capturadas pelo validador da Jaé"
+      - name: quantidade_gps_sppo
+        description: "Quantidade de sinais de GPS enviados pelo veículo"
+      - name: quantidade_gps_validador
+        description: "Quantidade de sinais de GPS enviados pelo validador da Jaé"
+      - name: percentual_gps_validador_sppo
+        description: "Percentual de sinais de GPS do validador em relação ao do veículo"

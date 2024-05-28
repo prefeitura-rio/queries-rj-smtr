@@ -75,3 +75,9 @@ from
     inicio_fim
 where 
     datetime_partida is not null
+    {% if var("run_date") > var("DATA_SUBSIDIO_V6_INICIO") %}
+        {% if var("run_date") != "2024-05-05" %}
+            -- Apuração "Madonna · The Celebration Tour in Rio"
+            and extract(date from datetime_partida) = date_sub(date("{{ var("run_date") }}"), interval 1 day)
+        {% endif %}
+    {% endif %}

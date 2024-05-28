@@ -18,20 +18,41 @@ WITH stu AS (
       END AS cd_consorcio_jae
   FROM
     {{ ref("staging_operadora_empresa") }} AS stu
+  WHERE
+    perm_autor IN ({{ var("ids_consorcios").keys()|join(", ") }})
+), consorcio AS ( 
+  SELECT
+    COALESCE(s.id_consorcio, j.cd_consorcio) AS id_consorcio,
+    CASE
+      WHEN s.id_consorcio = '221000050' THEN "Consórcio BRT"
+      ELSE j.nm_consorcio 
+    END AS consorcio,
+    s.cnpj,
+    s.razao_social,
+    s.id_consorcio AS id_consorcio_stu,
+    j.cd_consorcio AS id_consorcio_jae,
+    s.processo AS id_processo
+  FROM {{ ref("staging_consorcio") }} AS j
+  FULL OUTER JOIN
+    stu AS s
+  ON
+    j.cd_consorcio = s.cd_consorcio_jae
 )
-SELECT
-  COALESCE(s.id_consorcio, j.cd_consorcio) AS id_consorcio,
-  s.razao_social,
-  j.nm_consorcio AS consorcio,
-  s.processo AS id_processo,
-  s.data_registro AS data_processo,
-  s.cnpj,
-  s.id_consorcio AS id_consorcio_stu,
-  j.cd_consorcio AS id_consorcio_jae
-FROM {{ ref("staging_consorcio") }} AS j
-LEFT JOIN
-  stu AS s
-ON
-  j.cd_consorcio = s.cd_consorcio_jae
-
-  
+SELECT 
+  c.id_consorcio,
+  c.consorcio,
+  m.modo,
+  c.cnpj,
+  c.razao_social,
+  c.id_consorcio_stu,
+  c.id_consorcio_jae,
+  c.id_processo
+FROM consorcio c
+LEFT JOIN 
+  {{ source("cadastro_staging","consorcio_modo") }} AS cm
+USING (id_consorcio)
+LEFT JOIN 
+  {{ source("cadastro","modos") }} AS m
+ON 
+  m.id_modo = cm.id_modo
+  AND cm.fonte_id_modo = m.fonte 
