@@ -20,14 +20,14 @@ brt_sppo_gps AS (
     SELECT
         modo, timestamp_gps, data, hora, id_veiculo, servico, latitude, longitude
     FROM `rj-smtr.br_rj_riodejaneiro_veiculos.gps_sppo`
-    WHERE data = "{{ var('run_date') }}" -- This is a hardcoded date to allow for testing. This should be removed in production.
+    WHERE data = "{{ var('run_date') }}" 
 
     UNION DISTINCT
 
     SELECT
         modo, timestamp_gps, data, hora, id_veiculo, servico, latitude, longitude
     FROM `rj-smtr.br_rj_riodejaneiro_veiculos.gps_brt`
-    WHERE data = "{{ var('run_date') }}" -- This is a hardcoded date to allow for testing. This should be removed in production.
+    WHERE data = "{{ var('run_date') }}" 
 ),
 
 -- Rename columns into english, join on H3 table via a circle fully encapsulating each tile
