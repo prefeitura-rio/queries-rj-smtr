@@ -274,3 +274,6 @@ models:
       staging:
         +materialized: view
         +schema: controle_financeiro_staging
+    mit_ipea_project:
+      +materialized: view
+      +schema: mit_ipea_project

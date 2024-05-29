@@ -71,8 +71,8 @@ ordem_pagamento_dia AS (
 ),
 validacao AS (
   SELECT
-    cd.data_ordem,
-    cd.id_ordem_pagamento,
+    d.data_ordem,
+    d.id_ordem_pagamento,
     ROUND(cd.valor_total_transacao_liquido, 2) != ROUND(d.valor_total_transacao_liquido, 2) OR cd.quantidade_total_transacao != d.quantidade_total_transacao AS indicador_agregacao_invalida,
     indicador_servico_operador_invalido,
     indicador_consorcio_operador_invalido,
