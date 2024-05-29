@@ -26,7 +26,7 @@ SELECT
     SAFE_CAST(JSON_VALUE(content, '$.numero_chip_sam') AS STRING) AS numero_chip_sam,
     SAFE_CAST(JSON_VALUE(content, '$.numero_chip_telefonia') AS STRING) AS numero_chip_telefonia,
     SAFE_CAST(JSON_VALUE(content, '$.numero_serie_equipamento') AS STRING) AS numero_serie_equipamento,
-    SAFE_CAST(JSON_VALUE(content, '$.prefixo_veiculo') AS FLOAT64) AS prefixo_veiculo,
+    SAFE_CAST(JSON_VALUE(content, '$.prefixo_veiculo') AS STRING) AS prefixo_veiculo,
     SAFE_CAST(JSON_VALUE(content, '$.qtd_transacoes_enviadas') AS FLOAT64) AS qtd_transacoes_enviadas,
     SAFE_CAST(JSON_VALUE(content, '$.qtd_transacoes_pendentes') AS FLOAT64) AS qtd_transacoes_pendentes,
     SAFE_CAST(JSON_VALUE(content, '$.qtd_venda_botao') AS FLOAT64) AS qtd_venda_botao,

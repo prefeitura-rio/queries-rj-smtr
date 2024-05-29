@@ -14,11 +14,12 @@ WITH ordem_servico_trajeto_alternativo AS (
     fi.feed_version,
     SAFE_CAST(o.data_versao AS DATE) feed_start_date,
     fi.feed_end_date,
+    SAFE_CAST(tipo_os AS STRING) tipo_os,
+    SAFE_CAST(evento AS STRING) evento,
     SAFE_CAST(o.servico AS STRING) servico,
     SAFE_CAST(JSON_VALUE(o.content, "$.ativacao") AS STRING) ativacao,
     SAFE_CAST(JSON_VALUE(o.content, "$.consorcio") AS STRING) consorcio,
     SAFE_CAST(JSON_VALUE(o.content, "$.descricao") AS STRING) descricao,
-    SAFE_CAST(JSON_VALUE(o.content, "$.evento") AS STRING) evento,
     SAFE_CAST(JSON_VALUE(o.content, "$.extensao_ida") AS FLOAT64) extensao_ida,
     SAFE_CAST(JSON_VALUE(o.content, "$.extensao_volta") AS FLOAT64) extensao_volta,
     SAFE_CAST(JSON_VALUE(o.content, "$.horario_inicio") AS STRING) horario_inicio,
@@ -41,6 +42,7 @@ SELECT
   feed_version,
   feed_start_date,
   feed_end_date,
+  tipo_os,
   servico,
   consorcio,
   vista,
@@ -52,30 +54,8 @@ SELECT
   END AS evento,
   extensao_ida/1000 AS extensao_ida,
   extensao_volta/1000 AS extensao_volta,
-  IF(horario_inicio IS NOT NULL AND ARRAY_LENGTH(SPLIT(horario_inicio, ":")) = 3, 
-      PARSE_TIME("%T", 
-                  CONCAT(
-                      SAFE_CAST(MOD(SAFE_CAST(SPLIT(horario_inicio, ":")[OFFSET(0)] AS INT64), 24) AS INT64), 
-                      ":", 
-                      SAFE_CAST(SPLIT(horario_inicio, ":")[OFFSET(1)] AS INT64), 
-                      ":", 
-                      SAFE_CAST(SPLIT(horario_inicio, ":")[OFFSET(2)] AS INT64)
-                  )
-                ), 
-                NULL
-  ) AS inicio_periodo,
-  IF(horario_fim IS NOT NULL AND ARRAY_LENGTH(SPLIT(horario_fim, ":")) = 3, 
-      PARSE_TIME("%T", 
-                  CONCAT(
-                      SAFE_CAST(MOD(SAFE_CAST(SPLIT(horario_fim, ":")[OFFSET(0)] AS INT64), 24) AS INT64), 
-                      ":", 
-                      SAFE_CAST(SPLIT(horario_fim, ":")[OFFSET(1)] AS INT64), 
-                      ":", 
-                      SAFE_CAST(SPLIT(horario_fim, ":")[OFFSET(2)] AS INT64)
-                  )
-                ), 
-                NULL
-  ) AS fim_periodo,
+  horario_inicio AS inicio_periodo,
+  horario_fim AS fim_periodo,
   '{{ var("version") }}' AS versao_modelo
 FROM
   ordem_servico_trajeto_alternativo

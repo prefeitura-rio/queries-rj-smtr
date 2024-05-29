@@ -2,14 +2,14 @@ WITH
   q1 AS (
   SELECT
     FORMAT_DATE('%Y-%m-Q1', date) AS quinzena,
-    date AS data_inicio_quinzena,
+    date AS data_inicial_quinzena,
     DATE_ADD(date, INTERVAL 14 DAY) AS data_final_quinzena
   FROM
     UNNEST(GENERATE_DATE_ARRAY('2022-06-01', '2023-12-31', INTERVAL 1 MONTH)) AS date ),
   q2 AS (
   SELECT
     FORMAT_DATE('%Y-%m-Q2', date) AS quinzena,
-    DATE_ADD(date, INTERVAL 15 DAY) AS data_inicio_quinzena,
+    DATE_ADD(date, INTERVAL 15 DAY) AS data_inicial_quinzena,
     LAST_DAY(date) AS data_final_quinzena
   FROM
     UNNEST(GENERATE_DATE_ARRAY('2022-06-01', '2023-12-31', INTERVAL 1 MONTH)) AS date ),
@@ -24,10 +24,10 @@ WITH
   FROM
     q2
   ORDER BY
-    data_inicio_quinzena )
+    data_inicial_quinzena )
 SELECT
   quinzena,
-  data_inicio_quinzena,
+  data_inicial_quinzena,
   data_final_quinzena,
   consorcio_rdo,
   servico_tratado_rdo,
@@ -39,10 +39,10 @@ SELECT
 FROM
   quinzenas qz
 LEFT JOIN (
-  SELECT * from {{ ref("balanco_rdo_servico_dia") }} WHERE servico is null
+  SELECT * from {{ ref("aux_balanco_rdo_servico_dia") }} WHERE servico is null
 ) bs
 ON
-  bs.data_rdo BETWEEN qz.data_inicio_quinzena
+  bs.data_rdo BETWEEN qz.data_inicial_quinzena
   AND qz.data_final_quinzena
 GROUP BY
   1,2,3,4,5,6,7,8
