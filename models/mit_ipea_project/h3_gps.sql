@@ -54,7 +54,7 @@ h3_gps AS (
     SELECT
         *,
         CASE
-          WHEN LAG(tile_id) OVER (ORDER BY vehicle_id, timestamp_gps) = tile_id THEN 0
+          WHEN LAG(tile_id) OVER (PARTITION BY vehicle_id ORDER BY timestamp_gps) = tile_id THEN 0
           ELSE 1
         END AS tile_entry -- 1 when the vehicle first enters the tile. If 0, the vehicle is already in the tile.
     FROM gps
