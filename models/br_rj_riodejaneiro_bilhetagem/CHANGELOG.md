@@ -1,10 +1,15 @@
 # Changelog - bilhetagem
 
+## [1.2.2] - 2024-05-29
+
+### Modificado
+- Adiciona transações de ônibus a partir do dia `2024-04-19` no modelo `passageiros_hora.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/328)
+
 ## [1.2.1] - 2024-05-20
 
 ### Corrigido
 - Altera alias da tabela `linha_sem_ressarcimento` no modelo `transacao.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/317)
-- Corrige select servico no modelo `ordem_pagamento_servico_operador_dia.sql` ((https://github.com/prefeitura-rio/queries-rj-smtr/pull/317)
+- Corrige select servico no modelo `ordem_pagamento_servico_operador_dia.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/317)
 
 ## [1.2.0] - 2024-05-20
 
