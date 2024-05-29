@@ -65,8 +65,6 @@ WITH
         WHEN data = "2024-03-22" THEN "Ponto Facultativo" -- Ponto Facultativo - DECRETO RIO Nº 54114/2024
         WHEN data = "2024-03-28" THEN "Ponto Facultativo" -- Ponto Facultativo - DECRETO RIO Nº 54081/2024
         WHEN data = "2024-03-29" THEN "Domingo" -- Feriado de Paixão de Cristo (Sexta-feira Santa)
-        WHEN data = "2024-05-30" THEN "Domingo" -- Feriado de Corpus Christi - (Decreto Rio Nº 54525/2024)
-        WHEN data = "2024-05-31" THEN "Ponto Facultativo" -- Ponto Facultativo - (Decreto Rio Nº 54525/2024)
         WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 1 THEN "Domingo" -- Dia de São Sebastião -- Art. 8°, I - Lei Municipal nº 5146/2010
         WHEN EXTRACT(DAY FROM data) = 23 AND EXTRACT(MONTH FROM data) = 4 THEN "Domingo" -- Dia de São Jorge -- Art. 8°, II - Lei Municipal nº 5146/2010 / Lei Estadual Nº 5198/2008 / Lei Estadual Nº 5645/2010
         WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 11 THEN "Domingo" -- Aniversário de morte de Zumbi dos Palmares / Dia da Consciência Negra -- Art. 8°, IV - Lei Municipal nº 5146/2010 / Lei Estadual nº 526/1982 / Lei Estadual nº 1929/1991 / Lei Estadual nº 4007/2002 / Lei Estadual Nº 5645/2010
@@ -327,6 +325,8 @@ WITH
     data,
     CASE
       WHEN data = "2024-04-22" THEN "Ponto Facultativo" -- Ponto Facultativo - DECRETO RIO Nº 54267/2024
+      WHEN data = "2024-05-30" THEN "Domingo" -- Feriado de Corpus Christi - (Decreto Rio Nº 54525/2024)
+      WHEN data = "2024-05-31" THEN "Ponto Facultativo" -- Ponto Facultativo - (Decreto Rio Nº 54525/2024)
       WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 1 THEN "Domingo" -- Dia de São Sebastião -- Art. 8°, I - Lei Municipal nº 5146/2010
       WHEN EXTRACT(DAY FROM data) = 23 AND EXTRACT(MONTH FROM data) = 4 THEN "Domingo" -- Dia de São Jorge -- Art. 8°, II - Lei Municipal nº 5146/2010 / Lei Estadual Nº 5198/2008 / Lei Estadual Nº 5645/2010
       WHEN EXTRACT(DAY FROM data) = 20 AND EXTRACT(MONTH FROM data) = 11 THEN "Domingo" -- Aniversário de morte de Zumbi dos Palmares / Dia da Consciência Negra -- Art. 8°, IV - Lei Municipal nº 5146/2010 / Lei Estadual nº 526/1982 / Lei Estadual nº 1929/1991 / Lei Estadual nº 4007/2002 / Lei Estadual Nº 5645/2010
