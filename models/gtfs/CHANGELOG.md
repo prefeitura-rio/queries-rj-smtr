@@ -1,5 +1,51 @@
 # Changelog - gtfs
 
+## [1.1.4] - 2024-05-22
+
+### Alterado
+
+- Alterado tratamento das colunas `inicio_periodo` e `fim_periodo`, mantendo como STRING nos modelos `ordem_servico_sentido_atualizado_aux_gtfs2.sql` e `ordem_servico_trajeto_alternativo_gtfs2.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
+- Incluída coluna `tipo_os` no JOIN da CTE `ordem_servico_tratada` no modelo `ordem_servico_trips_shapes_gtfs2.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
+- Incluídos serviços com quantidade de partidas nulas no modelo `ordem_servico_sentido_atualizado_aux_gtfs.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
+- Alterado tratamento da coluna `evento` no modelo `ordem_servico_trajeto_alternativo_gtfs.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/305)
+
+## [1.1.3] - 2024-05-21
+
+### Corrigido
+- Corrige atualização incremental da coluna `feed_end_date` nos modelos (https://github.com/prefeitura-rio/queries-rj-smtr/pull/321):
+  - `agency_gtfs.sql`
+  - `calendar_dates_gtfs.sql`
+  - `fare_attributes_gtfs.sql`
+  - `fare_rules_gtfs.sql`
+  - `frequencies_gtfs.sql`
+  - `routes_gtfs.sql`
+  - `shapes_geom_gtfs.sql`
+  - `shapes_gtfs.sql`
+  - `stop_times_gtfs.sql`
+  - `stops_gtfs.sql`
+  - `trips_gtfs.sql`
+
+
+## [1.1.2] - 2024-05-21
+
+### Adicionado
+
+- Adiciona coluna `tipo_os` no `schema.yml` em relação ao modelo `ordem_servico_trajeto_alternativo_gtfs.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/320)
+
+### Corrigido
+
+- Corrige tratamento da coluna `tipo_os` do modelo `ordem_servico_trajeto_alternativo_gtfs.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/320)
+
+## [1.1.1] - 2024-05-21
+
+### Adicionado
+
+- Adiciona coluna `tipo_os` no modelo `ordem_servico_trajeto_alternativo_gtfs.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/318)
+
+### Corrigido
+
+- Corrige tratamento da coluna `tipo_os` do modelo `ordem_servico_gtfs.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/318)
+
 ## [1.1.0] - 2024-05-13
 
 ### Alterado

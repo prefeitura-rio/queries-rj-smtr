@@ -434,6 +434,8 @@ models:
         description: "Horário final de funcionamento do trajeto alternativo."
       - name: versao_modelo
         description: "Código de controle de versão (SHA do GitHub)."
+      - name: tipo_os
+        description: "Tipo de Ordem de Serviço (ex: 'Regular', 'Extraordinária - Verão')"
   - name: ordem_servico_trips_shapes_gtfs
     description: "Junção da Ordem de Serviço (OS) com trips e shapes dos serviços"
     columns:

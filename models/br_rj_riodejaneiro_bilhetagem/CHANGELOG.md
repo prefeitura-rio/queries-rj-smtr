@@ -1,5 +1,36 @@
 # Changelog - bilhetagem
 
+## [1.2.1] - 2024-05-20
+
+### Corrigido
+- Altera alias da tabela `linha_sem_ressarcimento` no modelo `transacao.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/317)
+- Corrige select servico no modelo `ordem_pagamento_servico_operador_dia.sql` ((https://github.com/prefeitura-rio/queries-rj-smtr/pull/317)
+
+## [1.2.0] - 2024-05-20
+
+### Alterado
+- Adiciona colunas `servico_jae` e `descricao_servico_jae` nos modelos (https://github.com/prefeitura-rio/queries-rj-smtr/pull/311):
+  - `transacao.sql`
+  - `integracao.sql`
+  - `ordem_pagamento_servico_operador_dia.sql`
+  - `passageiros_hora.sql`
+  -  `gps_validador.sql`
+  -  `gps_validador_van.sql`
+  -  `staging/gps_validador_aux.sql`
+- Adiciona coluna id_servico_jae nos modelos (https://github.com/prefeitura-rio/queries-rj-smtr/pull/311):
+  -  `gps_validador.sql`
+  -  `gps_validador_van.sql`
+  -  `staging/gps_validador_aux.sql`
+
+- Remove coluna `servico` no modelo de `staging/gps_validador_aux.sql` para pegar o dado da tabela de cadastro 
+
+## [1.1.0] - 2024-05-16
+
+### Alterado
+- Adiciona tratamento da coluna id_veiculo nos modelos ` transacao.sql` e `gps_validador.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/297)
+- Adiciona coluna `quantidade_total_transacao` nos modelos `ordem_pagamento_consorcio_dia.sql`, `ordem_pagamento_consorcio_operador_dia.sql` e `ordem_pagamento_dia.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/297)
+- Remove validação do modelo `ordem_pagamento_servico_operador_dia.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/297)
+
 ## [1.0.3] - 2024-05-03
 
 ### Corrigido
@@ -8,7 +39,7 @@
   - `bilhetagem.ordem_pagamento_consorcio_operador_dia`
   - `bilhetagem.ordem_pagamento_consorcio_dia`
 
-### Modificado
+### Alterado
 - Alterado cast de float para numeric (https://github.com/prefeitura-rio/queries-rj-smtr/pull/294):
   - `bilhetagem_staging.staging_ordem_pagamento`
   - `bilhetagem_staging.staging_ordem_pagamento_consorcio`
@@ -18,7 +49,7 @@
 
 ## [1.0.2] - 2024-04-18
 
-### Modificado
+### Alterado
 - Filtra transações inválidas ou de teste no modelo `transacao.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/275)
   - Transações inválidas:
     - datas anteriores a 2023-07-17

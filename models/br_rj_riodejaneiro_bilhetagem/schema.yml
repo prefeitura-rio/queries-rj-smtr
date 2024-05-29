@@ -25,9 +25,13 @@ models:
       - name: operadora
         description: "Nome da operadora de transporte (mascarado se for pessoa física)"
       # - name: servico
-      #   description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...)"
+      #   description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou código da estação"
       - name: id_servico_jae
         description: "Identificador da linha no banco de dados da jaé (É possível cruzar os dados com a tabela rj-smtr.cadastro.servicos usando a coluna id_servico_jae)"
+      - name: servico_jae
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou código da estação de BRT na Jaé"
+      - name: descricao_servico_jae
+        description: "Nome longo da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou nome da estação de BRT na Jaé"
       - name: sentido
         description: "Sentido de operação do serviço (0 = ida, 1 = volta)"
       - name: id_veiculo
@@ -94,9 +98,13 @@ models:
       - name: operadora
         description: "Nome da operadora de transporte (mascarado se for pessoa física)"
       # - name: servico
-      #   description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...)"
+      #   description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou código da estação"
       - name: id_servico_jae
         description: "Identificador da linha no banco de dados da jaé (É possível cruzar os dados com a tabela rj-smtr.cadastro.servicos usando a coluna id_servico_jae)"
+      - name: servico_jae
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou código da estação de BRT na Jaé"
+      - name: descricao_servico_jae
+        description: "Nome longo da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou nome da estação de BRT na Jaé"
       - name: id_transacao
         description: "Identificador único da transação"
       - name: sentido
@@ -149,8 +157,14 @@ models:
         description: "Identificador da operadora na tabela cadastro.operadoras"
       - name: operadora
         description: "Nome da operadora de transporte (mascarado se for pessoa física)"
-      - name: servico
-        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...)"
+      # - name: servico
+      #   description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou código da estação"
+      - name: id_servico_jae
+        description: "Identificador da linha no banco de dados da jaé (É possível cruzar os dados com a tabela rj-smtr.cadastro.servicos usando a coluna id_servico_jae)"
+      - name: servico_jae
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou código da estação de BRT na Jaé"
+      - name: descricao_servico_jae
+        description: "Nome longo da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou nome da estação de BRT na Jaé"
       - name: id_validador
         description: "Número de série do validador"
       - name: id_transmissao_gps
@@ -186,8 +200,14 @@ models:
         description: "Identificador da operadora na tabela cadastro.operadoras"
       - name: operadora
         description: "Nome da operadora de transporte (mascarado se for pessoa física)"
-      - name: servico
-        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...)"
+      # - name: servico
+      #   description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...)"
+      - name: id_servico_jae
+        description: "Identificador da linha no banco de dados da jaé (É possível cruzar os dados com a tabela rj-smtr.cadastro.servicos usando a coluna id_servico_jae)"
+      - name: servico_jae
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou código da estação de BRT na Jaé"
+      - name: descricao_servico_jae
+        description: "Nome longo da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou nome da estação de BRT na Jaé"
       - name: id_validador
         description: "Número de série do validador"
       - name: id_transmissao_gps
@@ -225,6 +245,10 @@ models:
         description: "Nome da operadora de transporte (mascarado se for pessoa física)"
       - name: id_servico_jae
         description: "Identificador da linha no banco de dados da jaé (É possível cruzar os dados com a tabela rj-smtr.cadastro.servicos usando a coluna id_servico_jae)"
+      - name: servico_jae
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou código da estação de BRT na Jaé"
+      - name: descricao_servico_jae
+        description: "Nome longo da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou nome da estação de BRT na Jaé"
       - name: sentido
         description: "Sentido de operação do serviço (0 = ida, 1 = volta)"
       - name: tipo_transacao_smtr
@@ -394,6 +418,12 @@ models:
         description: "Nome da operadora de transporte (mascarado se for pessoa física)"
       - name: id_servico_jae
         description: "Identificador da linha no banco de dados da jaé (É possível cruzar os dados com a tabela rj-smtr.cadastro.servicos usando a coluna id_servico_jae)"
+      - name: servico_jae
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou código da estação de BRT na Jaé"
+      - name: descricao_servico_jae
+        description: "Nome longo da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou nome da estação de BRT na Jaé"
+      # - name: servico
+      #   description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou código da estação"
       - name: id_ordem_pagamento
         description: "Identificador da ordem pagamento no banco de dados da Jaé"
       - name: id_ordem_ressarcimento
@@ -434,8 +464,6 @@ models:
         description: "Quantidade total de transações calculada pela captura de transações"
       - name: valor_total_transacao_captura
         description: "Valor total das transações realizadas calculada pela captura de transações (R$)"
-      - name: indicador_ordem_valida
-        description: "Indicador de validação da ordem de pagamento i.e. se a quantidade e valor total informados são encontrados na captura de transações individuais"
       - name: versao
         description: "Código de controle de versão do dado (SHA Github)"
   - name: transacao_riocard

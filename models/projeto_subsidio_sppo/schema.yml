@@ -14,7 +14,7 @@ models:
         tests:
           - not_null
       - name: data_shape
-        description: "Data do shape capturado no SIGMOB (00h)"
+        description: "Data do shape capturado no SIGMOB (00h) (Válida até 2024-03-30)."
         tests:
           - not_null
       - name: tipo_dia
@@ -98,6 +98,8 @@ models:
         description: "Tipo de trajeto (0 - Regular, 1 - Alternativo, válida a partir de 2024-04-01)."
       - name: feed_version
         description: "String que indica a versão atual do conjunto de dados GTFS (Válida a partir de 2024-04-01)."
+      - name: datetime_ultima_atualizacao
+        description: "Última atualização (GMT-3)."
       
   - name: aux_registros_status_trajeto
     description: "Tabela auxiliar de classificação dos registros de GPS
@@ -647,8 +649,7 @@ models:
           - accepted_values:
               values: ["I", "V", "C"]
       - name: id_viagem
-        description: "Código identificador da viagem (id_veiculo +
-        servico + datetime_partida)" 
+        description: "Código identificador da viagem (ex: id_veiculo + servico + sentido + shape_id + datetime_partida)" 
         tests:
           - not_null
           - unique
@@ -734,9 +735,12 @@ models:
           # - greater_than_zero
       - name: versao_modelo
         description: "Versão da metodologia de cálculo da
-        respectiva linha na tabela."
+        respectiva linha na tabela"
         tests:
           - not_null
+      - name: datetime_ultima_atualizacao
+        description: "Última atualização (GMT-3)"
+        
   - name: subsidio_shapes_geom
     description: "Shapes em formatos geográficos dos serviços (Descontinuada a partir de 2024-04-01 [SUBSIDIO_V6])"
     columns:

@@ -105,8 +105,16 @@ SELECT
     do.id_operadora,
     do.operadora,
     t.cd_linha AS id_servico_jae,
+    -- s.servico,
+    l.nr_linha AS servico_jae,
+    l.nm_linha AS descricao_servico_jae,
     sentido,
-    NULL AS id_veiculo,
+    CASE
+      WHEN m.modo = "VLT" THEN SUBSTRING(t.veiculo_id, 1, 3)
+      WHEN m.modo = "BRT" THEN NULL
+      ELSE t.veiculo_id
+    END AS id_veiculo,
+    t.numero_serie_validador AS id_validador,
     COALESCE(t.id_cliente, t.pan_hash) AS id_cliente,
     id AS id_transacao,
     tp.tipo_pagamento,
@@ -136,6 +144,14 @@ LEFT JOIN
 ON
     t.cd_consorcio = dc.id_consorcio_jae
 LEFT JOIN
+    {{ ref("staging_linha") }} AS l
+ON
+    t.cd_linha = l.cd_linha
+-- LEFT JOIN
+--     {{ ref("servicos") }} AS s
+-- ON
+--     t.cd_linha = s.id_servico_jae
+LEFT JOIN
     tipo_transacao AS tt
 ON
     tt.id_tipo_transacao = t.tipo_transacao
@@ -151,9 +167,9 @@ ON
     AND t.data_transacao >= g.data_inicio_validade
     AND (t.data_transacao < g.data_fim_validade OR g.data_fim_validade IS NULL)
 LEFT JOIN
-    {{ ref("staging_linha_sem_ressarcimento") }} l
+    {{ ref("staging_linha_sem_ressarcimento") }} lsr
 ON
-    t.cd_linha = l.id_linha
+    t.cd_linha = lsr.id_linha
 WHERE
-    l.id_linha IS NULL
+    lsr.id_linha IS NULL
     AND DATE(data_transacao) >= "2023-07-17"

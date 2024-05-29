@@ -90,7 +90,7 @@ vars:
   trips_staging: "rj-smtr-staging.br_rj_riodejaneiro_sigmob_staging.trips"
 
   ## GTFS
-  data_versao_gtfs: "YYYY-MM-DD"
+  data_versao_gtfs: "2024-05-03" # fixada última data disponível
 
   ### Subsídio SPPO (Ônibus) ###
   buffer: 500 # distância em metros para buffer
@@ -114,6 +114,8 @@ vars:
   DATA_SUBSIDIO_V5_INICIO: "2024-03-01"
   # Feature trajetos alternativos
   DATA_SUBSIDIO_V6_INICIO: "2024-04-01"
+  # Feature Apuração Madonna · The Celebration Tour in Rio
+  DATA_SUBSIDIO_V7_INICIO: "2024-05-01"
   # valor_subsidio: "`rj-smtr-dev.projeto_subsidio_sppo.valor_subsidio`"
 
   # Recursos #
@@ -260,6 +262,18 @@ models:
     dashboard_controle_vinculo_jae_riocard:
       +materialized: incremental
       +schema: dashboard_controle_vinculo_jae_riocard
+    validacao_dados_jae:
+      +materialized: incremental
+      +schema: validacao_dados_jae
+      staging:
+        +materialized: incremental
+        +schema: validacao_dados_jae_staging
+    controle_financeiro:
+      +materialized: view
+      +schema: controle_financeiro
+      staging:
+        +materialized: view
+        +schema: controle_financeiro_staging
     mit_ipea_project:
       +materialized: view
       +schema: mit_ipea_project
