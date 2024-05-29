@@ -45,7 +45,7 @@ gps AS (
         ST_GEOGPOINT(longitude, latitude) AS geography,
         tile_id
     FROM brt_sppo_gps
-    LEFT JOIN `rj-smtr-dev.mit_ipea_project.vw_h3` AS h3
+    LEFT JOIN {{ ref("vw_h3") }} AS h3
     ON ST_DWITHIN(ST_GEOGPOINT(longitude, latitude), h3.centroid, 560)
 
 ),
@@ -58,7 +58,7 @@ h3_gps AS (
           ELSE 1
         END AS tile_entry -- 1 when the vehicle first enters the tile. If 0, the vehicle is already in the tile.
     FROM gps
-    LEFT JOIN `rj-smtr-dev.mit_ipea_project.vw_h3` AS h3
+    LEFT JOIN {{ ref("vw_h3") }} AS h3
         USING (tile_id)
 
     WHERE ST_INTERSECTS(gps.geography, h3.geometry) IS TRUE
