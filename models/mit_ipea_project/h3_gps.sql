@@ -74,7 +74,7 @@ SELECT
     longitude,
     latitude,
     tile_id,
-    geometry
+    centroid
 
 FROM h3_gps
 WHERE tile_entry = 1
