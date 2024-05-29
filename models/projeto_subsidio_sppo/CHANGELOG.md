@@ -1,5 +1,11 @@
 # Changelog - projeto_subsidio_sppo
 
+## [7.0.2] - 2024-05-29
+
+### Adicionado
+
+- Adicionados feriado de Corpus Christi (2024-05-30) e Ponto Facultativo (2024-05-31) no modelo `subsidio_data_versao_efetiva` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/329)
+
 ## [7.0.1] - 2024-05-22
 
 ### Adicionado
