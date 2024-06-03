@@ -43,6 +43,7 @@ sources:
       - name: stop_times
       - name: trips
       - name: ordem_servico
+      - name: ordem_servico_trajeto_alternativo
 
   - name: br_rj_riodejaneiro_stu_staging
     database: rj-smtr-staging

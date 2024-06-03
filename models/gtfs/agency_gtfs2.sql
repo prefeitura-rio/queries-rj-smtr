@@ -3,9 +3,12 @@
   'data_type' :'date',
   'granularity': 'day' },
   unique_key = ['agency_id', 'feed_start_date'],
-  alias = 'agency',
+  alias = 'agency'
 ) }} 
 
+{% if execute and is_incremental() %}
+  {% set last_feed_version = get_last_feed_start_date(var("data_versao_gtfs")) %}
+{% endif %}
 
 SELECT 
   fi.feed_version,
@@ -25,6 +28,6 @@ ON
   a.data_versao = CAST(fi.feed_start_date AS STRING)
 {% if is_incremental() -%}
   WHERE 
-    a.data_versao = '{{ var("data_versao_gtfs") }}'
-    AND fi.feed_start_date = '{{ var("data_versao_gtfs") }}'
+    a.data_versao IN ('{{ last_feed_version }}', '{{ var("data_versao_gtfs") }}')
+    AND fi.feed_start_date IN ('{{ last_feed_version }}', '{{ var("data_versao_gtfs") }}')
 {%- endif %}

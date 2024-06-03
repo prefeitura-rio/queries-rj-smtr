@@ -143,7 +143,7 @@ models:
       - name: feed_contact_email
         description: "Endereço de e-mail para comunicação sobre o conjunto de dados gtfs e práticas de publicação de dados."
       - name: feed_contact_url
-        description: "n, um formulário web, suporte técnico ou outras ferramentas para comunicação sobre o conjunto de dados GTFS e práticas de publicação de dados."
+        description: "URL para informações de contato, um formulário web, uma mesa de suporte ou outras ferramentas de comunicação relativas ao conjunto de dados GTFS e práticas de publicação de dados."
       - name: feed_start_date
         description: "Data de referência do feed (versão)."
       - name: versao_modelo 
@@ -210,14 +210,26 @@ models:
         description: "Código de controle de versão (SHA do GitHub)."
 
   - name: shapes_geom_gtfs2
-    description: "Tabela com os shapes dos serviços."
+    description: "Shapes em formatos geográficos dos serviços."
     columns:
-      - name: shape_id
-        description: "Identifica uma forma."
       - name: feed_start_date
-        description: "Data de referência do feed (versão)."
+        description: "(Partição) Data inicial do feed (versão)."
+      - name: feed_end_date
+        description: "Data final do feed (versão)."
+      - name: feed_version
+        description: "String que indica a versão atual do conjunto de dados GTFS."
+      - name: shape_id
+        description: "Identificador de shape."
       - name: shape
-        description: "Dado geográfico construído com a query."
+        description: "Shape em formato geográfico (usualmente LineString)."
+      - name: shape_distance
+        description: "Extensão do shape."
+      - name: start_pt
+        description: "Ponto inicial do shape em formato geográfico (Point)."
+      - name: end_pt
+        description: "Ponto final do shape em formato geográfico (Point)."
+      - name: data_versao
+        description: "Data de referência do planejamento (versão)."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
 
@@ -385,6 +397,89 @@ models:
       - name: feed_end_date
         description: "Data final do feed (versão)."
       - name: feed_version
-        description: "String que indica a versão atual do conjunto de dados gtfs."
+        description: "String que indica a versão atual do conjunto de dados GTFS."
       - name: versao_modelo 
         description: "Código de controle de versão (SHA do GitHub)."
+      - name: tipo_os
+        description: "Tipo de Ordem de Serviço (ex: 'Regular', 'Extraordinária - Verão')"
+
+  - name: ordem_servico_trajeto_alternativo_gtfs2
+    description: "Anexo da Ordem de Serviço (OS) com trajetos alternativos de serviços"
+    columns:
+      - name: feed_start_date
+        description: "(Partição) Data inicial do feed (versão)."
+      - name: feed_end_date
+        description: "Data final do feed (versão)."
+      - name: feed_version
+        description: "String que indica a versão atual do conjunto de dados GTFS."
+      - name: servico
+        description: "Nome curto do serviço operada pelo veículo com variação de serviço (ex: 006, 010, ...)."
+      - name: consorcio
+        description: "Nome do consórcio responsável pelo serviço."
+      - name: vista
+        description: "Itinerário do serviço (ex: Bananal ↔ Saens Peña)."
+      - name: ativacao
+        description: "Modo de ativação do trajeto alternativo."
+      - name: descricao
+        description: "Descriação sobre o trajeto alternativo."
+      - name: evento
+        description: "Evento relacionado ao trajeto alternativo."
+      - name: extensao_ida
+        description: "Distância planejada de ida do trajeto alternativo (km)."
+      - name: extensao_volta
+        description: "Distância planejada de volta do trajeto alternativo (km)."
+      - name: inicio_periodo
+        description: "Horário inicial de funcionamento do trajeto alternativo."
+      - name: fim_periodo
+        description: "Horário final de funcionamento do trajeto alternativo."
+      - name: versao_modelo
+        description: "Código de controle de versão (SHA do GitHub)."
+      - name: tipo_os
+        description: "Tipo de Ordem de Serviço (ex: 'Regular', 'Extraordinária - Verão')"
+  - name: ordem_servico_trips_shapes_gtfs2
+    description: "Junção da Ordem de Serviço (OS) com trips e shapes dos serviços"
+    columns:
+      - name: feed_start_date
+        description: "(Partição) Data inicial do feed (versão)."
+      - name: feed_end_date
+        description: "Data final do feed (versão)."
+      - name: feed_version
+        description: "String que indica a versão atual do conjunto de dados GTFS."
+      - name: tipo_dia
+        description: "Dia da semana - categorias: Dia Útil, Sabado, Domingo e Ponto Facultativo"
+      - name: servico
+        description: "Nome curto do serviço operada pelo veículo com variação de serviço (ex: 006, 010, ...)."
+      - name: vista
+        description: "Itinerário do serviço (ex: Bananal ↔ Saens Peña)."
+      - name: consorcio
+        description: "Nome do consórcio responsável pelo serviço."
+      - name: sentido
+        description: "Sentido planejado - categorias: I (ida), V (volta), C (circular)"
+      - name: distancia_planejada
+        description: "Distância planejada de uma viagem do serviço (km)."
+      - name: distancia_total_planejada
+        description: "Distância total planejada do serviço em km (junta ida+volta multiplicado pela quantidade de viagens)."
+      - name: inicio_periodo
+        description: "Horário inicial de funcionamento do serviço."
+      - name: fim_periodo
+        description: "Horário da final de funcionamento do serviço."
+      - name: trip_id_planejado
+        description: "Código identificador de trip de referência no GTFS"
+      - name: trip_id
+        description: "Código identificador de trip de referência no GTFS com ajustes"
+      - name: shape_id
+        description: "Código identificador de shape no GTFS"
+      - name: shape_id_planejado
+        description: "Código identificador de shape no GTFS com ajustes"
+      - name: shape
+        description: "Shape em formato geográfico (usualmente LineString)."
+      - name: sentido_shape
+        description: "Sentido do shape - categorias: I (ida), V (volta)"
+      - name: start_pt
+        description: "Ponto inicial do shape em formato geográfico (Point)."
+      - name: end_pt
+        description: "Ponto final do shape em formato geográfico (Point)."
+      - name: id_tipo_trajeto
+        description: "Tipo de trajeto (0 - Regular, 1 - Alternativo)"
+      - name: tipo_os
+        description: "Tipo de Ordem de Serviço (ex: 'Regular', 'Extraordinária - Verão')"

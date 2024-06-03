@@ -1,5 +1,6 @@
 {{ config(
-  materialized="view"
+  materialized="view",
+  alias="servicos_sentido",
 ) }} 
 
 WITH
