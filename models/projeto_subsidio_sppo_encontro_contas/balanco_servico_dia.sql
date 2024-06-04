@@ -114,7 +114,7 @@ rdo AS (
   group by 1,2,3
 ),
 
--- 4. Considera os serviços conforme tratamento indicado pela RioÔnibus (citar processo/ofício)
+-- 4. Considera os serviços conforme tratamento indicado em resposta aos ofícios MTR-OFI-2024/03024, MTR-OFI-2024/03025, MTR-OFI-2024/03026 e MTR-OFI-2024/03027
 rdo_correcao_servico AS (
   SELECT DISTINCT
     data_inicio_quinzena, 
@@ -125,7 +125,7 @@ rdo_correcao_servico AS (
     {{ ref("rdo_correcao_rioonibus_servico_quinzena") }}
 ),
 
--- 5. Altera os serviços conforme tratamento indicado pela RioÔnibus (citar processo/ofício)
+-- 5. Corrige os serviços do RDO
 rdo_corrigido AS (
   SELECT
     data,

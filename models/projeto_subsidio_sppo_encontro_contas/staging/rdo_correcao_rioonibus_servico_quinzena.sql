@@ -1,3 +1,7 @@
+/*
+  Etapa de tratamento com base na resposta aos ofícios MTR-OFI-2024/03024, MTR-OFI-2024/03025, MTR-OFI-2024/03026 e MTR-OFI-2024/03027
+*/
+
 SELECT
     quinzena,
     PARSE_DATE("%m/%d/%Y", data_inicio_quinzena) AS data_inicio_quinzena,
