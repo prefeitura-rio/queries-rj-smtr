@@ -92,7 +92,6 @@ km_subsidiada_filtrada as (
   and ksd.data NOT IN ("2022-10-02", "2022-10-30", '2023-02-07', '2023-02-08', '2023-02-10', '2023-02-13', '2023-02-17', '2023-02-18', '2023-02-19', '2023-02-20', '2023-02-21', '2023-02-22')
 ),
 
-
 -- 3. Calcula a receita tarifaria por servico e dia
 rdo AS (
   SELECT
@@ -101,7 +100,7 @@ rdo AS (
     CASE
       WHEN LENGTH(linha) < 3 THEN LPAD(linha, 3, "0")
     ELSE
-    CONCAT( IFNULL(REGEXP_EXTRACT(linha, r"[B-Z]+"), ""), IFNULL(REGEXP_EXTRACT(linha, r"[0-9]+"), "") )
+    CONCAT( IFNULL(REGEXP_EXTRACT(linha, r"[A-Z]+"), ""), IFNULL(REGEXP_EXTRACT(linha, r"[0-9]+"), "") )
   END
     AS servico,
     round(SUM(receita_buc) + SUM(receita_buc_supervia) + SUM(receita_cartoes_perna_unica_e_demais) + SUM(receita_especie), 0) AS receita_tarifaria_aferida
@@ -114,6 +113,38 @@ rdo AS (
     and consorcio in ("Internorte", "Intersul", "Santa Cruz", "Transcarioca")
   group by 1,2,3
 ),
+
+-- 4. Considera os serviços conforme tratamento indicado pela RioÔnibus (citar processo/ofício)
+cro AS (
+  SELECT DISTINCT
+    data_inicio_quinzena, 
+    data_final_quinzena, 
+    servico_tratado_rdo, 
+    servico_corrigido_rioonibus
+  FROM
+    {{ ref("rdo_correcao_rioonibus_servico_quinzena") }}
+),
+
+-- 5. Altera os serviços conforme tratamento indicado pela RioÔnibus (citar processo/ofício)
+rdo_tratado AS (
+  SELECT
+    data,
+    consorcio,
+    COALESCE(cro.servico_corrigido_rioonibus, rdo.servico) AS servico,
+    SUM(receita_tarifaria_aferida) AS receita_tarifaria_aferida
+  FROM
+    rdo
+  LEFT JOIN
+    cro
+  ON
+    rdo.data BETWEEN cro.data_inicio_quinzena AND cro.data_final_quinzena
+    AND rdo.servico = cro.servico_tratado_rdo
+  GROUP BY 
+    1,
+    2,
+    3
+),
+
 parametros as (
   SELECT
     DISTINCT data_inicio,
@@ -143,7 +174,7 @@ parametros as (
     from
       km_subsidiada_filtrada ks
     left join
-      rdo
+      rdo_tratado AS rdo
     using 
       (data, servico, consorcio)
     left join

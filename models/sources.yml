@@ -133,3 +133,9 @@ sources:
     tables:
       - name: cb
       - name: cett
+      
+  - name: projeto_subsidio_sppo_encontro_contas
+    database: rj-smtr-staging
+
+    tables:
+      - name: rdo_correcao_rioonibus_servico_quinzena
