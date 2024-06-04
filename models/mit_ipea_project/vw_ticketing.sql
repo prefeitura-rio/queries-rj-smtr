@@ -1,7 +1,6 @@
 -- ticketing view, ticketing data cleaned for:
 -- - card types that do not unique identify users (these include cash transactions)
 -- - pre-identified card ids with extreme values
-CREATE OR REPLACE VIEW `rj-smtr-dev.mit_ipea_project.vw_ticketing` AS
 
 WITH raw_ticketing AS (SELECT data                                                               AS as_at,
                               EXTRACT(time from datetime)                                        AS origin_time,
