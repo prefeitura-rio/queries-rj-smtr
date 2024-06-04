@@ -47,7 +47,7 @@ rdo AS (
     CASE
       WHEN LENGTH(linha) < 3 THEN LPAD(linha, 3, "0")
     ELSE
-    CONCAT( IFNULL(REGEXP_EXTRACT(linha, r"[B-Z]+"), ""), IFNULL(REGEXP_EXTRACT(linha, r"[0-9]+"), "") )
+    CONCAT( IFNULL(REGEXP_EXTRACT(linha, r"[A-Z]+"), ""), IFNULL(REGEXP_EXTRACT(linha, r"[0-9]+"), "") )
   END
     AS servico,
     linha,
