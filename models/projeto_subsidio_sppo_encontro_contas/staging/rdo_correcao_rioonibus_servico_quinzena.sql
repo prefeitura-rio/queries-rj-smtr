@@ -2,6 +2,8 @@
   Etapa de tratamento com base na resposta aos ofícios MTR-OFI-2024/03024, MTR-OFI-2024/03025, MTR-OFI-2024/03026 e MTR-OFI-2024/03027 (Processo MTR-PRO-2024/06270)
 */
 
+{% if var("encontro_contas_modo") == "pos_gt" %}
+{{ config(alias=this.name ~ "_" ~ var('encontro_contas_modo')) }}
 SELECT
     quinzena,
     PARSE_DATE("%m/%d/%Y", data_inicio_quinzena) AS data_inicio_quinzena,
@@ -23,3 +25,6 @@ SELECT
     AS servico_corrigido_rioonibus,
 FROM
     {{ source("projeto_subsidio_sppo_encontro_contas", "rdo_correcao_rioonibus_servico_quinzena") }}
+{% else %}
+{{ config(enabled=false) }}
+{% endif %}

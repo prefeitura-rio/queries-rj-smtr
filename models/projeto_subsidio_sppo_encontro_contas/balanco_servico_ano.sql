@@ -1,3 +1,7 @@
+{% if var("encontro_contas_modo") != "" %}
+  {{ config(alias=this.name ~ "_" ~ var('encontro_contas_modo')) }}
+{% endif %}
+
 select
   extract(year from data) as ano,
   consorcio,
