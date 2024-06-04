@@ -64,6 +64,44 @@ rdo AS (
     and (length(linha) != 4 and linha not like "2%") --  Remove rodoviarios
   group by 1,2,3,4,5,6
 ),
+
+-- 4. Considera os serviços conforme tratamento indicado pela RioÔnibus (citar processo/ofício)
+cro AS (
+  SELECT DISTINCT
+    data_inicio_quinzena, 
+    data_final_quinzena, 
+    servico_tratado_rdo, 
+    servico_corrigido_rioonibus
+  FROM
+    {{ ref("rdo_correcao_rioonibus_servico_quinzena") }}
+),
+
+-- 5. Altera os serviços conforme tratamento indicado pela RioÔnibus (citar processo/ofício)
+rdo_tratado AS (
+  SELECT
+    data,
+    consorcio,
+    COALESCE(cro.servico_corrigido_rioonibus, rdo.servico) AS servico,
+    linha,
+    tipo_servico,
+    ordem_servico,
+    SUM(receita_tarifaria_aferida) AS receita_tarifaria_aferida
+  FROM
+    rdo
+  LEFT JOIN
+    cro
+  ON
+    rdo.data BETWEEN cro.data_inicio_quinzena AND cro.data_final_quinzena
+    AND rdo.servico = cro.servico_tratado_rdo
+  GROUP BY 
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+),
+
 -- Remove servicos nao subsidiados
 sumario_dia AS (
   SELECT
@@ -86,7 +124,7 @@ sumario_dia AS (
 rdo_filtrada as (
     select rdo.* from
     (
-      select * from rdo
+      select * from rdo_tratado AS rdo
       left join servico_dia_atipico sda
       using (data, servico)
       where sda.data is null
