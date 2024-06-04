@@ -18,4 +18,4 @@ SELECT
   END
     AS servico_corrigido_rioonibus,
 FROM
-    {{ source("projeto_subsidio_sppo_encontro_contas", "rdo_correcao_rioonibus_servico_quinzena")}}
+    {{ source("projeto_subsidio_sppo_encontro_contas", "rdo_correcao_rioonibus_servico_quinzena") }}
