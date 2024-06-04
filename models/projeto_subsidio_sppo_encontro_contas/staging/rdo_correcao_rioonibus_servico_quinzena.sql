@@ -8,7 +8,7 @@ SELECT
     tipo_servico_rdo,
     ordem_servico_rdo,
     quantidade_dias_rdo,
-    SAFE_CAST(REGEXP_REPLACE(REGEXP_REPLACE(REGEXP_REPLACE(receita_tarifaria_aferida_rdo, r"\.", ""), r",", "."), r"[^\d\.-]", "") AS FLOAT64) AS receita_tarifaria_aferida_rdo,
+    SAFE_CAST(REPLACE(REGEXP_REPLACE(receita_tarifaria_aferida_rdo , r"[^\d,-]", ""), ",", ".") AS FLOAT64) AS receita_tarifaria_aferida_rdo,
     justificativa,
     acao,
     CASE
