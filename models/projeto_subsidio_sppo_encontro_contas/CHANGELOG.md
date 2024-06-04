@@ -1,5 +1,15 @@
 # Changelog - projeto_subsidio_sppo_encontro_contas
 
+## [1.0.3] - 2024-06-04
+
+### Adicionado
+
+- Adiciona modelo `staging.rdo_correcao_rioonibus_servico_quinzena.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/332)
+
+### Alterado
+
+- Altera e corrige tratamento de serviços do RDO no modelo `balanco_servico_dia.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/332)
+
 ## [1.0.2] - 2024-05-21
 
 ### Alterado
