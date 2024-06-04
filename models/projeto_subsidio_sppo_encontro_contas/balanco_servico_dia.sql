@@ -103,7 +103,7 @@ rdo AS (
     CONCAT( IFNULL(REGEXP_EXTRACT(linha, r"[A-Z]+"), ""), IFNULL(REGEXP_EXTRACT(linha, r"[0-9]+"), "") )
   END
     AS servico,
-    round(SUM(receita_buc) + SUM(receita_buc_supervia) + SUM(receita_cartoes_perna_unica_e_demais) + SUM(receita_especie), 0) AS receita_tarifaria_aferida
+    SUM(receita_buc) + SUM(receita_buc_supervia) + SUM(receita_cartoes_perna_unica_e_demais) + SUM(receita_especie) AS receita_tarifaria_aferida
   FROM
     {{ ref("rdo40_registros") }}
     -- `rj-smtr`.`br_rj_riodejaneiro_rdo`.`rdo40_registros`
@@ -115,7 +115,7 @@ rdo AS (
 ),
 
 -- 4. Considera os serviços conforme tratamento indicado pela RioÔnibus (citar processo/ofício)
-cro AS (
+rdo_correcao_servico AS (
   SELECT DISTINCT
     data_inicio_quinzena, 
     data_final_quinzena, 
@@ -126,7 +126,7 @@ cro AS (
 ),
 
 -- 5. Altera os serviços conforme tratamento indicado pela RioÔnibus (citar processo/ofício)
-rdo_tratado AS (
+rdo_corrigido AS (
   SELECT
     data,
     consorcio,
@@ -135,7 +135,7 @@ rdo_tratado AS (
   FROM
     rdo
   LEFT JOIN
-    cro
+    rdo_correcao_servico AS cro
   ON
     rdo.data BETWEEN cro.data_inicio_quinzena AND cro.data_final_quinzena
     AND rdo.servico = cro.servico_tratado_rdo
@@ -174,7 +174,7 @@ parametros as (
     from
       km_subsidiada_filtrada ks
     left join
-      rdo_tratado AS rdo
+      rdo_corrigido AS rdo
     using 
       (data, servico, consorcio)
     left join
