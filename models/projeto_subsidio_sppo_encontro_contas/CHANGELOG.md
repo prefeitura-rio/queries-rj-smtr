@@ -1,11 +1,11 @@
 # Changelog - projeto_subsidio_sppo_encontro_contas
 
-## [1.0.3] - 2024-06-04
+## [1.0.3] - 2024-06-05
 
 ### Adicionado
 
 - Adiciona modelo `staging.rdo_correcao_rioonibus_servico_quinzena.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/332)
-- Adiciona modos de execução `_pre_gt` e `_pos_gt` e as respectivas alterações dos nomes das tabelas (https://github.com/prefeitura-rio/queries-rj-smtr/pull/332)
+- Adiciona modos de execução `_pre_gt` (antes das alterações do Grupo de Trabalho) e `_pos_gt` (após as alterações do Grupo de Trabalho) conforme Processo Rio MTR-PRO-2024/06270 e as respectivas alterações dos nomes das tabelas (https://github.com/prefeitura-rio/queries-rj-smtr/pull/332)
 
 ### Alterado
 
