@@ -12,6 +12,6 @@ select
   sum(receita_tarifaria_aferida) as receita_tarifaria_aferida,
   sum(subsidio_pago) as subsidio_pago,
   sum(saldo) as saldo
-from {{ ref("balanco_servico_dia") }}
+from {{ ref("balanco_servico_dia" ~ var('encontro_contas_modo')) }}
 group by 1,2
 order by 1,2

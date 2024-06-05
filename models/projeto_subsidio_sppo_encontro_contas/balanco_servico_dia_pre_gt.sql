@@ -1,5 +1,4 @@
-{{ config(alias=this.name ~ var('encontro_contas_modo')) }}
-
+{% if var("encontro_contas_modo") == "_pre_gt" %}
 -- 0. Lista servicos e dias atípicos (pagos por recurso)
 WITH
   recursos AS (
@@ -11,8 +10,8 @@ WITH
     servico,
     SUM(valor_pago) AS valor_pago
   FROM
-    {{ ref("recursos_sppo_servico_dia_pago") }}
-    -- `rj-smtr`.`br_rj_riodejaneiro_recursos`.`recursos_sppo_servico_dia_pago`
+    -- {{ ref("recursos_sppo_servico_dia_pago") }}
+    `rj-smtr`.`br_rj_riodejaneiro_recursos`.`recursos_sppo_servico_dia_pago`
   GROUP BY
     1,
     2,
@@ -45,8 +44,8 @@ sumario_dia AS (  -- Km apurada por servico e dia
     SUM(km_apurada) AS km_subsidiada,
     sum(valor_subsidio_pago) as subsidio_pago
   FROM
-    {{ ref("sumario_servico_dia_historico") }}
-    -- `rj-smtr.dashboard_subsidio_sppo.sumario_servico_dia_historico`
+    -- {{ ref("sumario_servico_dia_historico") }}
+    `rj-smtr.dashboard_subsidio_sppo.sumario_servico_dia_historico`
   WHERE
     DATA BETWEEN "2022-06-01"
     AND "2023-12-31"
@@ -61,8 +60,8 @@ sumario_dia AS (  -- Km apurada por servico e dia
     servico,
     SUM(distancia_planejada) AS km_subsidiada
   FROM
-    {{ ref("viagens_remuneradas") }}
-    -- `rj-smtr.dashboard_subsidio_sppo.viagens_remuneradas`
+    -- {{ ref("viagens_remuneradas") }}
+    `rj-smtr.dashboard_subsidio_sppo.viagens_remuneradas`
   WHERE
     DATA BETWEEN "2023-09-16"
     AND "2023-12-31"
@@ -94,6 +93,7 @@ km_subsidiada_filtrada as (
   and ksd.data NOT IN ("2022-10-02", "2022-10-30", '2023-02-07', '2023-02-08', '2023-02-10', '2023-02-13', '2023-02-17', '2023-02-18', '2023-02-19', '2023-02-20', '2023-02-21', '2023-02-22')
 ),
 
+
 -- 3. Calcula a receita tarifaria por servico e dia
 rdo AS (
   SELECT
@@ -102,53 +102,19 @@ rdo AS (
     CASE
       WHEN LENGTH(linha) < 3 THEN LPAD(linha, 3, "0")
     ELSE
-    CONCAT( IFNULL(REGEXP_EXTRACT(linha, r"[A-Z]+"), ""), IFNULL(REGEXP_EXTRACT(linha, r"[0-9]+"), "") )
+    CONCAT( IFNULL(REGEXP_EXTRACT(linha, r"[B-Z]+"), ""), IFNULL(REGEXP_EXTRACT(linha, r"[0-9]+"), "") )
   END
     AS servico,
-    SUM(receita_buc) + SUM(receita_buc_supervia) + SUM(receita_cartoes_perna_unica_e_demais) + SUM(receita_especie) AS receita_tarifaria_aferida
+    round(SUM(receita_buc) + SUM(receita_buc_supervia) + SUM(receita_cartoes_perna_unica_e_demais) + SUM(receita_especie), 0) AS receita_tarifaria_aferida
   FROM
-    {{ ref("rdo40_registros") }}
-    -- `rj-smtr`.`br_rj_riodejaneiro_rdo`.`rdo40_registros`
+    -- {{ ref("rdo40_registros") }}
+    `rj-smtr`.`br_rj_riodejaneiro_rdo`.`rdo40_registros`
   WHERE
     DATA BETWEEN "2022-06-01" AND "2023-12-31"
     AND DATA NOT IN ("2022-10-02", "2022-10-30", '2023-02-07', '2023-02-08', '2023-02-10', '2023-02-13', '2023-02-17', '2023-02-18', '2023-02-19', '2023-02-20', '2023-02-21', '2023-02-22')
     and consorcio in ("Internorte", "Intersul", "Santa Cruz", "Transcarioca")
   group by 1,2,3
 ),
-
-{% if var("encontro_contas_modo") == "_pos_gt" %}
--- 4. Considera os serviços conforme tratamento indicado em resposta aos ofícios MTR-OFI-2024/03024, MTR-OFI-2024/03025, MTR-OFI-2024/03026 e MTR-OFI-2024/03027 (Processo MTR-PRO-2024/06270)
-rdo_correcao_servico AS (
-  SELECT DISTINCT
-    data_inicio_quinzena, 
-    data_final_quinzena, 
-    servico_tratado_rdo, 
-    servico_corrigido_rioonibus
-  FROM
-    {{ ref("rdo_correcao_rioonibus_servico_quinzena") }}
-),
-
--- 5. Corrige os serviços do RDO
-rdo_corrigido AS (
-  SELECT
-    data,
-    consorcio,
-    COALESCE(cro.servico_corrigido_rioonibus, rdo.servico) AS servico,
-    SUM(receita_tarifaria_aferida) AS receita_tarifaria_aferida
-  FROM
-    rdo
-  LEFT JOIN
-    rdo_correcao_servico AS cro
-  ON
-    rdo.data BETWEEN cro.data_inicio_quinzena AND cro.data_final_quinzena
-    AND rdo.servico = cro.servico_tratado_rdo
-  GROUP BY 
-    1,
-    2,
-    3
-),
-{% endif %}
-
 parametros as (
   SELECT
     DISTINCT data_inicio,
@@ -178,11 +144,7 @@ parametros as (
     from
       km_subsidiada_filtrada ks
     left join
-      {% if var("encontro_contas_modo") == "_pos_gt" %}
-      rdo_corrigido AS rdo
-      {% else %}
       rdo
-      {% endif %}
     using 
       (data, servico, consorcio)
     left join
@@ -190,3 +152,6 @@ parametros as (
     on
       ks.data between data_inicio and data_fim
   )
+{% else %}
+{{ config(enabled=false) }}
+{% endif %}

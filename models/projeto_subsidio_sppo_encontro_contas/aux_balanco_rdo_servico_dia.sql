@@ -109,7 +109,7 @@ SELECT
   rdo.ordem_servico as ordem_servico_rdo,
   rdo.receita_tarifaria_aferida as receita_tarifaria_aferida_rdo
 FROM
-  {{ ref("balanco_servico_dia") }} bsd
+  {{ ref("balanco_servico_dia" ~ var('encontro_contas_modo')) }} bsd
 FULL JOIN
   rdo_filtrada rdo
 USING

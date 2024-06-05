@@ -46,7 +46,7 @@ SELECT
 FROM
   quinzenas qz
 LEFT JOIN
-  {{ ref("balanco_servico_dia") }} bs
+  {{ ref("balanco_servico_dia" ~ var('encontro_contas_modo')) }} bs
 ON
   bs.data BETWEEN qz.data_inicial_quinzena
   AND qz.data_final_quinzena
