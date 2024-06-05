@@ -93,7 +93,7 @@ km_subsidiada_filtrada as (
   and ksd.data NOT IN ("2022-10-02", "2022-10-30", '2023-02-07', '2023-02-08', '2023-02-10', '2023-02-13', '2023-02-17', '2023-02-18', '2023-02-19', '2023-02-20', '2023-02-21', '2023-02-22')
 ),
 
--- 3. Calcula a receita tarifaria por servico e dia
+-- 3. Calcula a receita tarifária por servico e dia
 rdo AS (
   SELECT
     data,
@@ -115,7 +115,7 @@ rdo AS (
   group by 1,2,3
 ),
 
--- 4. Considera os serviços conforme tratamento indicado em resposta aos ofícios MTR-OFI-2024/03024, MTR-OFI-2024/03025, MTR-OFI-2024/03026 e MTR-OFI-2024/03027 (Processo MTR-PRO-2024/06270)
+-- 3.1. Lista os serviços conforme tratamento indicado em resposta aos ofícios MTR-OFI-2024/03024, MTR-OFI-2024/03025, MTR-OFI-2024/03026 e MTR-OFI-2024/03027 (Processo MTR-PRO-2024/06270)
 rdo_correcao_servico AS (
   SELECT DISTINCT
     data_inicio_quinzena, 
@@ -126,13 +126,14 @@ rdo_correcao_servico AS (
     {{ ref("rdo_correcao_rioonibus_servico_quinzena") }}
 ),
 
--- 5. Corrige os serviços do RDO
-rdo_corrigido AS (
+-- 3.2. Adiciona serviços corrigidos do RDO
+rdo_servico_corrigido AS (
   SELECT
     data,
     consorcio,
-    COALESCE(cro.servico_corrigido_rioonibus, rdo.servico) AS servico,
-    SUM(receita_tarifaria_aferida) AS receita_tarifaria_aferida
+    rdo.servico,
+    cro.servico_corrigido_rioonibus, 
+    receita_tarifaria_aferida
   FROM
     rdo
   LEFT JOIN
@@ -140,12 +141,31 @@ rdo_corrigido AS (
   ON
     rdo.data BETWEEN cro.data_inicio_quinzena AND cro.data_final_quinzena
     AND rdo.servico = cro.servico_tratado_rdo
-  GROUP BY 
+),
+
+-- 3.3. Corrige serviços do RDO com base nos serviços subsidiados (ou seja, apenas serviços planejados no dia)
+rdo_corrigido AS (
+  SELECT
+    rdo.data,
+    ksf.consorcio,
+    ksf.servico,
+    SUM(receita_tarifaria_aferida) AS receita_tarifaria_aferida
+  FROM
+    rdo_servico_corrigido AS rdo
+  LEFT JOIN
+    km_subsidiada_filtrada AS ksf
+  ON
+    rdo.data = ksf.data
+    AND 
+      (rdo.servico_corrigido_rioonibus = ksf.servico
+      OR rdo.servico = ksf.servico)
+  GROUP BY
     1,
     2,
     3
 ),
 
+-- 4. Calcula valores esperados de receita e subsídio com base nos parâmetros de remuneração por km
 parametros as (
   SELECT
     DISTINCT data_inicio,
