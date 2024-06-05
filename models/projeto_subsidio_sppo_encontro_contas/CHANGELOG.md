@@ -5,7 +5,7 @@
 ### Adicionado
 
 - Adiciona modelo `staging.rdo_correcao_rioonibus_servico_quinzena.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/332)
-- Adiciona modos de execução `pre_gt` e `pos_gt` e alteração do nome da tabela (https://github.com/prefeitura-rio/queries-rj-smtr/pull/332)
+- Adiciona modos de execução `_pre_gt` e `_pos_gt` e as respectivas alterações dos nomes das tabelas (https://github.com/prefeitura-rio/queries-rj-smtr/pull/332)
 
 ### Alterado
 

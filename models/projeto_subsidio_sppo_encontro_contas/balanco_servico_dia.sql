@@ -1,6 +1,4 @@
-{% if var("encontro_contas_modo") != "" %}
-  {{ config(alias=this.name ~ "_" ~ var('encontro_contas_modo')) }}
-{% endif %}
+{{ config(alias=this.name ~ var('encontro_contas_modo')) }}
 
 -- 0. Lista servicos e dias atípicos (pagos por recurso)
 WITH
@@ -118,7 +116,7 @@ rdo AS (
   group by 1,2,3
 ),
 
-{% if var("encontro_contas_modo") == "pos_gt" %}
+{% if var("encontro_contas_modo") == "_pos_gt" %}
 -- 4. Considera os serviços conforme tratamento indicado em resposta aos ofícios MTR-OFI-2024/03024, MTR-OFI-2024/03025, MTR-OFI-2024/03026 e MTR-OFI-2024/03027 (Processo MTR-PRO-2024/06270)
 rdo_correcao_servico AS (
   SELECT DISTINCT
@@ -180,7 +178,7 @@ parametros as (
     from
       km_subsidiada_filtrada ks
     left join
-      {% if var("encontro_contas_modo") == "pos_gt" %}
+      {% if var("encontro_contas_modo") == "_pos_gt" %}
       rdo_corrigido AS rdo
       {% else %}
       rdo

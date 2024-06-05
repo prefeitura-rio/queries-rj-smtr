@@ -1,6 +1,4 @@
-{% if var("encontro_contas_modo") != "" %}
-  {{ config(alias=this.name ~ "_" ~ var('encontro_contas_modo')) }}
-{% endif %}
+{{ config(alias=this.name ~ var('encontro_contas_modo')) }}
 
 WITH
   q1 AS (
