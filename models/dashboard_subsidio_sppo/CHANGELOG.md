@@ -4,7 +4,7 @@
 
 ### Alterado
 
-- Altera materialização dos modelos `sumario_servico_dia_historico.sql` e `sumario_servico_dia_tipo.sql` de view para incremental
+- Altera materialização dos modelos `sumario_servico_dia_historico.sql` e `sumario_servico_dia_tipo.sql` de view para incremental (https://github.com/prefeitura-rio/queries-rj-smtr/pull/334)
 
 ## [7.0.0] - 2024-05-22
 
