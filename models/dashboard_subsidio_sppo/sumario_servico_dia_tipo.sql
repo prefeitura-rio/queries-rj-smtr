@@ -145,7 +145,7 @@ ON
   AND sd.servico = pd.servico
 {% if is_incremental() %}
   WHERE
-    AND sd.data BETWEEN DATE("{{ var("start_date") }}" )
+    sd.data BETWEEN DATE("{{ var("start_date") }}" )
     AND DATE( "{{ var("end_date") }}" )
 {% endif %}
   
