@@ -148,7 +148,3 @@ ON
     sd.data BETWEEN DATE("{{ var("start_date") }}" )
     AND DATE( "{{ var("end_date") }}" )
 {% endif %}
-  
--- ORDER BY
---   DATA,
---   servico
