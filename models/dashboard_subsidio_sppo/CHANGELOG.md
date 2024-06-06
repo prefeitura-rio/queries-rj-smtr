@@ -1,5 +1,11 @@
 # Changelog - dashboard_subsidio_sppo
 
+## [7.1.0] - 2024-06-06
+
+### Alterado
+
+- Altera materialização dos modelos `sumario_servico_dia_historico.sql` e `sumario_servico_dia_tipo.sql` de view para incremental
+
 ## [7.0.0] - 2024-05-22
 
 ### Adicionado

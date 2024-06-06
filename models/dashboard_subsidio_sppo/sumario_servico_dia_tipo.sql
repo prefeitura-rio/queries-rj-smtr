@@ -1,3 +1,11 @@
+{{
+  config(
+    materialized="incremental",
+    partition_by={"field": "data", "data_type": "date", "granularity": "day"},
+    incremental_strategy="insert_overwrite",
+  )
+}}
+
 WITH
   planejado AS (
   SELECT
@@ -6,14 +14,17 @@ WITH
     consorcio,
     servico,
     distancia_total_planejada AS km_planejada
-  FROM
-    {{ ref("viagem_planejada") }}
+  FROM 
+    rj-smtr.projeto_subsidio_sppo.viagem_planejada
+    -- {{ ref("viagem_planejada") }}
   WHERE
-    DATA BETWEEN DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
-    AND DATE( "{{ var("end_date") }}" )
+    DATA >= DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
+    {% if is_incremental() %}
+      AND DATA BETWEEN DATE("{{ var("start_date") }}" )
+      AND DATE( "{{ var("end_date") }}" )
+    {% endif %}
     AND (distancia_total_planejada > 0
     OR distancia_total_planejada IS NOT NULL)
-
   ),
   veiculos AS (
   SELECT
@@ -21,10 +32,15 @@ WITH
     id_veiculo,
     status
   FROM
-    {{ ref("sppo_veiculo_dia") }}
+    rj-smtr.veiculo.sppo_veiculo_dia
+    -- {{ ref("sppo_veiculo_dia") }}
   WHERE
-    DATA BETWEEN DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
-    AND DATE( "{{ var("end_date") }}" )),
+    DATA >= DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
+    {% if is_incremental() %}
+      AND DATA BETWEEN DATE("{{ var("start_date") }}" )
+      AND DATE( "{{ var("end_date") }}" )
+    {% endif %}
+  ),
   viagem AS (
   SELECT
     DATA,
@@ -33,10 +49,15 @@ WITH
     id_viagem,
     distancia_planejada
   FROM
-    {{ ref("viagem_completa") }}
+    rj-smtr.projeto_subsidio_sppo.viagem_completa
+    -- {{ ref("viagem_completa") }}
   WHERE
-    DATA BETWEEN DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
-    AND DATE( "{{ var("end_date") }}" )),
+    DATA >= DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
+    {% if is_incremental() %}
+      AND DATA BETWEEN DATE("{{ var("start_date") }}" )
+      AND DATE( "{{ var("end_date") }}" )
+    {% endif %}
+  ),
   servico_km_tipo AS (
   SELECT
     v.DATA,
@@ -115,12 +136,19 @@ SELECT
     servico,
     consorcio)
 FROM
-  {{ ref("sumario_servico_dia") }} AS sd
+  -- {{ ref("sumario_servico_dia") }} AS sd
+  rj-smtr.dashboard_subsidio_sppo.sumario_servico_dia AS sd
 LEFT JOIN
   pivot_data AS pd
 ON
   sd.data = pd.data
   AND sd.servico = pd.servico
-ORDER BY
-  DATA,
-  servico
+{% if is_incremental() %}
+  WHERE
+    AND sd.data BETWEEN DATE("{{ var("start_date") }}" )
+    AND DATE( "{{ var("end_date") }}" )
+{% endif %}
+  
+-- ORDER BY
+--   DATA,
+--   servico
