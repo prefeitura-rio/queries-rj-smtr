@@ -14,16 +14,16 @@ WITH
         v.servico,
         o.vista
       FROM
-        -- {{ ref("viagem_planejada") }} AS v
-        `rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada` AS v
+        {{ ref("viagem_planejada") }} AS v
+        -- `rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada` AS v
       LEFT JOIN
-        -- {{ ref("subsidio_data_versao_efetiva") }}
-        rj-smtr.projeto_subsidio_sppo.subsidio_data_versao_efetiva
+        {{ ref("subsidio_data_versao_efetiva") }}
+        -- rj-smtr.projeto_subsidio_sppo.subsidio_data_versao_efetiva
       USING
         (data)
       LEFT JOIN
-        -- {{ ref("ordem_servico_gtfs") }} AS o
-        rj-smtr.gtfs.ordem_servico AS o
+        {{ ref("ordem_servico_gtfs") }} AS o
+        -- rj-smtr.gtfs.ordem_servico AS o
       USING
         (feed_start_date, servico, tipo_os)
       WHERE
@@ -36,8 +36,8 @@ WITH
         servico,
         vista
       FROM
-        -- {{ ref("viagem_planejada") }}
-        `rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada` 
+        {{ ref("viagem_planejada") }}
+        -- `rj-smtr`.`projeto_subsidio_sppo`.`viagem_planejada` 
       WHERE
         (id_tipo_trajeto = 0
         OR id_tipo_trajeto IS NULL)
@@ -59,8 +59,8 @@ WITH
     valor_total_subsidio AS valor_subsidio_pago,
     NULL AS valor_penalidade
   FROM
-    -- {{ ref("sumario_dia") }}
-    `rj-smtr`.`dashboard_subsidio_sppo`.`sumario_dia`
+    {{ ref("sumario_dia") }}
+    -- `rj-smtr`.`dashboard_subsidio_sppo`.`sumario_dia`
   LEFT JOIN
     viagem_planejada
   USING
@@ -81,8 +81,8 @@ WITH
     valor_subsidio_pago,
     valor_penalidade
   FROM
-    -- {{ ref("sumario_servico_dia") }}
-    `rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_dia`
+    {{ ref("sumario_servico_dia") }}
+    -- `rj-smtr`.`dashboard_subsidio_sppo`.`sumario_servico_dia`
   LEFT JOIN
     viagem_planejada
   USING

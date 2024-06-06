@@ -15,8 +15,8 @@ WITH
     servico,
     distancia_total_planejada AS km_planejada
   FROM 
-    rj-smtr.projeto_subsidio_sppo.viagem_planejada
-    -- {{ ref("viagem_planejada") }}
+    -- rj-smtr.projeto_subsidio_sppo.viagem_planejada
+    {{ ref("viagem_planejada") }}
   WHERE
     DATA >= DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
     {% if is_incremental() %}
@@ -32,8 +32,8 @@ WITH
     id_veiculo,
     status
   FROM
-    rj-smtr.veiculo.sppo_veiculo_dia
-    -- {{ ref("sppo_veiculo_dia") }}
+    -- rj-smtr.veiculo.sppo_veiculo_dia
+    {{ ref("sppo_veiculo_dia") }}
   WHERE
     DATA >= DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
     {% if is_incremental() %}
@@ -49,8 +49,8 @@ WITH
     id_viagem,
     distancia_planejada
   FROM
-    rj-smtr.projeto_subsidio_sppo.viagem_completa
-    -- {{ ref("viagem_completa") }}
+    -- rj-smtr.projeto_subsidio_sppo.viagem_completa
+    {{ ref("viagem_completa") }}
   WHERE
     DATA >= DATE( "{{ var("DATA_SUBSIDIO_V2_INICIO") }}" )
     {% if is_incremental() %}
@@ -136,8 +136,8 @@ SELECT
     servico,
     consorcio)
 FROM
-  -- {{ ref("sumario_servico_dia") }} AS sd
-  rj-smtr.dashboard_subsidio_sppo.sumario_servico_dia AS sd
+  {{ ref("sumario_servico_dia") }} AS sd
+  -- rj-smtr.dashboard_subsidio_sppo.sumario_servico_dia AS sd
 LEFT JOIN
   pivot_data AS pd
 ON
