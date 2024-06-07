@@ -1,4 +1,4 @@
-{% if var("encontro_contas_modo") == "_pre_gt" %}
+{% if var("encontro_contas_modo") == "" %}
 -- 0. Lista servicos e dias atípicos (pagos por recurso)
 WITH
   recursos AS (
