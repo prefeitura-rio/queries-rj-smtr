@@ -10,8 +10,8 @@ WITH
     servico,
     SUM(valor_pago) AS valor_pago
   FROM
-    -- {{ ref("recursos_sppo_servico_dia_pago") }}
-    `rj-smtr`.`br_rj_riodejaneiro_recursos`.`recursos_sppo_servico_dia_pago`
+    {{ ref("recursos_sppo_servico_dia_pago") }}
+    -- `rj-smtr`.`br_rj_riodejaneiro_recursos`.`recursos_sppo_servico_dia_pago`
   GROUP BY
     1,
     2,
@@ -44,8 +44,8 @@ sumario_dia AS (  -- Km apurada por servico e dia
     SUM(km_apurada) AS km_subsidiada,
     sum(valor_subsidio_pago) as subsidio_pago
   FROM
-    -- {{ ref("sumario_servico_dia_historico") }}
-    `rj-smtr.dashboard_subsidio_sppo.sumario_servico_dia_historico`
+    {{ ref("sumario_servico_dia_historico") }}
+    -- `rj-smtr.dashboard_subsidio_sppo.sumario_servico_dia_historico`
   WHERE
     DATA BETWEEN "2022-06-01"
     AND "2023-12-31"
@@ -60,8 +60,8 @@ sumario_dia AS (  -- Km apurada por servico e dia
     servico,
     SUM(distancia_planejada) AS km_subsidiada
   FROM
-    -- {{ ref("viagens_remuneradas") }}
-    `rj-smtr.dashboard_subsidio_sppo.viagens_remuneradas`
+    {{ ref("viagens_remuneradas") }}
+    -- `rj-smtr.dashboard_subsidio_sppo.viagens_remuneradas`
   WHERE
     DATA BETWEEN "2023-09-16"
     AND "2023-12-31"
@@ -107,8 +107,8 @@ rdo AS (
     AS servico,
     round(SUM(receita_buc) + SUM(receita_buc_supervia) + SUM(receita_cartoes_perna_unica_e_demais) + SUM(receita_especie), 0) AS receita_tarifaria_aferida
   FROM
-    -- {{ ref("rdo40_registros") }}
-    `rj-smtr`.`br_rj_riodejaneiro_rdo`.`rdo40_registros`
+    {{ ref("rdo40_registros") }}
+    -- `rj-smtr`.`br_rj_riodejaneiro_rdo`.`rdo40_registros`
   WHERE
     DATA BETWEEN "2022-06-01" AND "2023-12-31"
     AND DATA NOT IN ("2022-10-02", "2022-10-30", '2023-02-07', '2023-02-08', '2023-02-10', '2023-02-13', '2023-02-17', '2023-02-18', '2023-02-19', '2023-02-20', '2023-02-21', '2023-02-22')
