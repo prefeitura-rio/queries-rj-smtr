@@ -176,6 +176,9 @@ vars:
   ### Diretorios ###
   ids_consorcios: {"'221000014'": "'6'", "'221000023'": "'4'", "'221000032'": "'3'", "'221000041'": "'5'", "'221000050'": "NULL", "'229000010'": "'1'"}
 
+  ### Encontro de Contas ###
+  encontro_contas_modo: ""
+
 models:
   +persist_docs:
     relation: true
@@ -259,6 +262,9 @@ models:
     projeto_subsidio_sppo_encontro_contas:
       +materialized: table
       +schema: projeto_subsidio_sppo_encontro_contas
+      staging:
+        +materialized: view
+        +schema: projeto_subsidio_sppo_encontro_contas_staging
     dashboard_controle_vinculo_jae_riocard:
       +materialized: incremental
       +schema: dashboard_controle_vinculo_jae_riocard

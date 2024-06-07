@@ -1,4 +1,4 @@
-{% if var("encontro_contas_modo") == "" %}
+{% if var("encontro_contas_modo") == "_pos_gt" %}
 -- 0. Lista servicos e dias atípicos (pagos por recurso)
 WITH
   recursos AS (
@@ -38,7 +38,7 @@ WHERE
 -- 1. Calcula a km subsidiada por servico e dia
 sumario_dia AS (  -- Km apurada por servico e dia
   SELECT
-    DATA,
+    data,
     consorcio,
     servico,
     SUM(km_apurada) AS km_subsidiada,
@@ -47,7 +47,7 @@ sumario_dia AS (  -- Km apurada por servico e dia
     {{ ref("sumario_servico_dia_historico") }}
     -- `rj-smtr.dashboard_subsidio_sppo.sumario_servico_dia_historico`
   WHERE
-    DATA BETWEEN "2022-06-01"
+    data BETWEEN "2022-06-01"
     AND "2023-12-31"
     and valor_subsidio_pago > 0
   GROUP BY
@@ -56,14 +56,14 @@ sumario_dia AS (  -- Km apurada por servico e dia
     3),
   viagem_remunerada AS ( -- Km subsidiada pos regra do teto de 120% por servico e dia
   SELECT
-    DATA,
+    data,
     servico,
     SUM(distancia_planejada) AS km_subsidiada
   FROM
     {{ ref("viagens_remuneradas") }}
     -- `rj-smtr.dashboard_subsidio_sppo.viagens_remuneradas`
   WHERE
-    DATA BETWEEN "2023-09-16"
+    data BETWEEN "2023-09-16"
     AND "2023-12-31"
     AND indicador_viagem_remunerada = TRUE -- useless
   GROUP BY
@@ -93,8 +93,7 @@ km_subsidiada_filtrada as (
   and ksd.data NOT IN ("2022-10-02", "2022-10-30", '2023-02-07', '2023-02-08', '2023-02-10', '2023-02-13', '2023-02-17', '2023-02-18', '2023-02-19', '2023-02-20', '2023-02-21', '2023-02-22')
 ),
 
-
--- 3. Calcula a receita tarifaria por servico e dia
+-- 3. Calcula a receita tarifária por servico e dia
 rdo AS (
   SELECT
     data,
@@ -102,19 +101,71 @@ rdo AS (
     CASE
       WHEN LENGTH(linha) < 3 THEN LPAD(linha, 3, "0")
     ELSE
-    CONCAT( IFNULL(REGEXP_EXTRACT(linha, r"[B-Z]+"), ""), IFNULL(REGEXP_EXTRACT(linha, r"[0-9]+"), "") )
+    CONCAT( IFNULL(REGEXP_EXTRACT(linha, r"[A-Z]+"), ""), IFNULL(REGEXP_EXTRACT(linha, r"[0-9]+"), "") )
   END
     AS servico,
-    round(SUM(receita_buc) + SUM(receita_buc_supervia) + SUM(receita_cartoes_perna_unica_e_demais) + SUM(receita_especie), 0) AS receita_tarifaria_aferida
+    SUM(receita_buc) + SUM(receita_buc_supervia) + SUM(receita_cartoes_perna_unica_e_demais) + SUM(receita_especie) AS receita_tarifaria_aferida
   FROM
     {{ ref("rdo40_registros") }}
     -- `rj-smtr`.`br_rj_riodejaneiro_rdo`.`rdo40_registros`
   WHERE
-    DATA BETWEEN "2022-06-01" AND "2023-12-31"
-    AND DATA NOT IN ("2022-10-02", "2022-10-30", '2023-02-07', '2023-02-08', '2023-02-10', '2023-02-13', '2023-02-17', '2023-02-18', '2023-02-19', '2023-02-20', '2023-02-21', '2023-02-22')
+    data BETWEEN "2022-06-01" AND "2023-12-31"
+    AND data NOT IN ("2022-10-02", "2022-10-30", '2023-02-07', '2023-02-08', '2023-02-10', '2023-02-13', '2023-02-17', '2023-02-18', '2023-02-19', '2023-02-20', '2023-02-21', '2023-02-22')
     and consorcio in ("Internorte", "Intersul", "Santa Cruz", "Transcarioca")
   group by 1,2,3
 ),
+
+-- 3.1. Lista os serviços conforme tratamento indicado em resposta aos ofícios MTR-OFI-2024/03024, MTR-OFI-2024/03025, MTR-OFI-2024/03026 e MTR-OFI-2024/03027 (Processo MTR-PRO-2024/06270)
+rdo_correcao_servico AS (
+  SELECT DISTINCT
+    data_inicio_quinzena, 
+    data_final_quinzena, 
+    servico_tratado_rdo, 
+    servico_corrigido_rioonibus
+  FROM
+    {{ ref("rdo_correcao_rioonibus_servico_quinzena") }}
+),
+
+-- 3.2. Adiciona serviços corrigidos do RDO
+rdo_servico_corrigido AS (
+  SELECT
+    data,
+    consorcio,
+    rdo.servico,
+    cro.servico_corrigido_rioonibus, 
+    receita_tarifaria_aferida
+  FROM
+    rdo
+  LEFT JOIN
+    rdo_correcao_servico AS cro
+  ON
+    rdo.data BETWEEN cro.data_inicio_quinzena AND cro.data_final_quinzena
+    AND rdo.servico = cro.servico_tratado_rdo
+),
+
+-- 3.3. Corrige serviços do RDO com base nos serviços subsidiados (ou seja, apenas serviços planejados no dia)
+rdo_corrigido AS (
+  SELECT
+    rdo.data,
+    ksf.consorcio,
+    ksf.servico,
+    SUM(receita_tarifaria_aferida) AS receita_tarifaria_aferida
+  FROM
+    rdo_servico_corrigido AS rdo
+  LEFT JOIN
+    km_subsidiada_filtrada AS ksf
+  ON
+    rdo.data = ksf.data
+    AND 
+      (rdo.servico_corrigido_rioonibus = ksf.servico
+      OR rdo.servico = ksf.servico)
+  GROUP BY
+    1,
+    2,
+    3
+),
+
+-- 4. Calcula valores esperados de receita e subsídio com base nos parâmetros de remuneração por km
 parametros as (
   SELECT
     DISTINCT data_inicio,
@@ -144,7 +195,7 @@ parametros as (
     from
       km_subsidiada_filtrada ks
     left join
-      rdo
+      rdo_corrigido AS rdo
     using 
       (data, servico, consorcio)
     left join

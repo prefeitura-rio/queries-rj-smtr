@@ -1,3 +1,5 @@
+{% if var("encontro_contas_modo") == "" %}
+{{ config(alias=this.name ~ var('encontro_contas_modo')) }}
 WITH
   q1 AS (
   SELECT
@@ -48,3 +50,6 @@ GROUP BY
   1,2,3,4,5,6,7,8
 ORDER BY
   2,4,5,6,7,8
+{% else %}
+{{ config(enabled=false) }}
+{% endif %}

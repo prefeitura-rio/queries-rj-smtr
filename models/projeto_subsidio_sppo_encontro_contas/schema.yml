@@ -60,6 +60,8 @@ models:
     columns:
       - name: ano
         description: "Ano"
+      - name: consorcio
+        description: "Consórcio"
       - name: servico
         description: "Serviço"
       - name: km_subsidiada
@@ -108,6 +110,34 @@ models:
         description: "Subsídio pago [R$]"
       - name: saldo
         description: "Saldo entre a receita esperada e aferida, descontado o subsídio glosado [R$]"
+  - name: balanco_servico_dia_pos_gt
+    description: "Balanço da receita aferida e esperada por servico e
+    dia para serviços-dia subsidiados após alterações do Grupo de Trabalho (Processo.Rio MTR-PRO-2024/06270). Ver metodologia em NOTA TÉCNICA TR/SUBTT Nº 01/2024 e 02/2024"
+    columns:
+      - name: data
+        description: "Data"
+      - name: consorcio
+        description: "Consórcio"
+      - name: servico
+        description: "Serviço"
+      - name: km_subsidiada
+        description: "Quilometragem apurada e subsidiada via algoritmo [km]"
+      - name: receita_total_esperada
+        description: "Receita total esperada com base na quilometragem (IRK x km) [R$]"
+      - name: receita_tarifaria_esperada
+        description: "Receita tarifária esperada com base na quilometragem [R$]"
+      - name: subsidio_esperado
+        description: "Subsídio esperado com base na quilometragem [R$]"
+      - name: subsidio_glosado
+        description: "Subsídio glosado conforme os decretos e resoluções vigentes [R$]"
+      - name: receita_total_aferida
+        description: "Receita total aferida (receita tarifária + subsidio pago) [R$]"
+      - name: receita_tarifaria_aferida
+        description: "Receita tarifária aferida com base no RDO informado pelos consórcios [R$]"
+      - name: subsidio_pago
+        description: "Subsídio pago [R$]"
+      - name: saldo
+        description: "Saldo entre a receita esperada e aferida, descontado o subsídio glosado [R$]"
   - name: balanco_servico_quinzena
     description: "Balanço da receita aferida e esperada por serviço e
     quinzena para serviços-dia subsidiados. Ver metodologia em NOTA TÉCNICA TR/SUBTT Nº 01/2024"
@@ -118,8 +148,12 @@ models:
         description: "Data inicial da quinzena"
       - name: data_final_quinzena
         description: "Data final da quinzena"
+      - name: consorcio
+        description: "Consórcio"
       - name: servico
         description: "Serviço"
+      - name: quantidade_dias_subsidiado
+        description: "Quantidade de dias subsidiado"
       - name: km_subsidiada
         description: "Quilometragem apurada e subsidiada via algoritmo [km]"
       - name: receita_total_esperada
