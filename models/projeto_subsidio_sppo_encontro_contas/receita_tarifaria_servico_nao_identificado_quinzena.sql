@@ -1,4 +1,4 @@
-{% if var("encontro_contas_modo") == "_pre_gt" %}
+{% if var("encontro_contas_modo") == "" %}
 {{ config(alias=this.name ~ var('encontro_contas_modo')) }}
 WITH
   q1 AS (
