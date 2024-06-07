@@ -7,6 +7,7 @@
 - Adiciona modelo `staging.rdo_correcao_rioonibus_servico_quinzena.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/332)
 - Adiciona modos de execução `""` (antes das alterações do Grupo de Trabalho) e `"_pos_gt"` (após as alterações do Grupo de Trabalho) conforme Processo.Rio MTR-PRO-2024/06270 e as respectivas alterações dos nomes das tabelas (https://github.com/prefeitura-rio/queries-rj-smtr/pull/332)
 - Adiciona novo tratamento de serviços do RDO no modelo `balanco_servico_dia_pos_gt.sql` com base no modelo `balanco_servico_dia.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/332)
+- Adiciona e altera descrições no schema.yml dos modelos (https://github.com/prefeitura-rio/queries-rj-smtr/pull/332)
 
 ## [1.0.2] - 2024-05-21
 
