@@ -357,8 +357,8 @@ WITH
       WHEN tipo_os = "Extraordinária - Verão" THEN "Verão"
       WHEN tipo_os LIKE "%Madonna%" THEN "Madonna"
     END AS subtipo_dia,
-    SAFE_CAST(i.feed_version AS STRING) AS feed_version,
-    SAFE_CAST(i.feed_start_date AS DATE) AS feed_start_date,
+    i.feed_version,
+    i.feed_start_date,
     tipo_os,
   FROM
     dates AS d
