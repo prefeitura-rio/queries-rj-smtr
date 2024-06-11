@@ -1,5 +1,11 @@
 # Changelog - dashboard_subsidio_sppo
 
+## [7.1.1] - 2024-06-12
+
+### Alterado
+
+- Altera critérios para o `indicador_viagem_remunerada` no modelo `viagens_remuneradas.sql`, de forma a ser indicado como nulo em caso de falha na união de tabelas ()
+
 ## [7.1.0] - 2024-06-06
 
 ### Alterado

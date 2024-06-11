@@ -313,11 +313,6 @@ WHERE
 {% endif %}
 
 {% else %}
-{% if execute %}
-  {% set results = run_query("SELECT feed_version, feed_start_date FROM " ~ ref('feed_info_gtfs') ~ " WHERE feed_start_date = (SELECT MAX(feed_start_date) FROM " ~ ref('feed_info_gtfs') ~ " WHERE feed_start_date >= DATE_TRUNC(DATE_SUB(DATE('" ~ var("run_date") ~ "'), INTERVAL 30 DAY), MONTH))") %}
-  {% set max_feed_version = results.columns[0].values()[0] %}
-  {% set max_feed_start_date = results.columns[1].values()[0] %}
-{% endif %}
 
 WITH
   dates AS (
@@ -347,39 +342,54 @@ WITH
       WHEN data BETWEEN DATE(2024,03,30) AND DATE(2024,04,14) THEN "2024-03-30"  -- OS abr/Q1
       WHEN data BETWEEN DATE(2024,04,15) AND DATE(2024,05,02) THEN "2024-04-15"  -- OS abr/Q2
       WHEN data BETWEEN DATE(2024,05,03) AND DATE(2024,05,14) THEN "2024-05-03"  -- OS maio/Q1
-      WHEN data BETWEEN DATE(2024,05,15) AND DATE(2024,05,31) THEN "2024-05-15"  -- OS maio/Q2
     END AS feed_version,
     CASE
       WHEN data = DATE(2024,05,04) THEN "Madonna 2024-05-04"
       WHEN data = DATE(2024,05,05) THEN "Madonna 2024-05-05"
       ELSE "Regular"
     END AS tipo_os,
-  FROM UNNEST(GENERATE_DATE_ARRAY("{{var('DATA_SUBSIDIO_V6_INICIO')}}", "2024-12-31")) AS data)
+  FROM UNNEST(GENERATE_DATE_ARRAY("{{var('DATA_SUBSIDIO_V6_INICIO')}}", "2024-12-31")) AS data),
+  data_versao_efetiva_manual AS (
+  SELECT
+    data,
+    tipo_dia,
+    CASE
+      WHEN tipo_os = "Extraordinária - Verão" THEN "Verão"
+      WHEN tipo_os LIKE "%Madonna%" THEN "Madonna"
+    END AS subtipo_dia,
+    SAFE_CAST(i.feed_version AS STRING) AS feed_version,
+    SAFE_CAST(i.feed_start_date AS DATE) AS feed_start_date,
+    tipo_os,
+  FROM
+    dates AS d
+  LEFT JOIN
+    {{ ref('feed_info_gtfs') }} AS i
+  USING
+    (feed_version)
+  WHERE
+  {% if is_incremental() %}
+    data = DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 1 DAY)
+  {% else %}
+    data <= DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 1 DAY)
+  {% endif %}
+)
 SELECT
   data,
   tipo_dia,
-  CASE
-    WHEN tipo_os = "Extraordinária - Verão" THEN "Verão"
-    WHEN tipo_os LIKE "%Madonna%" THEN "Madonna"
-  END AS subtipo_dia,
+  subtipo_dia,
   SAFE_CAST(NULL AS DATE) AS data_versao_trips,
   SAFE_CAST(NULL AS DATE) AS data_versao_shapes,
   SAFE_CAST(NULL AS DATE) AS data_versao_frequencies,
   SAFE_CAST(NULL AS FLOAT64) AS valor_subsidio_por_km,
-  COALESCE(i.feed_version, "{{ max_feed_version }}") AS feed_version,
-  COALESCE(i.feed_start_date, DATE("{{ max_feed_start_date }}")) AS feed_start_date,
+  COALESCE(d.feed_version, i.feed_version) AS feed_version,
+  COALESCE(d.feed_start_date, i.feed_start_date) AS feed_start_date,
   tipo_os,
 FROM
-  dates AS d
+  data_versao_efetiva_manual AS d
 LEFT JOIN
   {{ ref('feed_info_gtfs') }} AS i
-USING
-  (feed_version)
-WHERE
-{% if is_incremental() %}
-  data = DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 1 DAY)
-{% else %}
-  data <= DATE_SUB(DATE("{{ var("run_date") }}"), INTERVAL 1 DAY)
-{% endif %}
+ON
+  (data BETWEEN i.feed_start_date AND i.feed_end_date
+  OR (data >= i.feed_start_date AND i.feed_end_date IS NULL))
 
 {% endif %}
