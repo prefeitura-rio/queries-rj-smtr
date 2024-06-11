@@ -4,7 +4,7 @@
 
 ### Alterado
 
-- Altera lógica do modelo `subsidio_data_versao_efetiva.sql`, de forma a considerar por regra sempre o mesmo intervalo de datas do modelo `feed_info_gtfs.sql` ()
+- Altera lógica do modelo `subsidio_data_versao_efetiva.sql`, de forma a considerar por regra sempre o mesmo intervalo de datas do modelo `feed_info_gtfs.sql` (https://github.com/prefeitura-rio/queries-rj-smtr/pull/337)
 
 ## [7.0.2] - 2024-05-29
 
