@@ -13,7 +13,8 @@ WITH raw_ticketing AS (SELECT data                                              
                        FROM `rj-smtr.br_rj_riodejaneiro_onibus_tg.transacao`
                        WHERE tipo_cartao NOT IN (SELECT chave
                                                  FROM `rj-smtr.br_rj_riodejaneiro_onibus_tg.dicionario`
-                                                 -- Card types to drop:
+                                                -- Card types to drop:
+                                                --  These card types do not uniquely identify users. These include cash transactions.
                                                  WHERE VALOR IN (
                                                                  'RIOONIBUS - BOTOEIRA',
                                                                  'RIOONIBUS - ROD. CIDADAO RIO ONIBUS',
