@@ -1,0 +1,332 @@
+version: 2
+
+models:
+  - name: sppo_aux_registros_filtrada_zirix
+    description: "Tabela com filtragem e tratamento básico de registros de GPS."
+    columns:
+      - name: id_veiculo
+        description: "Código identificador do veículo (número de ordem)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: latitude
+        description: "Parte da coordenada geográfica (eixo y) em graus decimais (EPSG:4326 - WGS84)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: longitude
+        description: "Parte da coordenada geográfica (eixo x) em graus decimais (EPSG:4326 - WGS84)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: posicao_veiculo_geo
+        description: "Coordenada geográfica (POINT) com a posição que o veículo se encontra, conforme 'longitude' e 'latitude' informadas pelo GPS (EPSG:4326 - WGS84)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: velocidade
+        description: "Velocidade instantânea do veículo, conforme informado pelo GPS (km/h)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+        #   - not_negative:
+        #       partition_column: data
+      - name: linha
+        description: "Linha de ônibus (serviço) ou, se realocada, informada pela empresa operadora"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+        #   - no_space:
+        #       partition_column: data
+      - name: timestamp_gps
+        description: "Timestamp de emissão do sinal de GPS"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: timestamp_captura
+        description: "Timestamp de captura, pela SMTR, do sinal de GPS"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: data
+        description: "Data do 'timestamp_captura'"
+        # Sem testes em razão de ser coluna de particionamento (seria necessário consultar toda a tabela)
+      - name: hora
+        description: "Hora do 'timestamp_captura'"
+        # Sem testes em razão de ser coluna de particionamento (seria necessário consultar toda a tabela)
+      - name: versao
+        description: "SHA da branch no Github"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+
+  - name: sppo_aux_registros_flag_trajeto_correto_zirix
+    description: "Tabela para verificação se o veículo está dentro do trajeto correto"
+    columns:
+      - name: id_veiculo
+        description: "Código identificador do veículo (número de ordem)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: linha
+        description: "Linha de ônibus (serviço)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+        #   - no_space:
+        #       partition_column: data
+      - name: linha_gtfs
+        description: "Linha de ônibus (serviço) da tabela 'shapes_geom'"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+        #   - no_space:
+        #       partition_column: data
+      - name: route_id
+        description: "Código identificador na rota da tabela 'shapes_geom'"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: data
+        description: "Data de partição, conforme 'timestamp_captura' da tabela 'sppo_registros'" 
+        # Sem testes em razão de ser coluna de particionamento (seria necessário consultar toda a tabela) / Tabela ephemeral
+      - name: timestamp_gps
+        description: "Timestamp de emissão do sinal de GPS"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: flag_trajeto_correto
+        description: "Flag de verificação se o ponto de GPS encontra-se até o limite de 'tamanho_buffer_metros' do shape da linha (true). Se não estiver, retorna false."
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+        #   - accepted_values:
+        #       values: [true, false]
+        #       quote: false
+      - name: flag_trajeto_correto_hist
+        description: "Flag de verificação se, nos últimos 'intervalo_max_desvio_segundos', ao menos algum ponto de GPS encontra-se até o limite de 'tamanho_buffer_metros' do shape da linha (true). Se não estiver, retorna false."
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+        #   - accepted_values:
+        #       values: [true, false]
+        #       quote: false
+      - name: flag_linha_existe_sigmob
+        description: "Flag de verificação se a linha informada existe no SIGMOB"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+        #   - accepted_values:
+        #       values: [true, false]
+        #       quote: false
+
+  - name: sppo_aux_registros_parada_zirix
+    description: "Tabela para identificação de veículos parados em terminais ou garagens conhecidas."
+    columns:
+      - name: data
+        description: "Data de partição, conforme 'timestamp_captura' da tabela 'sppo_registros'" 
+        # Sem testes em razão de ser coluna de particionamento (seria necessário consultar toda a tabela) / Tabela ephemeral
+      - name: id_veiculo
+        description: "Código identificador do veículo (número de ordem)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: timestamp_gps
+        description: "Timestamp de emissão do sinal de GPS"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: linha
+        description: "Linha de ônibus (serviço)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+        #   - no_space:
+        #       partition_column: data
+      - name: tipo_parada
+        description: "Código identificador do veículo (número de ordem)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: id_veiculo
+        description: "Código identificador do veículo (número de ordem)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+
+  - name: sppo_aux_registros_realocacao_zirix
+    description: "Tabela com realocações de linha válidas."
+    columns:
+      - name: id_veiculo
+        description: "Código identificador do veículo (número de ordem)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: timestamp_gps
+        description: "Timestamp de emissão do sinal de GPS"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: servico_gps
+        description: "Linha de ônibus (serviço) informado pelo GPS"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+        #   - no_space:
+        #       partition_column: data
+      - name: servico_realocado
+        description: "Linha de ônibus (serviço) realocada informada pela empresa operadora"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+        #   - no_space:
+        #       partition_column: data
+      - name: datetime_realocacao
+        description: "Datetime_realocacao que o registro da realocação foi informado pela empresa operadora" 
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: data
+        description: "Data de partição, conforme 'timestamp_captura' da tabela 'sppo_registros'" 
+        # Sem testes em razão de ser coluna de particionamento (seria necessário consultar toda a tabela)
+      - name: hora
+        description: "Hora de partição, conforme 'timestamp_captura' da tabela 'sppo_registros'" 
+        # Sem testes em razão de ser coluna de particionamento (seria necessário consultar toda a tabela)
+
+  - name: sppo_aux_registros_velocidade_zirix
+    description: "Tabela com estimativa das velocidades dos veículos nos últimos 10 minutos"
+    columns:
+      - name: timestamp_gps
+        description: "Timestamp de emissão do sinal de GPS"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: data
+        description: "Data de partição, conforme 'timestamp_captura' da tabela 'sppo_registros'" 
+        # Sem testes em razão de ser coluna de particionamento (seria necessário consultar toda a tabela) / Tabela ephemeral
+      - name: id_veiculo
+        description: "Código identificador do veículo (número de ordem)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: linha
+        description: "Linha de ônibus (serviço)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: distancia
+        description: "Distância da última posição do GPS em relação à posição atual (m)"
+        # tests:
+        #   - not_negative:
+        #       partition_column: data
+      - name: velocidade
+        description: "Velocidade média nos últimos 10 minutos de operação (km/h)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+        #   - not_negative:
+        #       partition_column: data
+      - name: flag_em_movimento
+        description: "Veículos com 'velocidade' abaixo da 'velocidade_limiar_parado', são considerados como parado (false). Caso contrário, são considerados andando (true)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+        #   - accepted_values:
+        #       values: [true, false]
+        #       quote: false
+
+  - name: sppo_realocacao_zirix
+    description: "Tabela com todas as realocações de linha informadas."
+    columns:
+      - name: id_veiculo
+        description: "Código identificador do veículo (número de ordem)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: datetime_operacao
+        description: "Datetime que o registro da realocação foi informado pela empresa operadora"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: servico
+        description: "Linha de ônibus (serviço) realocada informada pela empresa operadora"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+        #   - no_space:
+        #       partition_column: data
+      - name: datetime_entrada
+        description: "Datetime de entrada do veículo na linha realocada"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: datetime_saida
+        description: "Datetime de saída do veículo na linha realocada"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: timestamp_processamento
+        description: "Timestamp de processamento da realocação pela empresa operadora"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: timestamp_captura
+        description: "Timestamp de captura, pela SMTR, do registro de realocação"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: data
+        description: "Data do 'timestamp_captura'"
+        # Sem testes em razão de ser coluna de particionamento (seria necessário consultar toda a tabela)
+      - name: hora
+        description: "Hora do 'timestamp_captura'"
+        # Sem testes em razão de ser coluna de particionamento (seria necessário consultar toda a tabela)
+
+  - name: sppo_registros_zirix
+    description: "Tabela com todos os registros de GPS."
+    columns:
+      - name: ordem
+        description: "Código identificador do veículo (número de ordem)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: latitude
+        description: "Parte da coordenada geográfica (eixo y) em graus decimais (EPSG:4326 - WGS84)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: longitude
+        description: "Parte da coordenada geográfica (eixo x) em graus decimais (EPSG:4326 - WGS84)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: timestamp_gps
+        description: "Timestamp de emissão do sinal de GPS"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: velocidade
+        description: "Velocidade instantânea do veículo, conforme informado pelo GPS (km/h)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+        #   - not_negative:
+        #       partition_column: data
+      - name: linha
+        description: "Linha de ônibus (serviço)"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+        #   - no_space:
+        #       partition_column: data
+      - name: timestamp_captura
+        description: "Timestamp de captura, pela SMTR, do sinal de GPS"
+        # tests:
+        #   - not_null:
+        #       partition_column: data
+      - name: data
+        description: "Data do 'timestamp_captura'"
+        # Sem testes em razão de ser coluna de particionamento (seria necessário consultar toda a tabela)
+      - name: hora
+        description: "Hora do 'timestamp_captura'"
+        # Sem testes em razão de ser coluna de particionamento (seria necessário consultar toda a tabela)

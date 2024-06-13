@@ -8,9 +8,10 @@ dbt-env/
 
 # CONFIG
 .DS_Store
-.vscode/
+*.vscode/
+*.idea/
+*__pycache__/
 
 # DEV
 scripts/
-dev/profiles.yml
-dev/.user.yml
+*dev/

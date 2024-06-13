@@ -20,7 +20,8 @@ with viagem_periodo as (
         v.*,
         p.inicio_periodo,
         p.fim_periodo,
-        0 as tempo_planejado
+        p.id_tipo_trajeto,
+        0 as tempo_planejado,
     from (
         select distinct
             consorcio,
@@ -30,7 +31,8 @@ with viagem_periodo as (
             trip_id_planejado as trip_id,
             servico,
             inicio_periodo,
-            fim_periodo
+            fim_periodo,
+            id_tipo_trajeto
         from
             {{ ref("viagem_planejada") }}
         {% if is_incremental() %}
@@ -85,7 +87,9 @@ select distinct
     perc_conformidade_registros,
     0 as perc_conformidade_tempo,
     -- round(100 * tempo_viagem/tempo_planejado, 2) as perc_conformidade_tempo,
-    '{{ var("version") }}' as versao_modelo
+    id_tipo_trajeto,
+    '{{ var("version") }}' as versao_modelo,
+    CURRENT_DATETIME("America/Sao_Paulo") as datetime_ultima_atualizacao
 from 
     viagem_periodo v
 where (
@@ -131,16 +135,31 @@ and
         -- 3. Viagens que nao sao afetadas pelo fechamento das vias
         (inicio_periodo = "00:00:00" and fim_periodo = "23:59:59")
     )
+{% elif var("run_date") in ("2024-05-05", "2024-05-06") %}
+-- Apuração "Madonna · The Celebration Tour in Rio"
+and
+    (datetime_partida between inicio_periodo and fim_periodo)
 {% endif %}
 ),
 -- 3. Filtra viagens com mesma chegada e partida pelo maior % de conformidade do shape
 filtro_desvio as (
   SELECT
-  * EXCEPT(rn)
+    {% if var("run_date") > var("DATA_SUBSIDIO_V6_INICIO") %}
+    * EXCEPT(rn, id_tipo_trajeto)
+    {% else %}
+    * EXCEPT(rn)
+    {% endif %}
 FROM (
   SELECT
     *,
+    {% if var("run_date") > var("DATA_SUBSIDIO_V7_INICIO") %}
+    -- Apuração "Madonna · The Celebration Tour in Rio"
+    ROW_NUMBER() OVER(PARTITION BY id_veiculo, datetime_partida, datetime_chegada ORDER BY perc_conformidade_shape DESC, id_tipo_trajeto, distancia_planejada DESC) AS rn
+    {% elif var("run_date") > var("DATA_SUBSIDIO_V6_INICIO") %}
+    ROW_NUMBER() OVER(PARTITION BY id_veiculo, datetime_partida, datetime_chegada ORDER BY perc_conformidade_shape DESC, id_tipo_trajeto) AS rn
+    {% else %}
     ROW_NUMBER() OVER(PARTITION BY id_veiculo, datetime_partida, datetime_chegada ORDER BY perc_conformidade_shape DESC) AS rn
+    {% endif %}
   FROM
     viagem_comp_conf )
 WHERE

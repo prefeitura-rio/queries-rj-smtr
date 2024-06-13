@@ -1,0 +1,127 @@
+version: 2
+
+models:
+  - name: operadoras
+    description: "Tabela de operadoras de transporte"
+    columns:
+      - name: id_operadora
+        description: "Identificador único do operador, podendo ser o código de permissionário ou código da Jaé"
+      - name: operadora
+        description: "Nome do operador (mascarado quando o operador é pessoa física)"
+      - name: operadora_completo
+        description: "Nome do operador [protegido]"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+      - name: tipo_operadora
+        description: "Tipo de permissionário (Exemplos: autônomo, empresa, cooperativa)"
+      - name: modo
+        description: "Modo de transporte do operador, podendo ser o modo na Jaé ou no STU"
+      - name: modo_stu
+        description: "Modo de transporte no STU (ônibus, van, BRT)"
+      - name: modo_jae
+        description: "Modo de transporte na Jaé (ônibus, van, BRT)"
+      - name: id_processo
+        description: "Número do processo no STU"
+      - name: data_processo
+        description: "Data do processo no STU"
+      - name: documento
+        description: "Documento do operador (CPF ou CNPJ) [protegido]"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+      - name: tipo_documento
+        description: "Tipo do documento do operador (CPF ou CNPJ)"
+      - name: id_operadora_stu
+        description: "Código de permissionário vindo do STU"
+      - name: id_operadora_jae
+        description: "Código do operador no sistema da Jaé"
+      - name: indicador_operador_ativo_jae
+        description: "Indicador de atividade do operador no sistema da Jaé"
+      - name: agencia
+        description: "Número da agência bancária do operador [protegido]"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+      - name: tipo_conta
+        description: "Tipo da conta bancária do operador [protegido]"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+      - name: banco
+        description: "Nome do banco [protegido]"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+      - name: codigo_banco
+        description: "Código do banco (COMPE) [protegido]"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+      - name: conta
+        description: "Número da conta bancária do operador [protegido]"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+  - name: operadoras_contato
+    description: "Tabela de contatos das operadoras de transporte"
+    columns:
+      - name: id_operadora
+        description: "Identificador único da tabela cadastro.operadoras"
+      - name: contato
+        description: "Nome do contato [protegido]"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+      - name: ramal
+        description: "Ramal do telefone [protegido]"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+      - name: telefone
+        description: "Número de telefone [protegido]"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+      - name: email
+        description: "Endereço de E-Mail [protegido]"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/3935188996031375059'
+  - name: consorcios
+    description: "Tabela com dados unificados de consorcios"
+    columns:
+      - name: id_consorcio
+        description: "Identificador único do consórcio, podendo ser o código de permissionário ou código da Jaé"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: modo
+        description: "Modo de transporte do consórcio"
+      - name: id_processo
+        description: "Número do processo no STU"
+      - name: data_processo
+        description: "Data do processo no STU"
+      - name: cnpj
+        description: "CNPJ do consórcio"
+      - name: razao_social
+        description: "Razão social do consórcio"
+      - name: id_consorcio_stu
+        description: "Código de permissionário vindo do STU"
+      - name: id_consorcio_jae
+        description: "Código do consórcio no sistema da Jaé"
+  - name: servicos
+    description: "Tabela com dados unificados de serviços (linhas e estações)"
+    columns:
+      - name: id_servico_gtfs
+        description: "Identificador único do serviço no GTFS, podendo ser o stop_id (no caso de estações) ou o route_id (no caso de linhas)"
+      - name: id_servico_jae
+        description: "Identificador único do serviço no banco de dados da Jaé"
+      - name: servico
+        description: "Nome do serviço consolidado. Para linhas, é o nome curto da linha (ex: 010, 011SN). E para estações, é o stop_code do GTFS ou o código interno da estação no banco de dados da Jaé. (Caso o registro não exista no GTFS, busca o serviço na base de dados da Jaé)"
+      - name: servico_gtfs
+        description: "Nome do serviço consolidado. Para linhas, é a coluna route_short_name da tabela routes do GTFS, que contém o nome curto da linha (ex: 010, 011SN). Para estações, é a coluna stop_code da tabela stops do GTFS"
+      - name: servico_jae
+        description: "Nome do serviço consolidado. Código interno do cadastro de linhas e estações do banco de dados da Jaé"
+      - name: descricao_servico
+        description: "Nome completo do serviço consolidado. Para linhas é, primariamente o route_long_name da tabela routes do GTFS. Para estações é primariamente a coluna stop_name da tabela stops do GTFS. (Caso o registro não exista no GTFS, busca o nome do serviço na base de dados da Jaé)"
+      - name: descricao_servico_gtfs
+        description: "Nome completo do serviço no GTFS. Para linhas é, primariamente o route_long_name da tabela routes do GTFS. Para estações é primariamente a coluna stop_name da tabela stops do GTFS."
+      - name: descricao_servico_jae
+        description: "Nome completo do serviço no banco de dados da Jaé"
+      - name: latitude
+        description: "Latitude da estação na tabela stops do GTFS."
+      - name: longitude
+        description: "Longitude da estação na tabela stops do GTFS."
+      - name: tabela_origem_gtfs
+        description: "Tabela do GTFS de onde foram coletadas as informações (stops ou routes)"
+      - name: feed_start_date_gtfs
+        description: "Último feed_start_date do GTFS em que as informações do serviço estavam disponíveis"

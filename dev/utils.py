@@ -2,6 +2,7 @@ import os
 from datetime import datetime as dt
 from datetime import timedelta
 import pandas as pd
+import requests
 
 from typing import Any, Dict, List, Union
 
@@ -13,13 +14,20 @@ def run_dbt_model(
     upstream: bool = None,
     downstream: bool = None,
     exclude: str = None,
-    flags: str = "-x --profiles-dir ./dev",
+    flags: str = None,
     _vars: Union[dict, List[Dict]] = None,
 ):
     """
     Run a DBT model.
     """
     run_command = "dbt run"
+
+    common_flags = "-x --profiles-dir ./dev"
+
+    if not flags:
+        flags = common_flags
+    else:
+        flags = common_flags + " " + flags
 
     if not model:
         model = f"{dataset_id}"
@@ -53,3 +61,15 @@ def run_dbt_model(
 
     print(f"\n>>> RUNNING: {run_command}\n")
     os.system(run_command)
+
+def fetch_dataset_sha(dataset_id: str):
+    """Fetches the SHA of a branch from Github"""
+    url = "https://api.github.com/repos/prefeitura-rio/queries-rj-smtr"
+    url += f"/commits?queries-rj-smtr/rj_smtr/{dataset_id}"
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        return None
+
+    dataset_version = response.json()[0]["sha"]
+    return {"version": dataset_version}

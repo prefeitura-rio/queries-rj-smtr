@@ -1,0 +1,503 @@
+version: 2
+
+models:
+  - name: transacao
+    description: "Tabela com informações da Jaé sobre as transações realizadas no sistema de transporte municipal"
+    columns:
+      - name: data
+        description: "Data da transação (partição)"
+      - name: hora
+        description: "Hora da transação"
+      - name: datetime_transacao
+        description: "Data e hora da transação em GMT-3 (formato YYYY-MM-ddTHH:mm:ss.ssssss)"
+      - name: datetime_processamento
+        description: "Data e hora de processamento da transação em GMT-3 (formato YYYY-MM-ddTHH:mm:ss.ssssss)"
+      - name: datetime_captura
+        description: "Timestamp de captura em GMT-3 (formato YYYY-MM-dd HH:mm:ssTZD)"
+      - name: modo
+        description: "Tipo de transporte (Ônibus, Van, BRT)"
+      - name: id_consorcio
+        description: "Identificador do consórcio na tabela cadastro.consorcios"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: id_operadora
+        description: "Identificador da operadora na tabela cadastro.operadoras"
+      - name: operadora
+        description: "Nome da operadora de transporte (mascarado se for pessoa física)"
+      # - name: servico
+      #   description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou código da estação"
+      - name: id_servico_jae
+        description: "Identificador da linha no banco de dados da jaé (É possível cruzar os dados com a tabela rj-smtr.cadastro.servicos usando a coluna id_servico_jae)"
+      - name: servico_jae
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou código da estação de BRT na Jaé"
+      - name: descricao_servico_jae
+        description: "Nome longo da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou nome da estação de BRT na Jaé"
+      - name: sentido
+        description: "Sentido de operação do serviço (0 = ida, 1 = volta)"
+      - name: id_veiculo
+        description: "Identificador único do veículo"
+      - name: id_cliente
+        description: "Identificador único do cliente"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/6071707853840412174/policyTags/1168584191451386864'
+      - name: id_transacao
+        description: "Identificador único da transação"
+      - name: tipo_pagamento
+        description: "Tipo de pagamento utilizado"
+      - name: tipo_transacao
+        description: "Tipo de transação realizada (a primeira perna de integrações são classificadas como tipo Débito e não Integração)"
+      - name: tipo_gratuidade
+        description: "Tipo da gratuidade (Estudante, PCD, Sênior)"
+      - name: id_tipo_integracao
+        description: "Tipo da integração realizada (identificador relacionado à matriz de integração)"
+      - name: id_integracao
+        description: "Identificador único da integração"
+      - name: latitude
+        description: "Latitude da transação (WGS84)"
+      - name: longitude
+        description: "Longitude da transação (WGS84)"
+      - name: stop_id
+        description: "Código identificador do ponto de embarque (GTFS)"
+      - name: stop_lat
+        description: "Latitude do ponto de embarque (GTFS)"
+      - name: stop_lon
+        description: "Longitude do ponto de embarque (GTFS)"
+      - name: valor_transacao
+        description: "Valor debitado na transação atual (R$)"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: integracao
+    description: "Tabela de integrações realizadas entre modos do sistema de transporte municipal, contendo os valores da repartição tarifária (quando houver). [Dados em fase de teste]"
+    columns:
+      - name: data
+        description: "Data da transação (partição)"
+      - name: hora
+        description: "Hora da transação"
+      - name: datetime_processamento_integracao
+        description: "Data e hora de processamento da integração em GMT-3"
+      - name: datetime_captura
+        description: "Data e hora da captura da integração em GMT-3"
+      - name: datetime_transacao
+        description: "Data e hora da transação em GMT-3"
+      - name: intervalo_integracao
+        description: "Tempo entre a perna atual da integração e a anterior em minutos"
+      - name: id_integracao
+        description: "Identificador único da integração"
+      - name: sequencia_integracao
+        description: "Sequência da transação dentro da integração"
+      - name: id_integracao_sequencia
+        description: "Identificador único da integração + sequência"
+      - name: modo
+        description: "Tipo de transporte (Ônibus, Van, BRT)"
+      - name: id_consorcio
+        description: "Identificador do consórcio na tabela cadastro.consorcios"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: id_operadora
+        description: "Identificador da operadora na tabela cadastro.operadoras"
+      - name: operadora
+        description: "Nome da operadora de transporte (mascarado se for pessoa física)"
+      # - name: servico
+      #   description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou código da estação"
+      - name: id_servico_jae
+        description: "Identificador da linha no banco de dados da jaé (É possível cruzar os dados com a tabela rj-smtr.cadastro.servicos usando a coluna id_servico_jae)"
+      - name: servico_jae
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou código da estação de BRT na Jaé"
+      - name: descricao_servico_jae
+        description: "Nome longo da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou nome da estação de BRT na Jaé"
+      - name: id_transacao
+        description: "Identificador único da transação"
+      - name: sentido
+        description: "Sentido de operação do serviço (0 = ida, 1 = volta)"
+      - name: percentual_rateio
+        description: "Percentual de rateio do valor total para a operadora"
+      - name: valor_rateio_compensacao
+        description: "Valor a ser compensado pela ou à operadora (R$)"
+      - name: valor_rateio
+        description: "Valor real ganho pela operadora pela transação (R$)"
+      - name: valor_transacao
+        description: "Valor debitado do cartão no momento da transação (R$)"
+      - name: valor_transacao_total
+        description: "Valor total das transações da integração (R$)"
+      - name: texto_adicional
+        description: "Observação adicional"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: matriz_integracao
+    description: "Matriz de repartição tarifária de integrações válidas no sistema de transporte municipal"
+    columns:
+      - name: id_matriz_integracao
+        description: "Identificador único da integração"
+      - name: sequencia_integracao
+        description: "Sequencia da transação dentro da integração"
+      - name: modo
+        description: "Tipo de transporte (Ônibus, Van, BRT)"
+      - name: percentual_rateio
+        description: "Percentual de rateio do valor total para a operadora"
+      - name: data_inicio_validade
+        description: "Data de início da validade da matriz"
+      - name: data_fim_validade
+        description: "Data de fim da validade da matriz"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: gps_validador
+    description: "Tabela de posições de GPS de todos os validadores da Jaé, incluindo estado do equipamento (Aberto/Fechado), serviço, sentido e veículo associado e temperatura do veículo."
+    columns:
+      - name: modo
+        description: "Tipo de transporte (Ônibus, Van, BRT)"
+      - name: data
+        description: "Data do recebimento da transmissão do GPS (partição)"
+      - name: hora
+        description: "Hora do recebimento da transmissão do GPS"
+      - name: datetime_gps
+        description: "Data e hora do recebimento da transmissão do GPS em GMT-3"
+      - name: datetime_captura
+        description: "Data e hora da captura do dado de GPS em GMT-3"
+      - name: id_operadora
+        description: "Identificador da operadora na tabela cadastro.operadoras"
+      - name: operadora
+        description: "Nome da operadora de transporte (mascarado se for pessoa física)"
+      # - name: servico
+      #   description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou código da estação"
+      - name: id_servico_jae
+        description: "Identificador da linha no banco de dados da jaé (É possível cruzar os dados com a tabela rj-smtr.cadastro.servicos usando a coluna id_servico_jae)"
+      - name: servico_jae
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou código da estação de BRT na Jaé"
+      - name: descricao_servico_jae
+        description: "Nome longo da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou nome da estação de BRT na Jaé"
+      - name: id_validador
+        description: "Número de série do validador"
+      - name: id_transmissao_gps
+        description: "Identificador único da tabela de GPS dos validadores"
+      - name: latitude
+        description: "Latitude do validador no momento da transmissão"
+      - name: longitude
+        description: "Longitude do validador no momento da transmissão"
+      - name: id_veiculo
+        description: "[EM DESENVOLVIMENTO] Código identificador do veículo (número de ordem)"
+      - name: sentido
+        description: "Sentido da linha"
+      - name: estado_equipamento
+        description: "Validador aberto ou fechado no momento da transmissão"
+      - name: temperatura
+        description: "Temperatura do local, medida pelo sensor do validador (ºC)"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: gps_validador_van
+    description: "Tabela de posições de GPS de todos os validadores da Jaé instalados em vans, incluindo estado do equipamento (Aberto/Fechado), serviço, sentido e veículo associado e temperatura do veículo."
+    columns:
+      - name: modo
+        description: "Tipo de transporte (Ônibus, Van, BRT)"
+      - name: data
+        description: "Data do recebimento da transmissão do GPS (partição)"
+      - name: hora
+        description: "Hora do recebimento da transmissão do GPS"
+      - name: datetime_gps
+        description: "Data e hora do recebimento da transmissão do GPS em GMT-3"
+      - name: datetime_captura
+        description: "Data e hora da captura do dado de GPS em GMT-3"
+      - name: id_operadora
+        description: "Identificador da operadora na tabela cadastro.operadoras"
+      - name: operadora
+        description: "Nome da operadora de transporte (mascarado se for pessoa física)"
+      # - name: servico
+      #   description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...)"
+      - name: id_servico_jae
+        description: "Identificador da linha no banco de dados da jaé (É possível cruzar os dados com a tabela rj-smtr.cadastro.servicos usando a coluna id_servico_jae)"
+      - name: servico_jae
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou código da estação de BRT na Jaé"
+      - name: descricao_servico_jae
+        description: "Nome longo da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou nome da estação de BRT na Jaé"
+      - name: id_validador
+        description: "Número de série do validador"
+      - name: id_transmissao_gps
+        description: "Identificador único da tabela de GPS dos validadores"
+      - name: latitude
+        description: "Latitude do validador no momento da transmissão [protegido]"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/5185403103447535390'
+      - name: longitude
+        description: "Longitude do validador no momento da transmissão [protegido]"
+        policy_tags:
+          - 'projects/rj-smtr/locations/us/taxonomies/388050497607535163/policyTags/5185403103447535390'
+      - name: id_veiculo
+        description: "[EM DESENVOLVIMENTO] Código identificador do veículo (número de ordem)"
+      - name: sentido
+        description: "Sentido da linha"
+      - name: estado_equipamento
+        description: "Validador aberto ou fechado no momento da transmissão"
+      - name: temperatura
+        description: "Temperatura do local, medida pelo sensor do validador (ºC)"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: passageiros_hora
+    description: "Tabela de contagem do número de passageiros por hora. Agrega valores da tabela de transações por: data, hora, modo, consorcio, operadora, servico, sentido e tipo_transacao"
+    columns:
+      - name: data
+        description: "Data da transação"
+      - name: hora
+        description: "Hora da transação"
+      - name: modo
+        description: "Tipo de transporte (Ônibus, Van, BRT)"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: operadora
+        description: "Nome da operadora de transporte (mascarado se for pessoa física)"
+      - name: id_servico_jae
+        description: "Identificador da linha no banco de dados da jaé (É possível cruzar os dados com a tabela rj-smtr.cadastro.servicos usando a coluna id_servico_jae)"
+      - name: servico_jae
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou código da estação de BRT na Jaé"
+      - name: descricao_servico_jae
+        description: "Nome longo da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou nome da estação de BRT na Jaé"
+      - name: sentido
+        description: "Sentido de operação do serviço (0 = ida, 1 = volta)"
+      - name: tipo_transacao_smtr
+        description: "Tipo de transação realizada no padrão usado pela SMTR (Tarifa Cheia, Integração e Gratuidade)"
+      - name: tipo_transacao_detalhe_smtr
+        description: "Detalhamento sobre a transação, de acordo com o tipo (Tarifa Cheia = tipo do pagamento, Gratuidade = tipo da gratuidade)"
+      - name: quantidade_passageiros
+        description: "Quantidade de transações que aconteceram em determinada data e hora"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: dicionario
+    description: "Dicionário de dados"
+    columns:
+      - name: chave
+        description: "Chave"
+      - name: cobertura_temporal
+        description: "Cobertura temporal"
+      - name: id_tabela
+        description: "Nome da tabela"
+      - name: coluna
+        description: "Nome da coluna"
+      - name: valor
+        description: "Valor"
+  - name: ordem_pagamento_consorcio_dia
+    description: "Tabela com os valores totais de pagamento da Jaé agregados por consorcio e dia"
+    columns: 
+      - name: data_ordem
+        description: "Data da ordem de pagamento (partição)"
+      - name: id_consorcio
+        description: "Identificador do consórcio na tabela cadastro.consorcios"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: id_ordem_pagamento
+        description: "Identificador da ordem pagamento no banco de dados da Jaé"
+      - name: quantidade_transacao_debito
+        description: "Quantidade de transações feitas na modalidade débito"
+      - name: valor_debito
+        description: "Valor total das transações feitas na modalidade débito (R$)"
+      - name: quantidade_transacao_especie
+        description: "Quantidade de transações feitas em espécie"
+      - name: valor_especie
+        description: "Valor total das transações feitas em espécie (R$)"
+      - name: quantidade_transacao_gratuidade
+        description: "Quantidade de transações feitas com gratuidade"
+      - name: valor_gratuidade
+        description: "Valor total das transações feitas com gratuidade (R$)"
+      - name: quantidade_transacao_integracao
+        description: "Quantidade de transações feitas com integração"
+      - name: valor_integracao
+        description: "Valor total das transações feitas com integração (R$)"
+      - name: quantidade_transacao_rateio_credito
+        description: "Quantidade total de transações consideradas no crédito da repartição tarifária"
+      - name: valor_rateio_credito
+        description: "Valor total creditado em decorrência da repartição tarifária (R$)"
+      - name: quantidade_transacao_rateio_debito
+        description: "Quantidade total de transações consideradas no débito da repartição tarifária"
+      - name: valor_rateio_debito
+        description: "Valor total debitado em decorrência da repartição tarifária (R$)"
+      - name: valor_total_transacao_bruto
+        description: "Valor total das transações realizadas (R$)"
+      - name: valor_total_transacao_liquido
+        description: "Valor total das transações menos o valor_desconto_taxa (R$)"
+      - name: valor_desconto_taxa
+        description: "Valor da taxa descontado do valor total (R$)"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: ordem_pagamento_consorcio_operador_dia
+    description: "Tabela com os valores totais de pagamento da Jaé agregados por consorcio, operador e dia"
+    columns:
+      - name: data_ordem
+        description: "Data da ordem de pagamento (partição)"
+      - name: id_consorcio
+        description: "Identificador do consórcio na tabela cadastro.consorcios"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: id_operadora
+        description: "Identificador da operadora na tabela cadastro.operadoras"
+      - name: operadora
+        description: "Nome da operadora de transporte (mascarado se for pessoa física)"
+      - name: id_ordem_pagamento
+        description: "Identificador da ordem pagamento no banco de dados da Jaé"
+      - name: quantidade_transacao_debito
+        description: "Quantidade de transações feitas na modalidade débito"
+      - name: valor_debito
+        description: "Valor total das transações feitas na modalidade débito (R$)"
+      - name: quantidade_transacao_especie
+        description: "Quantidade de transações feitas em espécie"
+      - name: valor_especie
+        description: "Valor total das transações feitas em espécie (R$)"
+      - name: quantidade_transacao_gratuidade
+        description: "Quantidade de transações feitas com gratuidade"
+      - name: valor_gratuidade
+        description: "Valor total das transações feitas com gratuidade (R$)"
+      - name: quantidade_transacao_integracao
+        description: "Quantidade de transações feitas com integração"
+      - name: valor_integracao
+        description: "Valor total das transações feitas com integração (R$)"
+      - name: quantidade_transacao_rateio_credito
+        description: "Quantidade total de transações consideradas no crédito da repartição tarifária"
+      - name: valor_rateio_credito
+        description: "Valor total creditado em decorrência da repartição tarifária (R$)"
+      - name: quantidade_transacao_rateio_debito
+        description: "Quantidade total de transações consideradas no débito da repartição tarifária"
+      - name: valor_rateio_debito
+        description: "Valor total debitado em decorrência da repartição tarifária (R$)"
+      - name: valor_total_transacao_bruto
+        description: "Valor total das transações realizadas (R$)"
+      - name: valor_desconto_taxa
+        description: "Valor da taxa descontado do valor total (R$)"
+      - name: valor_total_transacao_liquido
+        description: "Valor total das transações menos o valor_desconto_taxa (R$)"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: ordem_pagamento_dia
+    description: "Tabela com os valores totais de pagamento da Jaé agregados por dia"
+    columns:
+      - name: data_ordem
+        description: "Data da ordem de pagamento (partição)"
+      - name: data_pagamento
+        description: "Data de pagamento"
+      - name: id_ordem_pagamento
+        description: "Identificador da ordem pagamento no banco de dados da Jaé"
+      - name: quantidade_transacao_debito
+        description: "Quantidade de transações feitas na modalidade débito"
+      - name: valor_debito
+        description: "Valor total das transações feitas na modalidade débito (R$)"
+      - name: quantidade_transacao_especie
+        description: "Quantidade de transações feitas em espécie"
+      - name: valor_especie
+        description: "Valor total das transações feitas em espécie (R$)"
+      - name: quantidade_transacao_gratuidade
+        description: "Quantidade de transações feitas com gratuidade"
+      - name: valor_gratuidade
+        description: "Valor total das transações feitas com gratuidade (R$)"
+      - name: quantidade_transacao_integracao
+        description: "Quantidade de transações feitas com integração"
+      - name: valor_integracao
+        description: "Valor total das transações feitas com integração (R$)"
+      - name: quantidade_transacao_rateio_credito
+        description: "Quantidade total de transações consideradas no crédito da repartição tarifária"
+      - name: valor_rateio_credito
+        description: "Valor total creditado em decorrência da repartição tarifária (R$)"
+      - name: quantidade_transacao_rateio_debito
+        description: "Quantidade total de transações consideradas no débito da repartição tarifária"
+      - name: valor_rateio_debito
+        description: "Valor total debitado em decorrência da repartição tarifária (R$)"
+      - name: valor_total_transacao_bruto
+        description: "Valor total das transações realizadas (R$)"
+      - name: valor_desconto_taxa
+        description: "Valor da taxa descontado do valor total (R$)"
+      - name: valor_total_transacao_liquido
+        description: "Valor total das transações menos o valor_desconto_taxa (R$)"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: ordem_pagamento_servico_operador_dia
+    descriptions: "Tabela com os valores totais de pagamento da Jaé agregados por serviço, operador e dia"
+    columns:
+      - name: data_ordem
+        description: "Data da ordem de pagamento (partição)"
+      - name: id_consorcio
+        description: "Identificador do consórcio na tabela cadastro.consorcios"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: id_operadora
+        description: "Identificador da operadora na tabela cadastro.operadoras"
+      - name: operadora
+        description: "Nome da operadora de transporte (mascarado se for pessoa física)"
+      - name: id_servico_jae
+        description: "Identificador da linha no banco de dados da jaé (É possível cruzar os dados com a tabela rj-smtr.cadastro.servicos usando a coluna id_servico_jae)"
+      - name: servico_jae
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou código da estação de BRT na Jaé"
+      - name: descricao_servico_jae
+        description: "Nome longo da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou nome da estação de BRT na Jaé"
+      # - name: servico
+      #   description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 010, 011SN, ...) ou código da estação"
+      - name: id_ordem_pagamento
+        description: "Identificador da ordem pagamento no banco de dados da Jaé"
+      - name: id_ordem_ressarcimento
+        description: "Identificador da ordem ressarcimento no banco de dados da Jaé"
+      - name: quantidade_transacao_debito
+        description: "Quantidade de transações feitas na modalidade débito"
+      - name: valor_debito
+        description: "Valor total das transações feitas na modalidade débito (R$)"
+      - name: quantidade_transacao_especie
+        description: "Quantidade de transações feitas em espécie"
+      - name: valor_especie
+        description: "Valor total das transações feitas em espécie (R$)"
+      - name: quantidade_transacao_gratuidade
+        description: "Quantidade de transações feitas com gratuidade"
+      - name: valor_gratuidade
+        description: "Valor total das transações feitas com gratuidade (R$)"
+      - name: quantidade_transacao_integracao
+        description: "Quantidade de transações feitas com integração"
+      - name: valor_integracao
+        description: "Valor total das transações feitas com integração (R$)"
+      - name: quantidade_transacao_rateio_credito
+        description: "Quantidade total de transações consideradas no crédito da repartição tarifária"
+      - name: valor_rateio_credito
+        description: "Valor total creditado em decorrência da repartição tarifária (R$)"
+      - name: quantidade_transacao_rateio_debito
+        description: "Quantidade total de transações consideradas no débito da repartição tarifária"
+      - name: valor_rateio_debito
+        description: "Valor total debitado em decorrência da repartição tarifária (R$)"
+      - name: quantidade_total_transacao
+        description: "Quantidade total de transações realizadas"
+      - name: valor_total_transacao_bruto
+        description: "Valor total das transações realizadas (R$)"
+      - name: valor_desconto_taxa
+        description: "Valor da taxa descontado do valor total (R$)"
+      - name: valor_total_transacao_liquido
+        description: "Valor total das transações menos o valor_desconto_taxa (R$)"
+      - name: quantidade_total_transacao_captura
+        description: "Quantidade total de transações calculada pela captura de transações"
+      - name: valor_total_transacao_captura
+        description: "Valor total das transações realizadas calculada pela captura de transações (R$)"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"
+  - name: transacao_riocard
+    description: "Tabela com as transações feitas com RioCard que foram registradas pelo validador da Jaé."
+    columns:
+      - name: data
+        description: "Data da transação (partição)"
+      - name: hora
+        description: "Hora da transação"
+      - name: datetime_transacao
+        description: "Data e hora da transação em GMT-3 (formato YYYY-MM-ddTHH:mm:ss.ssssss)"
+      - name: datetime_processamento
+        description: "Data e hora de processamento da transação em GMT-3 (formato YYYY-MM-ddTHH:mm:ss.ssssss)"
+      - name: datetime_captura
+        description: "Timestamp de captura em GMT-3 (formato YYYY-MM-dd HH:mm:ssTZD)"
+      - name: id_consorcio_jae
+        description: "Código do consórcio no sistema da Jaé"
+      - name: id_operadora_jae
+        description: "Código do operador no sistema da Jaé"
+      - name: id_servico_jae
+        description: "Identificador da linha no banco de dados da jaé (É possível cruzar os dados com a tabela rj-smtr.cadastro.servicos usando a coluna id_servico_jae)"
+      - name: id_validador
+        description: "Número de série do validador"
+      - name: sentido
+        description: "Sentido de operação do serviço (0 = ida, 1 = volta)"
+      - name: id_cliente
+        description: "Identificador único do cliente"
+      - name: id_transacao
+        description: "Identificador único da transação"
+      - name: latitude
+        description: "Latitude da transação (WGS84)"
+      - name: longitude
+        description: "Longitude da transação (WGS84)"
+      - name: valor_transacao
+        description: "Valor debitado na transação atual (R$)"
+      - name: versao
+        description: "Código de controle de versão do dado (SHA Github)"

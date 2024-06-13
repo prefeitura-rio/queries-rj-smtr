@@ -1,0 +1,141 @@
+version: 2
+
+sources:
+  - name: br_rj_riodejaneiro_bilhetagem_staging
+    database: rj-smtr-staging
+
+    tables:
+      - name: transacao
+      - name: transacao_riocard
+      - name: linha
+      - name: dicionario
+      - name: consorcio
+      - name: operadora_transporte
+      - name: ordem_pagamento
+      - name: ordem_ressarcimento
+      - name: conta_bancaria
+      - name: contato_pessoa_juridica
+      - name: cliente
+      - name: percentual_rateio_integracao
+      - name: integracao_transacao
+      - name: tipo_modal
+      - name: gps_validador
+      - name: gratuidade
+      - name: ordem_rateio
+      - name: servico_motorista
+      - name: linha_sem_ressarcimento
+      - name: ordem_pagamento_consorcio_operadora
+      - name: ordem_pagamento_consorcio
+
+  - name: br_rj_riodejaneiro_gtfs_staging
+    database: rj-smtr-staging
+
+    tables:
+      - name: agency
+      - name: calendar
+      - name: calendar_dates
+      - name: fare_attributes
+      - name: fare_rules
+      - name: feed_info
+      - name: frequencies
+      - name: routes
+      - name: shapes
+      - name: stops
+      - name: stop_times
+      - name: trips
+      - name: ordem_servico
+      - name: ordem_servico_trajeto_alternativo
+
+  - name: br_rj_riodejaneiro_stu_staging
+    database: rj-smtr-staging
+    
+    tables:
+      - name: operadora_empresa
+      - name: operadora_pessoa_fisica
+
+  - name: br_rj_riodejaneiro_recursos_staging
+    database: rj-smtr-staging
+
+    tables:
+      - name: recursos_sppo_viagens_individuais
+      - name: recursos_sppo_bloqueio_via
+      - name: recursos_sppo_reprocessamento
+      - name: recursos_sppo_servico_dia_avaliacao
+      - name: recursos_sppo_servico_dia_pago
+  
+  - name: cadastro
+    database: rj-smtr
+
+    tables:
+      - name: modos
+  
+  - name: cadastro_staging
+    database: rj-smtr
+
+    tables:
+      - name: consorcio_modo
+  
+  - name: br_rj_riodejaneiro_rdo_staging
+    database: rj-smtr-staging
+
+    tables:
+      - name: rho_registros_sppo
+      - name: rho5_registros_stpl
+
+  - name: br_rj_riodejaneiro_rdo
+    database: rj-smtr
+
+    tables:
+      - name: rdo40_tratado
+      - name: rdo40_registros_sppo
+
+  - name: projeto_subsidio_sppo_encontro_contas
+    database: rj-smtr
+
+    tables:
+      - name: parametros_km
+
+  - name: veiculo_staging
+    database: rj-smtr-staging
+
+    tables:
+      - name: sppo_vistoria_tr_subtt_cglf_2023
+      - name: sppo_vistoria_tr_subtt_cglf_2024
+      - name: sppo_vistoria_tr_subtt_cglf_pendentes_2024
+      - name: sppo_registro_agente_verao
+      - name: sppo_infracao
+      - name: sppo_licenciamento_solicitacao
+      - name: sppo_licenciamento
+      - name: sppo_licenciamento_stu
+  
+  - name: dashboard_subsidio_sppo_staging
+    database: rj-smtr-staging
+
+    tables:
+      - name: subsidio_valor_km_tipo_viagem
+  
+  - name: dashboard_controle_vinculo_jae_riocard_staging
+    database: rj-smtr-staging
+    
+    tables:
+      - name: relatorio_instalacao_jae
+
+  - name: br_rj_riodejaneiro_onibus_gps_zirix_staging
+    database: rj-smtr-staging
+
+    tables: 
+      - name: registros
+      - name: realocacao
+  
+  - name: controle_financeiro_staging
+    database: rj-smtr-staging
+
+    tables:
+      - name: cb
+      - name: cett
+      
+  - name: projeto_subsidio_sppo_encontro_contas
+    database: rj-smtr-staging
+
+    tables:
+      - name: rdo_correcao_rioonibus_servico_quinzena

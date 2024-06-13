@@ -52,3 +52,5 @@ jobs:
           ./kustomize build . | kubectl apply -n prefect -f -
           kubectl rollout status -w -n prefect deployment/dbt-rpc-dev
           kubectl rollout status -w -n prefect deployment/dbt-rpc-prod
+
+# trigger CD

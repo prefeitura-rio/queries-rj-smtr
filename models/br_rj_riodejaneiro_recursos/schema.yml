@@ -1,0 +1,121 @@
+version: 2
+sources:
+- name: br_rj_riodejaneiro_recursos
+models:
+  - name: recursos_sppo_viagens_individuais
+    description: Recursos abertos na plataforma Movidesk para pagamento de subsídio de viagens individuais de ônibus
+    columns:
+      - name: id_recurso
+        description: Número de id do recurso
+      - name: id_veiculo_numeral
+        description: Número de identificação do veículo (Somente números)
+      - name: servico
+        description: Tipo do serviço de ônibus
+      - name: sentido
+        description: Sentido do ônibus
+      - name: consorcio
+        description: Nome do consórcio
+      - name: datetime_partida
+        description: "Datetime da partida da viagem"
+      - name: datetime_chegada
+        description: "Datetime da chegada da viagem"
+      - name: datetime_captura
+        description: Data/hora de captura dos dados
+      - name: datetime_recurso
+        description: Data/hora de criação do ticket para pedido de recurso no Movidesk
+      - name: motivo_recurso
+        description: Motivo para criação do recurso
+      - name: julgamento
+        description: Julgamento do recurso
+      - name: motivo_julgamento
+        description: Motivos para julgamento
+      - name: observacao_julgamento
+        description: Observações acerca do julgamentodo recurso
+      - name: data
+        description: Data do recurso (partição da tabela)
+
+  - name: recursos_sppo_bloqueio_via
+    description: "Recursos abertos na plataforma Movidesk para pagamento de subsídio de bloqueio de via"
+    columns:
+        - name: id_recurso
+          description: Número de id do recurso
+        - name: servico
+          description: Tipo do serviço de ônibus
+        - name: sentido
+          description: Sentido do ônibus
+        - name: consorcio
+          description: Nome do consórcio
+        - name: numero_relatorio_cimu
+          description: Número do relatório CIMU
+        - name: data_viagem
+          description: Data da viagem
+        - name: datetime_captura
+          description: Data/hora de captura dos dados
+        - name: datetime_recurso
+          description: Data/hora de criação do ticket para pedido de recurso no Movidesk
+        - name: julgamento
+          description: Julgamento do recurso
+        - name: motivo_julgamento
+          description: Motivos para julgamento
+        - name: observacao_julgamento
+          description: Observações acerca do julgamentodo recurso
+        - name: data
+          description: Data do recurso (partição da tabela)
+        - name: data_julgamento
+          description: Data do julgamento
+
+  - name: recursos_sppo_reprocessamento
+    description: "Recursos abertos na plataforma Movidesk para pagamento de subsídio de reprocessamento"
+    columns:
+        - name: id_recurso
+          description: Número de id do recurso
+        - name: julgamento
+          description: Julgamento do recurso
+        - name: motivo_julgamento
+          description: Motivos para julgamento
+        - name: observacao_julgamento
+          description: Observações acerca do julgamentodo recurso
+        - name: datetime_captura
+          description: Data/hora de captura dos dados
+        - name: datetime_recurso
+          description: Data/hora de criação do ticket para pedido de recurso no Movidesk
+        - name: data
+          description: Data do recurso (partição da tabela)
+        - name: data_hora_inicio_viagem
+          description: Data e hora de início da viagem
+        - name: data_hora_fim_viagem
+          description: Data e hora de fim da viagem
+        - name: data_julgamento
+          description: Data do julgamento
+  - name: recursos_sppo_servico_dia_avaliacao
+    description: "Recursos em avaliação pela Coordenadoria de Monitoramento (TR/SUBTT/CMO)"
+    columns:
+      - name: data
+        description: "Data da viagem"
+      - name: id_recurso
+        description: "Número de ID do recurso"
+      - name: tipo_recurso
+        description: "Tipo de recurso"
+      - name: servico
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 006, 010, ...)"
+  - name: recursos_sppo_servico_dia_pago
+    description: "Recursos julgados e pagos (desconsideram-se os recursos que afetam a quinzena, sem data em específico)"
+    columns:
+      - name: data
+        description: "Data da viagem"
+      - name: tipo_dia
+        description: "Tipo de dia (ex.: dia útil, sábado, domingo ou ponto facultativo)"
+      - name: id_recurso
+        description: "Número de ID do recurso"
+      - name: tipo_recurso
+        description: "Tipo de recurso"
+      - name: quinzena_ocorrencia
+        description: "Quinzena de ocorrência do recurso"
+      - name: quinzena_pagamento
+        description: "Quinzena de pagamento do recurso"
+      - name: consorcio
+        description: "Nome do consórcio"
+      - name: servico
+        description: "Nome curto da linha operada pelo veículo com variação de serviço (ex: 006, 010, ...)"
+      - name: valor_pago
+        description: "Valor pago devido ao recurso"

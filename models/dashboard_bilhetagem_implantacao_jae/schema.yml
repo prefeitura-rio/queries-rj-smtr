@@ -1,0 +1,123 @@
+version: 2
+
+models:
+  - name: gps_agregado_brt
+    description: "Tabela com registros de GPS do BRT utilizada no dashboard de acompanhamento da implantação dos validadores da Jaé (Contem apenas dados do dia atual)"
+    columns:
+      - name: servico
+        description: "Nome curto da linha operada com variação de serviço (ex: 010, 011SN, ...)"
+      - name: id_validador
+        description: "Número de série do validador da Jaé"
+      - name: latitude
+        description: "Parte da coordenada geográfica (eixo y) em graus decimais (EPSG:4326 - WGS84)"
+      - name: longitude
+        description: "Parte da coordenada geográfica (eixo x) em graus decimais (EPSG:4326 - WGS84)"
+      - name: data
+        description: "Data do 'timestamp_captura'"
+      - name: estado_equipamento
+        description: Estado do validador da Jaé (ABERTO ou FECHADO)
+      - name: primeiro_datetime_gps
+        description: "Data e hora do primeiro sinal de GPS transmitido pelo validador da Jaé em GMT-3"
+      - name: ultimo_datetime_gps
+        description: "Data e hora do último sinal de GPS transmitido pelo validador da Jaé em GMT-3"
+      - name: qtde_min_entre_a_prim_e_ultima_transmissao
+        description: "Quantidade em minutos entre a primeira e a ultima transmissão do GPS do validador da Jaé"
+      - name: qtde_min_distintos_houve_transmissao
+        description: "Quantidade de minutos distintos em que foram recebidas transmissões de GPS do validador da Jaé"
+      - name: qtde_registros_gps
+        description: "Quantidade de sinais transmitidos pelo GPS do validador da Jaé"
+      - name: qtde_registros_gps_georreferenciados
+        description: "Quantidade de sinais transmitidos pelo validador da Jaé com latitude e longitude não nulos ou diferentes de zero"
+      - name: percentual_registros_gps_georreferenciados
+        description: "Percentual de sinais transmitidos pelo validador da Jaé  com latitude e longitude não nulos ou diferentes de zero"
+      - name: percentual_transmissao_a_cada_min
+        description: "Percentual de minutos em que houve sinal de GPS recebido durante o tempo em que o validador da Jaé ficou ativo."
+  - name: gps_agregado_onibus
+    description: "Tabela com registros de GPS dos ônibus utilizada no dashboard de acompanhamento da implantação dos validadores da Jaé (Contem apenas dados do dia atual)"
+    columns:
+      - name: operadora
+        description: "Nome da operadora de transporte (mascarado se for pessoa física)"
+      - name: id_validador
+        description: "Número de série do validador da Jaé"
+      - name: latitude
+        description: "Parte da coordenada geográfica (eixo y) em graus decimais (EPSG:4326 - WGS84)"
+      - name: longitude
+        description: "Parte da coordenada geográfica (eixo x) em graus decimais (EPSG:4326 - WGS84)"
+      - name: data
+        description: "Data do 'timestamp_captura'"
+      - name: estado_equipamento
+        description: Estado do validador da Jaé (ABERTO ou FECHADO)
+      - name: primeiro_datetime_gps
+        description: "Data e hora do primeiro sinal de GPS transmitido pelo validador da Jaé em GMT-3"
+      - name: ultimo_datetime_gps
+        description: "Data e hora do último sinal de GPS transmitido pelo validador da Jaé em GMT-3"
+      - name: qtde_min_entre_a_prim_e_ultima_transmissao
+        description: "Quantidade em minutos entre a primeira e a ultima transmissão do GPS do validador da Jaé"
+      - name: qtde_min_distintos_houve_transmissao
+        description: "Quantidade de minutos distintos em que foram recebidas transmissões de GPS do validador da Jaé"
+      - name: qtde_registros_gps
+        description: "Quantidade de sinais transmitidos pelo GPS do validador da Jaé"
+      - name: qtde_registros_gps_georreferenciados
+        description: "Quantidade de sinais transmitidos pelo validador da Jaé com latitude e longitude não nulos ou diferentes de zero"
+      - name: percentual_registros_gps_georreferenciados
+        description: "Percentual de sinais transmitidos pelo validador da Jaé  com latitude e longitude não nulos ou diferentes de zero"
+      - name: percentual_transmissao_a_cada_min
+        description: "Percentual de minutos em que houve sinal de GPS recebido durante o tempo em que o validador da Jaé ficou ativo."
+  - name: gps_agregado_van
+    description: "Tabela com registros de GPS das Vans utilizada no dashboard de acompanhamento da implantação dos validadores da Jaé (Contem apenas dados do dia atual)"
+    columns:
+      - name: id_operadora
+        description: "Identificador da operadora na tabela cadastro.operadoras"
+      - name: id_validador
+        description: "Número de série do validador"
+      - name: data
+        description: "Data do 'timestamp_captura'"
+      - name: estado_equipamento
+        description: Estado do validador da Jaé (ABERTO ou FECHADO)
+      - name: primeiro_datetime_gps
+        description: "Data e hora do primeiro sinal de GPS transmitido pelo validador da Jaé em GMT-3"
+      - name: ultimo_datetime_gps
+        description: "Data e hora do último sinal de GPS transmitido pelo validador da Jaé em GMT-3"
+      - name: qtde_min_entre_a_prim_e_ultima_transmissao
+        description: "Quantidade em minutos entre a primeira e a ultima transmissão do GPS do validador da Jaé"
+      - name: qtde_min_distintos_houve_transmissao
+        description: "Quantidade de minutos distintos em que foram recebidas transmissões de GPS do validador da Jaé"
+      - name: qtde_registros_gps
+        description: "Quantidade de sinais transmitidos pelo GPS do validador da Jaé"
+      - name: qtde_registros_gps_georreferenciados
+        description: "Quantidade de sinais transmitidos pelo validador da Jaé com latitude e longitude não nulos ou diferentes de zero"
+      - name: percentual_registros_gps_georreferenciados
+        description: "Percentual de sinais transmitidos pelo validador da Jaé  com latitude e longitude não nulos ou diferentes de zero"
+      - name: percentual_transmissao_a_cada_min
+        description: "Percentual de minutos em que houve sinal de GPS recebido durante o tempo em que o validador da Jaé ficou ativo."
+  - name: gps_agregado_vlt
+    description: "Tabela com registros agregados de GPS das VLTs utilizada no dashboard de acompanhamento da implantação dos validadores da Jaé (Contem apenas dados do dia atual)"
+    columns:
+      - name: servico
+        description: "Nome curto da linha operada com variação de serviço (ex: 010, 011SN, ...)"
+      - name: id_validador
+        description: "Número de série do validador"
+      - name: latitude
+        description: "Parte da coordenada geográfica (eixo y) em graus decimais (EPSG:4326 - WGS84)"
+      - name: longitude
+        description: "Parte da coordenada geográfica (eixo x) em graus decimais (EPSG:4326 - WGS84)"
+      - name: data
+        description: "Data do 'timestamp_captura'"
+      - name: estado_equipamento
+        description: Estado do validador da Jaé (ABERTO ou FECHADO)
+      - name: primeiro_datetime_gps
+        description: "Data e hora do primeiro sinal de GPS transmitido pelo validador da Jaé em GMT-3"
+      - name: ultimo_datetime_gps
+        description: "Data e hora do último sinal de GPS transmitido pelo validador da Jaé em GMT-3"
+      - name: qtde_min_entre_a_prim_e_ultima_transmissao
+        description: "Quantidade em minutos entre a primeira e a ultima transmissão do GPS do validador da Jaé"
+      - name: qtde_min_distintos_houve_transmissao
+        description: "Quantidade de minutos distintos em que foram recebidas transmissões de GPS do validador da Jaé"
+      - name: qtde_registros_gps
+        description: "Quantidade de sinais transmitidos pelo GPS do validador da Jaé"
+      - name: qtde_registros_gps_georreferenciados
+        description: "Quantidade de sinais transmitidos pelo validador da Jaé com latitude e longitude não nulos ou diferentes de zero"
+      - name: percentual_registros_gps_georreferenciados
+        description: "Percentual de sinais transmitidos pelo validador da Jaé  com latitude e longitude não nulos ou diferentes de zero"
+      - name: percentual_transmissao_a_cada_min
+        description: "Percentual de minutos em que houve sinal de GPS recebido durante o tempo em que o validador da Jaé ficou ativo."
