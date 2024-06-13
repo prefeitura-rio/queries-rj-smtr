@@ -34,7 +34,7 @@ SELECT *,
            AS daily_trip_stage
 
 FROM raw_ticketing
-# These card_ids have an average of >400 transactions per day
+-- These card_ids have an average of >400 transactions per day
 WHERE card_id NOT IN ('2e6e15a38c6fe8b624fca13be00a737947a8096fd5620795696b5b63cd7feea4',
                '9af15b336e6a9619928537df30b2e6a2376569fcf9d7e773eccede65606529a0')
 
