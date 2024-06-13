@@ -144,6 +144,10 @@ vars:
   rho_max_processing_interval: 7
   rho_sppo_start_date: "2021-03-01"
 
+
+  ### TG ####
+  tg_transacao_staging: "`rj-smtr-staging.br_rj_riodejaneiro_onibus_tg.card_transactions`"
+  tg_dicionario_staging: "`rj-smtr-staging.br_rj_riodejaneiro_onibus_tg.dicionario`"
   ### Bilhetagem ###
   var_percentual_tarifa_cbd: 0.04
   quantidade_integracoes_max: 5
@@ -220,6 +224,9 @@ models:
     br_rj_riodejaneiro_rdo:
       +materialized: view
       +schema: br_rj_riodejaneiro_rdo
+    br_rj_riodejaneiro_onibus_tg:
+      +materialized: view
+      +schema: br_rj_riodejaneiro_onibus_tg
     br_rj_riodejaneiro_rdo_staging:
       +materialized: view
       +schema: br_rj_riodejaneiro_rdo_staging
