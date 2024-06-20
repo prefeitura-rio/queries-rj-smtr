@@ -32,7 +32,7 @@ WITH ticketing AS (
     -- Drop transactions with only one tap in that day
     --WHERE daily_trip_stage != 'Only transaction'
     -- In future remove hardcoded date
-    WHERE as_at BETWEEN '2023-01-01' AND '2023-06-01'
+    WHERE as_at BETWEEN '2023-06-02' AND '2023-10-01'
 ),
 
 origin_destination AS (
