@@ -74,5 +74,21 @@ Leia:
 
 **Antes de fazer o merge da branch, garanta que os devidos metadados
 para a(s) nova(s) tabela(s) estão preenchidos no portal
-<https://meta.dados.rio/>**. Caso ontrário, não será gerada a documentação
+<https://meta.dados.rio/>**. Caso contrário, não será gerada a documentação
 da tabela.
+
+#### Documentação
+
+Para gerar a documentação do dbt localmente, abra um terminal, navegue até a pasta e digite:
+
+```bash
+dbt docs generate --profiles-dir ./dev
+```
+
+Para consultar a documentação gerada, digite:
+
+```bash
+dbt docs serve --profiles-dir ./dev
+```
+
+---
