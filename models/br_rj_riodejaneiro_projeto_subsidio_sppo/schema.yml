@@ -1,0 +1,102 @@
+version: 2
+sources:
+- name: br_rj_riodejaneiro_projeto_subsidio_sppo
+models:
+  - name: sumario_servico_dia
+    description: "Sumário de serviços por dia histórico"
+    columns:
+      - name: id_recurso
+        description: Identificador do recurso
+      - name: data_reprocessamento
+        description: Data de reprocessamento do recurso
+      - name: data_viagem
+        description: Data da viagem do recurso
+      - name: servico
+        description: Serviço ao qual o recurso se refere (linha + tipo de serviço)
+      - name: valor_subsidio_reprocessado
+        description: Valor do subsídio reprocessado
+      - name: tipo_dia
+        description: Tipo de dia da viagem (dia útil, final de semana ou ponto facultativo)
+      - name: vista
+        description: O letreiro do veículo que exibe o nome do serviço
+      - name: viagens
+        description: Quantidade de viagens realizadas no dia
+      - name: km_apurada
+        description: Quilometragem apurada para o dia
+      - name: km_planejada
+        description: Quilometragem planejada para o dia
+      - name: valor_subsidio_pago
+        description: Valor pago de subsídio para a viagem
+      - name: valor_penalidade
+        description: Valor da penalidade aplicado        
+
+  - name: viagem_completa
+    description: "Dados completos da viagem realizada (histórico)"
+    columns:
+      - name: id_recurso
+        description: Identificador do recurso
+      - name: data_reprocessamento
+        description: Data de reprocessamento do recurso
+      - name: data_viagem
+        description: Data da viagem do recurso
+      - name: servico_informado
+        description: Serviço informado para realizar a viagem
+      - name: servico_realizado
+        description: Serviço efetivamente realizado na viagem
+      - name: vista
+        description: O letreiro do veículo que exibe o nome do serviço
+      - name: trip_id
+        description: Identifica uma viagem em dados de GTFS
+      - name: shape_id
+        description: Identifica uma forma geoespacial que descreve o caminho de deslocamento do veículo para uma viagem
+      - name: sentido
+        description: Sentido do ônibus (Ida, Volta, Circular)
+      - name: datetime_partida
+        description: Data e hora inicial da viagem
+      - name: datetime_chegada
+        description: Data e hora final da viagem
+      - name: inicio_periodo
+        description: Início do período do recurso
+      - name: fim_periodo
+        description: Fim do período do recurso
+      - name: tipo_viagem
+        description: Qual o tipo de viagem realizada
+      - name: tempo_viagem
+        description: Tempo decorrido na viagem
+      - name: tempo_planejado
+        description: Tempo planejado para a viagem
+      - name: distancia_planejada
+        description: Distância planejada para a viagem
+      - name: distancia_aferida
+        description: Distância real aferida na viagem
+      - name: n_registros_shapes
+        description: Número de registros de shapes
+      - name: n_registros_total
+        description: Número de registros totais
+      - name: n_registros_minutos
+        description: Número de registros de minutos
+      - name: perc_conformidade_shape
+        description: Percentual de conformidade do shape da viagem
+      - name: perc_conformidade_distancia
+        description: Percentual de conformidade da distância da viagem
+      - name: perc_conformidade_tempo
+        description: Percentual de conformidade do tempo de viagem
+      - name: versao_modelo
+        description: Hash de versão do modelo DBT
+    
+  - name: controle
+    description: "Tabela de controle das ocorrência sde reprocesssamento"
+    columns:
+      - name: id_recurso
+        description: Identificador do recurso
+      - name: data_reprocessamento
+        description: Data de reprocessamento do recurso
+      - name: data_inicio 
+        description: Data de início do recurso
+      - name: data_fim
+        description: Data de fim do recurso
+      - name: tipo
+        description: Qual o tipo de ocorrência que o recurso fosse reprocessado
+      - name: observacao
+        description: Observação sobre a ocorrência
+
