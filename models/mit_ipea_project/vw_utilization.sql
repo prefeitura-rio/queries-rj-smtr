@@ -71,6 +71,10 @@ SELECT
        cp.n,
        cp.p_sitting_utilization,
        cp.p_utilization,
+       stop_lat,
+       stop_lon,
+       centroid,
+       ST_DISTANCE(centroid, ST_GEOGPOINT(stop_lon, stop_lat)) AS distance,
        utilisation
 
 FROM capacity_percentages AS cp
@@ -79,8 +83,11 @@ ON
     RIGHT(cp.vehicle_id, 5) = utilisation_observations.vehicle_id -- Same Vehicle
     AND cp.as_at = utilisation_observations.date -- Same date
     AND EXTRACT(TIME FROM datetime)
-        BETWEEN TIME_SUB(tile_entry_time, INTERVAL 10 MINUTE)
-        AND TIME_ADD(tile_exit_time, INTERVAL 10 MINUTE) -- Obs time match
+        BETWEEN TIME_SUB(tile_entry_time, INTERVAL 5 MINUTE)
+        AND TIME_ADD(tile_exit_time, INTERVAL 5 MINUTE) -- Obs time match
+
+LEFT JOIN `rj-smtr-dev`.mit_ipea_project.vw_h3
+    ON cp.tile_id = vw_h3.tile_id
 
 ORDER BY  int64_field_0
 
