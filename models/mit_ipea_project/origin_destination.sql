@@ -10,6 +10,7 @@
     )
 }}
 
+-- CTE 1: Match transaction with next transaction (if final transaction, match with first transaction)
 WITH ticketing AS (
     SELECT
         card_id,
@@ -29,12 +30,11 @@ WITH ticketing AS (
         daily_trip_stage
 
     FROM `rj-smtr-dev`.mit_ipea_project.vw_ticketing
-    -- Drop transactions with only one tap in that day
-    --WHERE daily_trip_stage != 'Only transaction'
     -- In future remove hardcoded date
     WHERE as_at BETWEEN '2023-06-02' AND '2023-10-01'
 ),
 
+-- CTE 2: Estimate OD for each transaction
 origin_destination AS (
 
 SELECT
@@ -87,6 +87,7 @@ LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps AS h3_bus_sitting
 
 )
 
+-- Output: UNION ALL
 --Transaction with more than one daily trip stage
 SELECT
     card_id,
@@ -96,11 +97,9 @@ SELECT
     daily_trip_id,
     transaction_vehicle_id,
     boarding_tile,
-    --boarding_tile_centriod,
     MIN(destination_time1) AS destination_time1,
     MIN(destination_time2) AS destination_time2,
     destination_tile,
-    --destination_centroid,
     next_transaction_time,
     next_transaction_tile_id,
     AVG(ST_DISTANCE(boarding_tile_centriod, destination_centroid)) AS distance_travelled_linear
@@ -125,11 +124,9 @@ SELECT
     daily_trip_id,
     transaction_vehicle_id,
     CAST(NULL AS STRING) AS boarding_tile,
-    --boarding_tile_centriod,
     CAST(NULL AS TIME) AS destination_time1,
     CAST(NULL AS TIME) AS destination_time2,
     CAST(NULL AS STRING) AS destination_tile,
-    --destination_centroid,
     CAST(NULL AS TIME) AS next_transaction_time,
     CAST(NULL AS STRING) AS next_transaction_tile_id,
     NULL AS distance_travelled_linear
