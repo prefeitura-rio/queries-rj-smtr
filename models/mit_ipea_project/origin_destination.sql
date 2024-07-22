@@ -31,7 +31,7 @@ WITH ticketing AS (
 
     FROM `rj-smtr-dev`.mit_ipea_project.vw_ticketing
     -- In future remove hardcoded date
-    WHERE as_at BETWEEN '2023-06-02' AND '2023-10-01'
+    WHERE as_at BETWEEN '2023-01-01' AND '2023-01-01'
 ),
 
 -- CTE 2: Estimate OD for each transaction
@@ -102,14 +102,15 @@ SELECT
     destination_tile,
     next_transaction_time,
     next_transaction_tile_id,
-    AVG(ST_DISTANCE(boarding_tile_centriod, destination_centroid)) AS distance_travelled_linear
+    AVG(ST_DISTANCE(boarding_tile_centriod, destination_centroid)) AS distance_travelled_linear,
+    distance_from_next_transaction
 FROM origin_destination
 
 WHERE distance_from_next_transaction = exit_prediction
     AND daily_trip_stage != 'Only transaction'
 
 GROUP BY card_id, as_at, transaction_time, daily_trip_stage, daily_trip_id, transaction_vehicle_id, boarding_tile,
-         destination_tile, next_transaction_time, next_transaction_tile_id
+         destination_tile, next_transaction_time, next_transaction_tile_id, distance_from_next_transaction
 
 UNION ALL
 
@@ -129,7 +130,8 @@ SELECT
     CAST(NULL AS STRING) AS destination_tile,
     CAST(NULL AS TIME) AS next_transaction_time,
     CAST(NULL AS STRING) AS next_transaction_tile_id,
-    NULL AS distance_travelled_linear
+    NULL AS distance_travelled_linear,
+    NULL AS distance_from_next_transaction
 FROM origin_destination
 WHERE daily_trip_stage = 'Only transaction'
   OR distance_from_next_transaction IS NULL
