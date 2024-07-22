@@ -9,7 +9,7 @@ WITH n_passengers AS (SELECT h3_gps.as_at,
 
                       FROM `rj-smtr-dev`.mit_ipea_project.h3_gps
 
-                               LEFT JOIN `rj-smtr-dev`.mit_ipea_project.origin_destination
+                               LEFT JOIN `rj-smtr-dev`.mit_ipea_project.origin_destination_land_use AS origin_destination
                                          ON h3_gps.as_at = origin_destination.as_at -- Same date
                                              AND RIGHT(h3_gps.vehicle_id, 5) =
                                                  origin_destination.transaction_vehicle_id -- Same vehicle
@@ -29,6 +29,7 @@ WITH n_passengers AS (SELECT h3_gps.as_at,
                                                 )
 
                       WHERE h3_gps.as_at BETWEEN '2023-03-01' AND '2023-06-30'
+                      AND distance_from_next_transaction <= 2000
  --AND h3_gps.vehicle_id = 'A41190'
 
                       GROUP BY h3_gps.as_at,
@@ -65,6 +66,7 @@ capacity_percentages AS (SELECT *,
 
 SELECT
     utilisation_observations.int64_field_0,
+    utilisation_observations.time,
     cp.as_at,
        cp.vehicle_id,
        cp.tile_id,
@@ -83,8 +85,8 @@ ON
     RIGHT(cp.vehicle_id, 5) = utilisation_observations.vehicle_id -- Same Vehicle
     AND cp.as_at = utilisation_observations.date -- Same date
     AND EXTRACT(TIME FROM datetime)
-        BETWEEN TIME_SUB(tile_entry_time, INTERVAL 5 MINUTE)
-        AND TIME_ADD(tile_exit_time, INTERVAL 5 MINUTE) -- Obs time match
+        BETWEEN TIME_SUB(tile_entry_time, INTERVAL 0 MINUTE)
+        AND TIME_ADD(tile_exit_time, INTERVAL 0 MINUTE) -- Obs time match
 
 LEFT JOIN `rj-smtr-dev`.mit_ipea_project.vw_h3
     ON cp.tile_id = vw_h3.tile_id
