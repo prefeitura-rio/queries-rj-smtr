@@ -1,12 +1,6 @@
+{{ config(materialized='table') }}
+
 -- Purpose: Create a table that assigns each GPS ping to a H3 tile
-
-{{
-    config(
-        materialized='incremental',
-        incremental_strategy='insert_overwrite'
-    )
-}}
-
 -- Rename columns into english, join on H3 table via a circle fully encapsulating each tile
 -- Each row is now a set of possible H3 tiles for each observation
 WITH gps AS (
