@@ -6,6 +6,7 @@ on:
       - master
       - devops
 
+#Trigger
 env:
   GCP_PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
