@@ -85,6 +85,11 @@ LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps AS h3_bus_sitting
     AND h3_bus_sitting.tile_entry_time BETWEEN ticketing.transaction_time
         AND TIME_ADD(ticketing.transaction_time, INTERVAL 2 HOUR)
 
+WHERE h3_bus_sitting.tile_id IN (
+    SELECT DISTINCT tile_id
+    FROM `rj-smtr-dev`.mit_ipea_project.h3_stops
+    )
+
 )
 
 -- Output: UNION ALL

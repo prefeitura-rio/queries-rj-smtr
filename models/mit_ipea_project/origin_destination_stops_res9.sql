@@ -31,7 +31,7 @@ WITH ticketing AS (
 
     FROM `rj-smtr-dev`.mit_ipea_project.vw_ticketing
     -- In future remove hardcoded date
-    WHERE as_at BETWEEN '2023-03-01' AND '2023-03-01'
+    WHERE as_at BETWEEN '2023-03-01' AND '2023-01-01'
 ),
 
 -- CTE 2: Estimate OD for each transaction
@@ -62,14 +62,14 @@ SELECT
 FROM ticketing
 
 -- NEXT TRANSACTION LOCATION
-LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps AS h3_next_transaction
+LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps_res9 AS h3_next_transaction
     ON
         ticketing.next_transaction_vehicle_id   = RIGHT(h3_next_transaction.vehicle_id, 5)
     AND ticketing.as_at                         = h3_next_transaction.as_at
     AND ticketing.next_transaction_time >= h3_next_transaction.tile_entry_time
     AND ticketing.next_transaction_time < h3_next_transaction.tile_exit_time
 -- BOARDING LOCATION
-LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps AS h3_boarding
+LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps_res9 AS h3_boarding
     ON
         ticketing.transaction_vehicle_id        = RIGHT(h3_boarding.vehicle_id, 5)
     AND ticketing.as_at                         = h3_boarding.as_at
@@ -77,13 +77,18 @@ LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps AS h3_boarding
     AND ticketing.transaction_time >= h3_boarding.tile_entry_time
     AND ticketing.transaction_time < h3_boarding.tile_exit_time
 -- SITTING ON BUS TIME
-LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps AS h3_bus_sitting
+LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps_res9 AS h3_bus_sitting
     ON
         ticketing.transaction_vehicle_id        = RIGHT(h3_bus_sitting.vehicle_id, 5)
     AND ticketing.as_at                         = h3_bus_sitting.as_at
     AND ticketing.transaction_time NOT BETWEEN h3_bus_sitting.tile_entry_time AND h3_bus_sitting.tile_exit_time
     AND h3_bus_sitting.tile_entry_time BETWEEN ticketing.transaction_time
         AND TIME_ADD(ticketing.transaction_time, INTERVAL 2 HOUR)
+
+WHERE h3_bus_sitting.tile_id IN (
+    SELECT DISTINCT tile_id
+    FROM `rj-smtr-dev`.mit_ipea_project.h3_stops_res9
+    )
 
 )
 

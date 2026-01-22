@@ -7,9 +7,9 @@ WITH n_passengers AS (SELECT h3_gps.as_at,
                              h3_gps.tile_exit_time,
                              COUNT(*) - 1 AS n
 
-                      FROM `rj-smtr-dev`.mit_ipea_project.h3_gps
+                      FROM `rj-smtr-dev`.mit_ipea_project.h3_gps_res9 AS h3_gps
 
-                               LEFT JOIN `rj-smtr-dev`.mit_ipea_project.origin_destination_land_use AS origin_destination
+                               LEFT JOIN `rj-smtr-dev`.mit_ipea_project.origin_destination_res9 AS origin_destination
                                          ON h3_gps.as_at = origin_destination.as_at -- Same date
                                              AND RIGHT(h3_gps.vehicle_id, 5) =
                                                  origin_destination.transaction_vehicle_id -- Same vehicle
@@ -27,10 +27,14 @@ WITH n_passengers AS (SELECT h3_gps.as_at,
                                                 OR
                                              h3_gps.tile_entry_time BETWEEN origin_destination.transaction_time AND origin_destination.destination_time1
                                                 )
+                                            --AND (
+                                            --    destination_time1 <= next_transaction_time
+                                            --    OR daily_trip_stage IN ('Last transaction', 'Only transaction')
+                                            --    )
 
                       WHERE h3_gps.as_at BETWEEN '2023-03-01' AND '2023-06-30'
-                      AND distance_from_next_transaction <= 2000
- --AND h3_gps.vehicle_id = 'A41190'
+                      --AND distance_from_next_transaction <= 2000
+                    --AND h3_gps.vehicle_id = 'A41190'
 
                       GROUP BY h3_gps.as_at,
                                h3_gps.vehicle_id,
@@ -77,7 +81,10 @@ SELECT
        stop_lon,
        centroid,
        ST_DISTANCE(centroid, ST_GEOGPOINT(stop_lon, stop_lat)) AS distance,
-       utilisation
+       utilisation,
+       utilisation_observations.line,
+       utilisation_observations.researcher,
+       utilisation_observations.location
 
 FROM capacity_percentages AS cp
 INNER JOIN `rj-smtr-dev`.mit_ipea_project.utilisation_observations
@@ -85,10 +92,10 @@ ON
     RIGHT(cp.vehicle_id, 5) = utilisation_observations.vehicle_id -- Same Vehicle
     AND cp.as_at = utilisation_observations.date -- Same date
     AND EXTRACT(TIME FROM datetime)
-        BETWEEN TIME_SUB(tile_entry_time, INTERVAL 0 MINUTE)
-        AND TIME_ADD(tile_exit_time, INTERVAL 0 MINUTE) -- Obs time match
+        BETWEEN TIME_SUB(tile_entry_time, INTERVAL 5 MINUTE)
+        AND TIME_ADD(tile_exit_time, INTERVAL 5 MINUTE) -- Obs time match
 
-LEFT JOIN `rj-smtr-dev`.mit_ipea_project.vw_h3
+LEFT JOIN `rj-smtr-dev`.mit_ipea_project.vw_h3_res9 AS vw_h3
     ON cp.tile_id = vw_h3.tile_id
 
 ORDER BY  int64_field_0

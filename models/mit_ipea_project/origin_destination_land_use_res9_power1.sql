@@ -31,7 +31,7 @@ WITH ticketing AS (
 
     FROM `rj-smtr-dev`.mit_ipea_project.vw_ticketing
     -- In future remove hardcoded date
-    WHERE as_at BETWEEN '2023-03-01' AND '2023-03-01'
+    WHERE as_at BETWEEN '2023-03-01' AND '2023-06-30'
     --WHERE as_at IN (
     --            '2023-06-02'
     ----, '2023-06-03'
@@ -59,7 +59,7 @@ SELECT
     h3_bus_sitting.tile_id AS destination_tile,
     h3_bus_sitting.centroid AS destination_centroid,
     daily_trip_stage,
-    P001 AS land_use_score,
+    CMATT30 AS land_use_score,
     ST_DISTANCE(h3_next_transaction.centroid, h3_bus_sitting.centroid) AS distance_from_next_transaction,
     MIN(ST_DISTANCE(h3_next_transaction.centroid, h3_bus_sitting.centroid))
         OVER(PARTITION BY card_id, ticketing.as_at, daily_trip_id) AS exit_prediction,
@@ -68,14 +68,14 @@ SELECT
 FROM ticketing
 
 -- NEXT TRANSACTION LOCATION
-LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps AS h3_next_transaction
+LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps_res9 AS h3_next_transaction
     ON
         ticketing.next_transaction_vehicle_id   = RIGHT(h3_next_transaction.vehicle_id, 5)
     AND ticketing.as_at                         = h3_next_transaction.as_at
     AND ticketing.next_transaction_time         >= h3_next_transaction.tile_entry_time
     AND ticketing.next_transaction_time         < h3_next_transaction.tile_exit_time
 -- BOARDING LOCATION
-LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps AS h3_boarding
+LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps_res9 AS h3_boarding
     ON
         ticketing.transaction_vehicle_id        = RIGHT(h3_boarding.vehicle_id, 5)
     AND ticketing.as_at                         = h3_boarding.as_at
@@ -83,15 +83,15 @@ LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps AS h3_boarding
     AND ticketing.transaction_time >= h3_boarding.tile_entry_time
     AND ticketing.transaction_time < h3_boarding.tile_exit_time
 -- SITTING ON BUS TIME
-LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps AS h3_bus_sitting
+LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps_res9 AS h3_bus_sitting
     ON
         ticketing.transaction_vehicle_id        = RIGHT(h3_bus_sitting.vehicle_id, 5)
     AND ticketing.as_at                         = h3_bus_sitting.as_at
     AND ticketing.transaction_time NOT BETWEEN h3_bus_sitting.tile_entry_time AND h3_bus_sitting.tile_exit_time
     AND h3_bus_sitting.tile_entry_time BETWEEN ticketing.transaction_time
         AND TIME_ADD(ticketing.transaction_time, INTERVAL 2 HOUR)
-LEFT JOIN `rj-smtr-dev`.mit_ipea_project.aop_walk_peak_2019
-    ON h3_bus_sitting.tile_id = aop_walk_peak_2019.id_hex
+LEFT JOIN `rj-smtr-dev`.mit_ipea_project.aop_walk_peak_2019_res9
+    ON h3_bus_sitting.tile_id = aop_walk_peak_2019_res9.id_hex
 
 ),
 
@@ -126,7 +126,12 @@ exit_row_num AS (SELECT *,
                                 MINUTE)
                             ), 1)
                             )
-                         END AS land_use_scaled_score
+                         END AS land_use_scaled_score,
+                     ABS(TIME_DIFF(
+                                destination_time1,
+                                MIN(CASE WHEN exit_row = 1 THEN destination_time1 END)
+                                    OVER (PARTITION BY as_at, card_id, daily_trip_id),
+                                MINUTE)) AS time_difference
                  FROM min_exit_row
                  ),
 
@@ -140,18 +145,39 @@ land_use_time_estimate AS (
               ELSE 0
               END AS exit_row_land_use_time
    FROM exit_row_num
-   WHERE row_num BETWEEN min_row_num_with_exit_row_1 - 15 AND min_row_num_with_exit_row_1 + 15
-     --AND card_id IN ('000419a63840109bb1f656d75cd2c8f48f8ea90a4a72124f421ad8962094ad12'
-    --                 'caf2a50e1ba90fde80690abcc9efc62ca1747702afa20761ecce65d68979b3fd',
-    --                 'b76259e138c3d18c1f8e6e198ec91482dd257545a11c3af6addbd8d97d50dde8'
-    --   )
---AND daily_trip_id = 3
+   WHERE row_num BETWEEN min_row_num_with_exit_row_1 - 5 AND min_row_num_with_exit_row_1 + 5
+--     AND card_id IN ('000419a63840109bb1f656d75cd2c8f48f8ea90a4a72124f421ad8962094ad12'
+                     --'caf2a50e1ba90fde80690abcc9efc62ca1747702afa20761ecce65d68979b3fd',
+                     --'b76259e138c3d18c1f8e6e198ec91482dd257545a11c3af6addbd8d97d50dde8'
+--       )
+--AND daily_trip_id = 2
+  -- AND as_at = '2023-04-12'
 ),
 
---SELECT *
---FROM land_use_time_estimate
+land_use_row_num AS (
+
+    SELECT *,
+           MIN(CASE WHEN exit_row_land_use_time = 1 THEN row_num END)
+           OVER (PARTITION BY as_at, card_id, daily_trip_id) AS min_row_num_with_land_use_exit_row
+    FROM land_use_time_estimate ),
+
+land_use_gravity AS (SELECT *,
+
+                                    1 - (ROW_NUMBER() over (PARTITION BY as_at, card_id, daily_trip_id ORDER BY row_num)
+                                        /
+                                         COUNT(*) OVER (PARTITION BY as_at, card_id, daily_trip_id)
+                                        )
+                                                                                         AS fraction_on_board,
+                            --1 - (row_num - min_row_num_with_exit_row_1 + 1) / (min_row_num_with_land_use_exit_row - min_row_num_with_exit_row_1 + 1) AS numerator,
+                            min_row_num_with_land_use_exit_row - min_row_num_with_exit_row_1 + 1 AS num_of_rows
+                     FROM land_use_row_num
+                     WHERE (row_num >= min_row_num_with_exit_row_1 AND row_num <= min_row_num_with_land_use_exit_row)
+                        OR (row_num <= min_row_num_with_exit_row_1 AND row_num >= min_row_num_with_land_use_exit_row)
+
 --WHERE exit_row_land_use_time = 1 --xOR row_num = min_row_num_with_exit_row_1
---ORDER BY as_at, card_id, daily_trip_id
+--ORDER BY as_at, card_id, daily_trip_id, destination_time1
+
+                     ),
 
 origin_destination AS (
 
@@ -174,11 +200,12 @@ SELECT
     exit_prediction AS distance_transit,
     row_num,
     exit_row,
-    exit_row_land_use_time
-FROM land_use_time_estimate
+    exit_row_land_use_time,
+    fraction_on_board
+FROM land_use_gravity
 
-WHERE exit_row_land_use_time = 1
-    AND daily_trip_stage != 'Only transaction'
+WHERE daily_trip_stage != 'Only transaction'
+    --AND exit_row_land_use_time = 1
 
 ),
 
@@ -205,7 +232,8 @@ output AS (
         distance_transit,
         row_num,
         exit_row,
-        exit_row_land_use_time
+        exit_row_land_use_time,
+        fraction_on_board
     FROM origin_destination
 
 UNION ALL
@@ -232,7 +260,8 @@ SELECT
     NULL AS distance_transit,
     NULL AS row_num,
     NULL AS exit_row,
-    NULL AS exit_row_land_use_time
+    NULL AS exit_row_land_use_time,
+    NULL AS fraction_on_board
 FROM od_prediction
 WHERE daily_trip_stage = 'Only transaction'
   OR distance_from_next_transaction IS NULL
@@ -242,3 +271,7 @@ SELECT
     *
 FROM output
 
+--WHERE card_id IN ('000419a63840109bb1f656d75cd2c8f48f8ea90a4a72124f421ad8962094ad12')
+--AND daily_trip_id = 2
+--AND as_at = '2023-04-12'
+--ORDER BY as_at, card_id, daily_trip_id, destination_time1

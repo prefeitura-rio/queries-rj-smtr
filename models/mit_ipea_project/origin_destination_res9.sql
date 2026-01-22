@@ -62,14 +62,14 @@ SELECT
 FROM ticketing
 
 -- NEXT TRANSACTION LOCATION
-LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps AS h3_next_transaction
+LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps_res9 AS h3_next_transaction
     ON
         ticketing.next_transaction_vehicle_id   = RIGHT(h3_next_transaction.vehicle_id, 5)
     AND ticketing.as_at                         = h3_next_transaction.as_at
     AND ticketing.next_transaction_time >= h3_next_transaction.tile_entry_time
     AND ticketing.next_transaction_time < h3_next_transaction.tile_exit_time
 -- BOARDING LOCATION
-LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps AS h3_boarding
+LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps_res9 AS h3_boarding
     ON
         ticketing.transaction_vehicle_id        = RIGHT(h3_boarding.vehicle_id, 5)
     AND ticketing.as_at                         = h3_boarding.as_at
@@ -77,7 +77,7 @@ LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps AS h3_boarding
     AND ticketing.transaction_time >= h3_boarding.tile_entry_time
     AND ticketing.transaction_time < h3_boarding.tile_exit_time
 -- SITTING ON BUS TIME
-LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps AS h3_bus_sitting
+LEFT JOIN `rj-smtr-dev`.mit_ipea_project.h3_gps_res9 AS h3_bus_sitting
     ON
         ticketing.transaction_vehicle_id        = RIGHT(h3_bus_sitting.vehicle_id, 5)
     AND ticketing.as_at                         = h3_bus_sitting.as_at
